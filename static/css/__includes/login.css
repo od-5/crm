@@ -1,0 +1,31 @@
+.login {
+  width: 300px;
+  height: 220px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -150px;
+  margin-top: -110px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+}
+.login_title {
+  padding: 10px 20px;
+  background-color: #5295b0;
+  background-repeat: no-repeat;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#83b3c3), to(#5295b0));
+  background-image: -webkit-linear-gradient(#83b3c3, #5295b0);
+  background-image: -moz-linear-gradient(#83b3c3, #5295b0);
+  background-image: -o-linear-gradient(top, #83b3c3, #5295b0);
+  background-image: -khtml-gradient(linear, left top, left bottom, from(#83b3c3), to(#5295b0));
+  filter: progid:DXImageTransform.Microsoft.Gradient(StartColorStr='#83b3c3', EndColorStr='#5295b0', GradientType=0);
+  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#83b3c3', EndColorStr='#5295b0', GradientType=0))";
+  color: #fff;
+  text-shadow: 0 1px #4f7f92;
+}
+.login_form {
+  margin: 20px 20px 0 20px;
+}
+.login_form input {
+  margin-bottom: 20px;
+}

@@ -1,0 +1,21 @@
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+{#    <div class="navbar-header">#}
+{#      <a class="navbar-brand" href="#">Контроль рекламных поверхностей</a>#}
+{#    </div>#}
+    <div>
+      <ul class="nav navbar-nav">
+        {% if user.type == 1 %}
+        <li><a href="{% url 'cabinet:user-list' %}">Пользователи</a></li>
+        {% endif %}
+        <li><a href="{% url 'city:list' %}">Города</a></li>
+        <li><a href="#">Page 2</a></li> 
+        <li><a href="#">Page 3</a></li> 
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="{% url 'cabinet:profile' %}"><span class="glyphicon glyphicon-user"></span> Профиль пользователя</a></li>
+        <li><a href="{% url 'cabinet:logout' %}?next={% url 'cabinet:cabinet' %}"><span class="glyphicon glyphicon-log-out"></span> Выход</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>

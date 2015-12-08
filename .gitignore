@@ -1,0 +1,4 @@
+/apps/city/migrations
+.idea/
+*.pyc
+core/migrations/

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{#  <meta name="viewport" content="width=1200">#}
+  <title>{% block title %}{{ page.meta_title|default:'Реклама-онлайн' }}{% endblock %}</title>
+{#  <link rel="icon" type="image/png" href="{{ STATIC_URL }}img/favicon.png">#}
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+  <![endif]-->
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <script src="{{ STATIC_URL }}js/jquery-1.11.2.min.js"></script>
+  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  <script src="{{ STATIC_URL }}js/jquery.form.js"></script>
+  <script src="{{ STATIC_URL }}js/jquery.validate.js"></script>
+  <script src="{{ STATIC_URL }}js/jquery.flexslider-min.js"></script>
+  <script src="{{ STATIC_URL }}js/jquery.fancybox.pack.js"></script>
+  <script src="{{ STATIC_URL }}js/notify-combined.min.js"></script>
+  <script src="{{ STATIC_URL }}js/tab.js"></script>
+  <script src="{{ STATIC_URL }}js/cabinet.js"></script>
+  <link href="{{ STATIC_URL }}css/cab_style.css" rel="stylesheet">
+</head>
+<body>
+  <div id="wrapper">
+
+  {% block header %}
+  {% endblock %}
+
+  {% block content %}
+  {% endblock %}
+
+  {% block footer %}
+  {% endblock %}
+
+  </div>
+</body>
+</html>

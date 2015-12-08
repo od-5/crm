@@ -1,0 +1,45 @@
+{% extends 'cabinet_index.html' %}
+{% block content %}
+  <div class="container">
+    <div class="col-lg-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="lead remove-bottom text-center">Пользователи</p>
+        </div>
+        <div class="panel-body">
+          <a href="{% url 'cabinet:user-add' %}" class="btn btn-success">
+            <span class="glyphicon glyphicon-plus-sign"></span> Добавить пользователя
+          </a>
+          {% if object_list %}
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>id</th>
+                <th>e-mail</th>
+                <th>Фамлия</th>
+                <th>Имя</th>
+                <th>Отчество</th>
+                <th>Телефон</th>
+                <th>Уровень доступа</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for object in object_list %}
+              <tr class="{% if object.type == 1 %}success{% elif object.type == 2%}info{% elif object.type == 3 %}active{% endif %}">
+                <td>{{ object.id|default:'' }}</td>
+                <td><a href="{% url 'cabinet:user-change' object.pk %}"> {{ object.email|default:'' }}</a></td>
+                <td>{{ object.last_name|default:'' }}</td>
+                <td>{{ object.first_name|default:'' }}</td>
+                <td>{{ object.patronymic|default:'' }}</td>
+                <td>{{ object.phone|default:'' }}</td>
+                <td>{{ object.get_type_display|default:'' }}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

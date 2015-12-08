@@ -1,0 +1,16 @@
+{% extends 'cabinet_base.html' %}
+{% block content %}
+  <div class="login">
+  {% if user.is_authenticated %}
+    <h1>Вы уже авторизовались</h1>
+    <a href="{% url 'cabinet:logout' %}?next=/" class="btn btn-success">Выход</a>
+  {% else %}
+    <p class="login_title">Введите ваш email и пароль</p>
+    <form action="{% url 'cabinet:login' %}" role="form" method="post" class="login_form">{% csrf_token %}
+      <input type="email" name="username" placeholder="e-mail" class="form-control">
+      <input type="password" name="password" placeholder="Ваш email" class="form-control">
+      <input type="submit" value="Войти" class="btn btn-info">
+    </form>
+  {% endif %}
+  </div>
+{% endblock %}

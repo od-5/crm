@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+{#  <meta name="viewport" content="width=device-width, initial-scale=1.0">#}
+  <meta name="viewport" content="width=1200">
+  <title>{% block title %}{{ page.meta_title|default:'Реклама-онлайн' }}{% endblock %}</title>
+  <meta name="description" content="{% block meta_desc %}{{ page.meta_desc|default:'' }}{% endblock %}">
+  <meta name="keywords" content="{% block meta_key %}{{ page.meta_key|default:'' }}{% endblock %}">
+{#  <link rel="icon" type="image/png" href="{{ STATIC_URL }}img/favicon.png">#}
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+  <![endif]-->
+  {% block top_js %}
+  {% endblock %}
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <script src="{{ STATIC_URL }}js/jquery-1.11.2.min.js"></script>
+  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  <script src="{{ STATIC_URL }}js/jquery.form.js"></script>
+  <script src="{{ STATIC_URL }}js/jquery.validate.js"></script>
+  <script src="{{ STATIC_URL }}js/jquery.flexslider-min.js"></script>
+  <script src="{{ STATIC_URL }}js/jquery.fancybox.pack.js"></script>
+  <script src="{{ STATIC_URL }}js/notify-combined.min.js"></script>
+  <script src="{{ STATIC_URL }}js/tab.js"></script>
+  <script src="{{ STATIC_URL }}js/common.js"></script>
+  <link href="{{ STATIC_URL }}css/style.css" rel="stylesheet">
+
+  {% if SETUP.top_js %}
+    {{ SETUP.top_js }}
+  {% endif %}
+</head>
+<body>
+
+{% block content %}
+
+{% endblock %}
+
+
+{% block bottom_js %}
+{% endblock %}
+  
+{% if SETUP.bottom_js %}
+  {{ SETUP.bottom_js }}
+{% endif %}
+
+{% include "__modal/modal-ticket.html" %}
+</body>
+</html>
