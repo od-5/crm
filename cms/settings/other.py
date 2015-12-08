@@ -1,19 +1,31 @@
 # coding=utf-8
-import os
+import os, socket
 from .base import BASE_DIR
 
 YANDEX_MAPS_API_KEY = 'AO7kF1UBAAAA-akFCwIAR7_VYsSjwJ9g-dDEVHElLxuBQi8AAAAAAAAAAAAQMK4N7NYtvg4ALgMZ8-GRO_cQqQ=='
 
-DATABASES = {
-     'default': {
-         'ENGINE': 'django.db.backends.mysql',
-         'NAME': 'crm',
-         'USER': 'crm',
-         'PASSWORD': '1111',
-         'HOST': 'localhost',
-         'PORT': '',
-     }
-}
+if socket.gethostname() == 'r420':
+    DATABASES = {
+         'default': {
+             'ENGINE': 'django.db.backends.mysql',
+             'NAME': 'crm',
+             'USER': 'crm',
+             'PASSWORD': '1111',
+             'HOST': 'localhost',
+             'PORT': '',
+         }
+    }
+else:
+    DATABASES = {
+         'default': {
+             'ENGINE': 'django.db.backends.mysql',
+             'NAME': 'rylcevalex$crm',
+             'USER': 'rylcevalex',
+             'PASSWORD': '1111',
+             'HOST': 'rylcevalex.mysql.pythonanywhere-services.com',
+             'PORT': '',
+         }
+    }
 
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',

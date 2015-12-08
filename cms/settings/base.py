@@ -14,7 +14,7 @@ else:
 
 TEMPLATE_DEBUG = DEBUG
 
-ALLOWED_HOSTS = ['enjoy-sa.ru', 'www.enjoy-sa.ru', 'enjoy-south-africa.ru', 'www.enjoy-south-africa.ru']
+ALLOWED_HOSTS = ['*']
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 DEFAULT_FROM_EMAIL = 'admin@enjoy-sa.ru'
