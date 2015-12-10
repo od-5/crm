@@ -1,0 +1,45 @@
+{% extends 'cabinet_index.html' %}
+{% block content %}
+  <div class="container">
+    <div class="col-lg-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="lead remove-bottom text-center">Клиенты</p>
+        </div>
+        <div class="panel-body">
+          <a href="{% url 'client:add' %}" class="btn btn-success">
+            <span class="glyphicon glyphicon-plus-sign"></span> Добавить Клиента
+          </a>
+          {% if object_list %}
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>id</th>
+                <th>Юридические наименование</th>
+                <th>Фактичесское наименование</th>
+                <th>Город</th>
+                <th>Пользователь</th>
+                <th>Руководитель</th>
+                <th>Должность руководителя</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for object in object_list %}
+              <tr>
+                <td>{{ object.id|default:'--' }}</td>
+                <td><a href="{% url 'client:change' object.pk %}">{{ object.legal_name|default:'--' }}</a></td>
+                <td>{{ object.actual_name|default:'--' }}</td>
+                <td>{{ object.city|default:'--' }}</td>
+                <td>{{ object.user|default:'--' }}</td>
+                <td>{{ object.leader|default:'--' }}</td>
+                <td>{{ object.leader_function|default:'--' }}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

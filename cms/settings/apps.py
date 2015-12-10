@@ -18,4 +18,5 @@ INSTALLED_APPS = (
     'apps.landing',
     'apps.cabinet',
     'apps.city',
+    'apps.client',
 )

@@ -27,6 +27,7 @@ SUIT_CONFIG = {
         {'label': u'Настройки', 'icon': 'icon-cog', 'models': ('core.setup', 'core.contacts')},
         {'label': u'Заявки', 'icon': 'icon-user', 'models': ('ticket.ticket', 'ticket.excurseticket', 'ticket.groupticket')},
         {'label': u'Продажи', 'icon': 'icon-user', 'models': ('ticket.sale',)},
-        {'label': u'Города', 'models': ('city.city',)},
+        {'label': u'Города', 'app': 'city',},
+        {'label': u'Клиенты', 'app': 'client',},
     ),
 }

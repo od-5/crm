@@ -38,7 +38,24 @@ $(function() {
     }
   });
 
+  // валидация формы добвления клиента
+  $( '.js-form-client-add' ).validate({
+    rules: {
+      city: {
+        required: true
+      },
+      email: {
+        required: true
+      },
+      password1: {
+        required: true
+      },
+      password2: {
+        required: true
+      }
+    }
+  });
 
-
+  $(".js-gallery").fancybox();
 
 });

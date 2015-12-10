@@ -9,11 +9,11 @@
         <li><a href="{% url 'cabinet:user-list' %}">Пользователи</a></li>
         {% endif %}
         <li><a href="{% url 'city:list' %}">Города</a></li>
-        <li><a href="#">Page 2</a></li> 
-        <li><a href="#">Page 3</a></li> 
+        <li><a href="{% url 'city:surface-list' %}">Поверхности</a></li>
+        <li><a href="{% url 'client:list' %}">Клиенты</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="{% url 'cabinet:profile' %}"><span class="glyphicon glyphicon-user"></span> Профиль пользователя</a></li>
+        <li><a href="{% url 'cabinet:profile' %}"><span class="glyphicon glyphicon-user"></span> Профиль пользователя {{ user }}</a></li>
         <li><a href="{% url 'cabinet:logout' %}?next={% url 'cabinet:cabinet' %}"><span class="glyphicon glyphicon-log-out"></span> Выход</a></li>
       </ul>
     </div>

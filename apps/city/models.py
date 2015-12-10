@@ -73,7 +73,23 @@ class Surface(models.Model):
     def __unicode__(self):
         return u'Город %s, район %s, %s, %s' % (self.city, self.area, self.street, self.house_number)
 
+    def get_absolute_url(self):
+        return reverse('city:surface-change', args=(self.pk, ))
+
     city = models.ForeignKey(to=City, verbose_name=u'Город')
     area = models.ForeignKey(to=Area, verbose_name=u'Район')
     street = models.CharField(max_length=256, verbose_name=u'Улица')
     house_number = models.CharField(max_length=50, verbose_name=u'Номер дома')
+
+
+class Porch(models.Model):
+    class Meta:
+        verbose_name = u'Подъезд'
+        verbose_name_plural = u'Подъезды'
+        app_label = 'city'
+
+    def __unicode__(self):
+        return u'Подъезд № %s' % self.number
+
+    surface = models.ForeignKey(to=Surface, verbose_name=u'Рекламная поверхность')
+    number = models.CharField(max_length=10, verbose_name=u'Номер подъезда')

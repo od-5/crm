@@ -2,3 +2,4 @@
 .idea/
 *.pyc
 core/migrations/
+/apps/client/migrations
