@@ -99,6 +99,7 @@ def adjuster_update(request, pk):
 
     if request.method == 'POST':
         success_message = u''
+        msg = None
         city_id = int(request.POST.get('city'))
         city = City.objects.get(pk=city_id)
         password1 = request.POST.get('password1')
@@ -116,17 +117,21 @@ def adjuster_update(request, pk):
                 })
         if adjuster_user.last_name != last_name:
             adjuster_user.last_name = last_name
+            msg = u'Данные успешно изменены. '
         if adjuster_user.first_name != first_name:
             adjuster_user.first_name = first_name
+            msg = u'Данные успешно изменены. '
         if adjuster_user.patronymic != patronymic:
             adjuster_user.patronymic = patronymic
+            msg = u'Данные успешно изменены. '
         adjuster_user.save()
 
         if adjuster.city.id != city_id:
             adjuster.city = city
             adjuster.save()
 
-        success_message += u'Данные успешно изменены. '
+        if msg:
+            success_message += msg
         context.update({
             'success': success_message
         })
