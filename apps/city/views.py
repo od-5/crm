@@ -154,12 +154,6 @@ def porch_update(request):
         surface = Surface.objects.get(pk=int(surface_id))
         formset = PorchFormSet(request.POST, instance=surface)
         if formset.is_valid():
-            print u'Формсет валиден'
-
-            print formset
-            for form in formset:
-                print form
-            print '*'*10
             formset.save()
         else:
             print u'Формсет валиден'
