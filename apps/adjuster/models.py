@@ -17,6 +17,9 @@ class Adjuster(models.Model):
     def __unicode__(self):
         return self.user.get_full_name()
 
+    def get_absolute_url(self):
+        return reverse('adjuster:change', args=(self.pk, ))
+
     user = models.OneToOneField(to=User, verbose_name=u'Пользователь')
     city = models.ForeignKey(to=City, verbose_name=u'Город')
 
