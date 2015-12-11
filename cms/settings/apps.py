@@ -19,4 +19,5 @@ INSTALLED_APPS = (
     'apps.cabinet',
     'apps.city',
     'apps.client',
+    'apps.adjuster',
 )

@@ -2,4 +2,5 @@
 .idea/
 *.pyc
 core/migrations/
+/apps/adjuster/migrations
 /apps/client/migrations

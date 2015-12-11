@@ -15,6 +15,7 @@ urlpatterns = patterns('',
     url(r'^cabinet/', include('apps.cabinet.urls', namespace='cabinet'),),
     url(r'^city/', include('apps.city.urls', namespace='city'),),
     url(r'^client/', include('apps.client.urls', namespace='client'),),
+    url(r'^adjuster/', include('apps.adjuster.urls', namespace='adjuster'),),
     url(r'^ticket/', include('apps.ticket.urls', namespace='ticket'),),
     url(r'', include('core.urls')),
 

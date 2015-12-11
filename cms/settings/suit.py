@@ -29,5 +29,6 @@ SUIT_CONFIG = {
         {'label': u'Продажи', 'icon': 'icon-user', 'models': ('ticket.sale',)},
         {'label': u'Города', 'app': 'city',},
         {'label': u'Клиенты', 'app': 'client',},
+        {'label': u'Монтажники', 'app': 'adjuster',},
     ),
 }

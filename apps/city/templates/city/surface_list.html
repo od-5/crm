@@ -17,6 +17,7 @@
                 <th>id</th>
                 <th>Улица</th>
                 <th>Номер дома</th>
+                <th>Количество подездов</th>
                 <th>Город</th>
                 <th>Район</th>
               </tr>
@@ -27,6 +28,7 @@
                 <td>{{ object.id|default:'' }}</td>
                 <td><a href="{% url 'city:surface-change' object.id %}">{{ object.street|default:'' }}</a></td>
                 <td>{{ object.house_number|default:'' }}</td>
+                <td>{{ object.porch_set.all.count|default:'Не указано' }}</td>
                 <td>{{ object.city|default:'' }}</td>
                 <td>{{ object.area|default:'' }}</td>
               </tr>
