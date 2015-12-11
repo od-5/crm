@@ -163,4 +163,4 @@ def porch_update(request):
             formset.save()
         else:
             print u'Формсет валиден'
-    return HttpResponseRedirect(request.META.get('HTTP_REFERRER'))
+    return HttpResponseRedirect('/city/')
