@@ -10,17 +10,13 @@
       <div class="panel panel-default">
         <div class="panel-heading">
           <p class="lead text-center remove-bottom">
-            {% if object %}
             Редактирование {{ object }}
-            {% else %}
-            Добавление рекламной поверхности
-            {% endif %}
           </p>
         </div>
         <div class="panel-body">
           <div class="col-lg-6">
             <p class="text-info lead">Адрес</p>
-            <form action="." role="form" class="form-profile" method="post">
+            <form action="" role="form" class="form-profile" method="post">
               {% csrf_token %}
               {{ form.as_p }}
               <button type="submit" class="btn btn-default">Сохранить</button>

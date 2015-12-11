@@ -3,7 +3,7 @@ from django.conf.urls import patterns, url
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.generic import CreateView
 from .forms import CityAddForm
-from .models import City
+from .models import City, Surface
 from .views import city_update, SurfaceListView, SurfaceCreateView, SurfaceUpdateView, CityListView
 
 __author__ = 'alexy'

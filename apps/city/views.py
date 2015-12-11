@@ -103,6 +103,7 @@ class SurfaceListView(ListView):
 class SurfaceCreateView(CreateView):
     model = Surface
     form_class = SurfaceAddForm
+    template_name = 'city/surface_add.html'
 
     def get_initial(self):
         """
@@ -118,7 +119,7 @@ class SurfaceCreateView(CreateView):
 
 class SurfaceUpdateView(UpdateView):
     model = Surface
-    # template_name = 'cabinet/profile.html'
+    template_name = 'city/surface_form.html'
     form_class = SurfaceAddForm
 
     # def get_object(self, queryset=None):
@@ -138,7 +139,7 @@ class SurfaceUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(SurfaceUpdateView, self).get_context_data(**kwargs)
-        print self.object
+        # print self.object
         porch_form = PorchFormSet(instance=self.object)
         # print porch_form
         context.update({

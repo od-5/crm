@@ -75,6 +75,7 @@ class Surface(models.Model):
 
     def get_absolute_url(self):
         return reverse('city:surface-change', args=(self.pk, ))
+        # return '/city/surface/'
 
     city = models.ForeignKey(to=City, verbose_name=u'Город')
     area = models.ForeignKey(to=Area, verbose_name=u'Район')
