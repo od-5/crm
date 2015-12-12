@@ -10,5 +10,5 @@ urlpatterns = patterns(
     'apps.client.views',
     url(r'^$', ClientListView.as_view(model=Client), name='list'),
     url(r'^add/$', 'client_add', name='add'),
-    url(r'^(?P<pk>\d+)/$', UpdateView.as_view(model=Client, template_name='client/user_form.html'), name='change'),
+    url(r'^(?P<pk>\d+)/$', 'client_update', name='change'),
 )

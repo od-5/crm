@@ -56,9 +56,6 @@ def client_add(request):
                     leader_function=leader_function,
                     work_basis=work_basis
                 )
-                print '*'*10
-                print city, legal_name, actual_name, inn, kpp, legal_address, leader, leader_function, work_basis
-                print '*'*10
             else:
                 context.update({
                     'error': u'Пароль и подтверждение пароля не совпадают!'
@@ -67,6 +64,101 @@ def client_add(request):
         print 'NO ***'*5
 
     return render(request, 'client/user_form.html', context)
+
+
+def client_update(request, pk):
+    user = request.user
+    client_id = int(pk)
+    client = Client.objects.get(pk=client_id)
+
+    if user.type == 1:
+        city_list = City.objects.all()
+    elif user.type == 2:
+        city_list = City.objects.filter(moderator=user.id)
+    context = {
+        'object': client,
+        'city_list': city_list
+    }
+
+    client_user = User.objects.get(client=client)
+
+    if request.method == 'POST':
+        success_message = u''
+        msg = None
+        city_id = int(request.POST.get('city'))
+        city = City.objects.get(pk=city_id)
+        email = request.POST.get('email')
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+        last_name = request.POST.get('last_name')
+        first_name = request.POST.get('first_name')
+        patronymic = request.POST.get('patronymic')
+        legal_name = request.POST.get('legal_name')
+        actual_name = request.POST.get('actual_name')
+        inn = request.POST.get('inn')
+        kpp = request.POST.get('kpp')
+        legal_address = request.POST.get('legal_address')
+        leader = request.POST.get('leader')
+        leader_function = request.POST.get('leader_function')
+        work_basis = request.POST.get('work_basis')
+        if password1 and password2:
+            if password1 == password2:
+                client_user.set_password(password1)
+                success_message += u'Пароль успешно изменен. '
+            else:
+                context.update({
+                    'error': u'Пароль и подтверждение пароля не совпадают'
+                })
+
+        if client_user.email != email:
+            client_user.email = email
+            msg = u'Данные успешно изменены. '
+        if client_user.last_name != last_name:
+            client_user.last_name = last_name
+            msg = u'Данные успешно изменены. '
+        if client_user.first_name != first_name:
+            client_user.first_name = first_name
+            msg = u'Данные успешно изменены. '
+        if client_user.patronymic != patronymic:
+            client_user.patronymic = patronymic
+            msg = u'Данные успешно изменены. '
+        client_user.save()
+
+        if client.legal_name != legal_name:
+            client.legal_name = legal_name
+            msg = u'Данные успешно изменены. '
+        if client.actual_name != actual_name:
+            client.actual_name = actual_name
+            msg = u'Данные успешно изменены. '
+        if client.inn != inn:
+            client.inn = inn
+            msg = u'Данные успешно изменены. '
+        if client.kpp != kpp:
+            client.kpp = kpp
+            msg = u'Данные успешно изменены. '
+        if client.legal_address != legal_address:
+            client.legal_address = legal_address
+            msg = u'Данные успешно изменены. '
+        if client.leader != leader:
+            client.leader = leader
+            msg = u'Данные успешно изменены. '
+        if client.leader_function != leader_function:
+            client.leader_function = leader_function
+            msg = u'Данные успешно изменены. '
+        if client.work_basis != work_basis:
+            client.work_basis = work_basis
+            msg = u'Данные успешно изменены. '
+
+        if client.city.id != city_id:
+            client.city = city
+            client.save()
+
+        if msg:
+            success_message += msg
+        context.update({
+            'success': success_message
+        })
+    return render(request, 'client/client_update.html', context)
 
 
 class ClientListView(ListView):
@@ -84,20 +176,6 @@ class ClientListView(ListView):
         queryset = qs
         return queryset
 
-    # def get_context_data(self, **kwargs):
-    #     context = super(ExcurseListView, self).get_context_data(**kwargs)
-    #     qs = Excurse.objects.all()
-    #     context.update(
-    #         qs.aggregate(Min('price'))
-    #     )
-    #     context.update(
-    #         qs.aggregate(Max('price'))
-    #     )
-    #     context.update({
-    #         'excurse_section_list': ExcurseSection.objects.all()
-    #     })
-    #     return context
-
 
 class ClientCreateView(CreateView):
     model = User
@@ -113,24 +191,3 @@ class ClientCreateView(CreateView):
         initial = initial.copy()
         initial['type'] = 3
         return initial
-
-
-# class SurfaceUpdateView(UpdateView):
-#     model = Surface
-#     # template_name = 'cabinet/profile.html'
-#     form_class = SurfaceAddForm
-#
-#     # def get_object(self, queryset=None):
-#     #     print self.request.user
-#     #     return self.request.user
-#
-#     def get_initial(self):
-#         """
-#         Добавление request.user в форму, для ограничения
-#         в зависимости от уровня доступа пользователя
-#         """
-#         initial = super(SurfaceUpdateView, self).get_initial()
-#         user = self.request.user
-#         initial = initial.copy()
-#         initial['user'] = self.request.user
-#         return initial

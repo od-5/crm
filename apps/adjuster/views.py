@@ -102,6 +102,7 @@ def adjuster_update(request, pk):
         msg = None
         city_id = int(request.POST.get('city'))
         city = City.objects.get(pk=city_id)
+        email = request.POST.get('email')
         password1 = request.POST.get('password1')
         password2 = request.POST.get('password2')
         last_name = request.POST.get('last_name')
@@ -115,6 +116,9 @@ def adjuster_update(request, pk):
                 context.update({
                     'error': u'Пароль и подтверждение пароля не совпадают'
                 })
+        if adjuster_user.email != email:
+            adjuster_user.email = email
+            msg = u'Данные успешно изменены. '
         if adjuster_user.last_name != last_name:
             adjuster_user.last_name = last_name
             msg = u'Данные успешно изменены. '
