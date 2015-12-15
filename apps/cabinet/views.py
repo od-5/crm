@@ -6,14 +6,45 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.views.generic import UpdateView
+from apps.adjuster.models import Adjuster
 from apps.cabinet.forms import UserProfileForm
+from apps.city.models import City
+from apps.client.models import Client
 from core.models import User
 
 __author__ = 'alexy'
 
+
 @login_required()
 def cabinet_view(request):
     context = {}
+    user = User.objects.get(id=request.user.id)
+    print user.id
+    if user.type == 1:
+        city_qs = City.objects.all()[:10]
+        client_qs = Client.objects.all()[:10]
+        adjuster_qs = None
+    elif user.type == 2:
+        city_qs = City.objects.filter(moderator=user)
+        client_qs = Client.objects.filter(city__moderator=user)[:10]
+        adjuster_qs = Adjuster.objects.filter(city__moderator=user)[:10]
+    else:
+        city_qs = None
+        client_qs = None
+        adjuster_qs = None
+    if city_qs:
+        context.update({
+            'city_list': city_qs
+        })
+    if client_qs:
+        context.update({
+            'client_list': client_qs
+        })
+    if adjuster_qs:
+        context.update({
+            'adjuster_list': adjuster_qs
+        })
+
     return render(request, 'cabinet_index.html', context)
 
 

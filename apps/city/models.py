@@ -23,11 +23,11 @@ class City(models.Model):
     def get_absolute_url(self):
         return reverse('city:change', args=(self.pk, ))
 
-    def save(self, *args, **kwargs):
-        pos = api.geocode(api_key, self)
-        self.coord_x = float(pos[0])
-        self.coord_y = float(pos[1])
-        super(City, self).save()
+    # def save(self, *args, **kwargs):
+    #     pos = api.geocode(api_key, self)
+    #     self.coord_x = float(pos[0])
+    #     self.coord_y = float(pos[1])
+    #     super(City, self).save()
 
     name = models.CharField(max_length=100, verbose_name=u'Город')
     moderator = models.ForeignKey(to=User, blank=True, null=True, verbose_name=u'Модератор')
@@ -50,6 +50,19 @@ class Area(models.Model):
     name = models.CharField(max_length=100, verbose_name=u'Название')
 
 
+class Street(models.Model):
+    class Meta:
+        verbose_name = u'Улица'
+        verbose_name_plural = u'Улицы'
+        app_label = 'city'
+
+    def __unicode__(self):
+        return self.name
+
+    city = models.ForeignKey(to=City, verbose_name=u'Город')
+    area = models.ForeignKey(to=Area, verbose_name=u'Район')
+    name = models.CharField(max_length=256, verbose_name=u'Название улицы')
+
 class ConstructionType(models.Model):
     class Meta:
         verbose_name = u'Вид конструкции'
@@ -71,15 +84,14 @@ class Surface(models.Model):
         app_label = 'city'
 
     def __unicode__(self):
-        return u'Город %s, район %s, %s, %s' % (self.city, self.area, self.street, self.house_number)
+        return self.street.name
 
     def get_absolute_url(self):
         return reverse('city:surface-change', args=(self.pk, ))
         # return '/city/surface/'
 
     city = models.ForeignKey(to=City, verbose_name=u'Город')
-    area = models.ForeignKey(to=Area, verbose_name=u'Район')
-    street = models.CharField(max_length=256, verbose_name=u'Улица')
+    street = models.ForeignKey(to=Street,verbose_name=u'Улица')
     house_number = models.CharField(max_length=50, verbose_name=u'Номер дома')
 
 

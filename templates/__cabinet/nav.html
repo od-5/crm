@@ -5,13 +5,52 @@
 {#    </div>#}
     <div>
       <ul class="nav navbar-nav">
-        {% if user.type == 1 %}
-        <li><a href="{% url 'cabinet:user-list' %}">Пользователи</a></li>
-        {% endif %}
+        <li><a href="{% url 'cabinet:cabinet' %}">Рабочий стол</a></li>
+      {% if user.type == 1 %}
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            Пользователи <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="{% url 'cabinet:user-list' %}">Список пользователей</a></li>
+            <li><a href="{% url 'cabinet:user-add' %}">Добавить пользователя</a></li>
+          </ul>
+        </li>
+      {% endif %}
+      {% if user.type == 1 %}
+        <li class="dropdown">
+          <a href="{% url 'city:list' %}" class="dropdown-toggle" data-toggle="dropdown">Города <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="{% url 'city:list' %}">Список городов</a></li>
+            <li><a href="{% url 'city:add' %}">Добавить город</a></li>
+          </ul>
+        </li>
+      {% else %}
         <li><a href="{% url 'city:list' %}">Города</a></li>
-        <li><a href="{% url 'city:surface-list' %}">Поверхности</a></li>
-        <li><a href="{% url 'client:list' %}">Клиенты</a></li>
-        <li><a href="{% url 'adjuster:list' %}">Монтажники</a></li>
+      {% endif %}
+        <li class="dropdown">
+          <a href="{% url 'city:surface-list' %}" class="dropdown-toggle" data-toggle="dropdown">Поверхности <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="{% url 'city:surface-list' %}">Список поверхностей</a></li>
+            <li><a href="{% url 'city:surface-add' %}">Добавить рекламную поверхность</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="{% url 'client:list' %}" class="dropdown-toggle" data-toggle="dropdown">Клиенты <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="{% url 'client:list' %}">Список клиентов</a></li>
+            <li><a href="{% url 'client:add' %}">Добавить клиента</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="{% url 'adjuster:list' %}" class="dropdown-toggle" data-toggle="dropdown">Монтажники <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="{% url 'adjuster:list' %}">Список монтажников</a></li>
+            <li><a href="{% url 'adjuster:add' %}">Добавить монтажника</a></li>
+            <li><a href="#">Список задач</a></li>
+            <li><a href="#">Добавить задачу</a></li>
+          </ul>
+        </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="{% url 'cabinet:profile' %}"><span class="glyphicon glyphicon-user"></span> Профиль пользователя {{ user }}</a></li>

@@ -11,7 +11,7 @@
         <div class="panel-body">
           <div class="col-lg-6">
             <p class="text-info lead">Адрес</p>
-            <form action="{% url 'city:surface-add' %}" role="form" class="form-profile" method="post">
+            <form action="{% url 'city:surface-add' %}" role="form" class="form-profile" id="js-surface-add-form" data-ajax-url="{% url 'city:surface-ajax' %}" method="post">
               {% csrf_token %}
               {{ form.as_p }}
               <button type="submit" class="btn btn-default">Сохранить</button>

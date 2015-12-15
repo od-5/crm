@@ -64,3 +64,9 @@ h2 {
 .bold {
   font-weight: bold;
 }
+.add-bottom {
+  margin-bottom: 20px;
+}
+.search-form {
+  display: none;
+}

@@ -13,24 +13,75 @@
           </p>
         </div>
         <div class="panel-body">
-          <div class="col-lg-6">
-            <p class="text-info lead">Город</p>
-            <form action="." role="form" class="form-profile" method="post">
-              {% csrf_token %}
-              {{ form.as_p }}
-              <button type="submit" class="btn btn-default">Сохранить</button>
-            </form>
-          </div>
-          {% if formset %}
-          <div class="col-lg-6">
-          <p class="text-info lead">Районы города</p>
-            <form action="." role="form" class="form-profile"  method="post">
-              {% csrf_token %}
-              {{ formset.as_p }}
-              <button type="submit" class="btn btn-default">Сохранить</button>
-            </form>
+          <div class="row">
+            <div class="col-lg-6">
+              <p class="text-info lead">Город</p>
+              <form action="." role="form" class="form-profile" method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-default">Сохранить</button>
+              </form>
+            </div>
+            {% if formset %}
+            <div class="col-lg-6">
+            <p class="text-info lead">Районы города</p>
+              <form action="." role="form" class="form-profile"  method="post">
+                {% csrf_token %}
+                {{ formset.as_p }}
+                <button type="submit" class="btn btn-default">Сохранить</button>
+              </form>
+            </div>
           </div>
           {% endif %}
+        </div>
+      </div>
+      {% if city %}
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="lead text-center remove-bottom">
+            Улицы
+          </p>
+        </div>
+        <div class="panel-body">
+          <div class="col-lg-6">
+          <form action="{% url 'city:street-add' %}" role="form" class="form-profile"  method="post">
+            {% csrf_token %}
+            {% if street_form %}
+            <input type="hidden" name="city" id="id_city" value="{{ city.id }}" class="form-control">
+              {{ street_form.area.label_tag }}
+              <select name="area" id="id_area" class="form-control">
+                {% for area in city.area_set.all %}
+                  <option value="{{ area.id }}">{{ area.name }}</option>
+                {% endfor %}
+              </select>
+              {{ street_form.name.label_tag }}
+              <input type="text" name="name" id="id_name"  class="form-control add-bottom">
+            {% endif %}
+              <button type="submit" class="btn btn-default add-bottom">Добавить улицу</button>
+            <div class="clearfix"></div>
+          </form>
+          </div>
+          {% if city.street_set.all %}
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Район</th>
+                <th>Улица</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for street in city.street_set.all %}
+              <tr>
+                <td> {{ street.area }} </td>
+                <td> {{ street.name }} </td>
+              </tr>
+            {% endfor %}
+          </table>
+          {% else %}
+          <div class="alert alert-info">Нет адресов</div>
+          {% endif %}
+        </div>
+        {% endif %}
         </div>
       </div>
     </div>

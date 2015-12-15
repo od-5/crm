@@ -10,13 +10,18 @@
       <div class="panel panel-default">
         <div class="panel-heading">
           <p class="lead text-center remove-bottom">
-            Редактирование {{ object }}
+            Редактирование {{ object.name }}
           </p>
         </div>
         <div class="panel-body">
+          <div class="col-lg-12 add-bottom">
+            <a href="{% url 'city:surface-add' %}" class="btn btn-success">
+              <span class="glyphicon glyphicon-plus-sign"></span> Добавить рекламную поверхность
+            </a>
+          </div>
           <div class="col-lg-6">
             <p class="text-info lead">Адрес</p>
-            <form action="" role="form" class="form-profile" method="post">
+            <form action="" role="form" class="form-profile" method="post" id="js-surface-add-form" data-ajax-url="{% url 'city:surface-ajax' %}">
               {% csrf_token %}
               {{ form.as_p }}
               <button type="submit" class="btn btn-default">Сохранить</button>
