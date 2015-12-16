@@ -134,6 +134,8 @@ $(function() {
     });
   });
 
-
+  $('.js-show-map').click(function(){
+    $('.js-map').slideToggle();
+  });
 
 });

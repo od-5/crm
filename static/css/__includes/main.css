@@ -70,3 +70,9 @@ h2 {
 .search-form {
   display: none;
 }
+.js-show-map {
+  cursor: pointer;
+}
+.js-map {
+  display: none;
+}

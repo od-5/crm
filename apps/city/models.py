@@ -23,11 +23,17 @@ class City(models.Model):
     def get_absolute_url(self):
         return reverse('city:change', args=(self.pk, ))
 
-    # def save(self, *args, **kwargs):
-    #     pos = api.geocode(api_key, self)
-    #     self.coord_x = float(pos[0])
-    #     self.coord_y = float(pos[1])
-    #     super(City, self).save()
+    def surface_count(self):
+        count = 0
+        for surface in self.surface_set.all():
+            count += surface.porch_count()
+        return count
+
+    def save(self, *args, **kwargs):
+        pos = api.geocode(api_key, self)
+        self.coord_x = float(pos[0])
+        self.coord_y = float(pos[1])
+        super(City, self).save()
 
     name = models.CharField(max_length=100, verbose_name=u'Город')
     moderator = models.ForeignKey(to=User, blank=True, null=True, verbose_name=u'Модератор')
@@ -90,9 +96,23 @@ class Surface(models.Model):
         return reverse('city:surface-change', args=(self.pk, ))
         # return '/city/surface/'
 
+    def porch_count(self):
+        return self.porch_set.all().count()
+
+    def save(self, *args, **kwargs):
+        address = u'%s %s %s' % (self.city.name, self.street.name, self.house_number)
+        pos = api.geocode(api_key, address)
+        self.coord_x = float(pos[0])
+        self.coord_y = float(pos[1])
+        print self.coord_x
+        print self.coord_y
+        super(Surface, self).save()
+
     city = models.ForeignKey(to=City, verbose_name=u'Город')
     street = models.ForeignKey(to=Street,verbose_name=u'Улица')
     house_number = models.CharField(max_length=50, verbose_name=u'Номер дома')
+    coord_x = models.DecimalField(max_digits=8, decimal_places=6, blank=True, null=True, verbose_name=u'Ширина')
+    coord_y = models.DecimalField(max_digits=8, decimal_places=6, blank=True, null=True, verbose_name=u'Долгота')
 
 
 class Porch(models.Model):

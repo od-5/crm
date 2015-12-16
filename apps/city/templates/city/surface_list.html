@@ -1,4 +1,7 @@
 {% extends 'cabinet_index.html' %}
+{% block extra_js %}
+  <script src="{{ STATIC_URL }}js/map-surface.js"></script>
+{% endblock %}
 {% block content %}
   <div class="container">
     <div class="col-lg-12">
@@ -7,9 +10,15 @@
           <p class="lead remove-bottom text-center">Рекламные поверхности</p>
         </div>
         <div class="panel-body">
-          <a href="{% url 'city:surface-add' %}" class="btn btn-success">
+          <a href="{% url 'city:surface-add' %}" class="btn btn-success add-bottom">
             <span class="glyphicon glyphicon-plus-sign"></span> Добавить рекламную поверхность
           </a>
+          <div class="panel panel-success">
+            <div class="panel-heading js-show-map">Посмотреть города на карте <span class="caret"></span></div>
+            <div class="panel-body js-map">
+              <div id="surfaceMap" style="height: 500px;"></div>
+            </div>
+          </div>
 {#          {% if object_list %}#}
             <form action="{% url 'city:surface-list' %}" class="search-form" method="GET">
 {#              {% csrf_token %}#}
@@ -67,7 +76,7 @@
                 <td>{{ object.street.area|default:'' }}</td>
                 <td><a href="{% url 'city:surface-change' object.id %}">{{ object.street|default:'' }}</a></td>
                 <td>{{ object.house_number|default:'' }}</td>
-                <td>{{ object.porch_set.all.count|default:'Не указано' }}</td>
+                <td>{{ object.porch_count|default:'Не указано' }}</td>
               </tr>
             {% endfor %}
             </tbody>

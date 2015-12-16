@@ -100,16 +100,10 @@ class SurfaceListView(ListView):
         user_id = self.request.user.id
         if self.request.user.type == 1:
             qs = Surface.objects.all()
-            print 'admin'
-            print qs
         elif self.request.user.type == 2:
             qs = Surface.objects.filter(city__moderator=user_id)
-            print 'moderator'
-            print qs
         else:
-            print 'None'
             qs = None
-            print qs
         if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
             queryset = qs.filter(city__id=int(self.request.GET.get('city')))
             if self.request.GET.get('area') and int(self.request.GET.get('area')) != 0:
@@ -118,7 +112,6 @@ class SurfaceListView(ListView):
                     queryset = queryset.filter(street__id=int(self.request.GET.get('street')))
         else:
             queryset = qs
-        print queryset
         return queryset
 
     def get_context_data(self, **kwargs):

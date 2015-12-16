@@ -1,4 +1,5 @@
 {% extends 'cabinet_base.html' %}
+
 {% block header %}
 <header>
   {% include '__cabinet/header.html' %}
@@ -27,10 +28,14 @@
               <tbody>
               {% for city in city_list %}
                 <tr>
-                  <td>{{ city.id|default:'--' }}</td>
-                  <td>{{ city.name|default:'--' }}</td>
+                  <td> {{ city.id|default:'--' }}</td>
+                  <td><a href="{% url 'city:change' city.id %}">{{ city.name|default:'--' }}</a></td>
+                  {% if city.moderator %}
+                  <td><a href="{% url 'cabinet:user-change' city.moderator.id %}">{{ city.moderator|default:'Не указан' }}</a></td>
+                  {% else %}
                   <td>{{ city.moderator|default:'Не указан' }}</td>
-                  <td>{{ city.surface_set.all.count|default:'--' }}</td>
+                  {% endif %}
+                  <td><a href="{% url 'city:surface-list' %}?city={{ city.id }}">{{ city.surface_count|default:'--' }}</a></td>
                   <td>{{ city.client_set.all.count|default:'--' }}</td>
                 </tr>
               {% endfor %}
@@ -65,9 +70,9 @@
               {% for client in client_list %}
                 <tr>
                   <td>{{ client.id|default:'--' }}</td>
-                  <td>{{ client.city|default:'--' }}</td>
-                  <td>{{ client.user.email|default:'--' }}</td>
-                  <td>{{ client.legal_name|default:'Не указан' }}</td>
+                  <td><a href="{% url 'cabinet:user-change' client.user.id %}">{{ client.user.email|default:'--' }}</a></td>
+                  <td><a href="{%  url 'city:change' client.city.id %}">{{ client.city|default:'--' }}</a></td>
+                  <td><a href="{% url 'client:change' client.id %}">{{ client.legal_name|default:'Не указан' }}</a></td>
                   <td>{{ client.leader|default:'Не указан' }}</td>
                   <td>{{ client.leader_function|default:'Не указано' }}</td>
                 </tr>
