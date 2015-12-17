@@ -15,7 +15,7 @@
           </a>
           <div class="panel panel-success">
             <div class="panel-heading js-show-map">Посмотреть рекламные поверхности на карте <span class="caret"></span></div>
-            <div class="panel-body js-map">
+            <div class="panel-body js-map" data-city="{{ city_list.first }}">
               <div id="surfaceMap" style="height: 500px;"></div>
             </div>
           </div>
@@ -35,6 +35,7 @@
                 <th>Улица</th>
                 <th>Номер дома</th>
                 <th>Количество подездов</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -69,6 +70,7 @@
               </td>
               <td>&nbsp;</td>
               <td>&nbsp;</td>
+              <td>&nbsp;</td>
             </tr>
             {% for object in object_list %}
               <tr>
@@ -77,6 +79,9 @@
                 <td><a href="{% url 'city:surface-change' object.id %}">{{ object.street|default:'' }}</a></td>
                 <td>{{ object.house_number|default:'' }}</td>
                 <td>{{ object.porch_count|default:'Не указано' }}</td>
+                <td class="text-right"><a href="{% url 'city:surface-remove' object.id %}" class="btn btn-warning js-remove-surface">
+                  <span class="glyphicon glyphicon-remove"></span> удалить</a>
+                </td>
               </tr>
             {% endfor %}
             </tbody>

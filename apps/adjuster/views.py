@@ -1,9 +1,9 @@
 # coding=utf-8
-from annoying.decorators import ajax_request
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.views.generic import ListView, CreateView
-from apps.city.models import City
-from core.models import User
+from django.views.generic import ListView
+from apps.adjuster.forms import AdjusterUserAddForm, AdjusterAddForm, AdjusterUserUpdateForm, AdjusterUpdateForm
 from .models import Adjuster
 
 __author__ = 'alexy'
@@ -26,121 +26,68 @@ class AdjusterListView(ListView):
 
 
 def adjuster_add(request):
-    user = request.user
-    if user.type == 1:
-        city_list = City.objects.all()
-    elif user.type == 2:
-        city_list = City.objects.filter(moderator=user.id)
-    context = {
-        'city_list': city_list
-    }
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        try:
-            User.objects.get(email=email)
+    context = {}
+    if request.method == "POST":
+        user_form = AdjusterUserAddForm(request.POST)
+        adjuster_form = AdjusterAddForm(request.POST, request=request)
+        print '*'*10
+        print u'До валидации'
+        if user_form.is_valid() and adjuster_form.is_valid():
+            print '*'*10
+            print u'Валидация пользователя'
+            print user_form
+            print adjuster_form
+            user = user_form.save()
+            print user
+            adjuster = adjuster_form.save(commit=False)
+            adjuster.user = user
+            adjuster.save()
+            return HttpResponseRedirect(reverse('adjuster:change', args=(adjuster.id, )))
+        else:
             context.update({
-                'error': u'Такой пользователь уже зарегистрирован!'
+                'error': u'Проверьте правильность ввода полей'
             })
-        except:
-            password1 = request.POST.get('password1')
-            password2 = request.POST.get('password2')
-            last_name = request.POST.get('last_name')
-            first_name = request.POST.get('first_name')
-            patronymic = request.POST.get('patronymic')
-            if password1 and password2 and password1 == password2:
-                pass
-                new_user = User.objects.create_user(
-                    email,
-                    password1,
-                    type=4,
-                    last_name=last_name,
-                    first_name=first_name,
-                    patronymic=patronymic
-                )
-                context.update({
-                    'success': u'Пользователь успешно создан!'
-                })
-                city_id = request.POST.get('city')
-                city = City.objects.get(pk=int(city_id))
-
-                adjuster = Adjuster.objects.create(
-                    user=new_user,
-                    city=city,
-                )
-                print '*'*10
-                print adjuster
-                print '*'*10
-            else:
-                context.update({
-                    'error': u'Пароль и подтверждение пароля не совпадают!'
-                })
     else:
-        print 'NO ***'*5
-
-    return render(request, 'adjuster/user_form.html', context)
+        user_form = AdjusterUserAddForm()
+        adjuster_form = AdjusterAddForm(request=request)
+    context.update({
+        'user_form': user_form,
+        'adjuster_form': adjuster_form
+    })
+    return render(request, 'adjuster/adjuster_add.html', context)
 
 
 def adjuster_update(request, pk):
-    user = request.user
-    adjuster_id = int(pk)
-    adjuster = Adjuster.objects.get(pk=adjuster_id)
-
-    if user.type == 1:
-        city_list = City.objects.all()
-    elif user.type == 2:
-        city_list = City.objects.filter(moderator=user.id)
-    context = {
-        'object': adjuster,
-        'city_list': city_list
-    }
-
-    adjuster_user = User.objects.get(adjuster=adjuster)
-    print adjuster_user
-
+    context = {}
+    adjuster = Adjuster.objects.get(pk=int(pk))
+    user = adjuster.user
+    success_msg = u''
+    error_msg = u''
     if request.method == 'POST':
-        success_message = u''
-        msg = None
-        city_id = int(request.POST.get('city'))
-        city = City.objects.get(pk=city_id)
-        email = request.POST.get('email')
         password1 = request.POST.get('password1')
         password2 = request.POST.get('password2')
-        last_name = request.POST.get('last_name')
-        first_name = request.POST.get('first_name')
-        patronymic = request.POST.get('patronymic')
         if password1 and password2:
             if password1 == password2:
-                adjuster_user.set_password(password1)
-                success_message += u'Пароль успешно изменен. '
+                user.set_password(password1)
+                success_msg = u'Пароль успешно изменён!'
             else:
-                context.update({
-                    'error': u'Пароль и подтверждение пароля не совпадают'
-                })
-        if adjuster_user.email != email:
-            adjuster_user.email = email
-            msg = u'Данные успешно изменены. '
-        if adjuster_user.last_name != last_name:
-            adjuster_user.last_name = last_name
-            msg = u'Данные успешно изменены. '
-        if adjuster_user.first_name != first_name:
-            adjuster_user.first_name = first_name
-            msg = u'Данные успешно изменены. '
-        if adjuster_user.patronymic != patronymic:
-            adjuster_user.patronymic = patronymic
-            msg = u'Данные успешно изменены. '
-        adjuster_user.save()
-
-        if adjuster.city.id != city_id:
-            adjuster.city = city
-            adjuster.save()
-
-        if msg:
-            success_message += msg
-        context.update({
-            'success': success_message
-        })
-    # print adjuster.user.email
-    # print adjuster.user.first_name
-    # print adjuster.user.last_name
-    # print adjuster.user.patronymic
+                error_msg = u'Пароль и подтверждение пароля не совпадают!'
+        user_form = AdjusterUserUpdateForm(request.POST, instance=user)
+        adjuster_form = AdjusterUpdateForm(request.POST, request=request, instance=adjuster)
+        if user_form.is_valid() and adjuster_form.is_valid():
+            user_form.save()
+            adjuster_form.save()
+            success_msg += u' Изменения успешно сохранены'
+        else:
+            error_msg = u'Проверьте правильность ввода полей!'
+    else:
+        user_form = AdjusterUserUpdateForm(instance=user)
+        adjuster_form = AdjusterUpdateForm(request=request, instance=adjuster)
+    context.update({
+        'success': success_msg,
+        'error': error_msg,
+        'user_form': user_form,
+        'adjuster_form': adjuster_form,
+        'object': adjuster
+    })
     return render(request, 'adjuster/adjuster_update.html', context)

@@ -16,7 +16,7 @@ def ymap(request):
         result = []
         for item in query:
             result_json = {}
-            result_json['name'] = item.name
+            result_json['name'] = u'%s (%s)' % (item.name, item.surface_count())
             result_json['coord_x'] = float(item.coord_x)
             result_json['coord_y'] = float(item.coord_y)
             result.append(result_json)

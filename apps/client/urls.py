@@ -1,8 +1,7 @@
 # coding=utf-8
 from django.conf.urls import patterns, url
-from django.views.generic import ListView, CreateView, UpdateView
 from .models import Client
-from .views import ClientListView, ClientCreateView
+from .views import ClientListView
 
 __author__ = 'alexy'
 

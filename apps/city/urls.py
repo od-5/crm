@@ -1,10 +1,11 @@
 # coding=utf-8
 from django.conf.urls import patterns, url
 from django.contrib.admin.views.decorators import staff_member_required
-from django.views.generic import CreateView
+from django.core.urlresolvers import reverse
+from django.views.generic import CreateView, DeleteView
 from apps.city.ajax import surface_ajax
 from .forms import CityAddForm
-from .models import City, Surface
+from .models import City, Surface, Street
 from .views import city_update, SurfaceListView, SurfaceCreateView, SurfaceUpdateView, CityListView
 
 __author__ = 'alexy'
@@ -20,5 +21,7 @@ urlpatterns = patterns(
     url(r'^surface-ajax/$', surface_ajax, name='surface-ajax'),
     url(r'^surface/add$', SurfaceCreateView.as_view(), name='surface-add'),
     url(r'^surface/(?P<pk>\d+)', SurfaceUpdateView.as_view(), name='surface-change'),
+    url(r'^surface-remove/(?P<pk>\d+)', DeleteView.as_view(model=Surface, success_url="/city/surface/", template_name="city/street_confirm_delete.html"), name='surface-remove'),
+    url(r'^street-remove/(?P<pk>\d+)', DeleteView.as_view(model=Street, success_url="/city/"), name='street-remove'),
     # url(r'^surface/(?P<pk>\d+)', surface_update, name='surface-change'),
 )

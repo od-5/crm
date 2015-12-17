@@ -11,7 +11,55 @@
             <p class="text-info lead">Персональная информация</p>
             <form action="." role="form" class="form-horizontal form-profile" method="post">
               {% csrf_token %}
-              {{ form.as_p }}
+{#              {{ form.as_p }}#}
+              <div class="form-group">
+                <div class="col-lg-5">
+                  {{ form.email.label_tag }}
+                </div>
+                <div class="col-lg-7">
+                  {{ form.email }}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-5">
+                  {{ form.type.label_tag }}
+                </div>
+                <div class="col-lg-7">
+                  {{ form.type }}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-5">
+                  {{ form.last_name.label_tag }}
+                </div>
+                <div class="col-lg-7">
+                  {{ form.last_name }}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-5">
+                  {{ form.first_name.label_tag }}
+                </div>
+                <div class="col-lg-7">
+                  {{ form.first_name }}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-5">
+                  {{ form.patronymic.label_tag }}
+                </div>
+                <div class="col-lg-7">
+                  {{ form.patronymic }}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-5">
+                  {{ form.phone.label_tag }}
+                </div>
+                <div class="col-lg-7">
+                  {{ form.phone }}
+                </div>
+              </div>
               <button type="submit" class="btn btn-default">Сохранить</button>
             </form>
           </div>

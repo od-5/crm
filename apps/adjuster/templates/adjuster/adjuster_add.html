@@ -5,7 +5,7 @@
       <div class="panel panel-default">
         <div class="panel-heading">
           <p class="lead text-center remove-bottom">
-            Редактирование {{ object }}
+            Добавление монтажника
           </p>
         </div>
         <div class="panel-body">
@@ -23,8 +23,6 @@
             <div class="col-lg-6">
               <form action="." role="form" class="js-form-client-add" method="post">
                 {% csrf_token %}
-                {{ adjuster_form.user }}
-                <p class="lead text-center">ФИО монтажника</h4>
                 <div class="form-group">
                   <div class="col-lg-5">
                     {{ adjuster_form.city.label_tag }}
@@ -43,6 +41,26 @@
                     {{ user_form.email }}
                   </div>
                   {{ user_form.email.errors }}
+                  <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-5">
+                    {{ user_form.password1.label_tag }}
+                  </div>
+                  <div class="col-lg-7">
+                    {{ user_form.password1 }}
+                  </div>
+                  {{ user_form.password1.errors }}
+                  <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-5">
+                    {{ user_form.password2.label_tag }}
+                  </div>
+                  <div class="col-lg-7">
+                    {{ user_form.password2 }}
+                  </div>
+                  {{ user_form.password2.errors }}
                   <div class="clearfix"></div>
                 </div>
                 <div class="form-group">
@@ -75,7 +93,7 @@
                   {{ user_form.patronymic.errors }}
                   <div class="clearfix"></div>
                 </div>
-                <div class="form-group add-bottom">
+                <div class="form-group">
                   <div class="col-lg-5">
                     {{ user_form.phone.label_tag }}
                   </div>
@@ -85,18 +103,6 @@
                   {{ user_form.phone.errors }}
                   <div class="clearfix"></div>
                 </div>
-                  <p class="lead text-center">Смена пароля</h4>
-                  <div class="form-group">
-                    <div class="col-lg-5"><label for="password1">Новый пароль</label></div>
-                    <div class="col-lg-7"><input type="password" name="password1" class="form-control"></div>
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="form-group">
-                    <div class="col-lg-5"><label for="password2">Повторите пароль</label></div>
-                    <div class="col-lg-7"><input type="password" name="password2" class="form-control"></div>
-                    <div class="clearfix"></div>
-                  </div>
-
                 <button type="submit" class="btn btn-default">Сохранить</button>
               </form>
             </div>

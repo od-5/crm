@@ -23,7 +23,17 @@ class Client(models.Model):
     actual_name = models.CharField(max_length=256, blank=True, null=True, verbose_name=u'Фактичексое название')
     inn = models.CharField(max_length=50, blank=True, null=True, verbose_name=u'ИНН')
     kpp = models.CharField(max_length=50, blank=True, null=True, verbose_name=u'КПП')
+
+    ogrn = models.CharField(max_length=50, blank=True, null=True, verbose_name=u'ОГРН')
+    bank = models.CharField(max_length=50, blank=True, null=True, verbose_name=u'Банк')
+    bik = models.CharField(max_length=50, blank=True, null=True, verbose_name=u'БИК')
+    account = models.CharField(max_length=50, blank=True, null=True, verbose_name=u'Расчётный счёт')
+    account_cor = models.CharField(max_length=50, blank=True, null=True, verbose_name=u'Кор. счёт')
+    signer_post_dec = models.CharField(max_length=50, blank=True, null=True, verbose_name=u'должность подписанта')
+    signer_name_dec = models.CharField(max_length=50, blank=True, null=True, verbose_name=u'имя подписанта')
+    signer_doc_dec = models.CharField(max_length=50, blank=True, null=True, verbose_name=u'действует на основании')
+
     legal_address = models.TextField(verbose_name=u'Физический адрес', blank=True, null=True)
     leader = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'Руководитель')
-    leader_function = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'Должноть руководителя')
+    leader_function = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'Должность руководителя')
     work_basis = models.CharField(max_length=256, blank=True, null=True, verbose_name=u'Основание для работы')

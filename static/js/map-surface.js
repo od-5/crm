@@ -2,7 +2,7 @@ ymaps.ready(init);
 var myMap;
 
 function init(){
-    city = 'Волгоград';
+    city = $('.js-map').data('city');
     var coord = '';
     var myGeocoder = ymaps.geocode(city);
         myGeocoder.then(
@@ -10,7 +10,7 @@ function init(){
                 coord = res.geoObjects.get(0).geometry.getCoordinates();
                 myMap = new ymaps.Map("surfaceMap", {
                     center: coord,
-                    zoom: 3
+                    zoom: 10
                 });
                 $.get("/surface-map/",
                     function(e) {

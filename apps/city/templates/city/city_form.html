@@ -67,6 +67,7 @@
               <tr>
                 <th>Район</th>
                 <th>Улица</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -74,6 +75,9 @@
               <tr>
                 <td> {{ street.area }} </td>
                 <td> {{ street.name }} </td>
+                <td class="text-right"><a href="{% url 'city:street-remove' street.id %}" class="btn btn-warning js-remove-street">
+                  <span class="glyphicon glyphicon-remove"></span> удалить</a>
+                </td>
               </tr>
             {% endfor %}
           </table>

@@ -76,3 +76,8 @@ h2 {
 .js-map {
   display: none;
 }
+.signer-input {
+  display: inline;
+  width: 42%;
+  margin-bottom: 10px;
+}
