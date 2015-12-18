@@ -138,4 +138,43 @@ $(function() {
     $('.js-map').slideToggle();
   });
 
+
+    // валидация формы добвления фотографии поверхности
+  $( '#js-surface-photo-add-form' ).validate({
+    rules: {
+      porch: {
+        required: true
+      },
+      date: {
+        required: true
+      },
+      image: {
+        required: true
+      }
+    }
+  });
+
+    // валидация формы добвления поверхности к клиенту
+  $( '#js-client-add-surface-form' ).validate({
+    rules: {
+      surface: {
+        required: true
+      },
+      date: {
+        required: true
+      }
+    }
+  });
+    // валидация формы добвления клиента к поверхности
+  $( '#js-client-add-surface-form' ).validate({
+    rules: {
+      client: {
+        required: true
+      },
+      date: {
+        required: true
+      }
+    }
+  });
+
 });

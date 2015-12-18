@@ -7,71 +7,171 @@
   </script>
   <div class="container">
     <div class="col-lg-12">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <p class="lead text-center remove-bottom">
-            Редактирование {{ object.name }}
-          </p>
-        </div>
-        <div class="panel-body">
-          <div class="col-lg-12 add-bottom">
-            <a href="{% url 'city:surface-add' %}" class="btn btn-success">
-              <span class="glyphicon glyphicon-plus-sign"></span> Добавить рекламную поверхность
-            </a>
-          </div>
-          <div class="col-lg-6">
-            <p class="text-info lead">Адрес</p>
-            <form action="" role="form" class="form-profile" method="post" id="js-surface-add-form" data-ajax-url="{% url 'city:surface-ajax' %}">
-              {% csrf_token %}
-              {{ form.as_p }}
-              <button type="submit" class="btn btn-default">Сохранить</button>
-            </form>
-          </div>
-          {% if porch_form %}
-          <div class="col-lg-6">
-            <p class="text-info lead">Подъезды</p>
-            <form action="{% url 'city:porch' %}" role="form" class="form-profile js-porch-form" method="post">
-              {% csrf_token %}
-              <input type="hidden" name="surface_id" value="{{ object.id }}">
-{#              {{ porch_form.management_form }}#}
-{#              {% for form in porch_form %}#}
-{#                {% for hidden in form.hidden_fields %}#}
-{#                  {{ hidden }}#}
-{#                {% endfor %}#}
-{#                <div class="inline {{ porch_form.prefix }}">#}
-{#                  {{ form.as_p }}#}
-{#                  {{ form.number|add_class:'form-control' }}#}
-{#                </div>#}
-              {#              {% endfor %}#}
-              {{ porch_form.as_p }}
-              <button type="submit" class="btn btn-default">Сохранить</button>
-            </form>
-          </div>
-          {% endif %}
-        </div>
+      <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#surface">Редактирование поверхности</a></li>
+        <li><a data-toggle="tab" href="#photo">Фотографии стендов</a></li>
+        <li><a data-toggle="tab" href="#client">Размещённые клиенты</a></li>
+      </ul>
 
-      </div>
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <p class="lead text-center remove-bottom">
-            {% if object %}
-            Фотографии
+      <div class="tab-content">
+        <div id="surface" class="tab-pane fade in active">
+          <div class="panel panel-default">
+            <p class="lead text-center remove-bottom"> Редактирование {{ object }} </p>
+            <div class="panel-body">
+              <div class="col-lg-12 add-bottom">
+                <a href="{% url 'city:surface-add' %}" class="btn btn-success">
+                  <span class="glyphicon glyphicon-plus-sign"></span> Добавить рекламную поверхность
+                </a>
+              </div>
+              <div class="col-lg-6">
+                <p class="text-info lead">Адрес</p>
+                <form action="" role="form" class="form-profile" method="post" id="js-surface-add-form" data-ajax-url="{% url 'city:surface-ajax' %}">
+                  {% csrf_token %}
+                  {{ form.as_p }}
+                  <button type="submit" class="btn btn-default">Сохранить</button>
+                </form>
+              </div>
+              {% if porch_form %}
+              <div class="col-lg-6">
+                <p class="text-info lead">Подъезды</p>
+                <form action="{% url 'city:porch' %}" role="form" class="form-profile js-porch-form" method="post">
+                  {% csrf_token %}
+                  <input type="hidden" name="surface_id" value="{{ object.id }}">
+    {#              {{ porch_form.management_form }}#}
+    {#              {% for form in porch_form %}#}
+    {#                {% for hidden in form.hidden_fields %}#}
+    {#                  {{ hidden }}#}
+    {#                {% endfor %}#}
+    {#                <div class="inline {{ porch_form.prefix }}">#}
+    {#                  {{ form.as_p }}#}
+    {#                  {{ form.number|add_class:'form-control' }}#}
+    {#                </div>#}
+                  {#              {% endfor %}#}
+                  {{ porch_form.as_p }}
+                  <button type="submit" class="btn btn-default">Сохранить</button>
+                </form>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        <div id="photo" class="tab-pane fade">
+          <div class="panel panel-default">
+            <p class="lead text-center remove-bottom"> {% if object %} Фотографии {% endif %} </p>
+            <div class="panel-body">
+              <div class="col-lg-12">
+                <form action="{% url 'city:photo-add' %}" method="post" role="form" id="js-surface-photo-add-form" class="add-bottom" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <div class="col-lg-6">
+                    {{ surface_photo_form.surface }}
+                    {{ surface_photo_form.surface.errors }}
+                    <div class="form-group">
+                      <div class="col-lg-5">{{ surface_photo_form.porch.label_tag }}</div>
+                      <div class="col-lg-7">{{ surface_photo_form.porch }}</div>
+                      {{ surface_photo_form.porch.errors }}
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-5">{{ surface_photo_form.date.label_tag }}</div>
+                      <div class="col-lg-7">{{ surface_photo_form.date }}</div>
+                      {{ surface_photo_form.date.errors }}
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-5">{{ surface_photo_form.image.label_tag }}</div>
+                      <div class="col-lg-7">{{ surface_photo_form.image }}</div>
+                      {{ surface_photo_form.image.errors }}
+                      <div class="clearfix"></div>
+                    </div>
+    {#              {{ surface_photo_form.as_p }}#}
+                  <input type="submit" class="btn btn-success add-bottom" value="Добавить фотографию">
+                  </div>
+                  <div class="clearfix"></div>
+                </form>
+              </div>
+              {% for photo in object.surfacephoto_set.all %}
+              <div class="col-lg-4">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <span class="glyphicon glyphicon-calendar"></span> Дата съёмки: {{ photo.date }}
+                  </div>
+                  <div class="panel-body">
+                  <a href="{{ photo.image.url }}" rel="group" class="js-gallery" title="{{ photo }}">
+                    <img src="{{ photo.image_resize.url }}" alt="{{ photo }}">
+                  </a>
+                  </div>
+                  <div class="panel-footer">
+                  <p class="photo-desc">
+                    г. {{ photo.surface.city }}<br>
+                    {{ photo.surface.street }} {{ photo.surface.house_number }}<br>
+                    {{ photo.porch }}
+                  </p>
+                  </div>
+                </div>
+              </div>
+              {% empty %}
+                <div class="clearfix"></div>
+                <p class="alert alert-info">Ещё не заружено ни одной фотографии</p>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        <div id="client" class="tab-pane fade">
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <form action="{% url 'city:add-surface-client' %}" id="js-surface-add-client-form" method="post" role="form" class="add-bottom">
+                {% csrf_token %}
+                <div class="col-lg-6">
+                      {{ surface_client_form.surface }}
+                  <div class="form-group">
+                    <div class="col-lg-5">{{ surface_client_form.client.label_tag }}</div>
+                    <div class="col-lg-7">{{ surface_client_form.client }}</div>
+                    {{ surface_client_form.surface.errors }}
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-lg-5">{{ surface_client_form.date.label_tag }}</div>
+                    <div class="col-lg-7">{{ surface_client_form.date }}</div>
+                    {{ surface_client_form.date.errors }}
+                    <div class="clearfix"></div>
+                  </div>
+                  <input type="submit" value="Добавить клиента" class="btn btn-default">
+                </div>
+                <div class="clearfix"></div>
+              </form>
+
+              {% if object.clientsurface_set.all %}
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>id</th>
+                    <th>Клиент</th>
+                    <th>Дата размещения</th>
+    {#                <th>Дата окончания размещения</th>#}
+                  </tr>
+                </thead>
+                <tbody>
+                {% for item in object.clientsurface_set.all %}
+                  <tr>
+                    <td>{{ item.id|default:'--' }}</td>
+                    <td><a href="{% url 'client:change' item.client.id %}">{{ item.client|default:'Не указано' }}</a></td>
+                    <td>{{ item.date|default:'Не указано' }}</td>
+    {#                <td>&nbsp;</td>#}
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            {% else %}
+              <p class="alert alert-info">У клиента нет заказанных поверхностей</p>
             {% endif %}
-          </p>
-        </div>
-        <div class="panel-body">
-          <div class="col-lg-12">
-            <button class="btn btn-success">Добавить фотографию</button>
+            </div>
           </div>
-          {% for item in '123456' %}
-          <div class="col-lg-4">
-            <a href="{{ STATIC_URL }}img/images.jpg" rel="group" class="js-gallery" title="Картинка заглушка">
-              <img src="{{ STATIC_URL }}img/images.jpg" alt="Картинка заглушка">
-            </a>
-          </div>
-          {% endfor %}
         </div>
       </div>
+
+
+
+
     </div>
   </div>
 {% endblock %}

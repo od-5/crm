@@ -4,7 +4,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import ListView, CreateView
 from apps.cabinet.forms import UserAddForm
-from apps.client.forms import ClientUserUpdateForm, ClientUpdateForm, ClientUserAddForm, ClientAddForm
+from apps.client.forms import ClientUserUpdateForm, ClientUpdateForm, ClientUserAddForm, ClientAddForm, \
+    ClientSurfaceAddForm
 from core.models import User
 from .models import Client
 
@@ -85,11 +86,33 @@ def client_update(request, pk):
     else:
         user_form = ClientUserUpdateForm(instance=user)
         client_form = ClientUpdateForm(request=request, instance=client)
+
+    client_surface_form = ClientSurfaceAddForm(
+        initial={
+            'client': client
+        }
+    )
+    client_surface_form.fields['surface'].queryset = client.city.surface_set.all()
+
     context.update({
         'success': success_msg,
         'error': error_msg,
         'user_form': user_form,
         'client_form': client_form,
+        'client_surface_form': client_surface_form,
         'object': client
     })
     return render(request, 'client/client_update.html', context)
+
+
+def add_client_surface(request):
+    if request.method == 'POST':
+        form = ClientSurfaceAddForm(request.POST)
+        print form
+        if form.is_valid():
+            # file is saved
+            form.save()
+            print u'Форма сохранена'
+        else:
+            print u'Форма не сохранена'
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

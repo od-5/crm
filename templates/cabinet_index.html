@@ -20,7 +20,9 @@
                 <tr>
                   <th>id</th>
                   <th>Название</th>
+                  {% if user.type == 1 %}
                   <th>Модератор</th>
+                  {% endif %}
                   <th>Количество поверхностей</th>
                   <th>Количество клиентов</th>
                 </tr>
@@ -30,11 +32,13 @@
                 <tr>
                   <td> {{ city.id|default:'--' }}</td>
                   <td><a href="{% url 'city:change' city.id %}">{{ city.name|default:'--' }}</a></td>
+                {% if user.type == 1 %}
                   {% if city.moderator %}
                   <td><a href="{% url 'cabinet:user-change' city.moderator.id %}">{{ city.moderator|default:'Не указан' }}</a></td>
                   {% else %}
                   <td>{{ city.moderator|default:'Не указан' }}</td>
                   {% endif %}
+                {% endif %}
                   <td><a href="{% url 'city:surface-list' %}?city={{ city.id }}">{{ city.surface_count|default:'--' }}</a></td>
                   <td>{{ city.client_set.all.count|default:'--' }}</td>
                 </tr>

@@ -1,8 +1,9 @@
 # coding=utf-8
+import datetime
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
-from apps.city.models import City
+from apps.city.models import City, Surface
 from core.models import User
 
 __author__ = 'alexy'
@@ -37,3 +38,17 @@ class Client(models.Model):
     leader = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'Руководитель')
     leader_function = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'Должность руководителя')
     work_basis = models.CharField(max_length=256, blank=True, null=True, verbose_name=u'Основание для работы')
+
+
+class ClientSurface(models.Model):
+    class Meta:
+        verbose_name = u'Рекламная поверхность'
+        verbose_name_plural = u'Рекламные поверхности'
+        app_label = 'client'
+
+    def __unicode__(self):
+        return self.surface
+
+    client = models.ForeignKey(to=Client, verbose_name=u'Клиент')
+    surface = models.ForeignKey(to=Surface, verbose_name=u'Рекламная поверхность')
+    date = models.DateField(verbose_name=u'Дата заказа', default=datetime.date.today())

@@ -1,8 +1,9 @@
 # coding=utf-8
-from django.forms import ModelForm, TextInput, Select, DateInput, inlineformset_factory
-from django import forms
+from django.forms import ModelForm, TextInput, Select, DateInput, inlineformset_factory, FileInput, HiddenInput
+from apps.adjuster.models import SurfacePhoto
+from apps.client.models import ClientSurface
 from core.models import User
-from .models import City, Surface, Area, Porch, Street
+from .models import City, Surface, Porch, Street
 
 __author__ = 'alexy'
 
@@ -57,4 +58,27 @@ class StreetForm(ModelForm):
             'city': Select(attrs={'class': 'form-control'}),
             'area': Select(attrs={'class': 'form-control'}),
             'name': TextInput(attrs={'class': 'form-control'}),
+        }
+
+
+class SurfacePhotoAddForm(ModelForm):
+    class Meta:
+        model = SurfacePhoto
+        fields = ('surface', 'porch', 'date', 'image')
+        widgets = {
+            'surface': TextInput(attrs={'class': 'form-control hide'}),
+            'porch': Select(attrs={'class': 'form-control'}),
+            'date': DateInput(attrs={'class': 'form-control'}),
+            'image': FileInput(attrs={'class': 'form-control'}),
+        }
+
+
+class SurfaceClientAddForm(ModelForm):
+    class Meta:
+        model = ClientSurface
+        fields = ('client', 'surface', 'date')
+        widgets = {
+            'client': Select(attrs={'class': 'form-control'}),
+            'surface': HiddenInput(attrs={'class': 'form-control'}),
+            'date': DateInput(attrs={'class': 'form-control'}),
         }

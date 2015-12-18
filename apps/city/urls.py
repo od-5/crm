@@ -20,6 +20,8 @@ urlpatterns = patterns(
     url(r'^surface/$', SurfaceListView.as_view(), name='surface-list'),
     url(r'^surface-ajax/$', surface_ajax, name='surface-ajax'),
     url(r'^surface/add$', SurfaceCreateView.as_view(), name='surface-add'),
+    url(r'^add-surface/$', 'add_surface_client', name='add-surface-client'),
+    url(r'^photo-add/$', 'surface_photo_add', name='photo-add'),
     url(r'^surface/(?P<pk>\d+)', SurfaceUpdateView.as_view(), name='surface-change'),
     url(r'^surface-remove/(?P<pk>\d+)', DeleteView.as_view(model=Surface, success_url="/city/surface/", template_name="city/street_confirm_delete.html"), name='surface-remove'),
     url(r'^street-remove/(?P<pk>\d+)', DeleteView.as_view(model=Street, success_url="/city/"), name='street-remove'),

@@ -4,7 +4,8 @@ from django.forms import inlineformset_factory, TextInput, Select, formset_facto
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import ListView, CreateView, UpdateView
-from apps.city.forms import CityAddForm, SurfaceAddForm, PorchFormSet, StreetForm
+from apps.city.forms import CityAddForm, SurfaceAddForm, PorchFormSet, StreetForm, SurfacePhotoAddForm, \
+    SurfaceClientAddForm
 from apps.city.models import City, Area, Surface, Street
 
 __author__ = 'alexy'
@@ -39,7 +40,7 @@ def city_update(request, pk):
 
         formset = AreaInlineFormset(request.POST, request.FILES, instance=city)
         if formset.is_valid():
-            print '*2'*10
+            print '*2' * 10
             formset.save()
             return HttpResponseRedirect(city.get_absolute_url())
         else:
@@ -142,12 +143,12 @@ class SurfaceListView(ListView):
                     context.update({
                         'street_id': int(self.request.GET.get('street'))
                     })
-                # if self.request.GET.get('street'):
-                #     house_number_qs = Surface.objects.filter(area=int(self.request.GET.get('area')))
-                #     context.update({
-                #         'street_list': street_qs,
-                #         'area_id': int(self.request.GET.get('area'))
-                #     })
+                    # if self.request.GET.get('street'):
+                    #     house_number_qs = Surface.objects.filter(area=int(self.request.GET.get('area')))
+                    #     context.update({
+                    #         'street_list': street_qs,
+                    #         'area_id': int(self.request.GET.get('area'))
+                    #     })
 
         return context
 
@@ -192,10 +193,24 @@ class SurfaceUpdateView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super(SurfaceUpdateView, self).get_context_data(**kwargs)
         # print self.object
+        surface_photo_form = SurfacePhotoAddForm(
+            initial={
+                'surface': self.object
+            }
+        )
+        surface_photo_form.fields['porch'].queryset = self.object.porch_set.all()
         porch_form = PorchFormSet(instance=self.object)
-        # print porch_form
+        surface_client_form = SurfaceClientAddForm(
+            initial={
+                'surface': self.object
+            }
+        )
+        surface_client_form.fields['client'].queryset = self.object.city.client_set.all()
+
         context.update({
-            'porch_form': porch_form
+            'porch_form': porch_form,
+            'surface_photo_form': surface_photo_form,
+            'surface_client_form': surface_client_form
         })
         return context
 
@@ -209,4 +224,30 @@ def porch_update(request):
             formset.save()
         else:
             print u'Формсет валиден'
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+def surface_photo_add(request):
+    if request.method == 'POST':
+        form = SurfacePhotoAddForm(request.POST, request.FILES)
+        print form
+        if form.is_valid():
+            # file is saved
+            form.save()
+            print u'Форма сохранена'
+        else:
+            print u'Форма не сохранена'
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+def add_surface_client(request):
+    if request.method == 'POST':
+        form = SurfaceClientAddForm(request.POST)
+        print form
+        if form.is_valid():
+            # file is saved
+            form.save()
+            print u'Форма сохранена'
+        else:
+            print u'Форма не сохранена'
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

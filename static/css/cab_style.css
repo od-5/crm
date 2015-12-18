@@ -6168,6 +6168,9 @@ h2 {
   width: 42%;
   margin-bottom: 10px;
 }
+img {
+  max-width: 100%;
+}
 body {
   background-color: #f1f1f1;
 }

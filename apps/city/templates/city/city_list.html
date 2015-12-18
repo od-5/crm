@@ -29,7 +29,11 @@
               <tr>
                 <th>id</th>
                 <th>Название</th>
+                {% if user.type == 1 %}
                 <th>Модератор</th>
+                {% endif %}
+                <th>Количество рекламных поверхностей</th>
+                <th>Количество клиентов</th>
               </tr>
             </thead>
             <tbody>
@@ -37,7 +41,15 @@
               <tr>
                 <td>{{ object.id|default:'' }}</td>
                 <td><a href="{% url 'city:change' object.pk %}">{{ object.name|default:'' }}</a></td>
-                <td>{{ object.moderator|default:'Не назначен' }}</td>
+              {% if user.type == 1 %}
+                {% if city.moderator %}
+                <td><a href="{% url 'cabinet:user-change' object.moderator.id %}">{{ object.moderator|default:'Не указан' }}</a></td>
+                {% else %}
+                <td>{{ object.moderator|default:'Не указан' }}</td>
+                {% endif %}
+              {% endif %}
+                <td>{{ object.surface_count }}</td>
+                <td>{{ object.client_set.all.count }}</td>
               </tr>
             {% endfor %}
             </tbody>

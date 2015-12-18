@@ -11,39 +11,50 @@
             <p class="text-info lead">Персональная информация</p>
             <form action="{% url 'cabinet:profile' %}" role="form" class="form-horizontal form-profile" method="post">
               {% csrf_token %}
-              {{ form.as_p }}
-{#              <div class="form-group">#}
-{#                <label class="control-label col-sm-4" for="last_name">#}
-{#                  {{ form.last_name.label }}#}
-{#                </label>#}
-{#                <div class="col-sm-8">#}
-{#                  {{ form.last_name }}#}
-{#                </div>#}
-{#              </div>#}
-{#              <div class="form-group">#}
-{#                <label class="control-label col-sm-4" for="first_name">#}
-{#                  {{ form.first_name.label }}#}
-{#                </label>#}
-{#                <div class="col-sm-8">#}
-{#                  {{ form.first_name }}#}
-{#                </div>#}
-{#              </div>#}
-{#              <div class="form-group">#}
-{#                <label class="control-label col-sm-4" for="patronymic">#}
-{#                  {{ form.patronymic.label }}#}
-{#                </label>#}
-{#                <div class="col-sm-8">#}
-{#                  {{ form.patronymic }}#}
-{#                </div>#}
-{#              </div>#}
-{#              <div class="form-group">#}
-{#                <label class="control-label col-sm-4" for="phone">#}
-{#                  {{ form.phone.label }}#}
-{#                </label>#}
-{#                <div class="col-sm-8">#}
-{#                  {{ form.phone }}#}
-{#                </div>#}
-{#              </div>#}
+              <div class="form-group">
+                <div class="col-lg-5">
+                  {{ form.last_name.label_tag }}
+                </div>
+                <div class="col-lg-7">
+                  {{ form.last_name }}
+                </div>
+                  {{ form.last_name.errors }}
+                <div class="clearfix">
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-5">
+                  {{ form.first_name.label_tag }}
+                </div>
+                <div class="col-lg-7">
+                  {{ form.first_name }}
+                </div>
+                {{ form.first_name.errors }}
+                <div class="clearfix">
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-5">
+                  {{ form.patronymic.label_tag }}
+                </div>
+                <div class="col-lg-7">
+                  {{ form.patronymic }}
+                </div>
+                {{ form.patronymic.errors }}
+                <div class="clearfix">
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-5">
+                  {{ form.phone.label_tag }}
+                </div>
+                <div class="col-lg-7">
+                  {{ form.phone }}
+                </div>
+                {{ form.phone.errors }}
+                <div class="clearfix">
+                </div>
+              </div>
               <button type="submit" class="btn btn-default">Сохранить</button>
             </form>
           </div>

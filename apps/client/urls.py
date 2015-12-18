@@ -9,5 +9,6 @@ urlpatterns = patterns(
     'apps.client.views',
     url(r'^$', ClientListView.as_view(model=Client), name='list'),
     url(r'^add/$', 'client_add', name='add'),
+    url(r'^add-surface/$', 'add_client_surface', name='add-client-surface'),
     url(r'^(?P<pk>\d+)/$', 'client_update', name='change'),
 )

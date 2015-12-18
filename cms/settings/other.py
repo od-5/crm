@@ -67,3 +67,5 @@ CKEDITOR_CONFIGS = {
         ]
     },
 }
+
+SURFACE_THUMB_SIZE = [320, 320]
