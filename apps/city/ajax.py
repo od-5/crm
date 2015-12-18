@@ -18,26 +18,17 @@ __author__ = 'alexy'
 def surface_ajax(request):
     street_list = []
     if request.GET.get('city'):
-        print request.GET.get('city')
         if int(request.GET.get('city')) == 0:
-            print 'Null'
             user = User.objects.get(id=int(request.user.id))
-            print user
             if user.type == 1:
                 city = City.objects.all()
                 street_qs = Street.objects.all()
-                print 'admin'
             else:
                 city = user.city_set.all()
                 street_qs = Street.objects.filter(city__moderator=user)
-                print city
-                print 'not admin'
         else:
-            print 'Not null'
             city = City.objects.get(id=int(request.GET.get('city')))
             street_qs = city.street_set.all()
-        print city
-        print street_qs
         for i in street_qs:
             street_list.append(
                 {

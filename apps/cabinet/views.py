@@ -19,7 +19,6 @@ __author__ = 'alexy'
 def cabinet_view(request):
     context = {}
     user = User.objects.get(id=request.user.id)
-    print user.id
     if user.type == 1:
         city_qs = City.objects.all()[:10]
         client_qs = Client.objects.all()[:10]
@@ -52,10 +51,6 @@ def cabinet_view(request):
 def cabinet_login(request):
     username = request.POST.get('username')
     password = request.POST.get('password')
-    print '******************'
-    print username
-    print password
-    print '******************'
     user = authenticate(username=username, password=password)
     if user is not None:
         if user.is_active:
@@ -75,7 +70,6 @@ class UserUpdateView(UpdateView):
     form_class = UserProfileForm
 
     def get_object(self, queryset=None):
-        print self.request.user
         return self.request.user
 
 @ajax_request

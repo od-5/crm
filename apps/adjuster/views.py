@@ -14,7 +14,6 @@ class AdjusterListView(ListView):
 
     def get_queryset(self):
         user_id = self.request.user.id
-        print user_id
         if self.request.user.type == 1:
             qs = Adjuster.objects.all()
         elif self.request.user.type == 2:
@@ -30,15 +29,8 @@ def adjuster_add(request):
     if request.method == "POST":
         user_form = AdjusterUserAddForm(request.POST)
         adjuster_form = AdjusterAddForm(request.POST, request=request)
-        print '*'*10
-        print u'До валидации'
         if user_form.is_valid() and adjuster_form.is_valid():
-            print '*'*10
-            print u'Валидация пользователя'
-            print user_form
-            print adjuster_form
             user = user_form.save()
-            print user
             adjuster = adjuster_form.save(commit=False)
             adjuster.user = user
             adjuster.save()

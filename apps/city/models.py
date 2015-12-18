@@ -105,8 +105,6 @@ class Surface(models.Model):
         pos = api.geocode(api_key, address)
         self.coord_x = float(pos[0])
         self.coord_y = float(pos[1])
-        print self.coord_x
-        print self.coord_y
         super(Surface, self).save()
 
     city = models.ForeignKey(to=City, verbose_name=u'Город')

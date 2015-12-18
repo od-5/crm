@@ -40,23 +40,18 @@ def city_update(request, pk):
 
         formset = AreaInlineFormset(request.POST, request.FILES, instance=city)
         if formset.is_valid():
-            print '*2' * 10
             formset.save()
             return HttpResponseRedirect(city.get_absolute_url())
-        else:
-            print u'Форма не валидна!!!!!!!!!!!!!!!!!!!!'
-
     else:
-        print 'METHOD != POST'
         form = CityAddForm(instance=city)
         formset = AreaInlineFormset(instance=city)
-        street_form = StreetForm(
-            initial={
-                'city': city,
-                # 'area': city.area_set.all(),
-                'name': u'Привет'
-            }
-        )
+    street_form = StreetForm(
+        initial={
+            'city': city,
+            # 'area': city.area_set.all(),
+            'name': u'Привет'
+        }
+    )
     context = {
         'form': form,
         'formset': formset,
@@ -83,7 +78,6 @@ class CityListView(ListView):
 
     def get_queryset(self):
         user_id = self.request.user.id
-        print user_id
         if self.request.user.type == 1:
             qs = City.objects.all()
         elif self.request.user.type == 2:
@@ -222,32 +216,22 @@ def porch_update(request):
         formset = PorchFormSet(request.POST, instance=surface)
         if formset.is_valid():
             formset.save()
-        else:
-            print u'Формсет валиден'
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 def surface_photo_add(request):
     if request.method == 'POST':
         form = SurfacePhotoAddForm(request.POST, request.FILES)
-        print form
         if form.is_valid():
             # file is saved
             form.save()
-            print u'Форма сохранена'
-        else:
-            print u'Форма не сохранена'
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 def add_surface_client(request):
     if request.method == 'POST':
         form = SurfaceClientAddForm(request.POST)
-        print form
         if form.is_valid():
             # file is saved
             form.save()
-            print u'Форма сохранена'
-        else:
-            print u'Форма не сохранена'
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

@@ -18,7 +18,6 @@ def ticket(request):
         email = 'od-5@yandex.ru'
     if request.method == "POST":
         form = TicketForm(data=request.POST)
-        print form
         if form.is_valid():
             ticket = form.save(commit=False)
             ticket.ticket_status = 1
