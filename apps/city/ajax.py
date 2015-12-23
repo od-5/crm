@@ -1,6 +1,6 @@
 # coding=utf-8
 from annoying.decorators import ajax_request
-from apps.city.models import Area, City, Street
+from apps.city.models import Area, City, Street, Surface
 from core.models import User
 
 __author__ = 'alexy'
@@ -12,6 +12,27 @@ __author__ = 'alexy'
 #     print type(user)
 #     if request.POST.get('city_filter'):
 #         qs = Area.objects.filter(city__id=int(request.POST.get('city_filter')))
+@ajax_request
+def get_area_streets(request):
+    if request.GET.get('area'):
+        surface_list = []
+        area_pk = int(request.GET.get('area'))
+        print area_pk
+        surface_qs = Surface.objects.filter(street__area=area_pk)
+        print surface_list
+        for surface in surface_qs:
+            surface_list.append({
+                'id': surface.id,
+                'street': surface.street.name,
+                'number': surface.house_number
+            })
+        return {
+            'surface_list': surface_list
+        }
+    else:
+        return {
+            'error': u'Что то пошло не так!'
+        }
 
 
 @ajax_request

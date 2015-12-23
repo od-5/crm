@@ -4,6 +4,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
 from apps.city.models import City, Surface
+from core.files import upload_to
 from core.models import User
 
 __author__ = 'alexy'
@@ -52,3 +53,18 @@ class ClientSurface(models.Model):
     client = models.ForeignKey(to=Client, verbose_name=u'Клиент')
     surface = models.ForeignKey(to=Surface, verbose_name=u'Рекламная поверхность')
     date = models.DateField(verbose_name=u'Дата заказа', default=datetime.date.today())
+
+
+class ClientMaket(models.Model):
+    class Meta:
+        verbose_name = u'Макет'
+        verbose_name_plural = u'Макеты'
+        app_label = 'client'
+
+    def __unicode__(self):
+        return self.name
+
+    client = models.ForeignKey(to=Client, verbose_name=u'Клиент')
+    name = models.CharField(max_length=256, verbose_name=u'Название')
+    file = models.FileField(verbose_name=u'Файл макета', upload_to=upload_to)
+    date = models.DateField(verbose_name=u'Дата создания макета')

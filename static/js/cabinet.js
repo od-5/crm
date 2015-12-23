@@ -10,6 +10,18 @@ $(function() {
 
   $.validator.messages.required = "* поле обязательно для заполнения";
 
+ $.datepicker.setDefaults(
+        $.extend($.datepicker.regional["ru"])
+  );
+  $("input[name='date']").datepicker({
+    defaultDate: 7,
+    dateFormat: "dd.mm.yy"
+  });
+  $("input[name='contract_date']").datepicker({
+    defaultDate: 7,
+    dateFormat: "dd.mm.yy"
+  });
+
   // валидация формы на странице
   $( '.js-form-password-change' ).validate({
     rules: {
@@ -65,6 +77,10 @@ $(function() {
   //  if($(this).attr('href') == current_url) $(this).parent('li').addClass('active');
   //});
 
+  //$('#client_city_filter').change(function(){
+  //  $('.client-search-form__city').val($(this).val());
+  //  $('.client-search-form').submit();
+  //});
 
 
   $('#city_filter').change(function(){
@@ -154,10 +170,59 @@ $(function() {
     }
   });
 
-    // валидация формы добвления поверхности к клиенту
+
+  $('#cas_area').change(function(){
+    console.log($(this).val());
+    if ($(this).val() != 0){
+      $.ajax({
+        type: "GET",
+        url: $(this).data('ajax-url'),
+        data: {
+          area: $(this).val()
+        }
+      }).done(function( data ) {
+        if (data.surface_list) {
+          alert(data.surface_list);
+          var surface_list = data.surface_list;
+          $('.js-surface-list tr.result').remove();
+          var surface_table = $('.js-surface-list thead');
+          for (var i = 0; i < surface_list.length; i++){
+            surface_table.append(
+              '<tr class="result">'+
+              '<td><input type="checkbox" name="chk_group[]" value="' +surface_list[i]['id'] +'"></td>'+
+              '<td>'+surface_list[i]['street']+'</td>'+
+              '<td>'+surface_list[i]['number']+'</td>'+
+              '</tr>'
+            )
+          }
+        } else {
+          alert(data.error);
+        }
+        //var street_list = msg.surfa;
+        //surface_street.find('option').remove();
+        //surface_street.append($("<option value selected='selected'>---------</option>"));
+        //for (var i = 0; i < street_list.length; i++) {
+        //  surface_street.append($("<option/>", {
+        //      value: street_list[i]['id'],
+        //      text: street_list[i]['name']
+        //  }));
+        //}
+      });
+    }
+
+  });
+     //валидация формы добвления поверхности к клиенту
   $( '#js-client-add-surface-form' ).validate({
     rules: {
-      surface: {
+      area: {
+        required: true
+      }
+    }
+  });
+    // валидация формы добвления клиента к поверхности
+  $( '#js-surface-add-client-form' ).validate({
+    rules: {
+      client: {
         required: true
       },
       date: {
@@ -165,10 +230,14 @@ $(function() {
       }
     }
   });
-    // валидация формы добвления клиента к поверхности
-  $( '#js-client-add-surface-form' ).validate({
+
+  // валидация формы добвления клиента к поверхности
+  $('#js-client-add-maket-form').validate({
     rules: {
-      client: {
+      name: {
+        required: true
+      },
+      file: {
         required: true
       },
       date: {

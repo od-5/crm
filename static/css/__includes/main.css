@@ -70,6 +70,17 @@ h2 {
 .search-form {
   display: none;
 }
+.client-search-form {
+  margin: 20px 0;
+}
+.client-search-form select,
+.client-search-form input[type=text] {
+  width: 200px;
+  display: inline;
+}
+.client-search-form input {
+  display: inline;
+}
 .js-show-map {
   cursor: pointer;
 }

@@ -5,6 +5,7 @@
 
     <ul class="nav nav-tabs">
       <li class="active"><a data-toggle="tab" href="#main">Редактирование клиента</a></li>
+      <li><a data-toggle="tab" href="#maket">Макеты</a></li>
       <li><a data-toggle="tab" href="#surface">Заказанные рекламные поверхности</a></li>
     </ul>
 
@@ -188,6 +189,64 @@
           </div>
         </div>
       </div>
+      <div id="maket" class="tab-pane fade">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <p class="lead text-center add-bottom">Добавить макет</p>
+            <form action="{% url 'client:add-client-maket' %}" id="js-client-add-maket-form" method="post"
+                  role="form" class="add-bottom" enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="col-lg-6">
+                    {{ client_maket_form.client }}
+                <div class="form-group">
+                  <div class="col-lg-5">{{ client_maket_form.name.label_tag }}</div>
+                  <div class="col-lg-7">{{ client_maket_form.name }}</div>
+                  {{ client_maket_form.name.errors }}
+                  <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-5">{{ client_maket_form.file.label_tag }}</div>
+                  <div class="col-lg-7">{{ client_maket_form.file }}</div>
+                  {{ client_maket_form.file.errors }}
+                  <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-5">{{ client_maket_form.date.label_tag }}</div>
+                  <div class="col-lg-7">{{ client_maket_form.date }}</div>
+                  {{ client_maket_form.date.errors }}
+                  <div class="clearfix"></div>
+                </div>
+                <input type="submit" value="Добавить макет" class="btn btn-default">
+              </div>
+              <div class="clearfix"></div>
+            </form>
+            {% if object.clientmaket_set.all %}
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>id</th>
+                  <th>Название макета</th>
+                  <th>Ссылка для скачивания</th>
+                  <th>Дата создания макета</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for item in object.clientmaket_set.all %}
+                <tr>
+                  <td>{{ item.id|default:'--' }}</td>
+                  <td>{{ item.name|default:'Не указано' }}</td>
+                  <td><a href="{{ item.file.url|default:'Не указано' }}">{{ item.file.url|default:'Не указано' }}</a></td>
+                  <td>{{ item.date|default:'Не указано' }}</td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+            {% else %}
+              <p class="alert alert-info">У клиента нет загруженных макетов</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
       <div id="surface" class="tab-pane fade">
         <div class="panel panel-default">
           <div class="panel-body">
@@ -195,21 +254,46 @@
             <form action="{% url 'client:add-client-surface' %}" id="js-client-add-surface-form" method="post" role="form" class="add-bottom">
               {% csrf_token %}
               <div class="col-lg-6">
-                    {{ client_surface_form.client }}
-                <div class="form-group">
-                  <div class="col-lg-5">{{ client_surface_form.surface.label_tag }}</div>
-                  <div class="col-lg-7">{{ client_surface_form.surface }}</div>
-                  {{ client_surface_form.surface.errors }}
-                  <div class="clearfix"></div>
+                <label for="area">Дата начала размещения</label>
+                <input type="date" name="date" id="date"class="form-control">
+                <label for="area">Выберите район</label>
+                <select name="area" id="cas_area" data-ajax-url="{% url 'city:get_area_streets' %}" class="form-control">
+                  <option value="0">Выберите район</option>
+                  {% for area in object.city.area_set.all %}
+                    <option value="{{ area.id }}">{{ area.name }}</option>
+                  {% endfor %}
+                </select>
+                <div class="surface-list js-surface-list">
+                  <table class="table">
+                    <thead>
+                    <tr>
+                      <th>Выбор</th>
+                      <th>Название улицы</th>
+                      <th>Номер дома</th>
+                    </tr>
+                    </thead>
+
+                  </table>
                 </div>
-                <div class="form-group">
-                  <div class="col-lg-5">{{ client_surface_form.date.label_tag }}</div>
-                  <div class="col-lg-7">{{ client_surface_form.date }}</div>
-                  {{ client_surface_form.date.errors }}
-                  <div class="clearfix"></div>
-                </div>
-                <input type="submit" value="Добавить поверхность" class="btn btn-default">
+              <input type="submit" value="Добавить поверхность" class="btn btn-default">
               </div>
+
+{#              <div class="col-lg-6">#}
+{#                    {{ client_surface_form.client }}#}
+{#                <div class="form-group">#}
+{#                  <div class="col-lg-5">{{ client_surface_form.surface.label_tag }}</div>#}
+{#                  <div class="col-lg-7">{{ client_surface_form.surface }}</div>#}
+{#                  {{ client_surface_form.surface.errors }}#}
+{#                  <div class="clearfix"></div>#}
+{#                </div>#}
+{#                <div class="form-group">#}
+{#                  <div class="col-lg-5">{{ client_surface_form.date.label_tag }}</div>#}
+{#                  <div class="col-lg-7">{{ client_surface_form.date }}</div>#}
+{#                  {{ client_surface_form.date.errors }}#}
+{#                  <div class="clearfix"></div>#}
+{#                </div>#}
+
+{#              </div>#}
               <div class="clearfix"></div>
             </form>
             {% if object.clientsurface_set.all %}

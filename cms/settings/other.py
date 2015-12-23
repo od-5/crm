@@ -4,7 +4,7 @@ from .base import BASE_DIR
 
 YANDEX_MAPS_API_KEY = 'AO7kF1UBAAAA-akFCwIAR7_VYsSjwJ9g-dDEVHElLxuBQi8AAAAAAAAAAAAQMK4N7NYtvg4ALgMZ8-GRO_cQqQ=='
 
-if socket.gethostname() == 'r420':
+if socket.gethostname() == 'alexy-PC':
     DATABASES = {
          'default': {
              'ENGINE': 'django.db.backends.mysql',

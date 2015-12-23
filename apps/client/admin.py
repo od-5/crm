@@ -2,9 +2,14 @@
 from django.contrib import admin
 from django.forms import ModelForm
 from core.models import User
-from .models import Client
+from .models import Client, ClientMaket
 
 __author__ = 'alexy'
+
+
+class ClientMaketInline(admin.TabularInline):
+    model = ClientMaket
+    extra = 1
 
 
 class ClientAdminForm(ModelForm):
@@ -19,5 +24,8 @@ class ClientAdminForm(ModelForm):
 class ClientAdmin(admin.ModelAdmin):
     list_display = ('user', 'city', 'legal_name', 'actual_name', 'leader')
     form = ClientAdminForm
+    inlines = [
+        ClientMaketInline
+    ]
 
 admin.site.register(Client, ClientAdmin)

@@ -1,7 +1,7 @@
 # coding=utf-8
 from django import forms
 from apps.city.models import City
-from apps.client.models import Client, ClientSurface
+from apps.client.models import Client, ClientSurface, ClientMaket
 from core.models import User
 
 __author__ = 'alexy'
@@ -129,5 +129,17 @@ class ClientSurfaceAddForm(forms.ModelForm):
         widgets = {
             'client': forms.HiddenInput(attrs={'class': 'form-control'}),
             'surface': forms.Select(attrs={'class': 'form-control'}),
+            'date': forms.DateInput(attrs={'class': 'form-control'}),
+        }
+
+
+class ClientMaketAddForm(forms.ModelForm):
+    class Meta:
+        model = ClientMaket
+        fields = ('client', 'name', 'file', 'date')
+        widgets = {
+            'client': forms.HiddenInput(attrs={'class': 'form-control'}),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'file': forms.FileInput(attrs={'class': 'form-control'}),
             'date': forms.DateInput(attrs={'class': 'form-control'}),
         }
