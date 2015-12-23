@@ -255,7 +255,7 @@
               {% csrf_token %}
               <div class="col-lg-6">
                 <label for="area">Дата начала размещения</label>
-                <input type="date" name="date" id="date"class="form-control">
+                <input type="text" name="date" id="date" class="form-control">
                 <label for="area">Выберите район</label>
                 <select name="area" id="cas_area" data-ajax-url="{% url 'city:get_area_streets' %}" class="form-control">
                   <option value="0">Выберите район</option>
