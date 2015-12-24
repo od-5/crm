@@ -1,14 +1,15 @@
 # coding=utf-8
+import datetime
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import ListView, CreateView
 from apps.cabinet.forms import UserAddForm
-from apps.city.models import City
+from apps.city.models import City, Surface
 from apps.client.forms import ClientUserUpdateForm, ClientUpdateForm, ClientUserAddForm, ClientAddForm, \
     ClientSurfaceAddForm, ClientMaketAddForm
 from core.models import User
-from .models import Client
+from .models import Client, ClientSurface
 
 __author__ = 'alexy'
 
@@ -132,6 +133,23 @@ def client_update(request, pk):
 def add_client_surface(request):
     if request.method == 'POST':
         print request.POST
+        client = Client.objects.get(pk=int(request.POST.get('client')))
+        date = request.POST.get('date')
+        surfaces = request.POST.getlist('chk_group[]')
+        print 'client = %s' % client
+        print 'date = %s' % date
+        print 'surfaces = %s' % surfaces
+        for item in surfaces:
+            surface = Surface.objects.get(pk=int(item))
+            c_surface = ClientSurface(
+                client=client,
+                surface=surface
+            )
+            if date:
+                raw_date = datetime.datetime.strptime(date, '%d.%m.%Y')
+                c_surface.date = datetime.date(raw_date.year, raw_date.month, raw_date.day)
+            c_surface.save()
+            print c_surface.id
     #     form = ClientSurfaceAddForm(request.POST)
     #     if form.is_valid():
     #         # file is saved

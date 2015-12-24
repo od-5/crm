@@ -84,8 +84,24 @@ class CityListView(ListView):
             qs = City.objects.filter(moderator=user_id)
         else:
             qs = None
-        queryset = qs
+        if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
+            queryset = qs.filter(id=int(self.request.GET.get('city')))
+        else:
+            queryset = qs
         return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super(CityListView, self).get_context_data()
+        if self.request.user.type == 1:
+            qs = City.objects.all()
+        elif self.request.user.type == 2:
+            qs = City.objects.filter(moderator=self.request.user.id)
+        else:
+            qs = None
+        context.update({
+            'user_city_list': qs
+        })
+        return context
 
 
 class SurfaceListView(ListView):

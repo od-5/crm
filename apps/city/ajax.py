@@ -1,6 +1,7 @@
 # coding=utf-8
 from annoying.decorators import ajax_request
 from apps.city.models import Area, City, Street, Surface
+from apps.client.models import Client, ClientSurface
 from core.models import User
 
 __author__ = 'alexy'
@@ -14,18 +15,27 @@ __author__ = 'alexy'
 #         qs = Area.objects.filter(city__id=int(request.POST.get('city_filter')))
 @ajax_request
 def get_area_streets(request):
-    if request.GET.get('area'):
+    if request.GET.get('area') and request.GET.get('client'):
         surface_list = []
         area_pk = int(request.GET.get('area'))
-        print area_pk
+
         surface_qs = Surface.objects.filter(street__area=area_pk)
-        print surface_list
+        try:
+            client = Client.objects.get(id=int(request.GET.get('client')))
+            # print(surface_qs & ClientSurface.objects.filter(client=client))
+            client_surfaces = []
+            for item in ClientSurface.objects.filter(client=client):
+                client_surfaces.append(item.surface.id)
+            #     surface_qs = surface_qs.exclude(surface=item.surface)
+        except:
+            pass
         for surface in surface_qs:
-            surface_list.append({
-                'id': surface.id,
-                'street': surface.street.name,
-                'number': surface.house_number
-            })
+            if surface.id not in client_surfaces:
+                surface_list.append({
+                    'id': surface.id,
+                    'street': surface.street.name,
+                    'number': surface.house_number
+                })
         return {
             'surface_list': surface_list
         }

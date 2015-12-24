@@ -178,7 +178,8 @@ $(function() {
         type: "GET",
         url: $(this).data('ajax-url'),
         data: {
-          area: $(this).val()
+          area: $(this).val(),
+          client: $('#hidden_client').val()
         }
       }).done(function( data ) {
         if (data.surface_list) {

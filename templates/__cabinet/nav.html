@@ -53,7 +53,7 @@
         </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="{% url 'cabinet:profile' %}"><span class="glyphicon glyphicon-user"></span> Профиль пользователя {{ user }}</a></li>
+        <li><a href="{% url 'cabinet:profile' %}"> <span class="glyphicon glyphicon-user"></span> {{ user }} </a></li>
         <li><a href="{% url 'cabinet:logout' %}?next={% url 'cabinet:cabinet' %}"><span class="glyphicon glyphicon-log-out"></span> Выход</a></li>
       </ul>
     </div>

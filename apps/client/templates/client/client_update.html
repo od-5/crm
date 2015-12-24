@@ -5,7 +5,7 @@
 
     <ul class="nav nav-tabs">
       <li class="active"><a data-toggle="tab" href="#main">Редактирование клиента</a></li>
-      <li><a data-toggle="tab" href="#maket">Макеты</a></li>
+      <li><a data-toggle="tab" href="#maket">Архив макетов</a></li>
       <li><a data-toggle="tab" href="#surface">Заказанные рекламные поверхности</a></li>
     </ul>
 
@@ -226,8 +226,8 @@
                 <tr>
                   <th>id</th>
                   <th>Название макета</th>
-                  <th>Ссылка для скачивания</th>
-                  <th>Дата создания макета</th>
+                  <th>Дата размещения макета</th>
+                  <th>&nbsp;</th>
                 </tr>
               </thead>
               <tbody>
@@ -235,8 +235,12 @@
                 <tr>
                   <td>{{ item.id|default:'--' }}</td>
                   <td>{{ item.name|default:'Не указано' }}</td>
-                  <td><a href="{{ item.file.url|default:'Не указано' }}">{{ item.file.url|default:'Не указано' }}</a></td>
                   <td>{{ item.date|default:'Не указано' }}</td>
+                  <td>
+                    <a href="{{ item.file.url|default:'Не указано' }}" class="btn btn-danger">
+                      <span class="glyphicon glyphicon-download-alt"></span> СКАЧАТЬ
+                    </a>
+                  </td>
                 </tr>
               {% endfor %}
               </tbody>
@@ -254,6 +258,7 @@
             <form action="{% url 'client:add-client-surface' %}" id="js-client-add-surface-form" method="post" role="form" class="add-bottom">
               {% csrf_token %}
               <div class="col-lg-6">
+                <input type="hidden" id="hidden_client" name="client" value="{{ object.id }}">
                 <label for="area">Дата начала размещения</label>
                 <input type="text" name="date" id="date" class="form-control">
                 <label for="area">Выберите район</label>
@@ -301,7 +306,8 @@
               <thead>
                 <tr>
                   <th>id</th>
-                  <th>Рекламная поверхность</th>
+                  <th>Район</th>
+                  <th>Адрес</th>
                   <th>Дата размещения</th>
   {#                <th>Дата окончания размещения</th>#}
                 </tr>
@@ -310,6 +316,7 @@
               {% for item in object.clientsurface_set.all %}
                 <tr>
                   <td>{{ item.id|default:'--' }}</td>
+                  <td>{{ item.surface.street.area.name|default:'--' }}</td>
                   <td><a href="{% url 'city:surface-change' item.surface.pk %}">{{ item.surface|default:'Не указано' }}</a></td>
                   <td>{{ item.date|default:'Не указано' }}</td>
   {#                <td>&nbsp;</td>#}

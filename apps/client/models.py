@@ -46,9 +46,10 @@ class ClientSurface(models.Model):
         verbose_name = u'Рекламная поверхность'
         verbose_name_plural = u'Рекламные поверхности'
         app_label = 'client'
+        ordering = ['-date', ]
 
     def __unicode__(self):
-        return self.surface
+        return u'%s %s ' % (self.surface.street.name, self.surface.house_number)
 
     client = models.ForeignKey(to=Client, verbose_name=u'Клиент')
     surface = models.ForeignKey(to=Surface, verbose_name=u'Рекламная поверхность')
@@ -60,6 +61,7 @@ class ClientMaket(models.Model):
         verbose_name = u'Макет'
         verbose_name_plural = u'Макеты'
         app_label = 'client'
+        ordering = ['-date']
 
     def __unicode__(self):
         return self.name
@@ -67,4 +69,4 @@ class ClientMaket(models.Model):
     client = models.ForeignKey(to=Client, verbose_name=u'Клиент')
     name = models.CharField(max_length=256, verbose_name=u'Название')
     file = models.FileField(verbose_name=u'Файл макета', upload_to=upload_to)
-    date = models.DateField(verbose_name=u'Дата создания макета')
+    date = models.DateField(verbose_name=u'Дата размещения макета')
