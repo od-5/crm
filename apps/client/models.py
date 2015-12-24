@@ -54,6 +54,7 @@ class ClientSurface(models.Model):
     client = models.ForeignKey(to=Client, verbose_name=u'Клиент')
     surface = models.ForeignKey(to=Surface, verbose_name=u'Рекламная поверхность')
     date = models.DateField(verbose_name=u'Дата заказа', default=datetime.date.today())
+    date_end = models.DateField(verbose_name=u'Дата заказа', blank=True, null=True)
 
 
 class ClientMaket(models.Model):

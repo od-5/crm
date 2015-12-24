@@ -17,6 +17,10 @@ $(function() {
     defaultDate: 7,
     dateFormat: "dd.mm.yy"
   });
+  $("input[name='date_end']").datepicker({
+    defaultDate: 7,
+    dateFormat: "dd.mm.yy"
+  });
   $("input[name='contract_date']").datepicker({
     defaultDate: 7,
     dateFormat: "dd.mm.yy"
@@ -204,14 +208,78 @@ $(function() {
     }
 
   });
+  //удаление поверхности клиента
+  function removeClientSurface(){
+    $('.js-remove-client-surface').submit(function() {
+      $(this).ajaxSubmit({
+        success: function (data) {
+          if (data.success) {
+            $.notify('Поверхность удалена', 'success');
+          } else {
+            $.notify('Произошла ошибка!', 'error');
+          }
+        }
+      });
+      $(this).parents('tr').remove();
+      return false;
+    });
+  }
+  removeClientSurface();
      //валидация формы добвления поверхности к клиенту
-  $( '#js-client-add-surface-form' ).validate({
+
+  $('#js-client-add-surface-form').validate({
     rules: {
       area: {
         required: true
+      },
+      date: {
+        required: true
       }
+    },
+    submitHandler: function(e) {
+      $('#js-client-add-surface-form').ajaxSubmit({
+          success: function(data){
+            if (data.success) {
+              $.notify(data.success, 'success');
+              $('#cas_area').val(0);
+              $('.js-surface-list tr.result').remove();
+              //$('#js-client-add-surface-form').trigger('reset');
+              if (data.surface_list){
+                //$.notify(data.surface_list, 'success');
+                $('tr.empty').remove();
+                var surface_list = data.surface_list;
+                for (var i = 0; i < surface_list.length; i++) {
+                  $('.js-surface-list-tbody').prepend(
+                    '<tr>' +
+                    '<td>' + surface_list[i]['id'] + '</td>' +
+                    '<td>' + surface_list[i]['area'] + '</td>' +
+                    '<td><a href="/city/surface/' + surface_list[i]['surface_id'] + '">' + surface_list[i]['surface'] + '</a></td>' +
+                    '<td>' + surface_list[i]['date'] + '</td>' +
+                    '<td>' + surface_list[i]['date_end'] + '</td>' +
+                    '<td>' +
+                      '<form action="/client/surface-remove/" method="post" class="js-remove-client-surface" role="form">' +
+                      '<input type="hidden" name="client_surface_id" value="' + surface_list[i]['id'] + '">' +
+                      '<button type="submit" class="btn btn-warning"><span class="glyphicon glyphicon-remove"></span> Удалить</button>' +
+                      '</form>' +
+                    '</td>' +
+                    '</tr>'
+                  );
+                }
+                //hz
+                removeClientSurface();
+              //  hz
+
+              }
+            } else {
+              $.notify(data.error, 'error');
+            }
+
+          }
+      });
     }
   });
+
+
     // валидация формы добвления клиента к поверхности
   $( '#js-surface-add-client-form' ).validate({
     rules: {

@@ -259,15 +259,23 @@
               {% csrf_token %}
               <div class="col-lg-6">
                 <input type="hidden" id="hidden_client" name="client" value="{{ object.id }}">
-                <label for="area">Дата начала размещения</label>
-                <input type="text" name="date" id="date" class="form-control">
-                <label for="area">Выберите район</label>
-                <select name="area" id="cas_area" data-ajax-url="{% url 'city:get_area_streets' %}" class="form-control">
-                  <option value="0">Выберите район</option>
-                  {% for area in object.city.area_set.all %}
-                    <option value="{{ area.id }}">{{ area.name }}</option>
-                  {% endfor %}
-                </select>
+                <div>
+                  <label for="area">Дата начала размещения</label>
+                  <input type="text" name="date" id="date" class="form-control">
+                </div>
+                <div>
+                  <label for="area">Дата окончания размещения</label>
+                  <input type="text" name="date_end" id="date_end" class="form-control">
+                </div>
+                <div>
+                  <label for="area">Выберите район</label>
+                  <select name="area" id="cas_area" data-ajax-url="{% url 'city:get_area_streets' %}" class="form-control">
+                    <option value="0">Выберите район</option>
+                    {% for area in object.city.area_set.all %}
+                      <option value="{{ area.id }}">{{ area.name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
                 <div class="surface-list js-surface-list">
                   <table class="table">
                     <thead>
@@ -301,7 +309,7 @@
 {#              </div>#}
               <div class="clearfix"></div>
             </form>
-            {% if object.clientsurface_set.all %}
+
             <table class="table table-hover">
               <thead>
                 <tr>
@@ -309,24 +317,41 @@
                   <th>Район</th>
                   <th>Адрес</th>
                   <th>Дата размещения</th>
-  {#                <th>Дата окончания размещения</th>#}
+                  <th>Дата окончания размещения</th>
+                  <th>&nbsp;</th>
                 </tr>
               </thead>
-              <tbody>
-              {% for item in object.clientsurface_set.all %}
+              <tbody class="js-surface-list-tbody">
+              {% if object.clientsurface_set.all %}
+                {% for item in object.clientsurface_set.all %}
                 <tr>
                   <td>{{ item.id|default:'--' }}</td>
                   <td>{{ item.surface.street.area.name|default:'--' }}</td>
                   <td><a href="{% url 'city:surface-change' item.surface.pk %}">{{ item.surface|default:'Не указано' }}</a></td>
                   <td>{{ item.date|default:'Не указано' }}</td>
+                  <td>{{ item.date_end|default:'Не указано' }}</td>
+                  <td>
+                    <form action="{% url 'client:surface-remove' %}" method="post" class="js-remove-client-surface" role="form">
+                      {% csrf_token %}
+                      <input type="hidden" name="client_surface_id" value="{{ item.id }}">
+                      <button type="submit" class="btn btn-warning" data-id="{{ item.id }}">
+                        <span class="glyphicon glyphicon-remove"></span> Удалить
+                      </button>
+                    </form>
+                  </td>
   {#                <td>&nbsp;</td>#}
                 </tr>
-              {% endfor %}
+                {% endfor %}
+              {% else %}
+                <tr class="empty">
+                  <td colspan="7">
+                    <p class="alert alert-info">У клиента нет заказанных поверхностей</p>
+                  </td>
+                </tr>
+              {% endif %}
               </tbody>
             </table>
-            {% else %}
-              <p class="alert alert-info">У клиента нет заказанных поверхностей</p>
-            {% endif %}
+
           </div>
         </div>
       </div>
@@ -337,4 +362,5 @@
 
     </div>
   </div>
+
 {% endblock %}

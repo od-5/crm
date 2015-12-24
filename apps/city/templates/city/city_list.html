@@ -31,6 +31,9 @@
                 <option value="{{ city.id }}" {% if city.id == city_id %}selected="selected"{% endif %}>{{ city }}</option>
               {% endfor %}
             </select>
+            {% if user.type == 1 %}
+            <input type="text" name="moderator" class="form-control" placeholder="e-mail">
+            {% endif %}
             <input type="submit" value="Искать" class="btn btn-info">
           </form>
 

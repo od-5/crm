@@ -1,6 +1,8 @@
 # coding=utf-8
 from django.conf.urls import patterns, url
-from .models import Client
+from django.views.generic import DeleteView
+
+from .models import Client, ClientSurface
 from .views import ClientListView
 
 __author__ = 'alexy'
@@ -12,4 +14,6 @@ urlpatterns = patterns(
     url(r'^add-surface/$', 'add_client_surface', name='add-client-surface'),
     url(r'^add-maket/$', 'add_client_maket', name='add-client-maket'),
     url(r'^(?P<pk>\d+)/$', 'client_update', name='change'),
+    # url(r'^surface-remove/(?P<pk>\d+)', DeleteView.as_view(model=ClientSurface, success_url="/client/"), name='surface-remove'),
+    url(r'^surface-remove/', 'remove_client_surface', name='surface-remove'),
 )

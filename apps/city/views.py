@@ -84,10 +84,13 @@ class CityListView(ListView):
             qs = City.objects.filter(moderator=user_id)
         else:
             qs = None
-        if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
-            queryset = qs.filter(id=int(self.request.GET.get('city')))
+        if self.request.GET.get('moderator'):
+            queryset = qs.filter(moderator__email=self.request.GET.get('moderator'))
         else:
-            queryset = qs
+            if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
+                queryset = qs.filter(id=int(self.request.GET.get('city')))
+            else:
+                queryset = qs
         return queryset
 
     def get_context_data(self, **kwargs):

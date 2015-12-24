@@ -1,8 +1,11 @@
 # coding=utf-8
 import datetime
+
+from annoying.decorators import ajax_request
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView
 from apps.cabinet.forms import UserAddForm
 from apps.city.models import City, Surface
@@ -130,15 +133,24 @@ def client_update(request, pk):
     return render(request, 'client/client_update.html', context)
 
 
+@ajax_request
 def add_client_surface(request):
+    print 'step 1'
     if request.method == 'POST':
-        print request.POST
+        # print request.POST
+        print 'step 2'
         client = Client.objects.get(pk=int(request.POST.get('client')))
         date = request.POST.get('date')
+        if request.POST.get('date_end'):
+            date_end = request.POST.get('date_end')
+        else:
+            date_end = None
         surfaces = request.POST.getlist('chk_group[]')
         print 'client = %s' % client
         print 'date = %s' % date
+        print 'date_end = %s' % date_end
         print 'surfaces = %s' % surfaces
+        surface_list = []
         for item in surfaces:
             surface = Surface.objects.get(pk=int(item))
             c_surface = ClientSurface(
@@ -148,14 +160,47 @@ def add_client_surface(request):
             if date:
                 raw_date = datetime.datetime.strptime(date, '%d.%m.%Y')
                 c_surface.date = datetime.date(raw_date.year, raw_date.month, raw_date.day)
+            if date_end and date_end != None:
+                print u'какая то дата есть'
+                try:
+                    print u'пытаемся'
+                    raw_date_end = datetime.datetime.strptime(date_end, '%d.%m.%Y')
+                    c_surface.date_end = datetime.date(raw_date_end.year, raw_date_end.month, raw_date_end.day)
+                    print u'закончили пытаться'
+                except:
+                    print u'не получилось'
+                    pass
+            else:
+                print u'Даты окончания нет'
             c_surface.save()
-            print c_surface.id
+            if c_surface.date_end:
+                end_date = str(c_surface.date_end)
+            else:
+                end_date = u'Не указано'
+            surface_list.append({
+                'id': str(c_surface.id),
+                'surface': u'%s %s' % (c_surface.surface.street.name, c_surface.surface.house_number),
+                'surface_id': str(c_surface.surface.id),
+                'area': c_surface.surface.street.area.name,
+                'date': str(c_surface.date),
+                'date_end': end_date
+            })
+        print surface_list
+            # print c_surface.id
     #     form = ClientSurfaceAddForm(request.POST)
     #     if form.is_valid():
     #         # file is saved
     #         print form
     #         # form.save()
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        return {
+            'success': u'Рекламные поверхности добавлены',
+            'surface_list': surface_list
+        }
+    else:
+        print 'else'
+        return {
+            'error': 'error!!!'
+        }
 
 
 def add_client_maket(request):
@@ -165,3 +210,19 @@ def add_client_maket(request):
             # file is saved
             form.save()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+@ajax_request
+@csrf_exempt
+def remove_client_surface(request):
+    if request.method == 'POST':
+        if request.POST.get('client_surface_id'):
+            client_surface = ClientSurface.objects.get(id=int(request.POST.get('client_surface_id')))
+            client_surface.delete()
+            return {
+                'success': True
+            }
+        else:
+            return {
+                'error': True
+            }
