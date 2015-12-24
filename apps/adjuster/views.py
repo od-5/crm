@@ -3,8 +3,9 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import ListView
-from apps.adjuster.forms import AdjusterUserAddForm, AdjusterAddForm, AdjusterUserUpdateForm, AdjusterUpdateForm
-from .models import Adjuster
+from apps.adjuster.forms import AdjusterUserAddForm, AdjusterAddForm, AdjusterUserUpdateForm, AdjusterUpdateForm, \
+    AdjusterTaskAddForm
+from .models import Adjuster, AdjusterTask
 
 __author__ = 'alexy'
 
@@ -18,6 +19,21 @@ class AdjusterListView(ListView):
             qs = Adjuster.objects.all()
         elif self.request.user.type == 2:
             qs = Adjuster.objects.filter(city__moderator=user_id)
+        else:
+            qs = None
+        queryset = qs
+        return queryset
+
+
+class AdjusterTaskListView(ListView):
+    model = AdjusterTask
+
+    def get_queryset(self):
+        user_id = self.request.user.id
+        if self.request.user.type == 1:
+            qs = AdjusterTask.objects.all()
+        elif self.request.user.type == 2:
+            qs = AdjusterTask.objects.filter(adjuster__city__moderator=user_id)
         else:
             qs = None
         queryset = qs
@@ -83,3 +99,21 @@ def adjuster_update(request, pk):
         'object': adjuster
     })
     return render(request, 'adjuster/adjuster_update.html', context)
+
+
+def adjuster_task_add(request):
+    context = {}
+    if request.method == 'POST':
+        adjuster_task_form = AdjusterTaskAddForm(request.POST, request=request)
+        if adjuster_task_form.is_valid():
+            adjuster_task_form.save()
+        else:
+            context.update({
+                'error': 'Achtung! Form is invalid!'
+            })
+    else:
+        adjuster_task_form = AdjusterTaskAddForm(request=request)
+    context.update({
+        'adjuster_task_form': adjuster_task_form
+    })
+    return render(request, 'adjuster/adjuster_task_add.html', context)

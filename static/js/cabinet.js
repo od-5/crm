@@ -306,5 +306,51 @@ $(function() {
       }
     }
   });
+  // валидация формы добвления клиента к поверхности
+  $('.js-adjuster-task-add-form').validate({
+    rules: {
+      adjuster: {
+        required: true
+      },
+      surface: {
+        required: true
+      },
+      porch: {
+        required: true
+      },
+      type: {
+        required: true
+      },
+      date: {
+        required: true
+      }
+    }
+  });
+
+  $('.js-adjuster-task-add-form #id_surface').change(function(){
+    if($(this).val() == ''){
+      var surface = 0
+    } else {
+      var surface = $(this).val();
+    }
+
+    $.ajax({
+      type: "GET",
+      url: $('.js-adjuster-task-add-form').data('ajax-url'),
+      data: {
+        surface: surface
+      }
+    }).done(function( date ) {
+      var porch_list = date.porch_list;
+      $('.js-adjuster-task-add-form #id_porch').find('option').remove();
+      $('.js-adjuster-task-add-form #id_porch').append($("<option value selected='selected'>---------</option>"));
+      for (var i = 0; i < porch_list.length; i++) {
+        $('.js-adjuster-task-add-form #id_porch').append($("<option/>", {
+            value: porch_list[i]['id'],
+            text: porch_list[i]['number']
+        }));
+      }
+    });
+  });
 
 });

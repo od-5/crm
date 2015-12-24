@@ -47,8 +47,8 @@
           <ul class="dropdown-menu">
             <li><a href="{% url 'adjuster:list' %}">Список монтажников</a></li>
             <li><a href="{% url 'adjuster:add' %}">Добавить монтажника</a></li>
-            <li><a href="#">Список задач</a></li>
-            <li><a href="#">Добавить задачу</a></li>
+            <li><a href="{% url 'adjuster:task-list' %}">Список задач</a></li>
+            <li><a href="{% url 'adjuster:task-add' %}">Добавить задачу</a></li>
           </ul>
         </li>
       </ul>

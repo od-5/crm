@@ -44,3 +44,28 @@ class SurfacePhoto(models.Model):
     image_resize = ImageSpecField(
         [SmartResize(*settings.SURFACE_THUMB_SIZE)], source='image', format='JPEG', options={'quality': 94}
     )
+
+
+class AdjusterTask(models.Model):
+    class Meta:
+        verbose_name = u'Монтажник'
+        verbose_name_plural = u'Монтажники'
+        app_label = 'adjuster'
+        ordering = ['-date', ]
+
+    def __unicode__(self):
+        return u'task'
+
+    TYPE_CHOICES = (
+        (0, u'Монтаж новой конструкции'),
+        (1, u'Замена'),
+        (2, u'Ремонт стенда'),
+        (3, u'Демонтаж стенда'),
+    )
+
+    adjuster = models.ForeignKey(to=Adjuster, verbose_name=u'Монтажник')
+    surface = models.ForeignKey(to=Surface, verbose_name=u'Рекламная поверхность')
+    porch = models.ForeignKey(to=Porch, verbose_name=u'Подъезд')
+    type = models.PositiveSmallIntegerField(verbose_name=u'Вид работы', choices=TYPE_CHOICES)
+    date = models.DateField(verbose_name=u'Дата проведения работы')
+    comment = models.TextField(verbose_name=u'Комментарий', blank=True, null=True)

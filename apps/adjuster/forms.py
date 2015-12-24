@@ -1,7 +1,7 @@
 # coding=utf-8
 from django import forms
-from apps.adjuster.models import Adjuster
-from apps.city.models import City
+from apps.adjuster.models import Adjuster, AdjusterTask
+from apps.city.models import City, Surface
 from core.models import User
 
 __author__ = 'alexy'
@@ -88,3 +88,24 @@ class AdjusterUserUpdateForm(forms.ModelForm):
             'patronymic': forms.TextInput(attrs={'class': 'form-control'}),
             'phone': forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+
+class AdjusterTaskAddForm(forms.ModelForm):
+    class Meta:
+        model = AdjusterTask
+        fields = ('adjuster', 'surface', 'porch', 'type', 'date', 'comment')
+        widgets = {
+            'adjuster': forms.Select(attrs={'class': 'form-control'}),
+            'surface': forms.Select(attrs={'class': 'form-control'}),
+            'porch': forms.Select(attrs={'class': 'form-control'}),
+            'type': forms.Select(attrs={'class': 'form-control'}),
+            'date': forms.DateInput(attrs={'class': 'form-control'}),
+            'comment': forms.Textarea(attrs={'class': 'form-control'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request")
+        super(AdjusterTaskAddForm, self).__init__(*args, **kwargs)
+        if self.request.user and self.request.user.type == 2:
+            self.fields['adjuster'].queryset = Adjuster.objects.filter(city__moderator=self.request.user)
+            self.fields['surface'].queryset = Surface.objects.filter(city__moderator=self.request.user)
