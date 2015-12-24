@@ -71,8 +71,6 @@ $(function() {
 
 //  фильтрация по городам на странице поверхностей
   var get_url = '/'+location.href.split('/');
-  console.log(get_url);
-  console.log(get_url.length);
   //$('header ul li a').each(function () {
   //  if($(this).attr('href') == current_url) $(this).parent('li').addClass('active');
   //});
@@ -97,7 +95,6 @@ $(function() {
   $('#street_filter').change(function(){
     $('.search-form__street').val($(this).val());
     $('.search-form').submit();
-    console.log($(this).val());
   });
   //$('#house_number_filter').change(function(){
   //  $('.search-form__house_number').val($(this).val())
@@ -124,7 +121,6 @@ $(function() {
   var surface_city = surface_add_form.find('select#id_city');
   var surface_street = surface_add_form.find('select#id_street');
   surface_city.change(function(){
-    console.log($(this).val());
     if($(this).val() == ''){
       var city = 0
     } else {
@@ -172,7 +168,6 @@ $(function() {
 
 
   $('#cas_area').change(function(){
-    console.log($(this).val());
     if ($(this).val() != 0){
       $.ajax({
         type: "GET",
@@ -183,7 +178,6 @@ $(function() {
         }
       }).done(function( data ) {
         if (data.surface_list) {
-          alert(data.surface_list);
           var surface_list = data.surface_list;
           $('.js-surface-list tr.result').remove();
           var surface_table = $('.js-surface-list thead');
@@ -196,8 +190,6 @@ $(function() {
               '</tr>'
             )
           }
-        } else {
-          alert(data.error);
         }
         //var street_list = msg.surfa;
         //surface_street.find('option').remove();
