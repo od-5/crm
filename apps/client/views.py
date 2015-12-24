@@ -135,10 +135,8 @@ def client_update(request, pk):
 
 @ajax_request
 def add_client_surface(request):
-    print 'step 1'
     if request.method == 'POST':
         # print request.POST
-        print 'step 2'
         client = Client.objects.get(pk=int(request.POST.get('client')))
         date = request.POST.get('date')
         if request.POST.get('date_end'):
@@ -146,10 +144,6 @@ def add_client_surface(request):
         else:
             date_end = None
         surfaces = request.POST.getlist('chk_group[]')
-        print 'client = %s' % client
-        print 'date = %s' % date
-        print 'date_end = %s' % date_end
-        print 'surfaces = %s' % surfaces
         surface_list = []
         for item in surfaces:
             surface = Surface.objects.get(pk=int(item))
@@ -161,17 +155,11 @@ def add_client_surface(request):
                 raw_date = datetime.datetime.strptime(date, '%d.%m.%Y')
                 c_surface.date = datetime.date(raw_date.year, raw_date.month, raw_date.day)
             if date_end and date_end != None:
-                print u'какая то дата есть'
                 try:
-                    print u'пытаемся'
                     raw_date_end = datetime.datetime.strptime(date_end, '%d.%m.%Y')
                     c_surface.date_end = datetime.date(raw_date_end.year, raw_date_end.month, raw_date_end.day)
-                    print u'закончили пытаться'
                 except:
-                    print u'не получилось'
                     pass
-            else:
-                print u'Даты окончания нет'
             c_surface.save()
             if c_surface.date_end:
                 end_date = str(c_surface.date_end)
@@ -185,7 +173,6 @@ def add_client_surface(request):
                 'date': str(c_surface.date),
                 'date_end': end_date
             })
-        print surface_list
             # print c_surface.id
     #     form = ClientSurfaceAddForm(request.POST)
     #     if form.is_valid():
