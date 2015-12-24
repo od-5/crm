@@ -1,17 +1,16 @@
 # coding=utf-8
 import datetime
 
+import xlwt
 from annoying.decorators import ajax_request
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import ListView, CreateView
-from apps.cabinet.forms import UserAddForm
+from django.views.generic import ListView
 from apps.city.models import City, Surface
 from apps.client.forms import ClientUserUpdateForm, ClientUpdateForm, ClientUserAddForm, ClientAddForm, \
     ClientSurfaceAddForm, ClientMaketAddForm
-from core.models import User
 from .models import Client, ClientSurface
 
 __author__ = 'alexy'
@@ -213,3 +212,63 @@ def remove_client_surface(request):
             return {
                 'error': True
             }
+
+
+def client_excel_export(request, pk):
+    client = Client.objects.get(id=int(pk))
+    font0 = xlwt.Font()
+    font0.name = 'Calibri'
+    font0.height = 220
+
+    borders = xlwt.Borders()
+    borders.left = xlwt.Borders.THIN
+    borders.right = xlwt.Borders.THIN
+    borders.top = xlwt.Borders.THIN
+    borders.bottom = xlwt.Borders.THIN
+
+    style0 = xlwt.XFStyle()
+    style0.font = font0
+
+    style1 = xlwt.XFStyle()
+    style1.font = font0
+    style1.borders = borders
+
+    wb = xlwt.Workbook()
+    ws = wb.add_sheet(u'Рекламные поверхости')
+    ws.write(0, 0, u'Клиент:', style0)
+    ws.write(0, 1, u'%s' % client.legal_name, style0)
+    ws.write(1, 0, u'Город:', style0)
+    ws.write(1, 1, u'%s' % client.city.name, style0)
+
+    ws.write(3, 0, u'Город', style1)
+    ws.write(3, 1, u'Район', style1)
+    ws.write(3, 2, u'Улица', style1)
+    ws.write(3, 3, u'Номер дома', style1)
+    ws.write(3, 4, u'Дата размещения', style1)
+    ws.write(3, 5, u'Дата окончания размещения', style1)
+
+    i = 4
+    if client.clientsurface_set.all():
+        for item in client.clientsurface_set.all():
+            ws.write(i, 0, item.surface.city.name, style1)
+            ws.write(i, 1, item.surface.street.area.name, style1)
+            ws.write(i, 2, item.surface.street.name, style1)
+            ws.write(i, 3, item.surface.house_number, style1)
+            ws.write(i, 4, str(item.date), style1)
+            ws.write(i, 5, str(item.date_end), style1)
+            i += 1
+
+    ws.col(0).width = 6666
+    ws.col(1).width = 6666
+    ws.col(2).width = 10000
+    ws.col(3).width = 4500
+    ws.col(4).width = 10000
+    ws.col(5).width = 10000
+    for count in range(i):
+        ws.row(count).height = 300
+
+    fname = 'client_#%d_address_list.xls' % client.id
+    response = HttpResponse(content_type="application/ms-excel")
+    response['Content-Disposition'] = 'attachment; filename=%s' % fname
+    wb.save(response)
+    return response

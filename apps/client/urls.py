@@ -14,6 +14,7 @@ urlpatterns = patterns(
     url(r'^add-surface/$', 'add_client_surface', name='add-client-surface'),
     url(r'^add-maket/$', 'add_client_maket', name='add-client-maket'),
     url(r'^(?P<pk>\d+)/$', 'client_update', name='change'),
+    url(r'^export/(?P<pk>\d+)/$', 'client_excel_export', name='excel_export'),
     # url(r'^surface-remove/(?P<pk>\d+)', DeleteView.as_view(model=ClientSurface, success_url="/client/"), name='surface-remove'),
     url(r'^surface-remove/', 'remove_client_surface', name='surface-remove'),
 )

@@ -254,10 +254,11 @@
       <div id="surface" class="tab-pane fade">
         <div class="panel panel-default">
           <div class="panel-body">
-            <p class="lead text-center add-bottom">Добавить рекламную поверхность</p>
-            <form action="{% url 'client:add-client-surface' %}" id="js-client-add-surface-form" method="post" role="form" class="add-bottom">
+            <div class="col-lg-6">
+              <p class="lead text-center add-bottom">Добавить рекламную поверхность</p>
+              <form action="{% url 'client:add-client-surface' %}" id="js-client-add-surface-form" method="post" role="form" class="add-bottom">
               {% csrf_token %}
-              <div class="col-lg-6">
+
                 <input type="hidden" id="hidden_client" name="client" value="{{ object.id }}">
                 <div>
                   <label for="area">Дата начала размещения</label>
@@ -289,27 +290,13 @@
                   </table>
                 </div>
               <input type="submit" value="Добавить поверхность" class="btn btn-default">
-              </div>
-
-{#              <div class="col-lg-6">#}
-{#                    {{ client_surface_form.client }}#}
-{#                <div class="form-group">#}
-{#                  <div class="col-lg-5">{{ client_surface_form.surface.label_tag }}</div>#}
-{#                  <div class="col-lg-7">{{ client_surface_form.surface }}</div>#}
-{#                  {{ client_surface_form.surface.errors }}#}
-{#                  <div class="clearfix"></div>#}
-{#                </div>#}
-{#                <div class="form-group">#}
-{#                  <div class="col-lg-5">{{ client_surface_form.date.label_tag }}</div>#}
-{#                  <div class="col-lg-7">{{ client_surface_form.date }}</div>#}
-{#                  {{ client_surface_form.date.errors }}#}
-{#                  <div class="clearfix"></div>#}
-{#                </div>#}
-
-{#              </div>#}
               <div class="clearfix"></div>
             </form>
-
+            </div>
+            <div class="col-lg-6 text-center">
+              <p class="lead text-center add-bottom">Экспорт заказанных рекламных поверхностей в EXCEL</p>
+              <a href="{% url 'client:excel_export' object.id %}" class="btn btn-danger btn-lg">СКАЧАТЬ В EXCEL</a>
+            </div>
             <table class="table table-hover">
               <thead>
                 <tr>
