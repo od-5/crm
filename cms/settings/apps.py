@@ -15,6 +15,8 @@ INSTALLED_APPS = (
     'ckeditor',
     'core',
     'apps.ticket',
+    'apps.administrator',
+    'apps.moderator',
     'apps.landing',
     'apps.cabinet',
     'apps.city',

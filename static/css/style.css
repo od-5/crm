@@ -6200,6 +6200,9 @@ body {
 .modal_ticket {
   display: none;
 }
+#js-modal-item-remove {
+  display: none;
+}
 .login {
   width: 300px;
   height: 220px;

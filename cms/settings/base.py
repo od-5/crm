@@ -7,7 +7,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 SECRET_KEY = 'u@5!he@8y6ynbta9c9(l=%b1qzb(c=*9*v)jf+1lkn%_by!jk*'
 
-if socket.gethostname() == 'alexy-PC':
+if socket.gethostname() == 'r2d2':
     DEBUG = True
 else:
     DEBUG = True

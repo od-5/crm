@@ -1,0 +1,59 @@
+{% extends 'cabinet_index.html' %}
+{% block content %}
+  <div class="container">
+    <div class="col-lg-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="lead remove-bottom text-center">Администраторы</p>
+        </div>
+        <div class="panel-body">
+          <a href="{% url 'administrator:add' %}" class="btn btn-success">
+            <span class="glyphicon glyphicon-plus-sign"></span> Добавить администратора
+          </a>
+          {% if object_list %}
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>id</th>
+                <th>e-mail</th>
+                <th>Фамлия</th>
+                <th>Имя</th>
+                <th>Отчество</th>
+                <th>Телефон</th>
+                <th>&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for object in object_list %}
+              <tr data-id="{{ object.id }}">
+                <td>{{ object.id|default:'' }}</td>
+                <td><a href="{% url 'administrator:change' object.pk %}" class="js-administrator-email"> {{ object.email|default:'' }}</a></td>
+                <td>{{ object.last_name|default:'' }}</td>
+                <td>{{ object.first_name|default:'' }}</td>
+                <td>{{ object.patronymic|default:'' }}</td>
+                <td>{{ object.phone|default:'' }}</td>
+                <td>
+                  <a href="#js-modal-item-remove" class="btn btn-danger js-remove-item-btn" data-id="{{ object.id }}" data-email="{{ object.email }}">
+                    <span class="glyphicon glyphicon-remove"></span>
+                     Уалить
+                  </a>
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="js-modal-item-remove">
+    <form action="{% url 'administrator:remove' %}" class="js-modal-remove-item-form">
+      {% csrf_token %}
+      <p class="alert alert-danger">Вы действительно хотети удалить <strong id="js-modal-item-remove-name"></strong>?</p>
+      <input type="hidden" name="item_id" id="js-modal-item-remove-id">
+      <input type="submit" value="Да" class="btn btn-success">
+      <input type="reset" value="Нет" class="btn btn-danger">
+    </form>
+  </div>
+{% endblock %}

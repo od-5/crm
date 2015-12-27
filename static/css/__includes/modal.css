@@ -1,3 +1,6 @@
 .modal_ticket {
   display: none;
 }
+#js-modal-item-remove {
+  display: none;
+}

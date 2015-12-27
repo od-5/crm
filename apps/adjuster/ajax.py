@@ -1,28 +1,27 @@
 # coding=utf-8
 from annoying.decorators import ajax_request
-from apps.city.models import Area, City, Street, Surface, Porch
-from apps.client.models import Client, ClientSurface
-from core.models import User
+from apps.client.models import Client
 
 __author__ = 'alexy'
 
 
 @ajax_request
-def task_add_filter(request):
-    if request.GET.get('surface'):
-        porch_list = []
-        if int(request.GET.get('surface')) != 0:
-            porch_qs = Porch.objects.filter(surface=int(request.GET.get('surface')))
-            for porch in porch_qs:
-                porch_list.append({
-                    'id': porch.id,
-                    'number': porch.number
-                })
-            print porch_list
-            return {
-                'porch_list': porch_list
-            }
-        else:
-            return {
-                'error': 'ACHTUNG!!!'
-            }
+def adjuster_task_client(request):
+    if request.GET.get('client'):
+        surface_list = []
+        print int(request.GET.get('client'))
+        client = Client.objects.get(pk=int(request.GET.get('client')))
+        print client.clientsurface_set.all()
+        for c_surface in client.clientsurface_set.all():
+            surface_list.append({
+                'id': c_surface.id,
+                'area': c_surface.surface.street.area.name,
+                'street': c_surface.surface.street.name,
+                'number': c_surface.surface.house_number,
+            })
+        return {
+            'surface_list': surface_list
+        }
+    return {
+        'error': 'Warning!'
+    }

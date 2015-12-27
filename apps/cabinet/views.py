@@ -68,6 +68,7 @@ class UserUpdateView(UpdateView):
     model = User
     template_name = 'cabinet/profile.html'
     form_class = UserProfileForm
+    success_url = '/cabinet/profile/'
 
     def get_object(self, queryset=None):
         return self.request.user

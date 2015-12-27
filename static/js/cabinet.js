@@ -10,7 +10,7 @@ $(function() {
 
   $.validator.messages.required = "* поле обязательно для заполнения";
 
- $.datepicker.setDefaults(
+  $.datepicker.setDefaults(
         $.extend($.datepicker.regional["ru"])
   );
   $("input[name='date']").datepicker({
@@ -25,6 +25,59 @@ $(function() {
     defaultDate: 7,
     dateFormat: "dd.mm.yy"
   });
+
+
+  // валидация формы добавления администратора
+  $( '.js-form-administrator-add' ).validate({
+    rules: {
+      email: {
+        required: true
+      },
+      password1: {
+        required: true
+      },
+      password2: {
+        required: true
+      }
+    }
+  });
+  // валидация формы изменения администратора
+  $( '.js-form-administrator-change' ).validate({
+    rules: {
+      email: {
+        required: true
+      }
+    }
+  });
+  // открытие модального окна подтверждения удаления администратора
+  $('.js-remove-item-btn').click(function(){
+    $('#js-modal-item-remove-id').val($(this).data('id'))
+    $('#js-modal-item-remove-name').text($(this).data('email'))
+  });
+  $('.js-remove-item-btn').fancybox({
+    afterClose: function () {
+      $('.js-modal-remove-item-form').resetForm();
+    }
+  });
+  $('.js-modal-remove-item-form input[type="reset"]').click(function(){
+    $.fancybox.close();
+  });
+  $('.js-modal-remove-item-form input[type="submit"]').click(function(){
+    $.fancybox.close();
+  });
+  $('.js-modal-remove-item-form').ajaxForm({
+    success: function(data){
+      if (data.success) {
+        $.notify('Пользователь был удалён', 'success');
+        console.log(data.success);
+        $('tr[data-id='+data.success+']').remove();
+      } else {
+        $.notify('Произошла ошибка. Пользователь не удалён', 'error');
+      }
+      $('.js-modal-remove-item-form').resetForm();
+    }
+  });
+
 
   // валидация формы на странице
   $( '.js-form-password-change' ).validate({
@@ -307,15 +360,12 @@ $(function() {
     }
   });
   // валидация формы добвления клиента к поверхности
-  $('.js-adjuster-task-add-form').validate({
+  $('.js-adjuster-client_task-add-form').validate({
     rules: {
       adjuster: {
         required: true
       },
       surface: {
-        required: true
-      },
-      porch: {
         required: true
       },
       type: {
@@ -326,31 +376,38 @@ $(function() {
       }
     }
   });
-
-  $('.js-adjuster-task-add-form #id_surface').change(function(){
-    if($(this).val() == ''){
-      var surface = 0
-    } else {
-      var surface = $(this).val();
-    }
-
+  var adjuster_ctask_aform = $('.js-adjuster-client_task-add-form');
+  adjuster_ctask_aform.find('#id_client').change(function(){
+    $('.js-task-surface-list tr.result').remove();
+    console.log($(this).val())
     $.ajax({
       type: "GET",
-      url: $('.js-adjuster-task-add-form').data('ajax-url'),
+      url: adjuster_ctask_aform.data('client-ajax-url'),
       data: {
-        surface: surface
+        adjster: adjuster_ctask_aform.find('#id_adjuster').val(),
+        client: $(this).val()
       }
-    }).done(function( date ) {
-      var porch_list = date.porch_list;
-      $('.js-adjuster-task-add-form #id_porch').find('option').remove();
-      $('.js-adjuster-task-add-form #id_porch').append($("<option value selected='selected'>---------</option>"));
-      for (var i = 0; i < porch_list.length; i++) {
-        $('.js-adjuster-task-add-form #id_porch').append($("<option/>", {
-            value: porch_list[i]['id'],
-            text: porch_list[i]['number']
-        }));
+    }).done(function( data ) {
+      if (data.surface_list) {
+        var surface_list = data.surface_list;
+        console.log(surface_list);
+
+        var surface_table = $('.js-task-surface-list');
+        console.log(surface_table)
+        for (var i = 0; i < surface_list.length; i++){
+          surface_table.append(
+            '<tr class="result">'+
+            '<td><input type="checkbox" name="chk_group[]" value="' +surface_list[i]['id'] +'"></td>'+
+            '<td>'+surface_list[i]['id']+'</td>'+
+            '<td>'+surface_list[i]['area']+'</td>'+
+            '<td>'+surface_list[i]['street']+'</td>'+
+            '<td>'+surface_list[i]['number']+'</td>'+
+            '</tr>'
+          )
+        }
       }
     });
   });
+
 
 });
