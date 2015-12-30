@@ -5,7 +5,9 @@ from django.shortcuts import render
 from django.views.generic import ListView
 from apps.adjuster.models import AdjusterTask, AdjusterTaskSurface
 from apps.adjustertask.forms import AdjusterTaskClientAddForm, AdjusterTaskAddForm, AdjusterTaskUpdateForm
+from apps.adjustertask.task_calendar import get_months
 from apps.city.models import Surface
+
 
 __author__ = 'alexy'
 
@@ -22,8 +24,20 @@ class AdjusterTaskListView(ListView):
             qs = AdjusterTask.objects.filter(adjuster__city__moderator=user_id)
         else:
             qs = None
+        if self.request.GET.get('date__day') and self.request.GET.get('date__month') and self.request.GET.get('date__year'):
+            day = self.request.GET.get('date__day')
+            month = self.request.GET.get('date__month')
+            year = self.request.GET.get('date__year')
+            qs = qs.filter(date__day=day, date__month=month, date__year=year)
         queryset = qs
         return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super(AdjusterTaskListView, self).get_context_data()
+        context.update(
+            get_months()
+        )
+        return context
 
 
 def adjuster_task_add(request):
