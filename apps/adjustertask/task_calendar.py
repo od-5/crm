@@ -2,6 +2,8 @@
 from calendar import HTMLCalendar, LocaleHTMLCalendar
 from datetime import date, datetime
 from itertools import groupby
+from locale import getlocale
+import _locale
 from django.conf import settings
 from django.utils.timezone import UTC
 
@@ -42,9 +44,12 @@ def get_months():
 
 class TaskCalendar(LocaleHTMLCalendar):
 
-    def __init__(self, tasks):
+    def __init__(self, tasks, locale=None):
         super(TaskCalendar, self).__init__()
         self.tasks = self.group_by_day(tasks)
+        if locale is None:
+            locale = _locale.getdefaultlocale()
+        self.locale = locale
 
     def formatday(self, day, weekday):
         if day != 0:

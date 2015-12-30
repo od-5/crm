@@ -278,6 +278,9 @@ $(function() {
   $('.js-show-map').click(function(){
     $('.js-map').slideToggle();
   });
+  $('.js-calendar-heading').click(function(){
+    $('.js-calendar-body').slideToggle();
+  });
 
 
     // валидация формы добвления фотографии поверхности

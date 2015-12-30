@@ -7,19 +7,24 @@
           <p class="lead remove-bottom text-center">Список задач</p>
         </div>
         <div class="panel-body">
-          <a href="{% url 'adjustertask:add' %}" class="btn btn-success">
+          <a href="{% url 'adjustertask:add' %}" class="btn btn-success add-bottom">
             <span class="glyphicon glyphicon-plus-sign"></span> Добавить задачу
           </a>
           <div class="col-lg-12">
             {% load tasks %}
             {% if months %}
-              <div class="add-bottom">
+              <div class="add-bottom panel panel-success">
+                <div class="panel-heading js-calendar-heading">
+                  Календарь монтажных работ <span class="caret"></span>
+                </div>
+                <div class="panel-body js-calendar-body">
               {% for date in months %}
                   <div class="calendar col-lg-3 add-bottom">
                   {% calendar date.year date.month %}
                   </div>
               {% endfor %}
-                <div class="clearfix"></div>
+                  <div class="clearfix"></div>
+                </div>
               </div>
             {% endif %}
           </div>

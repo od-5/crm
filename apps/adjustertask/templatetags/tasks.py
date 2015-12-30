@@ -11,5 +11,5 @@ def calendar(year, month):
     task_qs = AdjusterTask.objects.order_by('date').filter(
         date__year=year, date__month=month
     )
-    cal = TaskCalendar(task_qs).formatmonth(year, month)
+    cal = TaskCalendar(task_qs, ('ru_RU', 'UTF-8')).formatmonth(year, month)
     return cal

@@ -6186,6 +6186,9 @@ h2 {
 img {
   max-width: 100%;
 }
+.calendar th {
+  text-align: center;
+}
 .calendar td {
   padding: 7px;
   border: 1px solid #eee;
@@ -6193,6 +6196,9 @@ img {
 }
 .calendar td.filled {
   background-color: blanchedalmond;
+}
+.js-calendar-body {
+  display: none;
 }
 body {
   background-color: #f1f1f1;
