@@ -6197,6 +6197,9 @@ img {
 .calendar td.filled {
   background-color: blanchedalmond;
 }
+.js-calendar-heading {
+  cursor: pointer;
+}
 .js-calendar-body {
   display: none;
 }
