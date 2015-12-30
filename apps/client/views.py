@@ -256,7 +256,7 @@ def client_excel_export(request, pk):
             ws.write(i, 1, item.surface.street.area.name, style1)
             ws.write(i, 2, item.surface.street.name, style1)
             ws.write(i, 3, item.surface.house_number, style1)
-            ws.write(i, 4, str(item.date), style1)
+            ws.write(i, 4, str(item.date_start), style1)
             ws.write(i, 5, str(item.date_end), style1)
             i += 1
 

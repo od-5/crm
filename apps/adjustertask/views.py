@@ -30,27 +30,18 @@ def adjuster_task_add(request):
     context = {}
     if request.method == 'POST':
         adjustertask_client_form = AdjusterTaskClientAddForm(request.POST, request=request)
-        print '*'*10
-        print adjustertask_client_form
         adjustertask_form = AdjusterTaskAddForm(request.POST, request=request)
-        print '='*10
-        print adjustertask_form
         if adjustertask_client_form.is_valid():
             if request.POST.getlist('chk_group[]'):
-                print request.POST.getlist('chk_group[]')
                 task = adjustertask_client_form.save()
-                print task.id
                 surfaces = request.POST.getlist('chk_group[]')
                 for item in surfaces:
-                    print '*'*10
-                    print int(item)
                     surface = Surface.objects.get(pk=int(item))
                     task_surface = AdjusterTaskSurface(
                         adjustertask=task,
                         surface=surface
                     )
                     task_surface.save()
-                    print task_surface
                 return HttpResponseRedirect(task.get_absolute_url())
         else:
             context.update({
@@ -70,30 +61,21 @@ def adjuster_simple_task_add(request):
     context = {}
     if request.method == 'POST':
         adjustertask_form = AdjusterTaskAddForm(request.POST, request=request)
-        print '='*10
-        print adjustertask_form
         if adjustertask_form.is_valid():
             if request.POST.getlist('chk_group_1[]'):
-                print request.POST.getlist('chk_group_1[]')
                 task = adjustertask_form.save()
-                print task.id
                 surfaces = request.POST.getlist('chk_group_1[]')
                 for item in surfaces:
-                    print '*'*10
-                    print int(item)
                     surface = Surface.objects.get(pk=int(item))
                     task_surface = AdjusterTaskSurface(
                         adjustertask=task,
                         surface=surface
                     )
                     task_surface.save()
-                    print task
                 return HttpResponseRedirect(task.get_absolute_url())
         else:
-            print 'FOR IS NOT VALID'
             return HttpResponseRedirect(reverse('adjustertask:add'))
     else:
-        print 'NOT POST ETHOD'
         return HttpResponseRedirect(reverse('adjustertask:add'))
 
 
