@@ -517,7 +517,7 @@ $(function() {
   });
   var adjuster_task_form = $('#js-adjuster-task-add-form');
   adjuster_task_form.find('#id_area').change(function(){
-    $('.js-task-surface-list tr.result').remove();
+    $('.js-task-surface-second-list tr.result').remove();
     console.log($(this).val())
     $.ajax({
       type: "GET",
