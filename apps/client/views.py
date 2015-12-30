@@ -9,8 +9,8 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView
 from apps.city.models import City, Surface
-from apps.client.forms import ClientUserUpdateForm, ClientUpdateForm, ClientUserAddForm, ClientAddForm, \
-    ClientSurfaceAddForm, ClientMaketAddForm
+from apps.client.forms import ClientUpdateForm, ClientAddForm, ClientSurfaceAddForm, ClientMaketAddForm
+from core.forms import UserAddForm, UserUpdateForm
 from .models import Client, ClientSurface
 
 __author__ = 'alexy'
@@ -19,10 +19,12 @@ __author__ = 'alexy'
 def client_add(request):
     context = {}
     if request.method == "POST":
-        user_form = ClientUserAddForm(request.POST)
+        user_form = UserAddForm(request.POST)
         client_form = ClientAddForm(request.POST, request=request)
         if user_form.is_valid() and client_form.is_valid():
-            user = user_form.save()
+            user = user_form.save(commit=False)
+            user.type = 3
+            user.save()
             client = client_form.save(commit=False)
             client.user = user
             client.save()
@@ -32,7 +34,7 @@ def client_add(request):
                 'error': u'Проверьте правильность ввода полей'
             })
     else:
-        user_form = ClientUserAddForm()
+        user_form = UserAddForm()
         client_form = ClientAddForm(request=request)
     context.update({
         'user_form': user_form,
@@ -96,7 +98,7 @@ def client_update(request, pk):
                 success_msg = u'Пароль успешно изменён!'
             else:
                 error_msg = u'Пароль и подтверждение пароля не совпадают!'
-        user_form = ClientUserUpdateForm(request.POST, instance=user)
+        user_form = UserUpdateForm(request.POST, instance=user)
         client_form = ClientUpdateForm(request.POST, request=request, instance=client)
         if user_form.is_valid() and client_form.is_valid():
             user_form.save()
@@ -105,7 +107,7 @@ def client_update(request, pk):
         else:
             error_msg = u'Проверьте правильность ввода полей!'
     else:
-        user_form = ClientUserUpdateForm(instance=user)
+        user_form = UserUpdateForm(instance=user)
         client_form = ClientUpdateForm(request=request, instance=client)
 
     client_surface_form = ClientSurfaceAddForm(
@@ -137,7 +139,7 @@ def add_client_surface(request):
     if request.method == 'POST':
         # print request.POST
         client = Client.objects.get(pk=int(request.POST.get('client')))
-        date = request.POST.get('date')
+        date = request.POST.get('date_start')
         if request.POST.get('date_end'):
             date_end = request.POST.get('date_end')
         else:
@@ -152,7 +154,7 @@ def add_client_surface(request):
             )
             if date:
                 raw_date = datetime.datetime.strptime(date, '%d.%m.%Y')
-                c_surface.date = datetime.date(raw_date.year, raw_date.month, raw_date.day)
+                c_surface.date_start = datetime.date(raw_date.year, raw_date.month, raw_date.day)
             if date_end and date_end != None:
                 try:
                     raw_date_end = datetime.datetime.strptime(date_end, '%d.%m.%Y')
@@ -169,7 +171,7 @@ def add_client_surface(request):
                 'surface': u'%s %s' % (c_surface.surface.street.name, c_surface.surface.house_number),
                 'surface_id': str(c_surface.surface.id),
                 'area': c_surface.surface.street.area.name,
-                'date': str(c_surface.date),
+                'date_start': str(c_surface.date_start),
                 'date_end': end_date
             })
             # print c_surface.id

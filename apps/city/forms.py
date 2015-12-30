@@ -76,9 +76,10 @@ class SurfacePhotoAddForm(ModelForm):
 class SurfaceClientAddForm(ModelForm):
     class Meta:
         model = ClientSurface
-        fields = ('client', 'surface', 'date')
+        fields = ('client', 'surface', 'date_start', 'date_end')
         widgets = {
             'client': Select(attrs={'class': 'form-control'}),
             'surface': HiddenInput(attrs={'class': 'form-control'}),
-            'date': DateInput(attrs={'class': 'form-control'}),
+            'date_start': DateInput(attrs={'class': 'form-control'}),
+            'date_end': DateInput(attrs={'class': 'form-control'}),
         }

@@ -5,7 +5,7 @@
       <div class="panel panel-default">
         <div class="panel-heading">
           <p class="lead text-center remove-bottom">
-            Добавление задачи
+            Редактирование задачи
           </p>
         </div>
         <div class="panel-body">
@@ -21,11 +21,11 @@
             </div>
           {% endif %}
 
-              <form action="." role="form" class="js-adjuster-client_task-add-form" method="post" data-client-ajax-url="{% url 'adjuster:task-client-ajax' %}">
+              <form action="." role="form" id="js-adjuster-client_task-update-form" method="post" data-client-ajax-url="{% url 'adjustertask:client-ajax' %}">
                 {% csrf_token %}
                 <div class="col-lg-6">
                   <div class="col-lg-12">
-                    <p class="lead">Форма добавления новой задачи</p>
+                    <p class="lead">Форма редактирования задачи</p>
                   </div>
                   <div class="form-group">
                     <div class="col-lg-5">
@@ -57,16 +57,6 @@
                     {{ adjuster_task_form.date.errors }}
                     <div class="clearfix"></div>
                   </div>
-                  <div class="form-group">
-                    <div class="col-lg-5">
-                      {{ adjuster_task_form.client.label_tag }}
-                    </div>
-                    <div class="col-lg-7">
-                      {{ adjuster_task_form.client }}
-                    </div>
-                    {{ adjuster_task_form.client.errors }}
-                    <div class="clearfix"></div>
-                  </div>
                 </div>
                 <div class="col-lg-6">
 {#                  <div class="form-group">#}
@@ -84,21 +74,31 @@
                   <table class="table">
                     <thead>
                       <tr>
-                        <th>Выбор</th>
                         <th>id</th>
+                        <th>Город</th>
                         <th>Район</th>
                         <th>Улица</th>
                         <th>Номер дома</th>
+                        <th>&nbsp;</th>
                       </tr>
                     </thead>
                     <tbody class="js-task-surface-list">
+                    {% for ats in object.adjustertasksurface_set.all %}
+                      <tr>
+                        <td>{{ ats.id }}</td>
+                        <td>{{ ats.surface.street.city }}</td>
+                        <td>{{ ats.surface.street.area }}</td>
+                        <td>{{ ats.surface.street.name }}</td>
+                        <td>{{ ats.surface.house_number }}</td>
+                        <td></td>
+                      </tr>
+                    {% endfor %}
                     </tbody>
                   </table>
                 </div>
                 <div class="clearfix"></div>
                 <button type="submit" class="btn btn-default">Сохранить</button>
               </form>
-
           </div>
         </div>
       </div>

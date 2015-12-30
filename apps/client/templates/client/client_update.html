@@ -262,7 +262,7 @@
                 <input type="hidden" id="hidden_client" name="client" value="{{ object.id }}">
                 <div>
                   <label for="area">Дата начала размещения</label>
-                  <input type="text" name="date" id="date" class="form-control">
+                  <input type="text" name="date_start" id="date" class="form-control">
                 </div>
                 <div>
                   <label for="area">Дата окончания размещения</label>
@@ -315,7 +315,7 @@
                   <td>{{ item.id|default:'--' }}</td>
                   <td>{{ item.surface.street.area.name|default:'--' }}</td>
                   <td><a href="{% url 'city:surface-change' item.surface.pk %}">{{ item.surface|default:'Не указано' }}</a></td>
-                  <td>{{ item.date|default:'Не указано' }}</td>
+                  <td>{{ item.date_start|default:'Не указано' }}</td>
                   <td>{{ item.date_end|default:'Не указано' }}</td>
                   <td>
                     <form action="{% url 'client:surface-remove' %}" method="post" class="js-remove-client-surface" role="form">

@@ -22,4 +22,5 @@ INSTALLED_APPS = (
     'apps.city',
     'apps.client',
     'apps.adjuster',
+    'apps.adjustertask',
 )

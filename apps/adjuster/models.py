@@ -56,6 +56,9 @@ class AdjusterTask(models.Model):
     def __unicode__(self):
         return u'Задача ID №:%d' % self.id
 
+    def get_absolute_url(self):
+        return reverse('adjustertask:update', args=(self.id, ))
+
     TYPE_CHOICES = (
         (0, u'Монтаж новой конструкции'),
         (1, u'Замена'),

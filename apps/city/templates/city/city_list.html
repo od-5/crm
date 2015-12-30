@@ -46,14 +46,18 @@
                 {% if user.type == 1 %}
                 <th>Модератор</th>
                 {% endif %}
+
                 <th>Количество рекламных поверхностей</th>
                 <th>Количество клиентов</th>
+                {% if user.type == 1 %}
+                <th>&nbsp;</th>
+                {% endif %}
               </tr>
             </thead>
             <tbody>
             {% if object_list %}
             {% for object in object_list %}
-              <tr>
+              <tr data-id="{{ object.id }}">
                 <td>{{ object.id|default:'' }}</td>
                 <td><a href="{% url 'city:change' object.pk %}">{{ object.name|default:'' }}</a></td>
               {% if user.type == 1 %}
@@ -65,6 +69,15 @@
               {% endif %}
                 <td>{{ object.surface_count }}</td>
                 <td>{{ object.client_set.all.count }}</td>
+                {% if user.type == 1 %}
+                {% include '__cabinet/remove_item_btn.html' with name=object.name %}
+{#                <td>#}
+{#                  <a href="#js-modal-item-remove" class="btn btn-danger js-remove-item-btn" data-id="{{ object.id }}" data-email="{{ object.name }}">#}
+{#                    <span class="glyphicon glyphicon-remove"></span>#}
+{#                     Уалить#}
+{#                  </a>#}
+{#                </td>#}
+                {% endif %}
               </tr>
             {% endfor %}
             {% endif %}
@@ -74,5 +87,14 @@
         </div>
       </div>
     </div>
+  </div>
+  <div id="js-modal-item-remove">
+    <form action="{% url 'city:remove' %}" class="js-modal-remove-item-form">
+      {% csrf_token %}
+      <p class="alert alert-danger">Вы действительно хотети удалить <strong id="js-modal-item-remove-name"></strong>?</p>
+      <input type="hidden" name="item_id" id="js-modal-item-remove-id">
+      <input type="submit" value="Да" class="btn btn-success">
+      <input type="reset" value="Нет" class="btn btn-danger">
+    </form>
   </div>
 {% endblock %}

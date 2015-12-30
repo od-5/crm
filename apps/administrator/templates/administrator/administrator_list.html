@@ -32,12 +32,13 @@
                 <td>{{ object.first_name|default:'' }}</td>
                 <td>{{ object.patronymic|default:'' }}</td>
                 <td>{{ object.phone|default:'' }}</td>
-                <td>
-                  <a href="#js-modal-item-remove" class="btn btn-danger js-remove-item-btn" data-id="{{ object.id }}" data-email="{{ object.email }}">
-                    <span class="glyphicon glyphicon-remove"></span>
-                     Уалить
-                  </a>
-                </td>
+                {% include '__cabinet/remove_item_btn.html' with name=object.email %}
+{#                <td>#}
+{#                  <a href="#js-modal-item-remove" class="btn btn-danger js-remove-item-btn" data-id="{{ object.id }}" data-email="{{ object.email }}">#}
+{#                    <span class="glyphicon glyphicon-remove"></span>#}
+{#                     Уалить#}
+{#                  </a>#}
+{#                </td>#}
               </tr>
             {% endfor %}
             </tbody>

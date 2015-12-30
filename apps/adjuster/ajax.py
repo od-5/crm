@@ -1,27 +1,27 @@
 # coding=utf-8
 from annoying.decorators import ajax_request
-from apps.client.models import Client
+from core.models import User
 
 __author__ = 'alexy'
 
 
 @ajax_request
-def adjuster_task_client(request):
-    if request.GET.get('client'):
-        surface_list = []
-        print int(request.GET.get('client'))
-        client = Client.objects.get(pk=int(request.GET.get('client')))
-        print client.clientsurface_set.all()
-        for c_surface in client.clientsurface_set.all():
-            surface_list.append({
-                'id': c_surface.id,
-                'area': c_surface.surface.street.area.name,
-                'street': c_surface.surface.street.name,
-                'number': c_surface.surface.house_number,
-            })
+def adjuster_remove(request):
+    if request.method == 'GET':
+        if request.GET.get('item_id'):
+            user = User.objects.get(adjuster__id=int(request.GET.get('item_id')))
+            print user
+            user.delete()
+            return {
+                'success': int(request.GET.get('item_id'))
+            }
+        else:
+            print 'no element'
+            return {
+                'error': True
+            }
+    else:
+        print 'error'
         return {
-            'surface_list': surface_list
+            'error': True
         }
-    return {
-        'error': 'Warning!'
-    }

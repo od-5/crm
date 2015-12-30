@@ -44,6 +44,9 @@ def city_update(request, pk):
             return HttpResponseRedirect(city.get_absolute_url())
     else:
         form = CityAddForm(instance=city)
+        if user.type == 2:
+            form.fields['name'].widget.attrs['readonly'] = True
+            form.fields['moderator'].widget.attrs['readonly'] = True
         formset = AreaInlineFormset(instance=city)
     street_form = StreetForm(
         initial={

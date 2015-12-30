@@ -46,15 +46,15 @@ class ClientSurface(models.Model):
         verbose_name = u'Рекламная поверхность'
         verbose_name_plural = u'Рекламные поверхности'
         app_label = 'client'
-        ordering = ['-date', ]
+        ordering = ['-date_start', ]
 
     def __unicode__(self):
         return u'%s %s ' % (self.surface.street.name, self.surface.house_number)
 
     client = models.ForeignKey(to=Client, verbose_name=u'Клиент')
     surface = models.ForeignKey(to=Surface, verbose_name=u'Рекламная поверхность')
-    date = models.DateField(verbose_name=u'Дата заказа', default=datetime.date.today())
-    date_end = models.DateField(verbose_name=u'Дата заказа', blank=True, null=True)
+    date_start = models.DateField(verbose_name=u'Дата начала размещения')
+    date_end = models.DateField(verbose_name=u'Дата окончания размещения', blank=True, null=True)
 
 
 class ClientMaket(models.Model):

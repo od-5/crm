@@ -71,3 +71,22 @@ def surface_ajax(request):
             # 'city': city.name,
             'street_list': street_list
         }
+
+
+@ajax_request
+def city_remove(request):
+    if request.method == 'GET':
+        if request.GET.get('item_id'):
+            city = City.objects.get(id=int(request.GET.get('item_id')))
+            city.delete()
+            return {
+                'success': int(request.GET.get('item_id'))
+            }
+        else:
+            return {
+                'error': True
+            }
+    else:
+        return {
+            'error': True
+        }

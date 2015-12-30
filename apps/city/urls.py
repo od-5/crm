@@ -3,7 +3,7 @@ from django.conf.urls import patterns, url
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.urlresolvers import reverse
 from django.views.generic import CreateView, DeleteView
-from apps.city.ajax import surface_ajax, get_area_streets
+from apps.city.ajax import surface_ajax, get_area_streets, city_remove
 from .forms import CityAddForm
 from .models import City, Surface, Street
 from .views import city_update, SurfaceListView, SurfaceCreateView, SurfaceUpdateView, CityListView
@@ -15,6 +15,7 @@ urlpatterns = patterns(
     url(r'^$', CityListView.as_view(model=City), name='list'),
     url(r'^add/$', staff_member_required(CreateView.as_view(model=City, form_class=CityAddForm)), name='add'),
     url(r'^(?P<pk>\d+)/$', city_update, name='change'),
+    url(r'^remove/$', city_remove, name='remove'),
     url(r'^porch-add/$', 'porch_update', name='porch'),
     url(r'^street-add/$', 'street_add', name='street-add'),
     url(r'^surface/$', SurfaceListView.as_view(), name='surface-list'),

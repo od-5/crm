@@ -14,7 +14,7 @@ def moderator_add(request):
         form = UserAddForm(request.POST)
         if form.is_valid():
             user = form.save()
-            user.type = 1
+            user.type = 2
             user.save()
             return HttpResponseRedirect(reverse('moderator:change', args=(user.id, )))
         else:

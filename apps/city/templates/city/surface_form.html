@@ -130,9 +130,15 @@
                     <div class="clearfix"></div>
                   </div>
                   <div class="form-group">
-                    <div class="col-lg-5">{{ surface_client_form.date.label_tag }}</div>
-                    <div class="col-lg-7">{{ surface_client_form.date }}</div>
-                    {{ surface_client_form.date.errors }}
+                    <div class="col-lg-5">{{ surface_client_form.date_start.label_tag }}</div>
+                    <div class="col-lg-7">{{ surface_client_form.date_start }}</div>
+                    {{ surface_client_form.date_start.errors }}
+                    <div class="clearfix"></div>
+                  </div>
+                <div class="form-group">
+                    <div class="col-lg-5">{{ surface_client_form.date_end.label_tag }}</div>
+                    <div class="col-lg-7">{{ surface_client_form.date_end }}</div>
+                    {{ surface_client_form.date_end.errors }}
                     <div class="clearfix"></div>
                   </div>
                   <input type="submit" value="Добавить клиента" class="btn btn-default">
@@ -155,7 +161,7 @@
                   <tr>
                     <td>{{ item.id|default:'--' }}</td>
                     <td><a href="{% url 'client:change' item.client.id %}">{{ item.client|default:'Не указано' }}</a></td>
-                    <td>{{ item.date|default:'Не указано' }}</td>
+                    <td>{{ item.date_start|default:'Не указано' }}</td>
     {#                <td>&nbsp;</td>#}
                   </tr>
                 {% endfor %}

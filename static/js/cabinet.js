@@ -13,19 +13,63 @@ $(function() {
   $.datepicker.setDefaults(
         $.extend($.datepicker.regional["ru"])
   );
-  $("input[name='date']").datepicker({
+  $("#js-surface-photo-add-form #id_date").datepicker({
     defaultDate: 7,
     dateFormat: "dd.mm.yy"
   });
-  $("input[name='date_end']").datepicker({
+  $(".start_date").datepicker({
     defaultDate: 7,
     dateFormat: "dd.mm.yy"
   });
-  $("input[name='contract_date']").datepicker({
+  $(".end_date").datepicker({
+    defaultDate: 7,
+    dateFormat: "dd.mm.yy"
+  });
+  $("#js-surface-add-client-form #id_date_start").datepicker({
+    defaultDate: 7,
+    dateFormat: "dd.mm.yy"
+  });
+  $("#js-surface-add-client-form #id_date_end").datepicker({
+    defaultDate: 7,
+    dateFormat: "dd.mm.yy"
+  });
+  $("#js-client-add-maket-form #id_date").datepicker({
+    defaultDate: 7,
+    dateFormat: "dd.mm.yy"
+  });
+  $("#js-client-add-surface-form #date").datepicker({
+    defaultDate: 7,
+    dateFormat: "dd.mm.yy"
+  });
+  $("#js-client-add-surface-form #date_end").datepicker({
+    defaultDate: 7,
+    dateFormat: "dd.mm.yy"
+  });
+  $("#js-city-form #id_contract_date").datepicker({
+    defaultDate: 7,
+    dateFormat: "dd.mm.yy"
+  });
+  $("#js-adjuster-client_task-add-form #id_date").datepicker({
+    defaultDate: 7,
+    dateFormat: "dd.mm.yy"
+  });
+  $("#js-adjuster-client_task-update-form #id_date").datepicker({
+    defaultDate: 7,
+    dateFormat: "dd.mm.yy"
+  });
+  $("#js-adjuster-task-add-form #id_date_at").datepicker({
     defaultDate: 7,
     dateFormat: "dd.mm.yy"
   });
 
+  // валидация формы добавления города
+  $( '#js-city-form' ).validate({
+    rules: {
+      name: {
+        required: true
+      }
+    }
+  });
 
   // валидация формы добавления администратора
   $( '.js-form-administrator-add' ).validate({
@@ -68,11 +112,11 @@ $(function() {
   $('.js-modal-remove-item-form').ajaxForm({
     success: function(data){
       if (data.success) {
-        $.notify('Пользователь был удалён', 'success');
+        $.notify('Объект был удалён', 'success');
         console.log(data.success);
         $('tr[data-id='+data.success+']').remove();
       } else {
-        $.notify('Произошла ошибка. Пользователь не удалён', 'error');
+        $.notify('Произошла ошибка. Объект не удалён', 'error');
       }
       $('.js-modal-remove-item-form').resetForm();
     }
@@ -106,7 +150,7 @@ $(function() {
     }
   });
 
-  // валидация формы добвления клиента
+  // валидация формы добавления клиента
   $( '.js-form-client-add' ).validate({
     rules: {
       city: {
@@ -119,6 +163,34 @@ $(function() {
         required: true
       },
       password2: {
+        required: true
+      }
+    }
+  });
+  // валидация формы добавления монтажника
+  $( '.js-form-adjuster-add' ).validate({
+    rules: {
+      city: {
+        required: true
+      },
+      email: {
+        required: true
+      },
+      password1: {
+        required: true
+      },
+      password2: {
+        required: true
+      }
+    }
+  });
+  // валидация формы добавления монтажника
+  $( '.js-form-adjuster-update' ).validate({
+    rules: {
+      city: {
+        required: true
+      },
+      email: {
         required: true
       }
     }
@@ -285,7 +357,7 @@ $(function() {
       area: {
         required: true
       },
-      date: {
+      date_start: {
         required: true
       }
     },
@@ -307,7 +379,7 @@ $(function() {
                     '<td>' + surface_list[i]['id'] + '</td>' +
                     '<td>' + surface_list[i]['area'] + '</td>' +
                     '<td><a href="/city/surface/' + surface_list[i]['surface_id'] + '">' + surface_list[i]['surface'] + '</a></td>' +
-                    '<td>' + surface_list[i]['date'] + '</td>' +
+                    '<td>' + surface_list[i]['date_start'] + '</td>' +
                     '<td>' + surface_list[i]['date_end'] + '</td>' +
                     '<td>' +
                       '<form action="/client/surface-remove/" method="post" class="js-remove-client-surface" role="form">' +
@@ -339,7 +411,7 @@ $(function() {
       client: {
         required: true
       },
-      date: {
+      date_start: {
         required: true
       }
     }
@@ -359,8 +431,8 @@ $(function() {
       }
     }
   });
-  // валидация формы добвления клиента к поверхности
-  $('.js-adjuster-client_task-add-form').validate({
+  // валидация формы добавления задачи по клиенту
+  $('#js-adjuster-client_task-add-form').validate({
     rules: {
       adjuster: {
         required: true
@@ -373,10 +445,13 @@ $(function() {
       },
       date: {
         required: true
+      },
+      client: {
+        required: true
       }
     }
   });
-  var adjuster_ctask_aform = $('.js-adjuster-client_task-add-form');
+  var adjuster_ctask_aform = $('#js-adjuster-client_task-add-form');
   adjuster_ctask_aform.find('#id_client').change(function(){
     $('.js-task-surface-list tr.result').remove();
     console.log($(this).val())
@@ -408,6 +483,69 @@ $(function() {
       }
     });
   });
+  // валидация формы редактирования задачи по клиенту
+  $('#js-adjuster-client_task-udate-form').validate({
+    rules: {
+      adjuster: {
+        required: true
+      },
+      type: {
+        required: true
+      },
+      date: {
+        required: true
+      }
+    }
+  });
+
+  // валидация формы добавления задачи по району
+  $('#js-adjuster-task-add-form').validate({
+    rules: {
+      adjuster: {
+        required: true
+      },
+      type: {
+        required: true
+      },
+      date: {
+        required: true
+      },
+      area: {
+        required: true
+      }
+    }
+  });
+  var adjuster_task_form = $('#js-adjuster-task-add-form');
+  adjuster_task_form.find('#id_area').change(function(){
+    $('.js-task-surface-list tr.result').remove();
+    console.log($(this).val())
+    $.ajax({
+      type: "GET",
+      url: adjuster_task_form.data('area-ajax-url'),
+      data: {
+        area: $(this).val()
+      }
+    }).done(function( data ) {
+      if (data.surface_list) {
+        var surface_list = data.surface_list;
+        console.log(surface_list);
+
+        var surface_table = $('.js-task-surface-second-list');
+        console.log(surface_table)
+        for (var i = 0; i < surface_list.length; i++){
+          surface_table.append(
+            '<tr class="result">'+
+            '<td><input type="checkbox" name="chk_group_1[]" value="' +surface_list[i]['id'] +'"></td>'+
+            '<td>'+surface_list[i]['id']+'</td>'+
+            '<td>'+surface_list[i]['street']+'</td>'+
+            '<td>'+surface_list[i]['number']+'</td>'+
+            '</tr>'
+          )
+        }
+      }
+    });
+  });
+
 
 
 });

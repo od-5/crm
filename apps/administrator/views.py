@@ -21,7 +21,7 @@ def administrator_add(request):
     if request.method == "POST":
         form = UserAddForm(request.POST)
         if form.is_valid():
-            user = form.save()
+            user = form.save(commit=False)
             user.type = 1
             user.save()
             return HttpResponseRedirect(reverse('administrator:change', args=(user.id, )))
