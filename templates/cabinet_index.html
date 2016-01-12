@@ -7,86 +7,177 @@
 {% endblock %}
 {% block content %}
   <div class="container">
-  {% if city_list %}
     <div class="row">
-      <div class="col-lg-12">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <p class="lead remove-bottom text-center">Города</p>
-          </div>
-          <div class="panel-body">
-            <table class="table table-hover">
-              <thead>
+      <div class="col-12">
+        <div class="col-lg-12">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <p class="lead text-center remove-bottom">Пользователи</p>
+            </div>
+            <div class="panel-body">
+              <table class="table">
                 <tr>
-                  <th>id</th>
-                  <th>Название</th>
                   {% if user.type == 1 %}
-                  <th>Модератор</th>
+                  <td><a href="{% url 'administrator:list' %}">Список администраторов</a></td>
+                  <td><a href="{% url 'administrator:add' %}">Добавить администратора</a></td>
                   {% endif %}
-                  <th>Количество поверхностей</th>
-                  <th>Количество клиентов</th>
+                  <td><a href="{% url 'moderator:list' %}">Список модераторов</a></td>
+                  <td><a href="{% url 'moderator:add' %}">Добавить модератора</a></td>
                 </tr>
-              </thead>
-              <tbody>
-              {% for city in city_list %}
                 <tr>
-                  <td> {{ city.id|default:'--' }}</td>
-                  <td><a href="{% url 'city:change' city.id %}">{{ city.name|default:'--' }}</a></td>
-                {% if user.type == 1 %}
-                  {% if city.moderator %}
-                  <td><a href="{% url 'cabinet:user-change' city.moderator.id %}">{{ city.moderator|default:'Не указан' }}</a></td>
-                  {% else %}
-                  <td>{{ city.moderator|default:'Не указан' }}</td>
-                  {% endif %}
-                {% endif %}
-                  <td><a href="{% url 'city:surface-list' %}?city={{ city.id }}">{{ city.surface_count|default:'--' }}</a></td>
-                  <td>{{ city.client_set.all.count|default:'--' }}</td>
+                  <td><a href="{% url 'client:list' %}">Список клиентов</a></td>
+                  <td><a href="{% url 'client:add' %}">Добавить клиента</a></td>
+                  <td><a href="{% url 'adjuster:list' %}">Список монтажников</a></td>
+                  <td><a href="{% url 'adjuster:add' %}">Добавить монтажника</a></td>
                 </tr>
-              {% endfor %}
-              </tbody>
-            </table>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <p class="lead text-center remove-bottom">Настройки сайта</p>
+            </div>
+            <div class="panel-body">
+              <table class="table">
+                <tr>
+                  <td><a>SEO</a></td>
+                  <td><a>Контент</a></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <p class="lead text-center remove-bottom">Заявки с сайта</p>
+            </div>
+            <div class="panel-body">
+              <table class="table">
+                <tr>
+                  <td><a>Заявки</a></td>
+                  <td><a>Продажи</a></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <p class="lead text-center remove-bottom">Задачи</p>
+            </div>
+            <div class="panel-body">
+              <table class="table">
+                <tr>
+                  <td><a href="{% url 'adjustertask:list' %}">Список задач</a></td>
+                  <td><a href="{% url 'adjustertask:add' %}">Добавить задачу</a></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-12">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <p class="lead text-center remove-bottom">Города</p>
+            </div>
+            <div class="panel-body">
+              <table class="table">
+                <tr>
+                  <td><a href="{% url 'city:list' %}">Список городов</a></td>
+                  <td><a href="{% url 'city:add' %}">Добавить город</a></td>
+                  <td><a href="{% url 'city:surface-list' %}">Список рекламных поерхностей</a></td>
+                  <td><a href="{% url 'city:surface-add' %}">Добавить рекламную поверхность</a></td>
+                </tr>
+              </table>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  {% endif %}
-
-  {% if client_list %}
-    <div class="row">
-      <div class="col-lg-12">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <p class="lead remove-bottom text-center">Клиенты</p>
-          </div>
-          <div class="panel-body">
-            <table class="table table-hover">
-              <thead>
-                <tr>
-                  <th>id</th>
-                  <th>Пользователь</th>
-                  <th>Город</th>
-                  <th>Юриическое название</th>
-                  <th>Руководитель</th>
-                  <th>Должность руководителя</th>
-                </tr>
-              </thead>
-              <tbody>
-              {% for client in client_list %}
-                <tr>
-                  <td>{{ client.id|default:'--' }}</td>
-                  <td><a href="{% url 'cabinet:user-change' client.user.id %}">{{ client.user.email|default:'--' }}</a></td>
-                  <td><a href="{%  url 'city:change' client.city.id %}">{{ client.city|default:'--' }}</a></td>
-                  <td><a href="{% url 'client:change' client.id %}">{{ client.legal_name|default:'Не указан' }}</a></td>
-                  <td>{{ client.leader|default:'Не указан' }}</td>
-                  <td>{{ client.leader_function|default:'Не указано' }}</td>
-                </tr>
-              {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  {% endif %}
+{#  {% if city_list %}#}
+{#    <div class="row">#}
+{#      <div class="col-lg-12">#}
+{#        <div class="panel panel-default">#}
+{#          <div class="panel-heading">#}
+{#            <p class="lead remove-bottom text-center">Города</p>#}
+{#          </div>#}
+{#          <div class="panel-body">#}
+{#            <table class="table table-hover">#}
+{#              <thead>#}
+{#                <tr>#}
+{#                  <th>id</th>#}
+{#                  <th>Название</th>#}
+{#                  {% if user.type == 1 %}#}
+{#                  <th>Модератор</th>#}
+{#                  {% endif %}#}
+{#                  <th>Количество поверхностей</th>#}
+{#                  <th>Количество клиентов</th>#}
+{#                </tr>#}
+{#              </thead>#}
+{#              <tbody>#}
+{#              {% for city in city_list %}#}
+{#                <tr>#}
+{#                  <td> {{ city.id|default:'--' }}</td>#}
+{#                  <td><a href="{% url 'city:change' city.id %}">{{ city.name|default:'--' }}</a></td>#}
+{#                {% if user.type == 1 %}#}
+{#                  {% if city.moderator %}#}
+{#                  <td><a href="{% url 'cabinet:user-change' city.moderator.id %}">{{ city.moderator|default:'Не указан' }}</a></td>#}
+{#                  {% else %}#}
+{#                  <td>{{ city.moderator|default:'Не указан' }}</td>#}
+{#                  {% endif %}#}
+{#                {% endif %}#}
+{#                  <td><a href="{% url 'city:surface-list' %}?city={{ city.id }}">{{ city.surface_count|default:'--' }}</a></td>#}
+{#                  <td>{{ city.client_set.all.count|default:'--' }}</td>#}
+{#                </tr>#}
+{#              {% endfor %}#}
+{#              </tbody>#}
+{#            </table>#}
+{#          </div>#}
+{#        </div>#}
+{#      </div>#}
+{#    </div>#}
+{#  {% endif %}#}
+{##}
+{#  {% if client_list %}#}
+{#    <div class="row">#}
+{#      <div class="col-lg-12">#}
+{#        <div class="panel panel-default">#}
+{#          <div class="panel-heading">#}
+{#            <p class="lead remove-bottom text-center">Клиенты</p>#}
+{#          </div>#}
+{#          <div class="panel-body">#}
+{#            <table class="table table-hover">#}
+{#              <thead>#}
+{#                <tr>#}
+{#                  <th>id</th>#}
+{#                  <th>Пользователь</th>#}
+{#                  <th>Город</th>#}
+{#                  <th>Юриическое название</th>#}
+{#                  <th>Руководитель</th>#}
+{#                  <th>Должность руководителя</th>#}
+{#                </tr>#}
+{#              </thead>#}
+{#              <tbody>#}
+{#              {% for client in client_list %}#}
+{#                <tr>#}
+{#                  <td>{{ client.id|default:'--' }}</td>#}
+{#                  <td><a href="{% url 'cabinet:user-change' client.user.id %}">{{ client.user.email|default:'--' }}</a></td>#}
+{#                  <td><a href="{%  url 'city:change' client.city.id %}">{{ client.city|default:'--' }}</a></td>#}
+{#                  <td><a href="{% url 'client:change' client.id %}">{{ client.legal_name|default:'Не указан' }}</a></td>#}
+{#                  <td>{{ client.leader|default:'Не указан' }}</td>#}
+{#                  <td>{{ client.leader_function|default:'Не указано' }}</td>#}
+{#                </tr>#}
+{#              {% endfor %}#}
+{#              </tbody>#}
+{#            </table>#}
+{#          </div>#}
+{#        </div>#}
+{#      </div>#}
+{#    </div>#}
+{#  {% endif %}#}
   </div>
 {% endblock %}
