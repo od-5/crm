@@ -1,11 +1,15 @@
 # coding=utf-8
+from datetime import datetime
 from django.core.urlresolvers import reverse
 from django.forms import inlineformset_factory, TextInput, Select, formset_factory, modelformset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from django.utils.dateparse import parse_date, parse_time
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView, UpdateView
+from apps.adjuster.models import SurfacePhoto
 from apps.city.forms import CityAddForm, SurfaceAddForm, PorchFormSet, StreetForm, SurfacePhotoAddForm, \
-    SurfaceClientAddForm
+    SurfaceClientAddForm, AreaAddForm, AreaModelFormset
 from apps.city.models import City, Area, Surface, Street
 
 __author__ = 'alexy'
@@ -50,30 +54,35 @@ def city_update(request, pk):
         formset = AreaInlineFormset(instance=city)
     street_form = StreetForm(
         initial={
-            'city': city,
-            # 'area': city.area_set.all(),
-            'name': u'Привет'
+            'city': city
         }
     )
+    street_form.fields['area'].queryset = city.area_set.all()
+    area_form = AreaAddForm(initial={
+        'city': city
+    })
     context = {
         'form': form,
         'formset': formset,
         'street_form': street_form,
-        'city': city
+        'city': city,
+        'area_form': area_form
     }
     return render(request, 'city/city_form.html', context)
 
 
-def street_add(request):
+def area_add(request):
     if request.method == 'POST':
-        form = StreetForm(request.POST)
-        if form.is_valid():
-            form.save()
+        formset = AreaModelFormset(request.POST)
+        print formset
+        if formset.is_valid():
+            print 'Valid'
+            instanes = formset.save(commit=False)
+            for instance in instanes:
+                instance.save()
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
         else:
-            return HttpResponseRedirect(reverse('city:list'))
-    else:
-        return HttpResponseRedirect(reverse('city:list'))
+            print 'Not Valid'
 
 
 class CityListView(ListView):
@@ -96,6 +105,7 @@ class CityListView(ListView):
                 queryset = qs
         return queryset
 
+    @csrf_exempt
     def get_context_data(self, **kwargs):
         context = super(CityListView, self).get_context_data()
         if self.request.user.type == 1:
@@ -107,6 +117,38 @@ class CityListView(ListView):
         context.update({
             'user_city_list': qs
         })
+        if self.request.user.type == 1:
+            # TODO: сделать queryset для модератора, только по его городам
+            a_qs = SurfacePhoto.objects.all()
+        elif self.request.user.type == 2:
+            a_qs = SurfacePhoto.objects.select_related('moderator').filter(pk=int(self.request.user.id))
+        else:
+            a_qs = None
+        if a_qs:
+            if self.request.GET.get('start_date'):
+                context.update({
+                    'start_date': self.request.GET.get('start_date')
+                })
+                start_date = self.request.GET.get('start_date')
+                rs_date = datetime.strptime(start_date, '%d.%m.%Y')
+                s_date = datetime.date(rs_date)
+                # c_surface.date_start = datetime.date(raw_date.year, raw_date.month, raw_date.day)
+                a_qs = a_qs.filter(date__gte=s_date)
+                # print s_date
+                if self.request.GET.get('end_date'):
+                    print self.request.GET.get('end_date')
+                    end_date = self.request.GET.get('end_date')
+                    re_date = datetime.strptime(end_date, '%d.%m.%Y')
+                    e_date = datetime.date(re_date)
+                    # c_surface.date_start = datetime.date(raw_date.year, raw_date.month, raw_date.day)
+                    a_qs = a_qs.filter(date__lte=e_date)
+                    context.update({
+                        'end_date': self.request.GET.get('end_date')
+                    })
+        context.update({
+            'address_list': a_qs
+        })
+
         return context
 
 

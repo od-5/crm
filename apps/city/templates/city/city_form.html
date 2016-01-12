@@ -2,93 +2,175 @@
 {% block content %}
   <div class="container">
     <div class="col-lg-12">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <p class="lead text-center remove-bottom">
-            {% if formset %}
-            Редактирование города
-            {% else %}
-            Добавление города
-            {% endif %}
-          </p>
-        </div>
-        <div class="panel-body">
-          <div class="row">
-            <div class="col-lg-6">
-              <p class="text-info lead">Город</p>
-              <form action="." role="form" class="form-profile" id="js-city-form" method="post">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" class="btn btn-default">Сохранить</button>
-              </form>
-            </div>
-            {% if formset %}
-            <div class="col-lg-6">
-            <p class="text-info lead">Районы города</p>
-              <form action="." role="form" class="form-profile"  method="post">
-                {% csrf_token %}
-                {{ formset.as_p }}
-                <button type="submit" class="btn btn-default">Сохранить</button>
-              </form>
+      <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#city">Город</a></li>
+        <li><a data-toggle="tab" href="#area">Районы</a></li>
+        <li><a data-toggle="tab" href="#street" id="js-tab-street" data-city="{{ city.id }}" data-url="{% url 'city:get_city_area' %}">Улицы</a></li>
+      </ul>
+      <div class="tab-content">
+        <div id="city" class="tab-pane fade in active">
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-lg-6">
+                  <p class="text-info lead">Город</p>
+                  <form action="." role="form" class="form-profile" id="js-city-form" method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-default">Сохранить</button>
+                  </form>
+                </div>
+              </div>
             </div>
           </div>
-          {% endif %}
         </div>
-      </div>
-      {% if city %}
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <p class="lead text-center remove-bottom">
-            Улицы
-          </p>
+        <div id="area" class="tab-pane fade">
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-lg-7">
+                  <form action="{% url 'city:area-add' %}" role="form" class="form-profile add-bottom" id="js-area-add-form" method="post">
+                    {% csrf_token %}
+                    {{ area_form.city }}
+                    <div class="col-lg-2">{{ area_form.name.label_tag }}</div>
+                    <div class="col-lg-6">{{ area_form.name }}</div>
+                    {{ area_form.name.errors }}
+                    <div class="col-lg-4"> <button type="submit" class="btn btn-default">Добавить район</button></div>
+                    <div class="clearfix"></div>
+                  </form>
+                </div>
+                <div class="clearfix"></div>
+                <div class="col-lg-12">
+                  <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th>id</th>
+                        <th>Название</th>
+                        <th>Количество адресов</th>
+                        <th>&nbsp;</th>
+                        <th>&nbsp;</th>
+                      </tr>
+                    </thead>
+                    <tbody class="js-area-list">
+                    {% for object in city.area_set.all %}
+                      <tr data-id="{{ object.id }}" data-name="{{ object.name }}">
+                        <td>{{ object.id }}</td>
+                        <td data-id="{{ object.id }}">{{ object.name }}</td>
+                        <td>{{ object.street_set.all.count }}</td>
+                        <td><a href="#js-modal-item-update" class="btn btn-info js-update-item-btn">Редактировать</a></td>
+{#                        <td><a class="btn btn-danger">Удалить</a></td>#}
+                        {% include '__cabinet/remove_item_btn.html' with name=object.name %}
+                      </tr>
+                    {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="panel-body">
-          <div class="col-lg-6">
-          <form action="{% url 'city:street-add' %}" role="form" class="form-profile"  method="post">
-            {% csrf_token %}
-            {% if street_form %}
-            <input type="hidden" name="city" id="id_city" value="{{ city.id }}" class="form-control">
-              {{ street_form.area.label_tag }}
-              <select name="area" id="id_area" class="form-control">
-                {% for area in city.area_set.all %}
-                  <option value="{{ area.id }}">{{ area.name }}</option>
+        <div id="street" class="tab-pane fade">
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <div class="col-lg-6">
+                <form action="{% url 'city:street-add' %}" role="form" id="js-street-add-form"  method="post">
+                  {% csrf_token %}
+                  {{ street_form.city }}
+                  <div class="form-group">
+                    <div class="col-lg-5">{{ street_form.area.label_tag }}</div>
+                    <div class="col-lg-7">{{ street_form.area }}</div>
+                    {{ street_form.area.errors }}
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-lg-5">{{ street_form.name.label_tag }}</div>
+                    <div class="col-lg-7">{{ street_form.name }}</div>
+                    {{ street_form.name.errors }}
+                    <div class="clearfix"></div>
+                  </div>
+                  <button type="submit" class="btn btn-default add-bottom">Добавить улицу</button>
+                  <div class="clearfix"></div>
+                </form>
+              </div>
+              {% if city.street_set.all %}
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Район</th>
+                    <th>Улица</th>
+                    <th>&nbsp;</th>
+                    <th>&nbsp;</th>
+                  </tr>
+                </thead>
+                <tbody class="js-street-list">
+                {% for object in city.street_set.all %}
+                  <tr data-id="{{ object.id }}" data-name="{{ object.name }}">
+                    <td>{{ object.area }}</td>
+                    <td data-id="{{ object.id }}">{{ object.name }}</td>
+                    <td><a href="#js-modal-street-update" class="btn btn-info js-update-street-btn">Редактировать</a></td>
+                    <td>
+                      <a href="#js-modal-street-remove" class="btn btn-danger js-remove-street-btn">
+                        <span class="glyphicon glyphicon-remove"></span>
+                         Удалить
+                      </a>
+                    </td>
+                  </tr>
                 {% endfor %}
-              </select>
-              {{ street_form.name.label_tag }}
-              <input type="text" name="name" id="id_name"  class="form-control add-bottom">
-            {% endif %}
-              <button type="submit" class="btn btn-default add-bottom">Добавить улицу</button>
-            <div class="clearfix"></div>
-          </form>
+              </table>
+              {% else %}
+              <div class="clearfix"></div>
+              <div class="alert alert-info">Нет адресов</div>
+              {% endif %}
+            </div>
           </div>
-          {% if city.street_set.all %}
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <th>Район</th>
-                <th>Улица</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-            {% for street in city.street_set.all %}
-              <tr>
-                <td> {{ street.area }} </td>
-                <td> {{ street.name }} </td>
-                <td class="text-right"><a href="{% url 'city:street-remove' street.id %}" class="btn btn-warning js-remove-street">
-                  <span class="glyphicon glyphicon-remove"></span> удалить</a>
-                </td>
-              </tr>
-            {% endfor %}
-          </table>
-          {% else %}
-          <div class="clearfix"></div>
-          <div class="alert alert-info">Нет адресов</div>
-          {% endif %}
-        </div>
-        {% endif %}
         </div>
       </div>
     </div>
+  </div>
+
+  <div id="js-modal-item-remove">
+    <form action="{% url 'city:area-remove' %}" class="js-modal-remove-item-form">
+      {% csrf_token %}
+      <p class="alert alert-danger">Вы действительно хотите удалить <strong id="js-modal-item-remove-name"></strong>?</p>
+      <input type="hidden" name="item_id" id="js-modal-item-remove-id">
+      <input type="submit" value="Да" class="btn btn-success">
+      <input type="reset" value="Нет" class="btn btn-danger">
+    </form>
+  </div>
+
+  <div id="js-modal-item-update">
+    <form action="{% url 'city:area-update' %}" class="js-modal-update-item-form">
+      {% csrf_token %}
+      <div class="form-group">
+        <input type="hidden" name="item_id" id="js-modal-item-update-id">
+        <label for="item_name">Название района:</label>
+        <input type="text" name="item_name" id="js-modal-item-update-name" class="form-control">
+      </div>
+      <input type="submit" value="Сохранить" class="btn btn-success">
+      <input type="reset" value="Отмена" class="btn btn-danger">
+    </form>
+  </div>
+
+  <div id="js-modal-street-remove">
+    <form action="{% url 'city:street-remove' %}" class="js-modal-remove-street-form">
+      {% csrf_token %}
+      <p class="alert alert-danger">Вы действительно хотите удалить <strong id="js-modal-street-remove-name"></strong>?</p>
+      <input type="hidden" name="item_id" id="js-modal-street-remove-id">
+      <input type="submit" value="Да" class="btn btn-success">
+      <input type="reset" value="Нет" class="btn btn-danger">
+    </form>
+  </div>
+
+    <div id="js-modal-street-update">
+    <form action="{% url 'city:street-update' %}" class="js-modal-update-street-form">
+      {% csrf_token %}
+      <div class="form-group">
+        <input type="hidden" name="item_id" id="js-modal-street-update-id">
+        <label for="item_name">Название улицы:</label>
+        <input type="text" name="item_name" id="js-modal-street-update-name" class="form-control">
+      </div>
+      <input type="submit" value="Сохранить" class="btn btn-success">
+      <input type="reset" value="Отмена" class="btn btn-danger">
+    </form>
   </div>
 {% endblock %}

@@ -61,6 +61,14 @@ $(function() {
     defaultDate: 7,
     dateFormat: "dd.mm.yy"
   });
+  $("#js-address-filter-form #id_start_date").datepicker({
+    defaultDate: 1,
+    dateFormat: "dd.mm.yy"
+  });
+  $("#js-address-filter-form #id_end_date").datepicker({
+    defaultDate: 1,
+    dateFormat: "dd.mm.yy"
+  });
 
   // валидация формы добавления города
   $( '#js-city-form' ).validate({
@@ -93,11 +101,27 @@ $(function() {
       }
     }
   });
-  // открытие модального окна подтверждения удаления администратора
-  $('.js-remove-item-btn').click(function(){
-    $('#js-modal-item-remove-id').val($(this).data('id'))
-    $('#js-modal-item-remove-name').text($(this).data('email'))
-  });
+  // открытие модального окна подтверждения удаления эдемента
+
+  //$('.js-remove-item-btn').click(function(){
+  //  console.log($(this).data('id'));
+  //  $('#js-modal-item-remove-id').val($(this).data('id'));
+  //  $('#js-modal-item-remove-name').text($(this).data('email'));
+  //});
+  if ($('.js-area-list')) {
+    $('.js-area-list').on('click', '.js-remove-item-btn', function(){
+      console.log($(this).data('id'));
+      $('#js-modal-item-remove-id').val($(this).data('id'));
+      $('#js-modal-item-remove-name').text($(this).data('email'));
+    });
+  } else {
+    $('.js-remove-item-btn').click(function(){
+      console.log($(this).data('id'));
+      $('#js-modal-item-remove-id').val($(this).data('id'));
+      $('#js-modal-item-remove-name').text($(this).data('email'));
+    });
+  }
+
   $('.js-remove-item-btn').fancybox({
     afterClose: function () {
       $('.js-modal-remove-item-form').resetForm();
@@ -549,6 +573,197 @@ $(function() {
     });
   });
 
+  // валидация формы добавления района
+  $( '#js-area-add-form' ).validate({
+    rules: {
+      city: {
+        required: true
+      },
+      name: {
+        required: true
+      },
+    },
+    submitHandler: function(e) {
+      $('#js-area-add-form').ajaxSubmit({
+          success: function(data){
+            if (data.success) {
+              $.notify('Создан новый район', 'success');
+              $('.js-area-list').append(
+                '<tr data-id="' + data.id + '" data-name="'+ data.name + '">' +
+                  '<td>' + data.id + '</td>' +
+                  '<td data-id="' + data.id + '">' + data.name + '</td>' +
+                  '<td>0</td>' +
+                  '<td><a href="#js-modal-item-update" class="btn btn-info js-update-item-btn">Редактировать</a></td>' +
+                  '<td>' +
+                    '<a href="#js-modal-item-remove" class="btn btn-danger js-remove-item-btn" data-id="' + data.id + '" data-email="' + data.name + '">'+
+                    '<span class="glyphicon glyphicon-remove"></span> Удалить </a>' +
+                  '</td>' +
+                '</tr>'
+              );
+            } else {
+              $.notify('Ошибка. Проверьте правильность ввода данных.', 'error');
+            }
+            $('#js-area-add-form').trigger('reset');
+          }
+      });
+    }
+  });
 
+//  модальная форма редактирования района
+    $('.js-area-list').on('click', '.js-update-item-btn', function(){
+      $('#js-modal-item-update-id').val($(this).parents('tr').data('id'));
+      $('#js-modal-item-update-name').val($(this).parents('tr').data('name'));
+      console.log($(this));
+    });
 
+  $('.js-update-item-btn').fancybox({
+    afterClose: function () {
+      $('.js-modal-update-item-form').resetForm();
+    }
+  });
+  $('.js-modal-update-item-form input[type="reset"]').click(function(){
+    $.fancybox.close();
+  });
+  $('.js-modal-update-item-form input[type="submit"]').click(function(){
+    $.fancybox.close();
+  });
+  $('.js-modal-update-item-form').ajaxForm({
+    success: function(data){
+      if (data.success) {
+        $.notify('Объект был сохранён', 'success');
+        console.log(data.name);
+        $('td[data-id='+data.id+']').text(data.name);
+        $('tr[data-id='+data.id+']').attr('data-name', data.name);
+      } else {
+        $.notify('Название района не может быть пустым', 'error');
+      }
+      $('.js-modal-update-item-form').resetForm();
+    }
+  });
+  // Получение актуального списка районов
+  $('#js-tab-street').on('click', function(){
+    console.log($(this).data('city'));
+    console.log($(this).data('url'));
+    $.ajax({
+      type: "GET",
+      url: $(this).data('url'),
+      data: {
+        city_id: $(this).data('city')
+      }
+    }).done(function( data ) {
+      if (data.area_list) {
+        var area_list = data.area_list;
+        console.log(area_list);
+        $('#js-street-add-form #id_area').find('option').remove();
+        for (var i = 0; i < area_list.length; i++) {
+          $('#js-street-add-form #id_area').append($("<option/>", {
+              value: area_list[i]['id'],
+              text: area_list[i]['name']
+          }));
+        }
+      }
+    });
+  });
+  // Валидация формы добавления улицы
+  $( '#js-street-add-form' ).validate({
+    rules: {
+      city: {
+        required: true
+      },
+      area: {
+        required: true,
+      },
+      name: {
+        required: true
+      }
+    },
+    submitHandler: function(e) {
+      $('#js-street-add-form').ajaxSubmit({
+          success: function(data){
+            if (data.success) {
+              $.notify('Улица добавлена', 'success');
+              $('.js-street-list').append(
+                '<tr data-id="' + data.id + '" data-name="'+ data.name + '">' +
+                  '<td>' + data.area + '</td>' +
+                  '<td data-id="' + data.id + '">' + data.name + '</td>' +
+                  '<td><a href="#js-modal-street-update" class="btn btn-info js-update-street-btn">Редактировать</a></td>' +
+                  '<td>' +
+                    '<a href="#js-modal-street-remove" class="btn btn-danger js-remove-street-btn">'+
+                    '<span class="glyphicon glyphicon-remove"></span> Удалить</a>' +
+                  '</td>' +
+                '</tr>'
+              );
+            } else {
+              $.notify('Ошибка. Проверьте правильность ввода данных.', 'error');
+            }
+            $('#js-street-add-form').trigger('reset');
+          }
+      });
+    }
+  });
+
+  //  модальная форма редактирования улицы
+    $('.js-street-list').on('click', '.js-update-street-btn', function(){
+      $('#js-modal-street-update-id').val($(this).parents('tr').data('id'));
+      $('#js-modal-street-update-name').val($(this).parents('tr').data('name'));
+      console.log($(this).parents('tr').data('id'));
+      console.log($(this).parents('tr').data('name'));
+    });
+
+  $('.js-update-street-btn').fancybox({
+    afterClose: function () {
+      $('.js-modal-update-street-form').resetForm();
+    }
+  });
+  $('.js-modal-update-street-form input[type="reset"]').click(function(){
+    $.fancybox.close();
+  });
+  $('.js-modal-update-street-form input[type="submit"]').click(function(){
+    $.fancybox.close();
+  });
+  // Форма изменения названия улицы
+  $('.js-modal-update-street-form').ajaxForm({
+    success: function(data){
+      if (data.success) {
+        $.notify('Название улицы было изменено', 'success');
+        console.log(data.name);
+        $('td[data-id='+data.id+']').text(data.name);
+        $('tr[data-id='+data.id+']').attr('data-name', data.name);
+      } else {
+        $.notify('Название улицы не может быть пустым', 'error');
+      }
+      $('.js-modal-update-street-form').resetForm();
+    }
+  });
+//  Удаление улицы
+  $('.js-street-list').on('click', '.js-remove-street-btn', function(){
+    $('#js-modal-street-remove-id').val($(this).parents('tr').data('id'));
+    $('#js-modal-street-remove-name').text($(this).parents('tr').data('name'));
+    console.log($(this).parents('tr').data('id'));
+    console.log($(this).parents('tr').data('name'));
+  });
+
+  $('.js-remove-street-btn').fancybox({
+    afterClose: function () {
+      $('.js-modal-remove-street-form').resetForm();
+    }
+  });
+  $('.js-modal-remove-street-form input[type="reset"]').click(function(){
+    $.fancybox.close();
+  });
+  $('.js-modal-remove-street-form input[type="submit"]').click(function(){
+    $.fancybox.close();
+  });
+  $('.js-modal-remove-street-form').ajaxForm({
+    success: function(data){
+      if (data.success) {
+        $.notify('Улица была удалёна', 'success');
+        console.log(data.success);
+        $('.js-street-list tr[data-id='+data.success+']').remove();
+      } else {
+        $.notify('Произошла ошибка. Улица не удалёна', 'error');
+      }
+      $('.js-modal-remove-item-form').resetForm();
+    }
+  });
 });

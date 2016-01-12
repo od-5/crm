@@ -1,9 +1,10 @@
 # coding=utf-8
-from django.forms import ModelForm, TextInput, Select, DateInput, inlineformset_factory, FileInput, HiddenInput
+from django.forms import ModelForm, TextInput, Select, DateInput, inlineformset_factory, FileInput, HiddenInput, \
+    modelformset_factory
 from apps.adjuster.models import SurfacePhoto
 from apps.client.models import ClientSurface
 from core.models import User
-from .models import City, Surface, Porch, Street
+from .models import City, Surface, Porch, Street, Area
 
 __author__ = 'alexy'
 
@@ -55,7 +56,7 @@ class StreetForm(ModelForm):
         model = Street
         fields = ('city', 'area', 'name')
         widgets = {
-            'city': Select(attrs={'class': 'form-control'}),
+            'city': HiddenInput(attrs={'class': 'form-control'}),
             'area': Select(attrs={'class': 'form-control'}),
             'name': TextInput(attrs={'class': 'form-control'}),
         }
@@ -83,3 +84,16 @@ class SurfaceClientAddForm(ModelForm):
             'date_start': DateInput(attrs={'class': 'form-control'}),
             'date_end': DateInput(attrs={'class': 'form-control'}),
         }
+
+
+class AreaAddForm(ModelForm):
+    class Meta:
+        model = Area
+        fields = ('city', 'name', )
+        widgets = {
+            'city': HiddenInput(attrs={'class': 'form-control'}),
+            'name': TextInput(attrs={'class': 'form-control'}),
+        }
+
+
+AreaModelFormset = modelformset_factory(Area, form=AreaAddForm)

@@ -40,7 +40,7 @@ class AdjusterTaskAddForm(forms.ModelForm):
             'comment': forms.Textarea(attrs={'class': 'form-control'}),
         }
 
-    area = forms.ModelChoiceField(queryset=Surface.objects.all(), label=u'Район', widget=forms.Select(attrs={'class': 'form-control'}))
+    area = forms.ModelChoiceField(queryset=Area.objects.all(), label=u'Район', widget=forms.Select(attrs={'class': 'form-control'}))
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")

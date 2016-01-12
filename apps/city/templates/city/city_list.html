@@ -38,51 +38,112 @@
             <input type="submit" value="Искать" class="btn btn-info">
           </form>
 
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <th>id</th>
-                <th>Название</th>
-                {% if user.type == 1 %}
-                <th>Модератор</th>
-                {% endif %}
+          <div class="city-list">
+            <table class="table table-hover scroll">
+              <thead>
+                <tr>
+                  <th>id</th>
+                  <th>Название</th>
+                  {% if user.type == 1 %}
+                  <th>Модератор</th>
+                  {% endif %}
 
-                <th>Количество рекламных поверхностей</th>
-                <th>Количество клиентов</th>
+                  <th>Количество рекламных поверхностей</th>
+                  <th>Количество клиентов</th>
+                  {% if user.type == 1 %}
+                  <th>&nbsp;</th>
+                  {% endif %}
+                </tr>
+              </thead>
+              <tbody>
+              {% if object_list %}
+              {% for object in object_list %}
+                <tr data-id="{{ object.id }}">
+                  <td>{{ object.id|default:'' }}</td>
+                  <td><a href="{% url 'city:change' object.pk %}">{{ object.name|default:'' }}</a></td>
                 {% if user.type == 1 %}
-                <th>&nbsp;</th>
+                  {% if city.moderator %}
+                  <td><a href="{% url 'cabinet:user-change' object.moderator.id %}">{{ object.moderator|default:'Не указан' }}</a></td>
+                  {% else %}
+                  <td>{{ object.moderator|default:'Не указан' }}</td>
+                  {% endif %}
                 {% endif %}
-              </tr>
-            </thead>
-            <tbody>
-            {% if object_list %}
-            {% for object in object_list %}
-              <tr data-id="{{ object.id }}">
-                <td>{{ object.id|default:'' }}</td>
-                <td><a href="{% url 'city:change' object.pk %}">{{ object.name|default:'' }}</a></td>
-              {% if user.type == 1 %}
-                {% if city.moderator %}
-                <td><a href="{% url 'cabinet:user-change' object.moderator.id %}">{{ object.moderator|default:'Не указан' }}</a></td>
-                {% else %}
-                <td>{{ object.moderator|default:'Не указан' }}</td>
-                {% endif %}
+                  <td>{{ object.surface_count }}</td>
+                  <td>{{ object.client_set.all.count }}</td>
+                  {% if user.type == 1 %}
+                  {% include '__cabinet/remove_item_btn.html' with name=object.name %}
+  {#                <td>#}
+  {#                  <a href="#js-modal-item-remove" class="btn btn-danger js-remove-item-btn" data-id="{{ object.id }}" data-email="{{ object.name }}">#}
+  {#                    <span class="glyphicon glyphicon-remove"></span>#}
+  {#                     Уалить#}
+  {#                  </a>#}
+  {#                </td>#}
+                  {% endif %}
+                </tr>
+              {% endfor %}
               {% endif %}
-                <td>{{ object.surface_count }}</td>
-                <td>{{ object.client_set.all.count }}</td>
-                {% if user.type == 1 %}
-                {% include '__cabinet/remove_item_btn.html' with name=object.name %}
-{#                <td>#}
-{#                  <a href="#js-modal-item-remove" class="btn btn-danger js-remove-item-btn" data-id="{{ object.id }}" data-email="{{ object.name }}">#}
-{#                    <span class="glyphicon glyphicon-remove"></span>#}
-{#                     Уалить#}
-{#                  </a>#}
-{#                </td>#}
-                {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading"><p class="lead remove-bottom text-center">Фотографии поверхностей</p></div>
+        <div class="panel-body">
+
+          <div class="address-list">
+            <div class="row">
+              <div class="col-lg-7">
+                <form action="" method="GET" role="form" id="js-address-filter-form" class="form-inline">
+{#                  {% csrf_token %}#}
+                  Дата от:
+                  <input type="text" name="start_date" id="id_start_date" class="form-control" value="{{ start_date|default:'' }}">
+                  до:
+                  <input type="text" name="end_date" id="id_end_date" class="form-control" value="{{ end_date|default:'' }}">
+                  <button class="btn btn-info" type="submit"><span class="glyphicon glyphicon-search"></span> Искать</button>
+                </form>
+              </div>
+              <div class="col-lg-5">
+                <a class="btn btn-info" title="Показать плиткой"><span class="glyphicon glyphicon-th"></span> Показать плиткой</a>
+                <a class="btn btn-info"><span class="glyphicon glyphicon-globe"></span> На карте</a>
+              </div>
+            </div>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Город</th>
+                  <th>Район</th>
+                  <th>Адрес</th>
+                  <th>Дом</th>
+                  <th>Подъезд</th>
+                  <th>Дата</th>
+                  <th>&nbsp;</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for item in address_list %}
+              <tr>
+                <td>{{ item.surface.city.name }}</td>
+                <td>{{ item.surface.street.area.name }}</td>
+                <td>{{ item.surface.street.name }}</td>
+                <td>{{ item.surface.house_number }}</td>
+                <td>{{ item.porch.number }}</td>
+                <td>{{ item.date }}</td>
+                <td><a href="{{ item.image.url }}" rel="group" class="js-gallery" title="{{ item.surface.city.name }},
+                {{ item.surface.street.area.name }} {{ item.surface.street.name }} {{ item.surface.house_number }}, подъезд {{ item.porch.number }}">
+                    <span class="glyphicon glyphicon-zoom-in"></span>
+                  </a></td>
               </tr>
-            {% endfor %}
-            {% endif %}
-            </tbody>
-          </table>
+              {% empty %}
+              <tr>
+                <td colspan="7">
+                  <p class="alert alert-info">Фотографий не найдено</p>
+                </td>
+              </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </div>
 
         </div>
       </div>

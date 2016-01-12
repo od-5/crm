@@ -6203,6 +6203,44 @@ img {
 .js-calendar-body {
   display: none;
 }
+.scroll thead {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+.scroll tbody {
+  width: 100%;
+  display: block;
+  overflow-y: scroll;
+  max-height: 255px;
+}
+.scroll td:nth-child(1),
+.scroll th:nth-child(1) {
+  width: 50px;
+}
+.scroll td:nth-child(2),
+.scroll th:nth-child(2) {
+  width: 200px;
+}
+.scroll td:nth-child(3),
+.scroll th:nth-child(3) {
+  width: 200px;
+}
+.scroll td:nth-child(4),
+.scroll th:nth-child(4) {
+  width: 300px;
+}
+.scroll td:nth-child(5),
+.scroll th:nth-child(5) {
+  width: 200px;
+}
+.scroll td:nth-child(6),
+.scroll th:nth-child(6) {
+  width: 120px;
+}
+a.lead {
+  display: inline-block;
+}
 body {
   background-color: #f1f1f1;
 }
@@ -6254,6 +6292,11 @@ label.error {
 .modal_ticket {
   display: none;
 }
-#js-modal-item-remove {
+#js-modal-item-remove,
+#js-modal-item-update {
+  display: none;
+}
+#js-modal-street-remove,
+#js-modal-street-update {
   display: none;
 }

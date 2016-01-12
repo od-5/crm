@@ -44,6 +44,7 @@ def cabinet_view(request):
             'adjuster_list': adjuster_qs
         })
 
+
     return render(request, 'cabinet_index.html', context)
 
 

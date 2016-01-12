@@ -1,6 +1,11 @@
 .modal_ticket {
   display: none;
 }
-#js-modal-item-remove {
+#js-modal-item-remove,
+#js-modal-item-update {
+  display: none;
+}
+#js-modal-street-remove,
+#js-modal-street-update {
   display: none;
 }
