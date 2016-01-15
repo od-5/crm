@@ -110,7 +110,8 @@ class ClientJournal(models.Model):
             discount = self.discount
         else:
             discount = 0
-        return round(((cost + add_cost)*(1+discount*0.01)), 2)
+        sum = ((cost + add_cost)*(1+discount*0.01)) * self.clientorder.stand_count()
+        return round(sum, 2)
 
     client = models.ForeignKey(to=Client, verbose_name=u'клиент')
     clientorder = models.ForeignKey(to=ClientOrder, verbose_name=u'заказ клиента')
