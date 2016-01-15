@@ -79,6 +79,7 @@
                         <th>Район</th>
                         <th>Улица</th>
                         <th>Номер дома</th>
+                        <th>Кол-во подъездов</th>
                         <th>&nbsp;</th>
                       </tr>
                     </thead>
@@ -90,6 +91,7 @@
                         <td>{{ ats.surface.street.area }}</td>
                         <td>{{ ats.surface.street.name }}</td>
                         <td>{{ ats.surface.house_number }}</td>
+                        <td>{{ ats.surface.porch_count }}</td>
                         <td></td>
                       </tr>
                     {% endfor %}

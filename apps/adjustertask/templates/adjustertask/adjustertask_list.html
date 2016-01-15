@@ -28,6 +28,34 @@
               </div>
             {% endif %}
           </div>
+          <div>
+            <form action="" method="get" class="inline-form add-bottom" id="js-adjuster-task-filter-form" role="form">
+              <div class="col-lg-2">
+                {{ filter_form.city.label_tag }}
+                {{ filter_form.city }}
+              </div>
+              <div class="col-lg-2">
+                {{ filter_form.adjuster.label_tag }}
+                {{ filter_form.adjuster }}
+              </div>
+              <div class="col-lg-2">
+                {{ filter_form.type.label_tag }}
+                {{ filter_form.type }}
+              </div>
+              <div class="col-lg-2">
+                {{ filter_form.date_s.label_tag }}
+                {{ filter_form.date_s }}
+              </div>
+              <div class="col-lg-2">
+                {{ filter_form.date_e.label_tag }}
+                {{ filter_form.date_e }}
+              </div>
+              <div class="col-lg-2"><br>
+                <input type="submit" value="Искать" class="btn btn-info">
+              </div>
+              <div class="clearfix"></div>
+            </form>
+          </div>
           <table class="table table-hover">
             <thead>
               <tr>
@@ -40,38 +68,33 @@
                 <th>&nbsp;</th>
               </tr>
             </thead>
-            <tbody>
-            {% if object_list %}
+            <tbody class="js-list">
               {% for object in object_list %}
-              <tr data-id="{{ object.id }}">
+              <tr data-id="{{ object.id }}" data-name="{{ object }}" data-model="AdjusterTask" id="id_AdjusterTask_{{ object.id }}">
                 <td><a href="{% url 'adjustertask:update' object.id %}" >{{ object }}</a></td>
                 <td>{{ object.adjuster.user.get_full_name|default:'--' }}</td>
                 <td>{{ object.adjuster.city.name|default:'--' }}</td>
                 <td>{{ object.get_type_display|default:'--' }}</td>
                 <td>{{ object.date|default:'--' }}</td>
-                <td>{{ object.adjustertasksurface_set.all.count|default:'--' }}</td>
+                <td>{{ object.adjustertasksurface_set.all.count|default:'0' }}</td>
                 <td>
-                  <a href="#js-modal-item-remove" class="btn btn-danger js-remove-item-btn" data-id="{{ object.id }}" data-email="{{ object }}">
-                    <span class="glyphicon glyphicon-remove"></span>
-                     Уалить
+                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-AdjusterTask-{{ object.id }}" class="btn btn-danger js-ajax-remove-btn">
+                    Удалить
                   </a>
                 </td>
               </tr>
+              {% empty %}
+                <tr>
+                  <td colspan="7">
+                    <p class="alert alert-info">Задач не найдено</p>
+                  </td>
+                </tr>
               {% endfor %}
-            {% endif %}
             </tbody>
           </table>
         </div>
       </div>
     </div>
   </div>
-  <div id="js-modal-item-remove">
-    <form action="{% url 'adjustertask:remove' %}" class="js-modal-remove-item-form">
-      {% csrf_token %}
-      <p class="alert alert-danger">Вы действительно хотети удалить <strong id="js-modal-item-remove-name"></strong>?</p>
-      <input type="hidden" name="item_id" id="js-modal-item-remove-id">
-      <input type="submit" value="Да" class="btn btn-success">
-      <input type="reset" value="Нет" class="btn btn-danger">
-    </form>
-  </div>
+{% include '__modal/js_ajax_remove_form.html' %}
 {% endblock %}

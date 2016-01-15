@@ -21,17 +21,16 @@
                 <th>&nbsp;</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody class="js-list">
             {% for object in object_list %}
-              <tr data-id="{{ object.id }}">
+              <tr data-id="{{ object.id }}" data-name="{{ object.user.get_full_name }}" data-model="Adjuster" id="id_Adjuster_{{ object.id }}">
                 <td>{{ object.id|default:'--' }}</td>
                 <td><a href="{% url 'adjuster:change' object.pk %}">{{ object.user.email|default:'--' }}</a></td>
                 <td>{{ object.user.get_full_name|default:'--' }}</td>
                 <td>{{ object.city|default:'--' }}</td>
                 <td>
-                  <a href="#js-modal-item-remove" class="btn btn-danger js-remove-item-btn" data-id="{{ object.id }}" data-email="{{ object.user.email }}">
-                    <span class="glyphicon glyphicon-remove"></span>
-                     Уалить
+                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-Adjuster-{{ object.id }}" class="btn btn-danger js-ajax-remove-btn">
+                    Удалить
                   </a>
                 </td>
               </tr>
@@ -43,13 +42,5 @@
       </div>
     </div>
   </div>
-  <div id="js-modal-item-remove">
-    <form action="{% url 'adjuster:remove' %}" class="js-modal-remove-item-form">
-      {% csrf_token %}
-      <p class="alert alert-danger">Вы действительно хотети удалить <strong id="js-modal-item-remove-name"></strong>?</p>
-      <input type="hidden" name="item_id" id="js-modal-item-remove-id">
-      <input type="submit" value="Да" class="btn btn-success">
-      <input type="reset" value="Нет" class="btn btn-danger">
-    </form>
-  </div>
+{% include '__modal/js_ajax_remove_form.html' %}
 {% endblock %}

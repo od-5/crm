@@ -31,6 +31,7 @@ def adjuster_add(request):
         user_form = UserAddForm(request.POST)
         adjuster_form = AdjusterAddForm(request.POST, request=request)
         if user_form.is_valid() and adjuster_form.is_valid():
+            # TODO: сделать отправку сообщения о регистрации на email
             user = user_form.save(commit=False)
             user.type = 4
             user.save()
@@ -83,6 +84,15 @@ def adjuster_update(request, pk):
         'error': error_msg,
         'user_form': user_form,
         'adjuster_form': adjuster_form,
-        'object': adjuster
+        'adjuster': adjuster
     })
     return render(request, 'adjuster/adjuster_update.html', context)
+
+
+def adjuster_task(request, pk):
+    context = {}
+    adjuster = Adjuster.objects.get(pk=int(pk))
+    context.update({
+        'adjuster': adjuster
+    })
+    return render(request, 'adjuster/adjuster_task.html', context)

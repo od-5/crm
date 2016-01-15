@@ -2,7 +2,7 @@
 from django import forms
 from apps.adjuster.models import Adjuster, AdjusterTask
 from apps.city.models import City, Surface, Area
-from apps.client.models import Client
+from apps.client.models import Client, ClientOrder
 from core.models import User
 
 __author__ = 'alexy'
@@ -16,10 +16,11 @@ class AdjusterTaskClientAddForm(forms.ModelForm):
             'adjuster': forms.Select(attrs={'class': 'form-control'}),
             'type': forms.Select(attrs={'class': 'form-control'}),
             'date': forms.DateInput(attrs={'class': 'form-control '}),
-            'comment': forms.Textarea(attrs={'class': 'form-control'}),
+            'comment': forms.Textarea(attrs={'class': 'form-control', 'placeholder': u'Текст комментария к задаче'}),
         }
 
     client = forms.ModelChoiceField(queryset=Client.objects.all(), label=u'Клиент', widget=forms.Select(attrs={'class': 'form-control'}))
+    # clientorder = forms.ChoiceField(choices=((0, '---------'),), label=u'Заказ', widget=forms.Select(attrs={'class': 'form-control'}))
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
@@ -27,6 +28,8 @@ class AdjusterTaskClientAddForm(forms.ModelForm):
         if self.request.user and self.request.user.type == 2:
             self.fields['adjuster'].queryset = Adjuster.objects.filter(city__moderator=self.request.user)
             self.fields['client'].queryset = Client.objects.filter(city__moderator=self.request.user)
+
+
 
 
 class AdjusterTaskAddForm(forms.ModelForm):
@@ -66,3 +69,37 @@ class AdjusterTaskUpdateForm(forms.ModelForm):
         super(AdjusterTaskUpdateForm, self).__init__(*args, **kwargs)
         if self.request.user and self.request.user.type == 2:
             self.fields['adjuster'].queryset = Adjuster.objects.filter(city__moderator=self.request.user)
+
+
+class AdjusterTaskFilterForm(forms.Form):
+    TYPE_CHOICES = (
+        (None, u'---------'),
+        (0, u'Монтаж новой конструкции'),
+        (1, u'Замена'),
+        (2, u'Ремонт стенда'),
+        (3, u'Демонтаж стенда'),
+    )
+
+    city = forms.ModelChoiceField(
+        queryset=City.objects.all(),
+        label=u'Город',
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+    adjuster = forms.ModelChoiceField(
+        queryset=Adjuster.objects.all(),
+        label=u'Монтажник',
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+    type = forms.ChoiceField(
+        choices=TYPE_CHOICES,
+        label=u'Тип работы',
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+    date_s = forms.DateField(
+        label=u'Дата от',
+        widget=forms.DateInput(attrs={'class': 'form-control'})
+    )
+    date_e = forms.DateField(
+        label=u'до',
+        widget=forms.DateInput(attrs={'class': 'form-control'})
+    )

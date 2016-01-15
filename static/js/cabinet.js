@@ -93,6 +93,14 @@ $(function() {
     defaultDate: 1,
     dateFormat: "dd.mm.yy"
   });
+  $("#js-adjuster-task-filter-form #id_date_s").datepicker({
+    defaultDate: 1,
+    dateFormat: "dd.mm.yy"
+  });
+  $("#js-adjuster-task-filter-form #id_date_e").datepicker({
+    defaultDate: 1,
+    dateFormat: "dd.mm.yy"
+  });
 
   // валидация формы добавления города
   $( '#js-city-form' ).validate({
@@ -625,8 +633,43 @@ $(function() {
       }
     }
   });
+  // логика работы формы добавления задаи по клиенту
+  var act_form = $('#js-adjuster-client_task-add-form');
+  act_form.find('#id_client').change(function(){
+    if ($(this).val().length){
+      act_form.find('#clientorder_group').removeClass('hide');
+      $.ajax({
+        type: "GET",
+        url: $(this).parent('#client_group').data('url'),
+        data: {
+          client: $(this).val()
+        }
+      }).done(function( data ) {
+        if (data.success) {
+          var order_list = data.order_list;
+          console.log(order_list);
+          act_form.find('#id_clientorder').find('option').remove();
+          act_form.find('#id_clientorder').append($("<option/>", {
+              value: '',
+              text: '---------'
+          }));
+          for (var i = 0; i < order_list.length; i++) {
+            act_form.find('#id_clientorder').append($("<option/>", {
+                value: order_list[i]['id'],
+                text: order_list[i]['name']
+            }));
+          }
+        }
+      });
+    } else {
+      act_form.find('#clientorder_group').addClass('hide');
+      act_form.find('#id_clientorder').find('option').remove();
+    //  TODO: очистить список заказов
+
+    }
+  });
   // валидация формы добавления задачи по клиенту
-  $('#js-adjuster-client_task-add-form').validate({
+  act_form.validate({
     rules: {
       adjuster: {
         required: true
@@ -642,19 +685,20 @@ $(function() {
       },
       client: {
         required: true
+      },
+      clientorder: {
+        required: true
       }
     }
   });
-  var adjuster_ctask_aform = $('#js-adjuster-client_task-add-form');
-  adjuster_ctask_aform.find('#id_client').change(function(){
+  act_form.find('#id_clientorder').change(function(){
     $('.js-task-surface-list tr.result').remove();
-    console.log($(this).val())
+    console.log($(this).val());
     $.ajax({
       type: "GET",
-      url: adjuster_ctask_aform.data('client-ajax-url'),
+      url: $(this).parents('#clientorder_group').data('url'),
       data: {
-        adjster: adjuster_ctask_aform.find('#id_adjuster').val(),
-        client: $(this).val()
+        clientorder: $(this).val()
       }
     }).done(function( data ) {
       if (data.surface_list) {
@@ -662,15 +706,16 @@ $(function() {
         console.log(surface_list);
 
         var surface_table = $('.js-task-surface-list');
-        console.log(surface_table)
+        console.log(surface_table);
         for (var i = 0; i < surface_list.length; i++){
           surface_table.append(
             '<tr class="result">'+
             '<td><input type="checkbox" name="chk_group[]" value="' +surface_list[i]['id'] +'"></td>'+
-            '<td>'+surface_list[i]['id']+'</td>'+
+            '<td>'+surface_list[i]['city']+'</td>'+
             '<td>'+surface_list[i]['area']+'</td>'+
             '<td>'+surface_list[i]['street']+'</td>'+
             '<td>'+surface_list[i]['number']+'</td>'+
+            '<td>'+surface_list[i]['porch']+'</td>'+
             '</tr>'
           )
         }

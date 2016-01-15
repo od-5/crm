@@ -31,28 +31,6 @@ def adjuster_task_client(request):
 
 
 @ajax_request
-def adjuster_task_remove(request):
-    if request.method == 'GET':
-        if request.GET.get('item_id'):
-            task = AdjusterTask.objects.get(id=int(request.GET.get('item_id')))
-            print task
-            task.delete()
-            return {
-                'success': int(request.GET.get('item_id'))
-            }
-        else:
-            print 'no element'
-            return {
-                'error': True
-            }
-    else:
-        print 'error'
-        return {
-            'error': True
-        }
-
-
-@ajax_request
 @csrf_exempt
 def adjuster_get_area_streets(request):
     if request.GET.get('area'):
