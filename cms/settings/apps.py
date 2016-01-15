@@ -22,5 +22,6 @@ INSTALLED_APPS = (
     'apps.city',
     'apps.client',
     'apps.adjuster',
-    'apps.adjustertask',
+    'apps.surface',
+    'django_cleanup',
 )

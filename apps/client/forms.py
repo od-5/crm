@@ -1,7 +1,7 @@
 # coding=utf-8
 from django import forms
 from apps.city.models import City
-from apps.client.models import Client, ClientSurface, ClientMaket
+from apps.client.models import Client, ClientSurface, ClientMaket, ClientOrder, ClientJournal
 from core.models import User
 
 __author__ = 'alexy'
@@ -82,13 +82,38 @@ class ClientSurfaceAddForm(forms.ModelForm):
         }
 
 
-class ClientMaketAddForm(forms.ModelForm):
+class ClientMaketForm(forms.ModelForm):
     class Meta:
         model = ClientMaket
         fields = ('client', 'name', 'file', 'date')
         widgets = {
             'client': forms.HiddenInput(attrs={'class': 'form-control'}),
             'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'file': forms.FileInput(attrs={'class': 'form-control'}),
+            'file': forms.ClearableFileInput(attrs={'class': 'form-control'}),
             'date': forms.DateInput(attrs={'class': 'form-control'}),
         }
+
+
+class ClientOrderForm(forms.ModelForm):
+    class Meta:
+        model = ClientOrder
+        fields = ('client', 'date_start', 'date_end')
+        widgets = {
+            'client': forms.HiddenInput(attrs={'class': 'form-control'}),
+            'date_start': forms.DateInput(attrs={'class': 'form-control'}),
+            'date_end': forms.DateInput(attrs={'class': 'form-control'}),
+        }
+
+
+class ClientJournalForm(forms.ModelForm):
+    class Meta:
+        model = ClientJournal
+        fields = ('client', 'clientorder', 'cost', 'add_cost', 'discount')
+        widgets = {
+            'client': forms.HiddenInput(attrs={'class': 'form-control'}),
+            'clientorder': forms.Select(attrs={'class': 'form-control'}),
+            'cost': forms.TextInput(attrs={'class': 'form-control'}),
+            'add_cost': forms.TextInput(attrs={'class': 'form-control'}),
+            'discount': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+

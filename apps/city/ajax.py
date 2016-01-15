@@ -1,8 +1,9 @@
 # coding=utf-8
 from annoying.decorators import ajax_request
 from apps.city.forms import AreaAddForm, StreetForm
-from apps.city.models import Area, City, Street, Surface
+from apps.city.models import Area, City, Street, Surface, Porch
 from apps.client.models import Client, ClientSurface
+from apps.surface.forms import PorchAddForm
 from core.models import User
 
 __author__ = 'alexy'
@@ -32,18 +33,20 @@ def get_area_streets(request):
         surface_list = []
         area_pk = int(request.GET.get('area'))
 
-        surface_qs = Surface.objects.filter(street__area=area_pk)
-        try:
-            client = Client.objects.get(id=int(request.GET.get('client')))
-            # print(surface_qs & ClientSurface.objects.filter(client=client))
-            client_surfaces = []
-            for item in ClientSurface.objects.filter(client=client):
-                client_surfaces.append(item.surface.id)
-                #     surface_qs = surface_qs.exclude(surface=item.surface)
-        except:
-            pass
+        surface_qs = Surface.objects.filter(street__area=area_pk, free=True)
+        # TODO: сделать проверку поверхностей. Выводить только те, которые ещё никто не заказал, и которые будут свободны на начало указанной даты заказа
+        # try:
+        #     client = Client.objects.get(id=int(request.GET.get('client')))
+        #     # print(surface_qs & ClientSurface.objects.filter(client=client))
+        #     client_surfaces = []
+        #     for item in ClientSurface.objects.filter(client=client):
+        #         client_surfaces.append(item.surface.id)
+        #         #     surface_qs = surface_qs.exclude(surface=item.surface)
+        # except:
+        #     pass
         for surface in surface_qs:
-            if surface.id not in client_surfaces:
+            # if surface.id not in client_surfaces:
+            if surface.id:
                 surface_list.append({
                     'id': surface.id,
                     'street': surface.street.name,
@@ -83,142 +86,4 @@ def surface_ajax(request):
         return {
             # 'city': city.name,
             'street_list': street_list
-        }
-
-
-@ajax_request
-def city_remove(request):
-    if request.method == 'GET':
-        if request.GET.get('item_id'):
-            city = City.objects.get(id=int(request.GET.get('item_id')))
-            city.delete()
-            return {
-                'success': int(request.GET.get('item_id'))
-            }
-        else:
-            return {
-                'error': True
-            }
-    else:
-        return {
-            'error': True
-        }
-
-
-@ajax_request
-def area_add(request):
-    if request.method == 'POST':
-        form = AreaAddForm(request.POST)
-        if form.is_valid():
-            instance = form.save()
-            return {
-                'success': True,
-                'id': instance.id,
-                'name': instance.name
-            }
-        else:
-            return {
-                'error': u'Ошибка'
-            }
-    else:
-        return {
-            'error': u'Ошибка'
-        }
-
-
-@ajax_request
-def area_remove(request):
-    if request.method == 'GET':
-        if request.GET.get('item_id'):
-            area = Area.objects.get(id=int(request.GET.get('item_id')))
-            area.delete()
-            return {
-                'success': int(request.GET.get('item_id'))
-            }
-        else:
-            return {
-                'error': True
-            }
-    else:
-        return {
-            'error': True
-        }
-
-
-@ajax_request
-def area_update(request):
-    r_id = request.GET.get('item_id')
-    r_name = request.GET.get('item_name')
-    area = Area.objects.get(pk=int(r_id))
-    if r_name and r_name.strip() != '':
-        area.name = r_name
-        area.save()
-        return {
-            'success': True,
-            'id': area.id,
-            'name': area.name
-        }
-    else:
-        return {
-            'error': True
-        }
-
-
-@ajax_request
-def street_add(request):
-    if request.method == 'POST':
-        form = StreetForm(request.POST)
-        if form.is_valid():
-            instance = form.save()
-            return {
-                'success': True,
-                'id': instance.id,
-                'area': instance.area.name,
-                'name': instance.name
-            }
-        else:
-            return {
-                'error': True
-            }
-    else:
-        return {
-            'error': True
-        }
-
-
-@ajax_request
-def street_remove(request):
-    if request.method == 'GET':
-        if request.GET.get('item_id'):
-            street = Street.objects.get(id=int(request.GET.get('item_id')))
-            street.delete()
-            return {
-                'success': int(request.GET.get('item_id'))
-            }
-        else:
-            return {
-                'error': True
-            }
-    else:
-        return {
-            'error': True
-        }
-
-
-@ajax_request
-def street_update(request):
-    r_id = request.GET.get('item_id')
-    r_name = request.GET.get('item_name')
-    street = Street.objects.get(pk=int(r_id))
-    if r_name and r_name.strip() != '':
-        street.name = r_name
-        street.save()
-        return {
-            'success': True,
-            'id': street.id,
-            'name': street.name
-        }
-    else:
-        return {
-            'error': True
         }

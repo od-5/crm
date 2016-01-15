@@ -21,7 +21,7 @@ class City(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('city:change', args=(self.pk, ))
+        return reverse('city:update', args=(self.pk, ))
 
     def surface_count(self):
         count = 0
@@ -94,7 +94,7 @@ class Surface(models.Model):
         return u'г.%s %s %s' % (self.city.name, self.street.name, self.house_number)
 
     def get_absolute_url(self):
-        return reverse('city:surface-change', args=(self.pk, ))
+        return reverse('surface:update', args=(self.pk, ))
         # return '/city/surface/'
 
     def porch_count(self):
@@ -112,6 +112,7 @@ class Surface(models.Model):
     house_number = models.CharField(max_length=50, verbose_name=u'Номер дома')
     coord_x = models.DecimalField(max_digits=8, decimal_places=6, blank=True, null=True, verbose_name=u'Ширина')
     coord_y = models.DecimalField(max_digits=8, decimal_places=6, blank=True, null=True, verbose_name=u'Долгота')
+    free = models.BooleanField(default=True)
 
 
 class Porch(models.Model):

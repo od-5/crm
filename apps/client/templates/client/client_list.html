@@ -32,12 +32,13 @@
                 <th>Пользователь</th>
                 <th>Руководитель</th>
                 <th>Должность руководителя</th>
+                <th>&nbsp;</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody class="js-list">
             {% if object_list %}
               {% for object in object_list %}
-              <tr>
+              <tr data-id="{{ object.id }}" data-name="{{ object.legal_name }}" data-model="Client" id="id_Client_{{ object.id }}">
                 <td>{{ object.id|default:'--' }}</td>
                 <td><a href="{% url 'client:change' object.pk %}">{{ object.legal_name|default:'--' }}</a></td>
                 <td>{{ object.actual_name|default:'--' }}</td>
@@ -45,6 +46,11 @@
                 <td>{{ object.user|default:'--' }}</td>
                 <td>{{ object.leader|default:'--' }}</td>
                 <td>{{ object.leader_function|default:'--' }}</td>
+                <td>
+                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ object.id }}" class="btn btn-danger js-ajax-remove-btn">
+                    Удалить
+                  </a>
+                </td>
               </tr>
               {% endfor %}
             {% else %}
@@ -59,4 +65,5 @@
       </div>
     </div>
   </div>
+{% include '__modal/js_ajax_remove_form.html' %}
 {% endblock %}

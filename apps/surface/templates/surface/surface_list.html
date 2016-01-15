@@ -11,7 +11,7 @@
           <p class="lead remove-bottom text-center">Рекламные поверхности</p>
         </div>
         <div class="panel-body">
-          <a href="{% url 'city:surface-add' %}" class="btn btn-success add-bottom">
+          <a href="{% url 'surface:add' %}" class="btn btn-success add-bottom">
             <span class="glyphicon glyphicon-plus-sign"></span> Добавить рекламную поверхность
           </a>
           <div class="panel panel-success">
@@ -21,7 +21,7 @@
             </div>
           </div>
 {#          {% if object_list %}#}
-            <form action="{% url 'city:surface-list' %}" class="search-form" method="GET">
+            <form action="{% url 'surface:list' %}" class="search-form" method="GET">
 {#              {% csrf_token %}#}
               <input type="text" name="city" class="search-form__city" {% if city_id %}value="{{ city_id }}"{% endif %}>
               <input type="text" name="area" class="search-form__area" {% if area_id %}value="{{ area_id }}"{% endif %}>
@@ -39,50 +39,55 @@
                 <th></th>
               </tr>
             </thead>
-            <tbody>
-            <tr>
-              <td>
-                <select name="city_filter" id="city_filter" class="form-control">
-                  <option value="0">--------</option>
-                {% for city in city_list %}
-                  <option value="{{ city.id }}" {% if city.id == city_id %}selected="selected"{% endif %}>{{ city }}</option>
-                {% endfor %}
-                </select>
-              </td>
-              <td>
-                <select name="area_filter" id="area_filter" class="form-control" >
-                  <option value="0">--------</option>
-                  {% if area_list %}
-                    {% for area in area_list %}
-                    <option value="{{ area.id }}" {% if area.id == area_id %}selected="selected"{% endif %}>{{ area }}</option>
-                    {% endfor %}
-                  {% endif %}
-                </select>
-              </td>
-              <td>
-                <select name="street_filter" id="street_filter" class="form-control" >
-                  <option value="0">--------</option>
-                  {% if area_list %}
-                    {% for street in street_list %}
-                    <option value="{{ street.id }}" {% if street.id == street_id %}selected="selected"{% endif %}>{{ street }}</option>
-                    {% endfor %}
-                {% endif %}
-                </select>
-              </td>
-              <td>&nbsp;</td>
-              <td>&nbsp;</td>
-              <td>&nbsp;</td>
-            </tr>
-            {% for object in object_list %}
+            <tbody class="js-list">
               <tr>
+                <td>
+                  <select name="city_filter" id="city_filter" class="form-control">
+                    <option value="0">--------</option>
+                  {% for city in city_list %}
+                    <option value="{{ city.id }}" {% if city.id == city_id %}selected="selected"{% endif %}>{{ city }}</option>
+                  {% endfor %}
+                  </select>
+                </td>
+                <td>
+                  <select name="area_filter" id="area_filter" class="form-control" >
+                    <option value="0">--------</option>
+                    {% if area_list %}
+                      {% for area in area_list %}
+                      <option value="{{ area.id }}" {% if area.id == area_id %}selected="selected"{% endif %}>{{ area }}</option>
+                      {% endfor %}
+                    {% endif %}
+                  </select>
+                </td>
+                <td>
+                  <select name="street_filter" id="street_filter" class="form-control" >
+                    <option value="0">--------</option>
+                    {% if area_list %}
+                      {% for street in street_list %}
+                      <option value="{{ street.id }}" {% if street.id == street_id %}selected="selected"{% endif %}>{{ street }}</option>
+                      {% endfor %}
+                  {% endif %}
+                  </select>
+                </td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+              </tr>
+            {% for object in object_list %}
+              <tr data-id="{{ object.id }}" data-name="{{ object.street }}" data-model="Surface" id="id_Surface_{{ object.id }}">
                 <td>{{ object.city|default:'' }}</td>
                 <td>{{ object.street.area|default:'' }}</td>
-                <td><a href="{% url 'city:surface-change' object.id %}">{{ object.street|default:'' }}</a></td>
+                <td><a href="{% url 'surface:update' object.id %}">{{ object.street|default:'' }}</a></td>
                 <td>{{ object.house_number|default:'' }}</td>
                 <td>{{ object.porch_count|default:'Не указано' }}</td>
-                <td class="text-right"><a href="{% url 'city:surface-remove' object.id %}" class="btn btn-warning js-remove-surface">
-                  <span class="glyphicon glyphicon-remove"></span> удалить</a>
-                </td>
+{#                <td class="text-right"><a href="{% url 'city:surface-remove' object.id %}" class="btn btn-warning js-remove-surface">#}
+{#                  <span class="glyphicon glyphicon-remove"></span> удалить</a>#}
+{#                </td>#}
+                <td>
+                    <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-Surface-{{ object.id }}" class="btn btn-danger js-ajax-remove-btn">
+                      Удалить
+                    </a>
+                  </td>
               </tr>
             {% endfor %}
             </tbody>
@@ -95,4 +100,5 @@
       </div>
     </div>
   </div>
+{% include '__modal/js_ajax_remove_form.html' %}
 {% endblock %}

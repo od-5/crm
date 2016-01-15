@@ -51,15 +51,19 @@
                         <th>&nbsp;</th>
                       </tr>
                     </thead>
-                    <tbody class="js-area-list">
+                    <tbody class="js-area-list js-list">
                     {% for object in city.area_set.all %}
-                      <tr data-id="{{ object.id }}" data-name="{{ object.name }}">
+                      <tr data-id="{{ object.id }}" data-name="{{ object.name }}" data-model="Area" id="id_Area_{{ object.id }}">
                         <td>{{ object.id }}</td>
                         <td data-id="{{ object.id }}">{{ object.name }}</td>
                         <td>{{ object.street_set.all.count }}</td>
                         <td><a href="#js-modal-item-update" class="btn btn-info js-update-item-btn">Редактировать</a></td>
-{#                        <td><a class="btn btn-danger">Удалить</a></td>#}
-                        {% include '__cabinet/remove_item_btn.html' with name=object.name %}
+                        <td>
+                          <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ object.id }}" class="btn btn-danger js-ajax-remove-btn">
+                            Удалить
+                          </a>
+                        </td>
+{#                        {% include '__cabinet/remove_item_btn.html' with name=object.name %}#}
                       </tr>
                     {% endfor %}
                     </tbody>
@@ -102,16 +106,15 @@
                     <th>&nbsp;</th>
                   </tr>
                 </thead>
-                <tbody class="js-street-list">
+                <tbody class="js-street-list js-list">
                 {% for object in city.street_set.all %}
-                  <tr data-id="{{ object.id }}" data-name="{{ object.name }}">
+                  <tr data-id="{{ object.id }}" data-name="{{ object.name }}" data-model="Street" id="id_Street_{{ object.id }}">
                     <td>{{ object.area }}</td>
                     <td data-id="{{ object.id }}">{{ object.name }}</td>
                     <td><a href="#js-modal-street-update" class="btn btn-info js-update-street-btn">Редактировать</a></td>
                     <td>
-                      <a href="#js-modal-street-remove" class="btn btn-danger js-remove-street-btn">
-                        <span class="glyphicon glyphicon-remove"></span>
-                         Удалить
+                      <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-Street-{{ object.id }}" class="btn btn-danger js-ajax-remove-btn">
+                        Удалить
                       </a>
                     </td>
                   </tr>
@@ -128,16 +131,6 @@
     </div>
   </div>
 
-  <div id="js-modal-item-remove">
-    <form action="{% url 'city:area-remove' %}" class="js-modal-remove-item-form">
-      {% csrf_token %}
-      <p class="alert alert-danger">Вы действительно хотите удалить <strong id="js-modal-item-remove-name"></strong>?</p>
-      <input type="hidden" name="item_id" id="js-modal-item-remove-id">
-      <input type="submit" value="Да" class="btn btn-success">
-      <input type="reset" value="Нет" class="btn btn-danger">
-    </form>
-  </div>
-
   <div id="js-modal-item-update">
     <form action="{% url 'city:area-update' %}" class="js-modal-update-item-form">
       {% csrf_token %}
@@ -151,17 +144,7 @@
     </form>
   </div>
 
-  <div id="js-modal-street-remove">
-    <form action="{% url 'city:street-remove' %}" class="js-modal-remove-street-form">
-      {% csrf_token %}
-      <p class="alert alert-danger">Вы действительно хотите удалить <strong id="js-modal-street-remove-name"></strong>?</p>
-      <input type="hidden" name="item_id" id="js-modal-street-remove-id">
-      <input type="submit" value="Да" class="btn btn-success">
-      <input type="reset" value="Нет" class="btn btn-danger">
-    </form>
-  </div>
-
-    <div id="js-modal-street-update">
+  <div id="js-modal-street-update">
     <form action="{% url 'city:street-update' %}" class="js-modal-update-street-form">
       {% csrf_token %}
       <div class="form-group">
@@ -173,4 +156,5 @@
       <input type="reset" value="Отмена" class="btn btn-danger">
     </form>
   </div>
+{% include '__modal/js_ajax_remove_form.html' %}
 {% endblock %}

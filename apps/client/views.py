@@ -9,9 +9,10 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView
 from apps.city.models import City, Surface
-from apps.client.forms import ClientUpdateForm, ClientAddForm, ClientSurfaceAddForm, ClientMaketAddForm
+from apps.client.forms import ClientUpdateForm, ClientAddForm, ClientSurfaceAddForm, ClientMaketForm, ClientOrderForm, \
+    ClientJournalForm
 from core.forms import UserAddForm, UserUpdateForm
-from .models import Client, ClientSurface
+from .models import Client, ClientSurface, ClientMaket, ClientOrder, ClientOrderSurface
 
 __author__ = 'alexy'
 
@@ -110,13 +111,23 @@ def client_update(request, pk):
         user_form = UserUpdateForm(instance=user)
         client_form = ClientUpdateForm(request=request, instance=client)
 
-    client_surface_form = ClientSurfaceAddForm(
-        initial={
-            'client': client
-        }
-    )
-    client_surface_form.fields['surface'].queryset = client.city.surface_set.all()
-    client_maket_form = ClientMaketAddForm(
+    context.update({
+        'success': success_msg,
+        'error': error_msg,
+        'user_form': user_form,
+        'client_form': client_form,
+        'object': client,
+        'client': client,
+    })
+    return render(request, 'client/client_update.html', context)
+
+
+def client_maket(request, pk):
+    context = {}
+    client = Client.objects.get(pk=int(pk))
+    success_msg = u''
+    error_msg = u''
+    client_maket_form = ClientMaketForm(
         initial={
             'client': client
         }
@@ -125,75 +136,143 @@ def client_update(request, pk):
     context.update({
         'success': success_msg,
         'error': error_msg,
-        'user_form': user_form,
-        'client_form': client_form,
-        'client_surface_form': client_surface_form,
         'client_maket_form': client_maket_form,
-        'object': client
+        'object': client,
+        'client': client,
     })
-    return render(request, 'client/client_update.html', context)
+    return render(request, 'client/client_maket.html', context)
 
 
-@ajax_request
-def add_client_surface(request):
+def client_maket_update(request, pk):
+    context = {}
+    maket = ClientMaket.objects.get(pk=int(pk))
+    success_msg = u''
+    error_msg = u''
     if request.method == 'POST':
+        form = ClientMaketForm(request.POST, request.FILES, instance=maket)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('client:maket', args=(maket.client.id, )))
+    else:
+        form = ClientMaketForm(instance=maket, initial={
+            'file': maket.file
+        })
+    context.update({
+        'success': success_msg,
+        'error': error_msg,
+        'client_maket_form': form,
+        'object': maket,
+        'client': maket.client
+    })
+    return render(request, 'client/client_maket_update.html', context)
+
+
+def client_order(request, pk):
+    context = {}
+    client = Client.objects.get(pk=int(pk))
+    success_msg = u''
+    error_msg = u''
+    if request.method == 'POST':
+        form = ClientOrderForm(request.POST)
+        if form.is_valid():
+            order = form.save()
+            return HttpResponseRedirect(reverse('client:order-update', args=(order.id, )))
+    else:
+        form = ClientOrderForm(initial={
+            'client': client
+        })
+    context.update({
+        'success': success_msg,
+        'error': error_msg,
+        'client_order_form': form,
+        'object': client,
+        'client': client
+    })
+    return render(request, 'client/client_order.html', context)
+
+
+def client_order_update(request, pk):
+    context = {}
+    order = ClientOrder.objects.get(pk=int(pk))
+    client = order.client
+    area_list = client.city.area_set.all()
+    success_msg = u''
+    error_msg = u''
+
+    if request.method == 'POST':
+        form = ClientOrderForm(request.POST, instance=order)
+        if form.is_valid():
+            form.save()
+    else:
+        form = ClientOrderForm(instance=order)
+    context.update({
+        'success': success_msg,
+        'error': error_msg,
+        'order_form': form,
+        'object': order,
+        'client': client,
+        'area_list': area_list
+    })
+    return render(request, 'client/client_order_update.html', context)
+
+
+def client_journal(request, pk):
+    # TODO: Сделать страницу журнала покупок клиента
+    context = {}
+    client = Client.objects.get(pk=int(pk))
+    success_msg = u''
+    error_msg = u''
+    if request.method == 'POST':
+        form = ClientJournalForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('client:journal', args=(client.id, )))
+    else:
+        form = ClientJournalForm(initial={
+            'client': client
+        })
+    form.fields['clientorder'].queryset = client.clientorder_set.all()
+    context.update({
+        'success': success_msg,
+        'error': error_msg,
+        'clientjournal_form': form,
+        'object': client,
+        'client': client
+    })
+    return render(request, 'client/client_journal.html', context)
+
+
+# @ajax_request
+def add_client_surface(request):
+    print 'STEP 1'
+    if request.method == 'POST':
+        print 'STEP 2 - POST'
         # print request.POST
-        client = Client.objects.get(pk=int(request.POST.get('client')))
-        date = request.POST.get('date_start')
-        if request.POST.get('date_end'):
-            date_end = request.POST.get('date_end')
-        else:
-            date_end = None
+        # client = Client.objects.get(pk=int(request.POST.get('cos_client')))
+        # print 'client %s' % int(request.POST.get('cos_client'))
+        print 'client %s' % int(request.POST.get('cos_order'))
+        order = ClientOrder.objects.get(pk=int(request.POST.get('cos_order')))
         surfaces = request.POST.getlist('chk_group[]')
-        surface_list = []
         for item in surfaces:
             surface = Surface.objects.get(pk=int(item))
-            c_surface = ClientSurface(
-                client=client,
+            surface.free = False
+            surface.save()
+            print surface
+            c_surface = ClientOrderSurface(
+                clientorder=order,
                 surface=surface
             )
-            if date:
-                raw_date = datetime.datetime.strptime(date, '%d.%m.%Y')
-                c_surface.date_start = datetime.date(raw_date.year, raw_date.month, raw_date.day)
-            if date_end and date_end != None:
-                try:
-                    raw_date_end = datetime.datetime.strptime(date_end, '%d.%m.%Y')
-                    c_surface.date_end = datetime.date(raw_date_end.year, raw_date_end.month, raw_date_end.day)
-                except:
-                    pass
             c_surface.save()
-            if c_surface.date_end:
-                end_date = str(c_surface.date_end)
-            else:
-                end_date = u'Не указано'
-            surface_list.append({
-                'id': str(c_surface.id),
-                'surface': u'%s %s' % (c_surface.surface.street.name, c_surface.surface.house_number),
-                'surface_id': str(c_surface.surface.id),
-                'area': c_surface.surface.street.area.name,
-                'date_start': str(c_surface.date_start),
-                'date_end': end_date
-            })
-            # print c_surface.id
-    #     form = ClientSurfaceAddForm(request.POST)
-    #     if form.is_valid():
-    #         # file is saved
-    #         print form
-    #         # form.save()
-        return {
-            'success': u'Рекламные поверхности добавлены',
-            'surface_list': surface_list
-        }
+        return HttpResponseRedirect(reverse('client:order-update', args=(int(request.POST.get('cos_order')),)))
+        # return HttpResponseRedirect(reverse('client:order'))
     else:
-        print 'else'
-        return {
-            'error': 'error!!!'
-        }
+        print 'STEP FAIL'
+        return HttpResponseRedirect(reverse('client:order', args=(int(request.POST.get('cos_order')),)))
 
 
-def add_client_maket(request):
+def client_maket_add(request):
     if request.method == 'POST':
-        form = ClientMaketAddForm(request.POST, request.FILES)
+        form = ClientMaketForm(request.POST, request.FILES)
         if form.is_valid():
             # file is saved
             form.save()

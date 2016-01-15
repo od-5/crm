@@ -11,3 +11,4 @@ django-widget-tweaks==1.4.1
 django-inplaceedit==1.4.1
 django-inplaceedit-bootstrap==0.2.1
 django-ckeditor==4.5.1
+django-cleanup==0.4.2

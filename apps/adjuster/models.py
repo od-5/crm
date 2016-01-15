@@ -36,7 +36,9 @@ class SurfacePhoto(models.Model):
     def __unicode__(self):
         return u'%s подъезд № %s' % (self.surface, self.porch)
 
-    surface = models.ForeignKey(to=Surface, verbose_name=u'Поверхность')
+    def address(self):
+        return self.porch.surface
+
     porch = models.ForeignKey(to=Porch, verbose_name=u'Подъезд')
     adjuster = models.ForeignKey(to=Adjuster, blank=True, null=True, verbose_name=u'Монтажник')
     date = models.DateField(verbose_name=u'Дата фотографии')

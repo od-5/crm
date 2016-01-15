@@ -6292,6 +6292,10 @@ label.error {
 .modal_ticket {
   display: none;
 }
+#js-ajax-item-remove,
+#js-ajax-item-update {
+  display: none;
+}
 #js-modal-item-remove,
 #js-modal-item-update {
   display: none;

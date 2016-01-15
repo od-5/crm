@@ -41,6 +41,76 @@ class Client(models.Model):
     work_basis = models.CharField(max_length=256, blank=True, null=True, verbose_name=u'Основание для работы')
 
 
+class ClientOrder(models.Model):
+    class Meta:
+        verbose_name = u'Заказ'
+        verbose_name_plural = u'Заказы'
+        app_label = 'client'
+        ordering = ['-date_start', ]
+
+    def __unicode__(self):
+        if self.date_end:
+            return u'Заказ на даты %s - %s ' % (self.date_start, self.date_end)
+        else:
+            return u'Заказ на даты %s - <дата окончания не указана> ' % self.date_start
+
+    def stand_count(self):
+        if self.clientordersurface_set.all():
+            total = 0
+            for i in self.clientordersurface_set.all():
+                total += i.porch_count()
+            return total
+        else:
+            return 0
+
+    client = models.ForeignKey(to=Client, verbose_name=u'Клиент')
+    date_start = models.DateField(verbose_name=u'Дата начала размещения')
+    date_end = models.DateField(verbose_name=u'Дата окончания размещения', blank=True, null=True)
+
+
+class ClientOrderSurface(models.Model):
+    class Meta:
+        verbose_name = u'Пункт заказа'
+        verbose_name_plural = u'Пункты заказа'
+        app_label = 'client'
+
+    def __unicode__(self):
+        return u'%s %s ' % (self.surface.street.name, self.surface.house_number)
+
+    def porch_count(self):
+        if self.surface.porch_set.all():
+            return self.surface.porch_set.all().count()
+
+    def delete(self, *args, **kwargs):
+        surface = Surface.objects.get(pk=self.surface.id)
+        surface.free = True
+        surface.save()
+        super(ClientOrderSurface, self).delete()
+
+    clientorder = models.ForeignKey(to=ClientOrder, verbose_name=u'Заказ')
+    surface = models.ForeignKey(to=Surface, verbose_name=u'Рекламная поверхность')
+
+
+class ClientJournal(models.Model):
+    class Meta:
+        verbose_name = u'Покупка'
+        verbose_name_plural = u'Покупки'
+        app_label = 'client'
+
+    def __unicode__(self):
+        return u'Покупка по заказу %s' % self.clientorder
+
+    def total_cost(self):
+        return round(((self.cost + self.add_cost)*(1+self.discount*0.01)), 2)
+
+    client = models.ForeignKey(to=Client, verbose_name=u'клиент')
+    clientorder = models.ForeignKey(to=ClientOrder, verbose_name=u'заказ клиента')
+    cost = models.PositiveIntegerField(verbose_name=u'Цена за стенд, руб')
+    add_cost = models.PositiveIntegerField(verbose_name=u'Наценка, руб', blank=True, null=True)
+    discount = models.PositiveIntegerField(verbose_name=u'Скидка, %', blank=True, null=True)
+
+
+
 class ClientSurface(models.Model):
     class Meta:
         verbose_name = u'Рекламная поверхность'

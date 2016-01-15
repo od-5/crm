@@ -1,0 +1,11 @@
+<div class="div add-bottom">
+  <a href="{% url 'city:update' city.id %}" class="btn btn-default">
+    <span class="glyphicon glyphicon-edit"></span> Редактирование города
+  </a>
+  <a href="{% url 'city:area' city.id %}" class="btn btn-default">
+    <span class="glyphicon glyphicon-list-alt"></span> Районы
+  </a>
+  <a href="{% url 'city:street' city.id %}" class="btn btn-default">
+    <span class="glyphicon glyphicon-list-alt"></span> Улицы
+  </a>
+</div>

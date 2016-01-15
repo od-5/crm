@@ -1,0 +1,41 @@
+{% extends 'cabinet_index.html' %}
+{% block content %}
+  <div class="container">
+    <div class="col-lg-12">
+      {% include 'city/__include/city_menu.html' %}
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="lead text-center remove-bottom">
+            Редактирование улицы {{ street }} города {{ city }}
+          </p>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-lg-6">
+              <p class="text-info lead">Добавить улицу</p>
+              <form action="" role="form" class="add-bottom" id="js-street-add-form" method="post">
+                {% csrf_token %}
+                {{ street_form.city }}
+                <div class="form-group">
+                  <div class="col-lg-5">{{ street_form.area.label_tag }}</div>
+                  <div class="col-lg-7">{{ street_form.area }}</div>
+                  {{ street_form.area.errors }}
+                  <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-5">{{ street_form.name.label_tag }}</div>
+                  <div class="col-lg-7">{{ street_form.name }}</div>
+                  {{ street_form.name.errors }}
+                  <div class="clearfix"></div>
+                </div>
+                <button type="submit" class="btn btn-default">Сохранить изменения</button>
+              </form>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% include '__modal/js_ajax_remove_form.html' %}
+{% endblock %}

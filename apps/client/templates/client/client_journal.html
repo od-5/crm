@@ -1,0 +1,90 @@
+{% extends 'cabinet_index.html' %}
+{% block content %}
+  <div class="container">
+    <div class="col-lg-12">
+      {% include 'client/__include/client_menu.html' %}
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="lead text-center remove-bottom">Журнал покупок</p>
+        </div>
+        <div class="panel-body">
+          <form action="" method="post" id="js-client-journal-add-form" role="form">
+            <div class="col-lg-6">
+            {% csrf_token %}
+              <div class="form-group">
+                {{ clientjournal_form.client }}
+                <div class="col-lg-5">{{ clientjournal_form.clientorder.label_tag }}</div>
+                <div class="col-lg-7">{{ clientjournal_form.clientorder }}</div>
+                {{ clientjournal_form.clientorder.errors }}
+                <div class="clearfix"></div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-5">{{ clientjournal_form.cost.label_tag }}</div>
+                <div class="col-lg-7">{{ clientjournal_form.cost }}</div>
+                {{ clientjournal_form.cost.errors }}
+                <div class="clearfix"></div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-5">{{ clientjournal_form.add_cost.label_tag }}</div>
+                <div class="col-lg-7">{{ clientjournal_form.add_cost }}</div>
+                {{ clientjournal_form.add_cost.errors }}
+                <div class="clearfix"></div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-5">{{ clientjournal_form.discount.label_tag }}</div>
+                <div class="col-lg-7">{{ clientjournal_form.discount }}</div>
+                {{ clientjournal_form.discount.errors }}
+                <div class="clearfix"></div>
+              </div>
+            <input type="submit" class="btn btn-default" value="Сформировать">
+            </div>
+          </form>
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Заказ</th>
+                <th>Цена за стенд, руб</th>
+                <th>Наценка, руб</th>
+                <th>Скидка, %</th>
+                <th>Количество стендов</th>
+                <th>Полная стоимость</th>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody class="js-list">
+              {% for item in object.clientjournal_set.all %}
+              <tr data-id="{{ item.id }}" data-name="{{ item }}" data-model="ClientJournal" id="id_ClientJournal_{{ item.id }}">
+                <td>{{ item.clientorder|default:'Не указано' }}</td>
+                <td>{{ item.cost|default:'Не указано' }}</td>
+                <td>{{ item.add_cost|default:'Не указано' }}</td>
+                <td>{{ item.discount|default:'Не указано' }}</td>
+                <td>{{ item.clientorder.stand_count|default:'Не указано' }}</td>
+                <td>{{ item.total_cost|default:'Не указано' }}</td>
+                <td>
+                  <a href="#" class="btn btn-success" disabled="disabled">
+                    <span class="glyphicon glyphicon-download-alt"></span> Скачать в EXCEL
+                  </a>
+                </td>
+                <td>
+                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-ClientJournal-{{ item.id }}" class="btn btn-danger js-ajax-remove-btn">
+                    <span class="glyphicon glyphicon-remove"></span> Удалить
+                  </a>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="4">
+                  <p class="alert alert-info">Адресов не найдено</p>
+                </td>
+              </tr>
+              {% endfor %}
+              <tr></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+{% include '__modal/js_ajax_remove_form.html' %}
+{% endblock %}

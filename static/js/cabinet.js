@@ -17,6 +17,10 @@ $(function() {
     defaultDate: 7,
     dateFormat: "dd.mm.yy"
   });
+  $("#js-surface-photo-update-form #id_date").datepicker({
+    defaultDate: 7,
+    dateFormat: "dd.mm.yy"
+  });
   $(".start_date").datepicker({
     defaultDate: 7,
     dateFormat: "dd.mm.yy"
@@ -34,6 +38,26 @@ $(function() {
     dateFormat: "dd.mm.yy"
   });
   $("#js-client-add-maket-form #id_date").datepicker({
+    defaultDate: 7,
+    dateFormat: "dd.mm.yy"
+  });
+  $("#js-client-update-maket-form #id_date").datepicker({
+    defaultDate: 7,
+    dateFormat: "dd.mm.yy"
+  });
+  $("#js-client-add-order-form #id_date_start").datepicker({
+    defaultDate: 7,
+    dateFormat: "dd.mm.yy"
+  });
+  $("#js-client-add-order-form #id_date_end").datepicker({
+    defaultDate: 7,
+    dateFormat: "dd.mm.yy"
+  });
+  $("#js-client-update-order-form #id_date_start").datepicker({
+    defaultDate: 7,
+    dateFormat: "dd.mm.yy"
+  });
+  $("#js-client-update-order-form #id_date_end").datepicker({
     defaultDate: 7,
     dateFormat: "dd.mm.yy"
   });
@@ -100,6 +124,44 @@ $(function() {
         required: true
       }
     }
+  });
+  // ajax удаление объектов
+  var fancy_initial = function(){
+    $('.js-ajax-remove-btn').fancybox({
+      afterClose: function () {
+        $('.js-ajax-remove-item-form').resetForm();
+      },
+      beforeLoad: function() {
+        var item_id = '#' + this.element[0].id;
+        var item = $(item_id);
+        $('#js-ajax-item-remove-id').val(item.parents('tr').data('id'));
+        $('#js-ajax-item-remove-name').text(item.parents('tr').data('name'));
+        $('#js-ajax-item-remove-model').val(item.parents('tr').data('model'));
+       }
+    });
+  };
+  $('.js-list').on('click', '.js-ajax-remove-btn', function(){
+    fancy_initial();
+  });
+
+  $('.js-ajax-remove-item-form').ajaxForm({
+    success: function(data){
+      if (data.id) {
+        $.notify('Объект был удалён', 'success');
+        $('#id_'+data.model+'_'+data.id).remove();
+        $.fancybox.close();
+      } else {
+        $.notify('Произошла ошибка. Объект не удалён', 'error');
+        $.fancybox.close();
+      }
+      $('.js-ajax-remove-item-form').resetForm();
+    }
+  });
+  $('.js-ajax-remove-item-form input[type="reset"]').click(function(){
+    $.fancybox.close();
+  });
+  $('.js-ajax-remove-item-form input[type="submit"]').click(function(){
+    $.fancybox.close();
   });
   // открытие модального окна подтверждения удаления эдемента
 
@@ -308,7 +370,7 @@ $(function() {
 
 
     // валидация формы добвления фотографии поверхности
-  $( '#js-surface-photo-add-form' ).validate({
+  $('#js-surface-photo-add-form').validate({
     rules: {
       porch: {
         required: true
@@ -317,6 +379,18 @@ $(function() {
         required: true
       },
       image: {
+        required: true
+      }
+    }
+  });
+
+    // валидация формы изменения фотографии поверхности
+  $('#js-surface-photo-update-form').validate({
+    rules: {
+      porch: {
+        required: true
+      },
+      date: {
         required: true
       }
     }
@@ -377,7 +451,53 @@ $(function() {
     });
   }
   removeClientSurface();
-     //валидация формы добвления поверхности к клиенту
+ //валидация формы добвления поверхности к клиенту
+
+  $('#js-order-surface-add-form').validate({
+    rules: {
+      cos_client: {
+        required: true
+      },
+      cos_area: {
+        required: true
+      }
+    }
+  });
+
+  $('#id_cos_area').change(function(){
+    if ($(this).val() != 0){
+      $.ajax({
+        type: "GET",
+        url: $(this).data('ajax-url'),
+        data: {
+          area: $(this).val(),
+          client: $('#id_cos_client').val()
+        }
+      }).done(function( data ) {
+        if (data.surface_list) {
+          var surface_list = data.surface_list;
+          $('.js-surface-list tr.result').remove();
+          var surface_table = $('.js-surface-list thead');
+          for (var i = 0; i < surface_list.length; i++){
+            surface_table.append(
+              '<tr class="result">'+
+              '<td><input type="checkbox" name="chk_group[]" value="' +surface_list[i]['id'] +'"></td>'+
+              '<td>'+surface_list[i]['street']+'</td>'+
+              '<td>'+surface_list[i]['number']+'</td>'+
+              '</tr>'
+            )
+          }
+        }
+      });
+    }
+
+  });
+
+
+
+
+
+
 
   $('#js-client-add-surface-form').validate({
     rules: {
@@ -444,7 +564,7 @@ $(function() {
     }
   });
 
-  // валидация формы добвления клиента к поверхности
+  // валидация формы добвления макета клиента
   $('#js-client-add-maket-form').validate({
     rules: {
       name: {
@@ -454,6 +574,39 @@ $(function() {
         required: true
       },
       date: {
+        required: true
+      }
+    }
+  });
+    // валидация формы изменения макета клиента
+  $('#js-client-update-maket-form').validate({
+    rules: {
+      name: {
+        required: true
+      },
+      date: {
+        required: true
+      }
+    }
+  });
+  // валидация формы добавления заказа клиента
+  $('#js-client-add-order-form').validate({
+    rules: {
+      client: {
+        required: true
+      },
+      date_start: {
+        required: true
+      }
+    }
+  });
+   // валидация формы изменения заказа клиента
+  $('#js-client-update-order-form').validate({
+    rules: {
+      client: {
+        required: true
+      },
+      date_start: {
         required: true
       }
     }
@@ -581,31 +734,7 @@ $(function() {
       },
       name: {
         required: true
-      },
-    },
-    submitHandler: function(e) {
-      $('#js-area-add-form').ajaxSubmit({
-          success: function(data){
-            if (data.success) {
-              $.notify('Создан новый район', 'success');
-              $('.js-area-list').append(
-                '<tr data-id="' + data.id + '" data-name="'+ data.name + '">' +
-                  '<td>' + data.id + '</td>' +
-                  '<td data-id="' + data.id + '">' + data.name + '</td>' +
-                  '<td>0</td>' +
-                  '<td><a href="#js-modal-item-update" class="btn btn-info js-update-item-btn">Редактировать</a></td>' +
-                  '<td>' +
-                    '<a href="#js-modal-item-remove" class="btn btn-danger js-remove-item-btn" data-id="' + data.id + '" data-email="' + data.name + '">'+
-                    '<span class="glyphicon glyphicon-remove"></span> Удалить </a>' +
-                  '</td>' +
-                '</tr>'
-              );
-            } else {
-              $.notify('Ошибка. Проверьте правильность ввода данных.', 'error');
-            }
-            $('#js-area-add-form').trigger('reset');
-          }
-      });
+      }
     }
   });
 
@@ -676,40 +805,16 @@ $(function() {
       name: {
         required: true
       }
-    },
-    submitHandler: function(e) {
-      $('#js-street-add-form').ajaxSubmit({
-          success: function(data){
-            if (data.success) {
-              $.notify('Улица добавлена', 'success');
-              $('.js-street-list').append(
-                '<tr data-id="' + data.id + '" data-name="'+ data.name + '">' +
-                  '<td>' + data.area + '</td>' +
-                  '<td data-id="' + data.id + '">' + data.name + '</td>' +
-                  '<td><a href="#js-modal-street-update" class="btn btn-info js-update-street-btn">Редактировать</a></td>' +
-                  '<td>' +
-                    '<a href="#js-modal-street-remove" class="btn btn-danger js-remove-street-btn">'+
-                    '<span class="glyphicon glyphicon-remove"></span> Удалить</a>' +
-                  '</td>' +
-                '</tr>'
-              );
-            } else {
-              $.notify('Ошибка. Проверьте правильность ввода данных.', 'error');
-            }
-            $('#js-street-add-form').trigger('reset');
-          }
-      });
     }
   });
 
   //  модальная форма редактирования улицы
-    $('.js-street-list').on('click', '.js-update-street-btn', function(){
-      $('#js-modal-street-update-id').val($(this).parents('tr').data('id'));
-      $('#js-modal-street-update-name').val($(this).parents('tr').data('name'));
-      console.log($(this).parents('tr').data('id'));
-      console.log($(this).parents('tr').data('name'));
-    });
-
+  $('.js-street-list').on('click', '.js-update-street-btn', function(){
+    $('#js-modal-street-update-id').val($(this).parents('tr').data('id'));
+    $('#js-modal-street-update-name').val($(this).parents('tr').data('name'));
+    console.log($(this).parents('tr').data('id'));
+    console.log($(this).parents('tr').data('name'));
+  });
   $('.js-update-street-btn').fancybox({
     afterClose: function () {
       $('.js-modal-update-street-form').resetForm();
@@ -721,7 +826,6 @@ $(function() {
   $('.js-modal-update-street-form input[type="submit"]').click(function(){
     $.fancybox.close();
   });
-  // Форма изменения названия улицы
   $('.js-modal-update-street-form').ajaxForm({
     success: function(data){
       if (data.success) {
@@ -735,35 +839,17 @@ $(function() {
       $('.js-modal-update-street-form').resetForm();
     }
   });
-//  Удаление улицы
-  $('.js-street-list').on('click', '.js-remove-street-btn', function(){
-    $('#js-modal-street-remove-id').val($(this).parents('tr').data('id'));
-    $('#js-modal-street-remove-name').text($(this).parents('tr').data('name'));
-    console.log($(this).parents('tr').data('id'));
-    console.log($(this).parents('tr').data('name'));
+
+  // Валидация формы добавления подъезда
+  $('#js-porch-add-form').validate({
+    rules: {
+      surface: {
+        required: true
+      },
+      number: {
+        required: true
+      }
+    }
   });
 
-  $('.js-remove-street-btn').fancybox({
-    afterClose: function () {
-      $('.js-modal-remove-street-form').resetForm();
-    }
-  });
-  $('.js-modal-remove-street-form input[type="reset"]').click(function(){
-    $.fancybox.close();
-  });
-  $('.js-modal-remove-street-form input[type="submit"]').click(function(){
-    $.fancybox.close();
-  });
-  $('.js-modal-remove-street-form').ajaxForm({
-    success: function(data){
-      if (data.success) {
-        $.notify('Улица была удалёна', 'success');
-        console.log(data.success);
-        $('.js-street-list tr[data-id='+data.success+']').remove();
-      } else {
-        $.notify('Произошла ошибка. Улица не удалёна', 'error');
-      }
-      $('.js-modal-remove-item-form').resetForm();
-    }
-  });
 });

@@ -1,6 +1,10 @@
 # coding=utf-8
 from annoying.decorators import ajax_request
-from apps.city.models import City, Surface
+from django.shortcuts import get_object_or_404
+from apps.city.models import City, Surface, Porch, Area, Street
+from core.models import User
+from apps.client.models import Client, ClientMaket, ClientOrder, ClientOrderSurface, ClientJournal
+
 
 __author__ = 'alexy'
 
@@ -51,3 +55,42 @@ def ymap_surface(request):
         data = {'msg': 'fail'}
     print 'data = %s' % data
     return data
+
+
+@ajax_request
+def ajax_remove_item(request):
+    if request.method == 'GET':
+        print 'request = GET'
+        if request.GET.get('item_id') and request.GET.get('item_model'):
+            model = request.GET.get('item_model')
+            item_id = request.GET.get('item_id')
+            print model
+            print item_id
+            # client = Client.objects.get(id=int(request.GET.get('item_id')))
+            # user = User.objects.get(pk=client.user.id)
+            item = get_object_or_404(eval(model), pk=int(item_id))
+            print item
+            if model == 'Client':
+                print 'user'
+                user = User.objects.get(pk=item.user.id)
+                print user
+                item.delete()
+                user.delete()
+            else:
+                item.delete()
+                print 'none'
+
+            return {
+                'id': int(request.GET.get('item_id')),
+                'model': request.GET.get('item_model'),
+            }
+        else:
+            print 'not element in request'
+            return {
+                'error': True
+            }
+    else:
+        print 'request != GET'
+        return {
+            'error': True
+        }
