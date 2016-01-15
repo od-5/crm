@@ -101,7 +101,16 @@ class ClientJournal(models.Model):
         return u'Покупка по заказу %s' % self.clientorder
 
     def total_cost(self):
-        return round(((self.cost + self.add_cost)*(1+self.discount*0.01)), 2)
+        cost = self.cost
+        if self.add_cost:
+            add_cost = self.add_cost
+        else:
+            add_cost = 0
+        if self.discount:
+            discount = self.discount
+        else:
+            discount = 0
+        return round(((cost + add_cost)*(1+discount*0.01)), 2)
 
     client = models.ForeignKey(to=Client, verbose_name=u'клиент')
     clientorder = models.ForeignKey(to=ClientOrder, verbose_name=u'заказ клиента')

@@ -611,6 +611,20 @@ $(function() {
       }
     }
   });
+  // валидация формы формирования покупки клиента
+  $('#js-client-journal-add-form').validate({
+    rules: {
+      client: {
+        required: true
+      },
+      clientorder: {
+        required: true
+      },
+      cost: {
+        required: true
+      }
+    }
+  });
   // валидация формы добавления задачи по клиенту
   $('#js-adjuster-client_task-add-form').validate({
     rules: {
