@@ -8,10 +8,11 @@ __author__ = 'alexy'
 urlpatterns = patterns(
     'apps.adjustertask.views',
     url(r'^$', AdjusterTaskListView.as_view(), name='list'),
-    url(r'^add/$', 'adjuster_task', name='add'),
+    url(r'^c_add/$', 'adjuster_c_task', name='add'),
+    url(r'^a_add/$', 'adjuster_a_task', name='a_add'),
 
     # url(r'^add/$', 'adjuster_task_add', name='add'),
-    url(r'^simple_task_add/$', 'adjuster_simple_task_add', name='simple_add'),
+    # url(r'^simple_task_add/$', 'adjuster_simple_task_add', name='simple_add'),
     url(r'^task/(?P<pk>\d+)/$', 'adjuster_task_update', name='update'),
 
     url(r'^task_client_ajax/$', adjuster_task_client, name='client-ajax'),

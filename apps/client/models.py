@@ -110,15 +110,14 @@ class ClientJournal(models.Model):
             discount = self.discount
         else:
             discount = 0
-        sum = ((cost + add_cost)*(1+discount*0.01)) * self.clientorder.stand_count()
+        sum = ((cost*(1+add_cost*0.01))*(1+discount*0.01)) * self.clientorder.stand_count()
         return round(sum, 2)
 
     client = models.ForeignKey(to=Client, verbose_name=u'клиент')
     clientorder = models.ForeignKey(to=ClientOrder, verbose_name=u'заказ клиента')
     cost = models.PositiveIntegerField(verbose_name=u'Цена за стенд, руб')
-    add_cost = models.PositiveIntegerField(verbose_name=u'Наценка, руб', blank=True, null=True)
+    add_cost = models.PositiveIntegerField(verbose_name=u'Наценка, %', blank=True, null=True)
     discount = models.PositiveIntegerField(verbose_name=u'Скидка, %', blank=True, null=True)
-
 
 
 class ClientSurface(models.Model):

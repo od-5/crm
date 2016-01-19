@@ -81,7 +81,7 @@ $(function() {
     defaultDate: 7,
     dateFormat: "dd.mm.yy"
   });
-  $("#js-adjuster-task-add-form #id_date_at").datepicker({
+  $("#js-adjuster-task-add-form #id_date").datepicker({
     defaultDate: 7,
     dateFormat: "dd.mm.yy"
   });
@@ -633,7 +633,7 @@ $(function() {
       }
     }
   });
-  // логика работы формы добавления задаи по клиенту
+  // логика работы формы добавления задачи по клиенту
   var act_form = $('#js-adjuster-client_task-add-form');
   act_form.find('#id_client').change(function(){
     if ($(this).val().length){
@@ -723,7 +723,7 @@ $(function() {
     });
   });
   // валидация формы редактирования задачи по клиенту
-  $('#js-adjuster-client_task-udate-form').validate({
+  $('#js-adjuster-client_task-update-form').validate({
     rules: {
       adjuster: {
         required: true
@@ -738,8 +738,12 @@ $(function() {
   });
 
   // валидация формы добавления задачи по району
-  $('#js-adjuster-task-add-form').validate({
+  var atf = $('#js-adjuster-task-add-form');
+  atf.validate({
     rules: {
+      city: {
+        required: true
+      },
       adjuster: {
         required: true
       },
@@ -754,30 +758,93 @@ $(function() {
       }
     }
   });
-  var adjuster_task_form = $('#js-adjuster-task-add-form');
-  adjuster_task_form.find('#id_area').change(function(){
-    $('.js-task-surface-second-list tr.result').remove();
-    console.log($(this).val())
+  atf.find('#id_city').change(function() {
+    if ($(this).val().length){
+
+
+      console.log($(this).val());
+      // запрос на получение списка монтажников выбранного города
+      $.ajax({
+        type: "GET",
+        url: $(this).parents('#city_group').data('adjuster-url'),
+        data: {
+          city: $(this).val()
+        }
+      }).done(function( data ) {
+        if (data.success) {
+          var adjuster_list = data.adjuster_list;
+          console.log(adjuster_list);
+          atf.find('#id_adjuster').find('option').remove();
+          atf.find('#id_adjuster').append($("<option/>", {
+                value: '',
+                text: '---------'
+            }));
+          for (var i = 0; i < adjuster_list.length; i++) {
+            atf.find('#id_adjuster').append($("<option/>", {
+                value: adjuster_list[i]['id'],
+                text: adjuster_list[i]['name']
+            }));
+          }
+          atf.find('#id_adjuster').parents('.form-group').removeClass('hide');
+        }
+      });
+      // запрос на получение списка районов выбранного города
+      $.ajax({
+        type: "GET",
+        url: $(this).parents('#city_group').data('area-url'),
+        data: {
+          city: $(this).val()
+        }
+      }).done(function(data) {
+        if (data.area_list) {
+          var area_list = data.area_list;
+          console.log(area_list);
+          atf.find('#id_area').find('option').remove();
+          atf.find('#id_area').append($("<option/>", {
+                value: '',
+                text: '---------'
+            }));
+          for (var i = 0; i < area_list.length; i++) {
+            atf.find('#id_area').append($("<option/>", {
+                value: area_list[i]['id'],
+                text: area_list[i]['name']
+            }));
+          }
+          atf.find('#id_area').parents('.form-group').removeClass('hide');
+        }
+      });
+    }
+    else {
+      atf.find('#id_adjuster').parents('.form-group').addClass('hide');
+      atf.find('#id_area').parents('.form-group').addClass('hide');
+      atf.find('#id_adjuster').find('option').remove();
+      atf.find('#id_area').find('option').remove();
+      $('.js-task-surface-list tr.result').remove();
+    //  TODO: очистить список заказов
+
+    }
+  });
+  atf.find('#id_area').change(function(){
+    $('.js-task-surface-list tr.result').remove();
     $.ajax({
       type: "GET",
-      url: adjuster_task_form.data('area-ajax-url'),
+      url: $(this).parents('#area_group').data('surface-url'),
       data: {
         area: $(this).val()
       }
     }).done(function( data ) {
       if (data.surface_list) {
         var surface_list = data.surface_list;
-        console.log(surface_list);
-
-        var surface_table = $('.js-task-surface-second-list');
-        console.log(surface_table)
+        var surface_table = $('.js-task-surface-list');
         for (var i = 0; i < surface_list.length; i++){
           surface_table.append(
             '<tr class="result">'+
-            '<td><input type="checkbox" name="chk_group_1[]" value="' +surface_list[i]['id'] +'"></td>'+
-            '<td>'+surface_list[i]['id']+'</td>'+
+            '<td><input type="checkbox" name="chk_group[]" value="' +surface_list[i]['id'] +'"></td>'+
+            '<td>'+surface_list[i]['city']+'</td>'+
+            '<td>'+surface_list[i]['area']+'</td>'+
             '<td>'+surface_list[i]['street']+'</td>'+
             '<td>'+surface_list[i]['number']+'</td>'+
+            '<td>'+surface_list[i]['porch']+'</td>'+
             '</tr>'
           )
         }
@@ -827,30 +894,6 @@ $(function() {
       }
       $('.js-modal-update-item-form').resetForm();
     }
-  });
-  // Получение актуального списка районов
-  $('#js-tab-street').on('click', function(){
-    console.log($(this).data('city'));
-    console.log($(this).data('url'));
-    $.ajax({
-      type: "GET",
-      url: $(this).data('url'),
-      data: {
-        city_id: $(this).data('city')
-      }
-    }).done(function( data ) {
-      if (data.area_list) {
-        var area_list = data.area_list;
-        console.log(area_list);
-        $('#js-street-add-form #id_area').find('option').remove();
-        for (var i = 0; i < area_list.length; i++) {
-          $('#js-street-add-form #id_area').append($("<option/>", {
-              value: area_list[i]['id'],
-              text: area_list[i]['name']
-          }));
-        }
-      }
-    });
   });
   // Валидация формы добавления улицы
   $( '#js-street-add-form' ).validate({

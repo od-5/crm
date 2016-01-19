@@ -7,7 +7,6 @@ from core.models import User
 
 __author__ = 'alexy'
 
-
 api_key = settings.YANDEX_MAPS_API_KEY
 
 
@@ -21,9 +20,14 @@ class City(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('city:update', args=(self.pk, ))
+        return reverse('city:update', args=(self.pk,))
 
     def surface_count(self):
+        """
+        Метод возвращает колиечество стендов, размещённых в городе.
+        Количество стендов = Количество домов * количество подъездов в доме
+        Рекламная поверхность - дом, для которого созданы подъезды.
+        """
         count = 0
         for surface in self.surface_set.all():
             count += surface.porch_count()
@@ -70,6 +74,7 @@ class Street(models.Model):
     name = models.CharField(max_length=256, verbose_name=u'Название улицы')
 
 
+# TODO: Удалить модель за ненадобностью.
 class ConstructionType(models.Model):
     class Meta:
         verbose_name = u'Вид конструкции'
@@ -94,7 +99,7 @@ class Surface(models.Model):
         return u'г.%s %s %s' % (self.city.name, self.street.name, self.house_number)
 
     def get_absolute_url(self):
-        return reverse('surface:update', args=(self.pk, ))
+        return reverse('surface:update', args=(self.pk,))
         # return '/city/surface/'
 
     def porch_count(self):
@@ -108,7 +113,7 @@ class Surface(models.Model):
         super(Surface, self).save()
 
     city = models.ForeignKey(to=City, verbose_name=u'Город')
-    street = models.ForeignKey(to=Street,verbose_name=u'Улица')
+    street = models.ForeignKey(to=Street, verbose_name=u'Улица')
     house_number = models.CharField(max_length=50, verbose_name=u'Номер дома')
     coord_x = models.DecimalField(max_digits=8, decimal_places=6, blank=True, null=True, verbose_name=u'Ширина')
     coord_y = models.DecimalField(max_digits=8, decimal_places=6, blank=True, null=True, verbose_name=u'Долгота')
@@ -120,12 +125,26 @@ class Porch(models.Model):
         verbose_name = u'Подъезд'
         verbose_name_plural = u'Подъезды'
         app_label = 'city'
+        ordering = ['number', ]
 
     def __unicode__(self):
         return u'подъезд № %s' % self.number
 
+    def damaged(self):
+        """
+        Метод возвращает True, если стенд на подъезде имеет хотя бы одно повреждение.
+        Если стенд цел - возвращает False.
+        """
+        if self.broken_shield or self.broken_gib or self.no_glass or self.replace_glass or self.against_tenants or self.no_social_info:
+            return True
+        else:
+            return False
+
     surface = models.ForeignKey(to=Surface, verbose_name=u'Рекламная поверхность')
     number = models.CharField(max_length=10, verbose_name=u'Номер подъезда')
-
-
-
+    broken_shield = models.BooleanField(verbose_name=u'Щит сломан', default=False)
+    broken_gib = models.BooleanField(verbose_name=u'Сломана прижимная планка', default=False)
+    no_glass = models.BooleanField(verbose_name=u'Отсутствует защитное стекло', default=False)
+    replace_glass = models.BooleanField(verbose_name=u'Заменить защитное стекло', default=False)
+    against_tenants = models.BooleanField(verbose_name=u'Жильцы против', default=False)
+    no_social_info = models.BooleanField(verbose_name=u'Отсутствует социальная информация', default=False)

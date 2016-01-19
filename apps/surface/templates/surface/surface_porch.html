@@ -36,9 +36,22 @@
                   </thead>
                   <tbody class="js-list">
                   {% for porch in surface.porch_set.all %}
-                    <tr data-id="{{ porch.id }}" data-name="{{ porch.number }}" data-model="Porch" id="id_Porch_{{ porch.id }}">
-                      <td data-id="{{ porch.id }}"><a href="{% url 'surface:porch-update' porch.id %}">{{ porch.number }}</a></td>
-                      <td>{{ porch.status|default:'Целый' }}</td>
+                    <tr class="{% if porch.damaged %}danger{% else %}success{% endif %}" data-id="{{ porch.id }}" data-name="{{ porch.number }}" data-model="Porch" id="id_Porch_{{ porch.id }}">
+                      <td data-id="{{ porch.id }}">
+                        <strong>Подъезд №:{{ porch.number }}</strong>
+                        <a href="{% url 'surface:porch-update' porch.id %}">
+                           <button class="btn btn-primary">
+                             <span class="glyphicon glyphicon-pencil"> редактировать</span>
+                           </button>
+                        </a>
+                      </td>
+                      <td>
+                        {% if porch.damaged %}
+                        Есть повреждения
+                        {% else %}
+                        Целый
+                        {% endif %}
+                      </td>
                       <td>
                         <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ porch.id }}" class="btn btn-danger js-ajax-remove-btn">
                           Удалить

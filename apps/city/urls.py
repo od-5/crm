@@ -1,7 +1,7 @@
 # coding=utf-8
 from django.conf.urls import patterns, url
 from django.contrib.admin.views.decorators import staff_member_required
-from apps.city.ajax import surface_ajax, get_area_streets, get_city_area
+from apps.city.ajax import surface_ajax, get_area_streets, get_city_area, get_city_adjusters, get_area_surface_list
 from .models import City
 from .views import CityCreateView, CityListView
 
@@ -22,6 +22,11 @@ urlpatterns = patterns(
 
 
     url(r'^surface-ajax/$', surface_ajax, name='surface-ajax'),
+
+    url(r'^get_city_adjusters/$', get_city_adjusters, name='get_adjuster_list'),
+    url(r'^get_city_area/$', get_city_area, name='get_area_list'),
     url(r'^get_area_streets/$', get_area_streets, name='get_area_streets'),
-    url(r'^get_city_area/$', get_city_area, name='get_city_area'),
+    url(r'^get_area_surface_list/$', get_area_surface_list, name='get_area_surface_list'),
+
+
 )

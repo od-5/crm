@@ -14,6 +14,9 @@ __author__ = 'alexy'
 
 
 class AdjusterTaskListView(ListView):
+    """
+    Список задач
+    """
     model = AdjusterTask
     template_name = 'adjustertask/adjustertask_list.html'
 
@@ -61,7 +64,10 @@ class AdjusterTaskListView(ListView):
         return context
 
 
-def adjuster_task(request):
+def adjuster_c_task(request):
+    """
+    функция добавления задачи по клиенту
+    """
     context = {}
     if request.method == 'POST':
         adjustertask_client_form = AdjusterTaskClientAddForm(request.POST, request=request)
@@ -90,48 +96,20 @@ def adjuster_task(request):
     context.update({
         'adjustertask_client_form': adjustertask_client_form
     })
-    return render(request, 'adjustertask/adjustertask_add.html', context)
+    return render(request, 'adjustertask/adjustertask_c_add.html', context)
 
 
-# def adjuster_task_add(request):
-#     context = {}
-#     if request.method == 'POST':
-#         adjustertask_client_form = AdjusterTaskClientAddForm(request.POST, request=request)
-#         adjustertask_form = AdjusterTaskAddForm(request.POST, request=request)
-#         if adjustertask_client_form.is_valid():
-#             if request.POST.getlist('chk_group[]'):
-#                 task = adjustertask_client_form.save()
-#                 surfaces = request.POST.getlist('chk_group[]')
-#                 for item in surfaces:
-#                     surface = Surface.objects.get(pk=int(item))
-#                     task_surface = AdjusterTaskSurface(
-#                         adjustertask=task,
-#                         surface=surface
-#                     )
-#                     task_surface.save()
-#                 return HttpResponseRedirect(task.get_absolute_url())
-#         else:
-#             context.update({
-#                 'error': 'Achtung! Form is invalid!'
-#             })
-#     else:
-#         adjustertask_client_form = AdjusterTaskClientAddForm(request=request)
-#         adjustertask_form = AdjusterTaskAddForm(request=request)
-#     context.update({
-#         'adjustertask_client_form': adjustertask_client_form,
-#         'adjustertask_form': adjustertask_form
-#     })
-#     return render(request, 'adjustertask/adjustertask_add.html', context)
-
-
-def adjuster_simple_task_add(request):
+def adjuster_a_task(request):
+    """
+    функция добавления задачи по адресам
+    """
     context = {}
     if request.method == 'POST':
         adjustertask_form = AdjusterTaskAddForm(request.POST, request=request)
         if adjustertask_form.is_valid():
-            if request.POST.getlist('chk_group_1[]'):
+            if request.POST.getlist('chk_group[]'):
                 task = adjustertask_form.save()
-                surfaces = request.POST.getlist('chk_group_1[]')
+                surfaces = request.POST.getlist('chk_group[]')
                 for item in surfaces:
                     surface = Surface.objects.get(pk=int(item))
                     task_surface = AdjusterTaskSurface(
@@ -141,12 +119,21 @@ def adjuster_simple_task_add(request):
                     task_surface.save()
                 return HttpResponseRedirect(task.get_absolute_url())
         else:
-            return HttpResponseRedirect(reverse('adjustertask:add'))
+            context.update({
+                'error': 'Achtung! Form is invalid!'
+            })
     else:
-        return HttpResponseRedirect(reverse('adjustertask:add'))
+        adjustertask_form = AdjusterTaskAddForm(request=request)
+    context.update({
+        'adjustertask_form': adjustertask_form
+    })
+    return render(request, 'adjustertask/adjustertask_a_add.html', context)
 
 
 def adjuster_task_update(request, pk):
+    """
+    Обновление задачи
+    """
     context = {}
     adjustertask = AdjusterTask.objects.get(pk=int(pk))
     context.update({

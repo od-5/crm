@@ -62,7 +62,7 @@
                 <td>{{ item.clientorder.stand_count|default:'Не указано' }}</td>
                 <td>{{ item.total_cost|default:'Не указано' }}</td>
                 <td>
-                  <a href="#" class="btn btn-success" disabled="disabled">
+                  <a href="{% url 'client:journal-export' item.id %}" class="btn btn-success">
                     <span class="glyphicon glyphicon-download-alt"></span> Скачать в EXCEL
                   </a>
                 </td>

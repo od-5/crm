@@ -2,6 +2,7 @@
 import datetime
 
 import xlwt
+from datetime import date
 from annoying.decorators import ajax_request
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
@@ -12,7 +13,7 @@ from apps.city.models import City, Surface
 from apps.client.forms import ClientUpdateForm, ClientAddForm, ClientSurfaceAddForm, ClientMaketForm, ClientOrderForm, \
     ClientJournalForm
 from core.forms import UserAddForm, UserUpdateForm
-from .models import Client, ClientSurface, ClientMaket, ClientOrder, ClientOrderSurface
+from .models import Client, ClientSurface, ClientMaket, ClientOrder, ClientOrderSurface, ClientJournal
 
 __author__ = 'alexy'
 
@@ -29,7 +30,7 @@ def client_add(request):
             client = client_form.save(commit=False)
             client.user = user
             client.save()
-            return HttpResponseRedirect(reverse('client:change', args=(client.id, )))
+            return HttpResponseRedirect(reverse('client:change', args=(client.id,)))
         else:
             context.update({
                 'error': u'Проверьте правильность ввода полей'
@@ -152,7 +153,7 @@ def client_maket_update(request, pk):
         form = ClientMaketForm(request.POST, request.FILES, instance=maket)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('client:maket', args=(maket.client.id, )))
+            return HttpResponseRedirect(reverse('client:maket', args=(maket.client.id,)))
     else:
         form = ClientMaketForm(instance=maket, initial={
             'file': maket.file
@@ -176,7 +177,7 @@ def client_order(request, pk):
         form = ClientOrderForm(request.POST)
         if form.is_valid():
             order = form.save()
-            return HttpResponseRedirect(reverse('client:order-update', args=(order.id, )))
+            return HttpResponseRedirect(reverse('client:order-update', args=(order.id,)))
     else:
         form = ClientOrderForm(initial={
             'client': client
@@ -216,6 +217,71 @@ def client_order_update(request, pk):
     return render(request, 'client/client_order_update.html', context)
 
 
+def client_order_export(request, pk):
+    order = ClientOrder.objects.get(pk=int(pk))
+    client = order.client
+    font0 = xlwt.Font()
+    font0.name = 'Calibri'
+    font0.height = 220
+
+    borders = xlwt.Borders()
+    borders.left = xlwt.Borders.THIN
+    borders.right = xlwt.Borders.THIN
+    borders.top = xlwt.Borders.THIN
+    borders.bottom = xlwt.Borders.THIN
+
+    style0 = xlwt.XFStyle()
+    style0.font = font0
+
+    style1 = xlwt.XFStyle()
+    style1.font = font0
+    style1.borders = borders
+
+    wb = xlwt.Workbook()
+    ws = wb.add_sheet(u'Заказанные рекламные поверхости')
+    ws.write(0, 0, u'Клиент:', style0)
+    ws.write(0, 1, u'%s' % client.legal_name, style0)
+    ws.write(1, 0, u'Город:', style0)
+    ws.write(1, 1, u'%s' % client.city.name, style0)
+    ws.write(2, 0, u'Начало размещения:', style0)
+    ws.write(2, 1, u'%s' % order.date_start, style0)
+    ws.write(3, 0, u'Конец размещения:', style0)
+    ws.write(3, 1, u'%s' % order.date_end, style0)
+
+    ws.write(5, 0, u'Город', style1)
+    ws.write(5, 1, u'Район', style1)
+    ws.write(5, 2, u'Улица', style1)
+    ws.write(5, 3, u'Номер дома', style1)
+    ws.write(5, 4, u'Количество стендов', style1)
+
+    i = 6
+    porch_total = 0
+    for item in order.clientordersurface_set.all():
+        ws.write(i, 0, item.surface.city.name, style1)
+        ws.write(i, 1, item.surface.street.area.name, style1)
+        ws.write(i, 2, item.surface.street.name, style1)
+        ws.write(i, 3, item.surface.house_number, style1)
+        ws.write(i, 4, item.surface.porch_count(), style1)
+        i += 1
+        porch_total += item.surface.porch_count()
+    ws.write(i + 1, 0, u'Кол-во домов: %d' % order.clientordersurface_set.all().count(), style0)
+    ws.write(i + 2, 0, u'Кол-во стендов: %d' % porch_total, style0)
+
+    ws.col(0).width = 10000
+    ws.col(1).width = 10000
+    ws.col(2).width = 10000
+    ws.col(3).width = 4500
+    ws.col(4).width = 10000
+    for count in range(i):
+        ws.row(count).height = 300
+
+    fname = 'order_#%d.xls' % order.id
+    response = HttpResponse(content_type="application/ms-excel")
+    response['Content-Disposition'] = 'attachment; filename=%s' % fname
+    wb.save(response)
+    return response
+
+
 def client_journal(request, pk):
     # TODO: Сделать страницу журнала покупок клиента
     context = {}
@@ -226,7 +292,7 @@ def client_journal(request, pk):
         form = ClientJournalForm(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('client:journal', args=(client.id, )))
+            return HttpResponseRedirect(reverse('client:journal', args=(client.id,)))
     else:
         form = ClientJournalForm(initial={
             'client': client
@@ -240,6 +306,172 @@ def client_journal(request, pk):
         'client': client
     })
     return render(request, 'client/client_journal.html', context)
+
+
+def client_journal_export(request, pk):
+    journal = ClientJournal.objects.get(pk=int(pk))
+    client = journal.client
+    order = journal.clientorder
+    current_year = date.today().year
+    cost = journal.cost if journal.cost else 0
+    add_cost = journal.add_cost if journal.add_cost else 0
+    discount = journal.discount if journal.discount else 0
+    company_name = u'<Название организации>'
+    company_leader = u'<ФИО руководителя>'
+    company_leader_function = u'должность руководителя>'
+    company_basis = u'действует на основании>'
+    first_msg = u"%s, в лице %s %s, действующего на основании %s,\n именуемое в дальнейшем Рекламораспространитель." % (company_name, company_leader_function, company_leader, company_basis)
+    second_msg = u', именуемое в дальнейшем Рекламодатель, пришли в соглашение о нижеследующем:\nРекламораспространитель обязуется разместить рекламные публикации Рекламодателя\n на следующих условиях:'
+
+    font0 = xlwt.Font()
+    font0.name = 'Calibri'
+    font0.height = 160
+
+    font1 = xlwt.Font()
+    font1.name = 'Calibri'
+    font1.height = 160
+    font1.bold = True
+
+    font2 = xlwt.Font()
+    font2.name = 'Calibri'
+    font2.height = 240
+    font2.bold = True
+
+    alignment_right = xlwt.Alignment()
+    alignment_right.horz = xlwt.Alignment.HORZ_RIGHT
+    alignment_right.vert = xlwt.Alignment.VERT_TOP
+    alignment_center = xlwt.Alignment()
+    alignment_center.horz = xlwt.Alignment.HORZ_CENTER
+    alignment_center.vert = xlwt.Alignment.VERT_TOP
+
+    borders = xlwt.Borders()
+    borders.left = xlwt.Borders.THIN
+    borders.right = xlwt.Borders.THIN
+    borders.top = xlwt.Borders.THIN
+    borders.bottom = xlwt.Borders.THIN
+
+    borders_bottom = xlwt.Borders()
+    borders_bottom.bottom = xlwt.Borders.THIN
+
+    style0 = xlwt.XFStyle()
+    style0.font = font0
+    style0.alignment = alignment_right
+
+    style1 = xlwt.XFStyle()
+    style1.font = font1
+    style1.alignment = alignment_center
+
+    style2 = xlwt.XFStyle()
+    style2.font = font0
+
+    style3 = xlwt.XFStyle()
+    style3.font = font2
+    style3.alignment = alignment_center
+
+    style3 = xlwt.XFStyle()
+    style3.font = font1
+    style3.alignment = alignment_center
+    style3.borders = borders
+
+    style3 = xlwt.XFStyle()
+    style3.font = font1
+    style3.borders = borders_bottom
+
+    wb = xlwt.Workbook()
+    ws = wb.add_sheet(u'Лист 1')
+    ws.write_merge(0, 0, 0, 8,
+                   u'К договору на изготовление и размещение рекламы № _____ от "___" _____%sг.' % str(current_year),
+                   style0)
+    ws.write_merge(2, 2, 0, 8, u'Заказ на размещение рекламы', style1)
+    ws.write_merge(4, 4, 0, 8, first_msg, style2)
+    ws.write_merge(5, 5, 0, 8, client.legal_name, style3)
+    ws.write_merge(6, 6, 0, 8, second_msg, style2)
+    ws.write_merge(8, 8, 0, 8, u'1. Издания, выходящие под брендом: %s' % company_name, style2)
+    ws.write_merge(10, 10, 0, 8, u'2. Медиа план:', style2)
+
+    ws.write(11, 0, u'Город', style3)
+    ws.write(11, 1, u'Район', style3)
+    ws.write(11, 2, u'Улица', style3)
+    ws.write(11, 3, u'Номер дома', style3)
+    ws.write(11, 4, u'Кол-во стендов', style3)
+    ws.write(11, 5, u'Цена за стенд, руб', style3)
+    ws.write(11, 6, u'Наценка, %', style3)
+    ws.write(11, 7, u'Скидка, %', style3)
+    ws.write(11, 8, u'Итого, руб', style3)
+
+    i = 12
+    porch_total = 0
+    for item in order.clientordersurface_set.all():
+        ws.write(i, 0, item.surface.city.name, style3)
+        ws.write(i, 1, item.surface.street.area.name, style3)
+        ws.write(i, 2, item.surface.street.name, style3)
+        ws.write(i, 3, item.surface.house_number, style3)
+        ws.write(i, 4, item.surface.porch_count(), style3)
+        ws.write(i, 5, cost, style3)
+        ws.write(i, 6, add_cost, style3)
+        ws.write(i, 7, discount, style3)
+        ws.write(i, 8, ((cost*(1+add_cost*0.01))*(1+discount*0.01)) * item.surface.porch_count(), style3)
+        i += 1
+        porch_total += item.surface.porch_count()
+    ws.write_merge(i+2, i+2, 0, 1, u'Ответственный менеджер', style3)
+    ws.write_merge(i+5, i+5, 0, 1, u'Руководитель отдела', style3)
+    ws.write_merge(i+8, i+8, 0, 1, u'Бухгалтерия', style3)
+
+    ws.col(0).width = 6000
+    ws.col(1).width = 6000
+    ws.col(2).width = 6000
+    ws.col(3).width = 4500
+    ws.col(4).width = 4500
+    ws.col(5).width = 6000
+    ws.col(6).width = 4000
+    ws.col(7).width = 4000
+    ws.col(8).width = 4000
+    for count in range(i+8):
+        ws.row(count).height = 300
+    ws.row(4).height = 1000
+    ws.row(5).height = 400
+    ws.row(6).height = 1000
+    # ws.write(0, 0, u'Клиент:', style0)
+    # ws.write(0, 1, u'%s' % client.legal_name, style0)
+    # ws.write(1, 0, u'Город:', style0)
+    # ws.write(1, 1, u'%s' % client.city.name, style0)
+    # ws.write(2, 0, u'Начало размещения:', style0)
+    # ws.write(2, 1, u'%s' % order.date_start, style0)
+    # ws.write(3, 0, u'Конец размещения:', style0)
+    # ws.write(3, 1, u'%s' % order.date_end, style0)
+    #
+    # ws.write(5, 0, u'Город', style1)
+    # ws.write(5, 1, u'Район', style1)
+    # ws.write(5, 2, u'Улица', style1)
+    # ws.write(5, 3, u'Номер дома', style1)
+    # ws.write(5, 4, u'Количество стендов', style1)
+    #
+    # i = 6
+    # porch_total = 0
+    # for item in order.clientordersurface_set.all():
+    #     ws.write(i, 0, item.surface.city.name, style1)
+    #     ws.write(i, 1, item.surface.street.area.name, style1)
+    #     ws.write(i, 2, item.surface.street.name, style1)
+    #     ws.write(i, 3, item.surface.house_number, style1)
+    #     ws.write(i, 4, item.surface.porch_count(), style1)
+    #     i += 1
+    #     porch_total += item.surface.porch_count()
+    # ws.write(i+1, 0, u'Кол-во домов: %d' % order.clientordersurface_set.all().count(), style0)
+    # ws.write(i+2, 0, u'Кол-во стендов: %d' % porch_total, style0)
+    #
+    # ws.col(0).width = 10000
+    # ws.col(1).width = 10000
+    # ws.col(2).width = 10000
+    # ws.col(3).width = 4500
+    # ws.col(4).width = 10000
+    # for count in range(i):
+    #     ws.row(count).height = 300
+
+    fname = 'journal_#%d_client_#%d_order_#%d.xls' % (journal.id, client.id, order.id)
+    response = HttpResponse(content_type="application/ms-excel")
+    response['Content-Disposition'] = 'attachment; filename=%s' % fname
+    wb.save(response)
+    return response
 
 
 # @ajax_request

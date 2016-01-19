@@ -57,8 +57,15 @@ class SurfaceClientAddForm(forms.ModelForm):
 class PorchAddForm(forms.ModelForm):
     class Meta:
         model = Porch
-        fields = ('surface', 'number', )
+        fields = ('surface', 'number', 'broken_shield', 'broken_gib', 'no_glass', 'replace_glass', 'against_tenants',
+                  'no_social_info')
         widgets = {
             'surface': forms.HiddenInput(attrs={'class': 'form-control'}),
             'number': forms.TextInput(attrs={'class': 'form-control'}),
+            'broken_shield': forms.TextInput(attrs={'class': 'form-control'}),
+            'broken_gib': forms.TextInput(attrs={'class': 'form-control'}),
+            'no_glass': forms.TextInput(attrs={'class': 'form-control'}),
+            'replace_glass': forms.TextInput(attrs={'class': 'form-control'}),
+            'against_tenants': forms.TextInput(attrs={'class': 'form-control'}),
+            'no_social_info': forms.TextInput(attrs={'class': 'form-control'}),
         }

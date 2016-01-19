@@ -38,7 +38,7 @@
                 <th>Название</th>
                 <th>Дата начала размещения</th>
                 <th>Дата окончания размещения</th>
-                <th>Количество поверхностей</th>
+                <th>Количество стендов</th>
                 <th>Excel</th>
                 <th>&nbsp;</th>
               </tr>
@@ -49,9 +49,9 @@
                 <td><a href="{% url 'client:order-update' order.id %}">{{ order|default:'Не указано' }}</a></td>
                 <td>{{ order.date_start|default:'Не указано' }}</td>
                 <td>{{ order.date_end|default:'Не указано' }}</td>
-                <td>{{ order.ordersurface_set.all.count|default:'0' }}</td>
+                <td>{{ order.stand_count|default:'0' }}</td>
                 <td>
-                  <a href="#" class="btn btn-success" disabled="disabled">
+                  <a href="{% url 'client:order-export' order.id %}" class="btn btn-success">
                     <span class="glyphicon glyphicon-download-alt"></span> Скачать в EXCEL
                   </a>
                 </td>

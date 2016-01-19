@@ -1,5 +1,6 @@
 # coding=utf-8
 from annoying.decorators import ajax_request
+from apps.adjuster.models import Adjuster
 from apps.city.forms import AreaAddForm, StreetForm
 from apps.city.models import Area, City, Street, Surface, Porch
 from apps.client.models import Client, ClientSurface
@@ -11,9 +12,10 @@ __author__ = 'alexy'
 
 @ajax_request
 def get_city_area(request):
-    if request.GET.get('city_id'):
+    if request.GET.get('city'):
         area_list = []
-        area_qs = City.objects.get(pk=int(request.GET.get('city_id'))).area_set.all()
+        area_qs = City.objects.get(pk=int(request.GET.get('city'))).area_set.all()
+        print area_qs
         for i in area_qs:
             area_list.append({
                 'id': i.id,
@@ -87,3 +89,52 @@ def surface_ajax(request):
             # 'city': city.name,
             'street_list': street_list
         }
+
+
+@ajax_request
+def get_city_adjusters(request):
+    adjuster_list = []
+    if request.GET.get('city'):
+        a_qs = Adjuster.objects.filter(city=int(request.GET.get('city')))
+        for i in a_qs:
+            adjuster_list.append(
+                {
+                    'id': i.id,
+                    'name': i.user.get_full_name()
+                }
+            )
+        return {
+            'success': True,
+            'adjuster_list': adjuster_list
+        }
+    else:
+        return {
+            'error': True
+        }
+
+@ajax_request
+def get_area_surface_list(request):
+    if request.GET.get('area'):
+        surface_list = []
+        area_pk = int(request.GET.get('area'))
+        # TODO: продумать queryset - только свободные поверхности показывать или только занятые?
+        surface_qs = Surface.objects.filter(street__area=area_pk)
+        for surface in surface_qs:
+            # if surface.id not in client_surfaces:
+            if surface.id:
+                surface_list.append({
+                    'id': surface.id,
+                    'city': surface.city.name,
+                    'area': surface.street.area.name,
+                    'street': surface.street.name,
+                    'number': surface.house_number,
+                    'porch': surface.porch_count()
+                })
+        return {
+            'surface_list': surface_list
+        }
+    else:
+        return {
+            'error': u'Что то пошло не так!'
+        }
+
