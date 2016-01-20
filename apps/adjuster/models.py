@@ -61,6 +61,13 @@ class AdjusterTask(models.Model):
     def get_absolute_url(self):
         return reverse('adjustertask:update', args=(self.id, ))
 
+    def get_porch_count(self):
+        porch_count = 0
+        if self.adjustertasksurface_set.all() > 0:
+            for i in self.adjustertasksurface_set.all():
+                porch_count += i.surface.porch_count()
+        return porch_count
+
     TYPE_CHOICES = (
         (0, u'Монтаж новой конструкции'),
         (1, u'Замена'),

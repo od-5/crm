@@ -64,7 +64,8 @@
                 <th>Город</th>
                 <th>Тип задачи</th>
                 <th>Дата выполнения</th>
-                <th>Количество адресов</th>
+                <th>Кол-во адресов</th>
+                <th>Кол-во стендов</th>
                 <th>&nbsp;</th>
               </tr>
             </thead>
@@ -77,6 +78,7 @@
                 <td>{{ object.get_type_display|default:'--' }}</td>
                 <td>{{ object.date|default:'--' }}</td>
                 <td>{{ object.adjustertasksurface_set.all.count|default:'0' }}</td>
+                <td>{{ object.get_porch_count }}</td>
                 <td>
                   <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-AdjusterTask-{{ object.id }}" class="btn btn-danger js-ajax-remove-btn">
                     Удалить

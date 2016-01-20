@@ -15,7 +15,7 @@
             <div class="col-lg-6">
               {{ order_form.client }}
               <div class="form-group">
-                <p class="lead add-bottom">Добавить заказ</p>
+                <p class="lead add-bottom">Редактировать заказ</p>
                 <div class="col-lg-5">{{ order_form.date_start.label_tag }}</div>
                 <div class="col-lg-7">{{ order_form.date_start }}</div>
                 {{ order_form.date_start.errors }}
@@ -53,7 +53,8 @@
                   <table class="table">
                     <thead>
                     <tr>
-                      <th>Выбор</th>
+                      <th><input type="checkbox" id="js-select-all" value="">
+                      </th>
                       <th>Название улицы</th>
                       <th>Номер дома</th>
                     </tr>

@@ -495,6 +495,10 @@ $(function() {
               '</tr>'
             )
           }
+          $('#js-select-all').prop('checked', false);
+          $('#js-select-all').on('click', function(){
+            $('.js-surface-list tr.result input').prop('checked', $(this).prop('checked'));
+          })
         }
       });
     }
@@ -719,6 +723,10 @@ $(function() {
             '</tr>'
           )
         }
+        $('#js-select-all').prop('checked', false);
+        $('#js-select-all').on('click', function(){
+            act_form.find('tr.result input').prop('checked', $(this).prop('checked'));
+        })
       }
     });
   });
@@ -848,6 +856,10 @@ $(function() {
             '</tr>'
           )
         }
+        $('#js-select-all').prop('checked', false);
+        $('#js-select-all').on('click', function(){
+            atf.find('tr.result input').prop('checked', $(this).prop('checked'));
+        })
       }
     });
   });

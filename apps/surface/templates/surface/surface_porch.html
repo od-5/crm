@@ -13,60 +13,65 @@
             <p class="lead text-center remove-bottom">Подъезды</p>
           </div>
           <div class="panel-body">
+            <div class="col-lg-8">
+              <p class="text-info lead">Подъезды</p>
+              <form action="" role="form" id="js-porch-add-form" class="form-inline add-bottom" method="post">
+                {% csrf_token %}
+                <div>{{ porch_form.surface }}</div>
+                <div class="col-lg-4">{{ porch_form.number.label_tag }}</div>
+                <div class="col-lg-4">{{ porch_form.number }}</div>
+                {{ porch_form.number.errors }}
+                <div class="col-lg-4">
+                  <button type="submit" class="btn btn-default">Добавить подъезд</button>
+                </div>
+                <div class="clearfix"></div>
+              </form>
+            </div>
+            <div class="clearfix"></div>
             <div class="col-lg-12">
-              <div class="col-lg-8">
-                <p class="text-info lead">Подъезды</p>
-                <form action="" role="form" id="js-porch-add-form" class="form-inline" method="post">
-                  {% csrf_token %}
-                  <div>{{ porch_form.surface }}</div>
-                    <div class="col-lg-4">{{ porch_form.number.label_tag }}</div>
-                    <div class="col-lg-4">{{ porch_form.number }}</div>
-                    {{ porch_form.number.errors }}
-                    <div class="col-lg-4">
-                      <button type="submit" class="btn btn-default">Добавить подъезд</button>
-                    </div>
-                </form>
-                <table class="table table-hover">
-                  <thead>
-                    <tr>
-                      <th>№</th>
-                      <th>Состояние</th>
-                      <th>&nbsp;</th>
-                    </tr>
-                  </thead>
-                  <tbody class="js-list">
-                  {% for porch in surface.porch_set.all %}
-                    <tr class="{% if porch.damaged %}danger{% else %}success{% endif %}" data-id="{{ porch.id }}" data-name="{{ porch.number }}" data-model="Porch" id="id_Porch_{{ porch.id }}">
-                      <td data-id="{{ porch.id }}">
-                        <strong>Подъезд №:{{ porch.number }}</strong>
-                        <a href="{% url 'surface:porch-update' porch.id %}">
-                           <button class="btn btn-primary">
-                             <span class="glyphicon glyphicon-pencil"> редактировать</span>
-                           </button>
-                        </a>
-                      </td>
-                      <td>
-                        {% if porch.damaged %}
-                        Есть повреждения
-                        {% else %}
-                        Целый
-                        {% endif %}
-                      </td>
-                      <td>
-                        <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ porch.id }}" class="btn btn-danger js-ajax-remove-btn">
-                          Удалить
-                        </a>
-                      </td>
-                    </tr>
-                  {% empty %}
-                    <tr>
-                      <td colspan="3">
-                        <p class="alert alert-info">Подъездов не найдено</p>
-                      </td>
-                    </tr>
-                  {% endfor %}
-                </table>
-              </div>
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>№</th>
+                    <th>&nbsp;</th>
+                    <th>Состояние</th>
+                    <th>&nbsp;</th>
+                  </tr>
+                </thead>
+                <tbody class="js-list">
+                {% for porch in surface.porch_set.all %}
+                  <tr class="{% if porch.damaged %}danger{% else %}success{% endif %}" data-id="{{ porch.id }}" data-name="{{ porch.number }}" data-model="Porch" id="id_Porch_{{ porch.id }}">
+                    <td data-id="{{ porch.id }}">
+                      <strong>Подъезд №:{{ porch.number }}</strong>
+                    </td>
+                    <td>
+                      <a href="{% url 'surface:porch-update' porch.id %}">
+                         <button class="btn btn-primary">
+                           <span class="glyphicon glyphicon-pencil"> редактировать</span>
+                         </button>
+                      </a>
+                    </td>
+                    <td>
+                      {% if porch.damaged %}
+                      Есть повреждения
+                      {% else %}
+                      Целый
+                      {% endif %}
+                    </td>
+                    <td>
+                      <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ porch.id }}" class="btn btn-danger js-ajax-remove-btn">
+                        Удалить
+                      </a>
+                    </td>
+                  </tr>
+                {% empty %}
+                  <tr>
+                    <td colspan="3">
+                      <p class="alert alert-info">Подъездов не найдено</p>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </table>
             </div>
           </div>
         </div>
