@@ -380,14 +380,14 @@ def client_journal_export(request, pk):
     style3.font = font2
     style3.alignment = alignment_center
 
-    style3 = xlwt.XFStyle()
-    style3.font = font1
-    style3.alignment = alignment_center
-    style3.borders = borders
+    style4 = xlwt.XFStyle()
+    style4.font = font1
+    style4.alignment = alignment_center
+    style4.borders = borders
 
-    style3 = xlwt.XFStyle()
-    style3.font = font1
-    style3.borders = borders_bottom
+    style5 = xlwt.XFStyle()
+    style5.font = font1
+    style5.borders = borders_bottom
 
     wb = xlwt.Workbook()
     ws = wb.add_sheet(u'Лист 1')
@@ -401,33 +401,38 @@ def client_journal_export(request, pk):
     ws.write_merge(8, 8, 0, 8, u'1. Издания, выходящие под брендом: %s' % company_name, style2)
     ws.write_merge(10, 10, 0, 8, u'2. Медиа план:', style2)
 
-    ws.write(11, 0, u'Город', style3)
-    ws.write(11, 1, u'Район', style3)
-    ws.write(11, 2, u'Улица', style3)
-    ws.write(11, 3, u'Номер дома', style3)
-    ws.write(11, 4, u'Кол-во стендов', style3)
-    ws.write(11, 5, u'Цена за стенд, руб', style3)
-    ws.write(11, 6, u'Наценка, %', style3)
-    ws.write(11, 7, u'Скидка, %', style3)
-    ws.write(11, 8, u'Итого, руб', style3)
+    ws.write(11, 0, u'Город', style4)
+    ws.write(11, 1, u'Район', style4)
+    ws.write(11, 2, u'Улица', style4)
+    ws.write(11, 3, u'Номер дома', style4)
+    ws.write(11, 4, u'Кол-во стендов', style4)
+    ws.write(11, 5, u'Цена за стенд, руб', style4)
+    ws.write(11, 6, u'Наценка, %', style4)
+    ws.write(11, 7, u'Скидка, %', style4)
+    ws.write(11, 8, u'Итого, руб', style4)
 
     i = 12
     porch_total = 0
+    total_count = 0
     for item in order.clientordersurface_set.all():
-        ws.write(i, 0, item.surface.city.name, style3)
-        ws.write(i, 1, item.surface.street.area.name, style3)
-        ws.write(i, 2, item.surface.street.name, style3)
-        ws.write(i, 3, item.surface.house_number, style3)
-        ws.write(i, 4, item.surface.porch_count(), style3)
-        ws.write(i, 5, cost, style3)
-        ws.write(i, 6, add_cost, style3)
-        ws.write(i, 7, discount, style3)
-        ws.write(i, 8, ((cost*(1+add_cost*0.01))*(1+discount*0.01)) * item.surface.porch_count(), style3)
+        count = ((cost*(1+add_cost*0.01))*(1+discount*0.01)) * item.surface.porch_count()
+        ws.write(i, 0, item.surface.city.name, style4)
+        ws.write(i, 1, item.surface.street.area.name, style4)
+        ws.write(i, 2, item.surface.street.name, style4)
+        ws.write(i, 3, item.surface.house_number, style4)
+        ws.write(i, 4, item.surface.porch_count(), style4)
+        ws.write(i, 5, cost, style4)
+        ws.write(i, 6, add_cost, style4)
+        ws.write(i, 7, discount, style4)
+        ws.write(i, 8, count, style4)
         i += 1
         porch_total += item.surface.porch_count()
-    ws.write_merge(i+2, i+2, 0, 1, u'Ответственный менеджер', style3)
-    ws.write_merge(i+5, i+5, 0, 1, u'Руководитель отдела', style3)
-    ws.write_merge(i+8, i+8, 0, 1, u'Бухгалтерия', style3)
+        total_count += count
+    ws.write(i+1, 0, u'Итого', style2)
+    ws.write(i+1, 8, u"%s, руб." % total_count, style2)
+    ws.write_merge(i+2, i+2, 0, 1, u'Ответственный менеджер', style5)
+    ws.write_merge(i+5, i+5, 0, 1, u'Руководитель отдела', style5)
+    ws.write_merge(i+8, i+8, 0, 1, u'Бухгалтерия', style5)
 
     ws.col(0).width = 6000
     ws.col(1).width = 6000
