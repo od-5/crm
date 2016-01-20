@@ -62,10 +62,10 @@ class PorchAddForm(forms.ModelForm):
         widgets = {
             'surface': forms.HiddenInput(attrs={'class': 'form-control'}),
             'number': forms.TextInput(attrs={'class': 'form-control'}),
-            'broken_shield': forms.TextInput(attrs={'class': 'form-control'}),
-            'broken_gib': forms.TextInput(attrs={'class': 'form-control'}),
-            'no_glass': forms.TextInput(attrs={'class': 'form-control'}),
-            'replace_glass': forms.TextInput(attrs={'class': 'form-control'}),
-            'against_tenants': forms.TextInput(attrs={'class': 'form-control'}),
-            'no_social_info': forms.TextInput(attrs={'class': 'form-control'}),
+            'broken_shield': forms.CheckboxInput(),
+            'broken_gib': forms.CheckboxInput(),
+            'no_glass': forms.CheckboxInput(),
+            'replace_glass': forms.CheckboxInput(),
+            'against_tenants': forms.CheckboxInput(),
+            'no_social_info': forms.CheckboxInput(),
         }
