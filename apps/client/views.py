@@ -428,8 +428,8 @@ def client_journal_export(request, pk):
         i += 1
         porch_total += item.surface.porch_count()
         total_count += count
-    ws.write(i+1, 0, u'Итого', style2)
-    ws.write(i+1, 8, u"%s, руб." % total_count, style2)
+    ws.write(i, 0, u'Итого', style2)
+    ws.write(i, 8, u"%s, руб." % total_count, style2)
     ws.write_merge(i+2, i+2, 0, 1, u'Ответственный менеджер', style5)
     ws.write_merge(i+5, i+5, 0, 1, u'Руководитель отдела', style5)
     ws.write_merge(i+8, i+8, 0, 1, u'Бухгалтерия', style5)
