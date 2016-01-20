@@ -74,21 +74,6 @@ class Street(models.Model):
     name = models.CharField(max_length=256, verbose_name=u'Название улицы')
 
 
-# TODO: Удалить модель за ненадобностью.
-class ConstructionType(models.Model):
-    class Meta:
-        verbose_name = u'Вид конструкции'
-        verbose_name_plural = u'Виды конструкций'
-        app_label = 'city'
-
-    def __unicode__(self):
-        return self.format
-
-    city = models.ForeignKey(to=City, verbose_name=u'Город')
-    format = models.CharField(max_length=100, verbose_name=u'Формат')
-    price = models.PositiveIntegerField(verbose_name=u'Цена')
-
-
 class Surface(models.Model):
     class Meta:
         verbose_name = u'Поверхность'

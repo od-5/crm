@@ -26,13 +26,10 @@ class CityListView(ListView):
         else:
             qs = None
         if self.request.GET.get('moderator'):
-            queryset = qs.filter(moderator__email=self.request.GET.get('moderator'))
-        else:
-            if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
-                queryset = qs.filter(id=int(self.request.GET.get('city')))
-            else:
-                queryset = qs
-        return queryset
+            qs = qs.filter(moderator__email=self.request.GET.get('moderator'))
+        if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
+            qs = qs.filter(id=int(self.request.GET.get('city')))
+        return qs
 
     @csrf_exempt
     def get_context_data(self, **kwargs):
@@ -167,9 +164,7 @@ def city_street(request, pk):
         form = StreetForm(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('city:street', args=(city.id, )))
-        else:
-            return HttpResponseRedirect(reverse('city:street', args=(city.id, )))
+        return HttpResponseRedirect(reverse('city:street', args=(city.id, )))
     else:
         form = StreetForm(
             initial={

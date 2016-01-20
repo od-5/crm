@@ -29,6 +29,4 @@ urlpatterns = patterns(
 
 
     url(r'^export/(?P<pk>\d+)/$', 'client_excel_export', name='excel_export'),
-    # TODO: переделать удаление поверхности из заказа клиента
-    url(r'^surface-remove/', 'remove_client_surface', name='surface-remove'),
 )

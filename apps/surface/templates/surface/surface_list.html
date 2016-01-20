@@ -80,14 +80,11 @@
                 <td><a href="{% url 'surface:update' object.id %}">{{ object.street|default:'' }}</a></td>
                 <td>{{ object.house_number|default:'' }}</td>
                 <td>{{ object.porch_count|default:'Не указано' }}</td>
-{#                <td class="text-right"><a href="{% url 'city:surface-remove' object.id %}" class="btn btn-warning js-remove-surface">#}
-{#                  <span class="glyphicon glyphicon-remove"></span> удалить</a>#}
-{#                </td>#}
                 <td>
-                    <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-Surface-{{ object.id }}" class="btn btn-danger js-ajax-remove-btn">
-                      Удалить
-                    </a>
-                  </td>
+                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-Surface-{{ object.id }}" class="btn btn-danger js-ajax-remove-btn">
+                    Удалить
+                  </a>
+                </td>
               </tr>
             {% endfor %}
             </tbody>
@@ -95,7 +92,6 @@
           {% if not object_list %}
             <div class="alert alert-info">Рекламных поверхностей нет</div>
           {% endif %}
-{#          {% endif %}#}
         </div>
       </div>
     </div>

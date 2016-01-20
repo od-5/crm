@@ -74,8 +74,6 @@
                   <div class="clearfix"></div>
                   {{ form.phone.errors }}
                 </div>
-              </div>
-              <div class="col-lg-6">
                 <div class="form-group">
                   <p class="text-info lead">Смена пароля</p>
                   <div class="col-lg-5"><label for="password1">Новый пароль</label></div>
@@ -86,6 +84,33 @@
                   <div class="col-lg-5"><label for="password2">Повторите пароль</label></div>
                   <div class="col-lg-7"><input type="password" name="password2" class="form-control"></div>
                   <div class="clearfix"></div>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <p class="text-info lead">Информация об организации</p>
+                  <div class="col-lg-5"> {{ form.company.label_tag }} </div>
+                  <div class="col-lg-7"> {{ form.company }} </div>
+                  <div class="clearfix"></div>
+                  {{ form.company.errors }}
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-5"> {{ form.leader.label_tag }} </div>
+                  <div class="col-lg-7"> {{ form.leader }} </div>
+                  <div class="clearfix"></div>
+                  {{ form.leader.errors }}
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-5"> {{ form.leader_function.label_tag }} </div>
+                  <div class="col-lg-7"> {{ form.leader_function }} </div>
+                  <div class="clearfix"></div>
+                  {{ form.leader_function.errors }}
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-5"> {{ form.work_basis.label_tag }} </div>
+                  <div class="col-lg-7"> {{ form.work_basis }} </div>
+                  <div class="clearfix"></div>
+                  {{ form.work_basis.errors }}
                 </div>
               </div>
               <div class="clearfix"></div>

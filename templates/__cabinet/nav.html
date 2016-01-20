@@ -1,4 +1,19 @@
 <nav class="navbar navbar-default">
+  <div class="welcome">
+    <div class="col-lg-6">
+      <div class="navbar-header">
+        <a href="{% url 'cabinet:cabinet' %}" class="navbar-brand">Контроль рекламных поверхностей</a>
+      </div>
+    </div>
+    <div class="col-lg-6 text-right">
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="{% url 'cabinet:profile' %}">Добро пожаловать, <span class="glyphicon glyphicon-user"></span> {{ user }} </a></li>
+        <li><a href="{% url 'cabinet:logout' %}?next={% url 'cabinet:cabinet' %}"><span class="glyphicon glyphicon-log-out"></span> Выход</a></li>
+      </ul>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+
   <div class="container-fluid">
 {#    <div class="navbar-header">#}
 {#      <a class="navbar-brand" href="#">Контроль рекламных поверхностей</a>#}
@@ -61,10 +76,10 @@
           </ul>
         </li>
       </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <li><a href="{% url 'cabinet:profile' %}"> <span class="glyphicon glyphicon-user"></span> {{ user }} </a></li>
-        <li><a href="{% url 'cabinet:logout' %}?next={% url 'cabinet:cabinet' %}"><span class="glyphicon glyphicon-log-out"></span> Выход</a></li>
-      </ul>
+{#      <ul class="nav navbar-nav navbar-right">#}
+{#        <li><a href="{% url 'cabinet:profile' %}"> <span class="glyphicon glyphicon-user"></span> {{ user }} </a></li>#}
+{#        <li><a href="{% url 'cabinet:logout' %}?next={% url 'cabinet:cabinet' %}"><span class="glyphicon glyphicon-log-out"></span> Выход</a></li>#}
+{#      </ul>#}
     </div>
   </div>
 </nav>

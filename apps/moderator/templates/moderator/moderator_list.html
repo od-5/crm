@@ -7,14 +7,20 @@
           <p class="lead remove-bottom text-center">Модераторы</p>
         </div>
         <div class="panel-body">
-          <a href="{% url 'moderator:add' %}" class="btn btn-success">
+          <a href="{% url 'moderator:add' %}" class="btn btn-success add-bottom">
             <span class="glyphicon glyphicon-plus-sign"></span> Добавить модератора
           </a>
-          {% if object_list %}
+          <form action="" method="GET" role="form" class="form-inline">
+            <input type="text" name="email" value="{{ r_email|default:'' }}" class="form-control input-sm" placeholder="e-mail">
+            <input type="text" name="last_name" value="{{ r_last_name|default:'' }}" class="form-control input-sm" placeholder="Фамилия">
+            <input type="text" name="first_name" value="{{ r_first_name|default:'' }}" class="form-control input-sm" placeholder="Имя">
+            <input type="text" name="patronymic" value="{{ r_patronymic|default:'' }}" class="form-control input-sm" placeholder="Отчество">
+            <input type="text" name="phone" value="{{ r_phone|default:'' }}" class="form-control input-sm" placeholder="Телефон">
+            <button type="submit" class="btn btn-info btn-sm"> <span class="glyphicon glyphicon-search"></span> Искать</button>
+          </form>
           <table class="table table-hover">
             <thead>
               <tr>
-                <th>id</th>
                 <th>e-mail</th>
                 <th>Фамлия</th>
                 <th>Имя</th>
@@ -24,15 +30,14 @@
                 <th>&nbsp;</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody class="js-list">
             {% for object in object_list %}
-              <tr data-id="{{ object.id }}">
-                <td>{{ object.id|default:'' }}</td>
+              <tr data-id="{{ object.id }}" data-name="{{ object.get_full_name }}" data-model="User" id="id_User_{{ object.id }}">
                 <td><a href="{% url 'moderator:change' object.pk %}" class="js-moderator-email"> {{ object.email|default:'' }}</a></td>
-                <td>{{ object.last_name|default:'' }}</td>
-                <td>{{ object.first_name|default:'' }}</td>
-                <td>{{ object.patronymic|default:'' }}</td>
-                <td>{{ object.phone|default:'' }}</td>
+                <td>{{ object.last_name|default:'Не указано' }}</td>
+                <td>{{ object.first_name|default:'Не указано' }}</td>
+                <td>{{ object.patronymic|default:'Не указано' }}</td>
+                <td>{{ object.phone|default:'Не указано' }}</td>
                 <td>
                 {% if object.city_set.all %}
                   {% for city in object.city_set.all %}
@@ -42,29 +47,24 @@
                   Не назначено
                 {% endif %}
                 </td>
-                {% include '__cabinet/remove_item_btn.html' with name=object %}
-{#                <td>#}
-{#                  <a href="#js-modal-item-remove" class="btn btn-danger js-remove-item-btn" data-id="{{ object.id }}" data-email="{{ object.email }}">#}
-{#                    <span class="glyphicon glyphicon-remove"></span>#}
-{#                     Уалить#}
-{#                  </a>#}
-{#                </td>#}
+                <td>
+                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-User-{{ object.id }}" class="btn btn-danger js-ajax-remove-btn">
+                    <span class="glyphicon glyphicon-remove"></span> Удалить
+                  </a>
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="6">
+                  <p class="alert alert-info">Модераторов не найдено</p>
+                </td>
               </tr>
             {% endfor %}
             </tbody>
           </table>
-          {% endif %}
         </div>
       </div>
     </div>
   </div>
-  <div id="js-modal-item-remove">
-    <form action="{% url 'administrator:remove' %}" class="js-modal-remove-item-form">
-      {% csrf_token %}
-      <p class="alert alert-danger">Вы действительно хотети удалить <strong id="js-modal-item-remove-name"></strong>?</p>
-      <input type="hidden" name="item_id" id="js-modal-item-remove-id">
-      <input type="submit" value="Да" class="btn btn-success">
-      <input type="reset" value="Нет" class="btn btn-danger">
-    </form>
-  </div>
+  {% include '__modal/js_ajax_remove_form.html' %}
 {% endblock %}

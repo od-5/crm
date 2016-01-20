@@ -6,13 +6,14 @@ from django.contrib.admin.views.decorators import staff_member_required
 from .ajax import moderator_remove
 from apps.cabinet.forms import UserChangeForm, UserAddForm
 from apps.cabinet.views import UserUpdateView
+from apps.moderator.views import ModeratorListView
 from core.models import User
 
 __author__ = 'alexy'
 
 urlpatterns = patterns(
     'apps.moderator.views',
-    url(r'^$', ListView.as_view(queryset=User.objects.filter(type=2), template_name='moderator/moderator_list.html'), name='list'),
+    url(r'^$', ModeratorListView.as_view(), name='list'),
     url(r'^add/$', 'moderator_add', name='add'),
     url(r'^remove/$', moderator_remove, name='remove'),
     url(r'^(?P<pk>\d+)/$', 'moderator_change', name='change'),

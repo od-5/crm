@@ -71,6 +71,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     patronymic = models.CharField(u'Отчество', max_length=50, blank=True, null=True, default=u'')
     phone = models.CharField(max_length=250, verbose_name=u'Телефон', null=True, blank=True, default=u'')
     type = models.PositiveSmallIntegerField(verbose_name=u'Уровень доступа', default=3, choices=USER_TYPE_CHOICE)
+    company = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'Название организации')
+    leader = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'Руководитель')
+    leader_function = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'Должность руководителя')
+    work_basis = models.CharField(max_length=256, blank=True, null=True, verbose_name=u'действует на основании')
 
     is_staff = models.BooleanField(_('staff status'), default=False,
                                    help_text=_('Designates whether the user can log into this admin site.'))
@@ -88,10 +92,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
 
-    # def save(self, update_fields):
-        print '***********'
-        print self.type
-        print '***********'
         if self.type == 1 and not self.is_superuser:
             self.is_superuser = True
         else:

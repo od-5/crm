@@ -1,18 +1,15 @@
 # coding=utf-8
 from django.conf.urls import patterns, url
 from django.contrib.auth.views import logout
-from django.views.generic import ListView, UpdateView, CreateView
 from django.contrib.admin.views.decorators import staff_member_required
 from .ajax import administrator_remove
-from apps.cabinet.forms import UserChangeForm, UserAddForm
-from apps.cabinet.views import UserUpdateView
-from core.models import User
+from apps.administrator.views import AdministratorListView
 
 __author__ = 'alexy'
 
 urlpatterns = patterns(
     'apps.administrator.views',
-    url(r'^$', ListView.as_view(queryset=User.objects.filter(type=1), template_name='administrator/administrator_list.html'), name='list'),
+    url(r'^$', AdministratorListView.as_view(), name='list'),
     url(r'^add/$', 'administrator_add', name='add'),
     url(r'^remove/$', administrator_remove, name='remove'),
     url(r'^(?P<pk>\d+)/$', 'administrator_change', name='change'),

@@ -1,6 +1,6 @@
 # coding=utf-8
 from django.contrib import admin
-from .models import City, Area, ConstructionType, Surface, Porch, Street
+from .models import City, Area, Surface, Porch, Street
 
 __author__ = 'alexy'
 
@@ -20,17 +20,12 @@ class PorchInline(admin.StackedInline):
     extra = 1
 
 
-class ConstructionTypeInline(admin.TabularInline):
-    model = ConstructionType
-    extra = 1
-
-
 class CityAdmin(admin.ModelAdmin):
     inlines = [
         AreaInline,
-        StreetInline,
-        ConstructionTypeInline
+        StreetInline
     ]
+
 
 class SurfaceAdmin(admin.ModelAdmin):
     list_display = ('city', 'street', 'house_number')
