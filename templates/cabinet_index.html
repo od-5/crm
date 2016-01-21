@@ -7,96 +7,174 @@
 {% endblock %}
 {% block content %}
   <div class="container">
-    <div class="row">
-      <div class="col-12">
-        <div class="col-lg-12">
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <p class="lead text-center remove-bottom">Пользователи</p>
-            </div>
-            <div class="panel-body">
-              <table class="table">
-                <tr>
-                  {% if user.type == 1 %}
-                  <td><a href="{% url 'administrator:list' %}">Список администраторов</a></td>
-                  <td><a href="{% url 'administrator:add' %}">Добавить администратора</a></td>
-                  {% endif %}
-                  <td><a href="{% url 'moderator:list' %}">Список модераторов</a></td>
-                  <td><a href="{% url 'moderator:add' %}">Добавить модератора</a></td>
-                </tr>
-                <tr>
-                  <td><a href="{% url 'client:list' %}">Список клиентов</a></td>
-                  <td><a href="{% url 'client:add' %}">Добавить клиента</a></td>
-                  <td><a href="{% url 'adjuster:list' %}">Список монтажников</a></td>
-                  <td><a href="{% url 'adjuster:add' %}">Добавить монтажника</a></td>
-                </tr>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4">
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <p class="lead text-center remove-bottom">Настройки сайта</p>
-            </div>
-            <div class="panel-body">
-              <table class="table">
-                <tr>
-                  <td><a>SEO</a></td>
-                  <td><a>Контент</a></td>
-                </tr>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4">
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <p class="lead text-center remove-bottom">Заявки с сайта</p>
-            </div>
-            <div class="panel-body">
-              <table class="table">
-                <tr>
-                  <td><a>Заявки</a></td>
-                  <td><a>Продажи</a></td>
-                </tr>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4">
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <p class="lead text-center remove-bottom">Задачи</p>
-            </div>
-            <div class="panel-body">
-              <table class="table">
-                <tr>
-                  <td><a href="{% url 'adjustertask:list' %}">Список задач</a></td>
-                  <td><a href="{% url 'adjustertask:add' %}">Добавить задачу</a></td>
-                </tr>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-12">
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <p class="lead text-center remove-bottom">Города</p>
-            </div>
-            <div class="panel-body">
-              <table class="table">
-                <tr>
-                  <td><a href="{% url 'city:list' %}">Список городов</a></td>
-                  <td><a href="{% url 'city:add' %}">Добавить город</a></td>
-                  <td><a href="{% url 'surface:list' %}">Список рекламных поерхностей</a></td>
-                  <td><a href="{% url 'surface:add' %}">Добавить рекламную поверхность</a></td>
-                </tr>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div class="col-lg-6">
+      <table class="table table-bordered">
+        <tbody>
+          <tr>
+            <td class="name">Администраторы</td>
+            <td><a href="{% url 'administrator:list' %}" class="glyphlink"><span class="glyphicon glyphicon-list-alt"></span>Список</a></td>
+            <td><a href="{% url 'administrator:add' %}" class="glyphlink"><span class="glyphicon glyphicon-plus-sign"></span> Добавить</a></td>
+          </tr>
+          <tr>
+            <td class="name">Модераторы</td>
+            <td><a href="{% url 'moderator:list' %}" class="glyphlink"><span class="glyphicon glyphicon-list-alt"></span>Список</a></td>
+            <td><a href="{% url 'moderator:add' %}" class="glyphlink"><span class="glyphicon glyphicon-plus-sign"></span> Добавить</a></td>
+          </tr>
+          <tr>
+            <td class="name">Клиенты</td>
+            <td><a href="{% url 'client:list' %}" class="glyphlink"><span class="glyphicon glyphicon-list-alt"></span>Список</a></td>
+            <td><a href="{% url 'client:add' %}" class="glyphlink"><span class="glyphicon glyphicon-plus-sign"></span> Добавить</a></td>
+          </tr>
+          <tr>
+            <td class="name">Монтажники</td>
+            <td><a href="{% url 'adjuster:list' %}" class="glyphlink"><span class="glyphicon glyphicon-list-alt"></span>Список</a></td>
+            <td><a href="{% url 'adjuster:add' %}" class="glyphlink"><span class="glyphicon glyphicon-plus-sign"></span> Добавить</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-lg-6">
+      <table class="table table-bordered">
+        <tbody>
+          <tr>
+            <td class="name">Города</td>
+            <td><a href="{% url 'city:list' %}" class="glyphlink"><span class="glyphicon glyphicon-list-alt"></span>Список</a></td>
+            <td><a href="{% url 'city:add' %}" class="glyphlink"><span class="glyphicon glyphicon-plus-sign"></span> Добавить</a></td>
+          </tr>
+          <tr>
+            <td class="name">Рекламные поверхности</td>
+            <td><a href="{% url 'surface:list' %}" class="glyphlink"><span class="glyphicon glyphicon-list-alt"></span>Список</a></td>
+            <td><a href="{% url 'surface:add' %}" class="glyphlink"><span class="glyphicon glyphicon-plus-sign"></span> Добавить</a></td>
+          </tr>
+          <tr>
+            <td class="name">Задачи</td>
+            <td><a href="{% url 'adjustertask:list' %}" class="glyphlink"><span class="glyphicon glyphicon-list-alt"></span>Список</a></td>
+            <td><a href="{% url 'adjustertask:add' %}" class="glyphlink"><span class="glyphicon glyphicon-plus-sign"></span> Добавить</a></td>
+          </tr>
+          <tr>
+            <td class="name">Журнал покупок</td>
+            <td colspan="2"><a href="#" class="glyphlink"><span class="glyphicon glyphicon-list-alt"></span>Просмотреть</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-lg-6">
+      <table class="table table-bordered">
+        <tbody>
+          <tr>
+            <td class="name">Заявки</td>
+            <td><a href="#" class="glyphlink"><span class="glyphicon glyphicon-list-alt"></span>Список</a></td>
+          </tr>
+          <tr>
+            <td class="name">Пордажи</td>
+            <td><a href="#" class="glyphlink"><span class="glyphicon glyphicon-list-alt"></span>Список</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-lg-6">
+      <table class="table table-bordered">
+        <tbody>
+          <tr>
+            <td class="name">Настройки сайта</td>
+            <td><a href="#" class="glyphlink"><span class="glyphicon glyphicon-cog"></span>Изменить</a></td>
+          </tr>
+          <tr>
+            <td class="name">Блоки сайта</td>
+            <td><a href="#" class="glyphlink"><span class="glyphicon glyphicon-book"></span>Изменить</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+{#      <div class="col-12">#}
+{#        <div class="col-lg-12">#}
+{#          <div class="panel panel-default">#}
+{#            <div class="panel-heading">#}
+{#              <p class="lead text-center remove-bottom">Пользователи</p>#}
+{#            </div>#}
+{#            <div class="panel-body">#}
+{#              <table class="table">#}
+{#                <tr>#}
+{#                  {% if user.type == 1 %}#}
+{#                  <td><a href="{% url 'administrator:list' %}">Список администраторов</a></td>#}
+{#                  <td><a href="{% url 'administrator:add' %}">Добавить администратора</a></td>#}
+{#                  {% endif %}#}
+{#                  <td><a href="{% url 'moderator:list' %}">Список модераторов</a></td>#}
+{#                  <td><a href="{% url 'moderator:add' %}">Добавить модератора</a></td>#}
+{#                </tr>#}
+{#                <tr>#}
+{#                  <td><a href="{% url 'client:list' %}">Список клиентов</a></td>#}
+{#                  <td><a href="{% url 'client:add' %}">Добавить клиента</a></td>#}
+{#                  <td><a href="{% url 'adjuster:list' %}">Список монтажников</a></td>#}
+{#                  <td><a href="{% url 'adjuster:add' %}">Добавить монтажника</a></td>#}
+{#                </tr>#}
+{#              </table>#}
+{#            </div>#}
+{#          </div>#}
+{#        </div>#}
+{#        <div class="col-lg-4">#}
+{#          <div class="panel panel-default">#}
+{#            <div class="panel-heading">#}
+{#              <p class="lead text-center remove-bottom">Настройки сайта</p>#}
+{#            </div>#}
+{#            <div class="panel-body">#}
+{#              <table class="table">#}
+{#                <tr>#}
+{#                  <td><a>SEO</a></td>#}
+{#                  <td><a>Контент</a></td>#}
+{#                </tr>#}
+{#              </table>#}
+{#            </div>#}
+{#          </div>#}
+{#        </div>#}
+{#        <div class="col-lg-4">#}
+{#          <div class="panel panel-default">#}
+{#            <div class="panel-heading">#}
+{#              <p class="lead text-center remove-bottom">Заявки с сайта</p>#}
+{#            </div>#}
+{#            <div class="panel-body">#}
+{#              <table class="table">#}
+{#                <tr>#}
+{#                  <td><a>Заявки</a></td>#}
+{#                  <td><a>Продажи</a></td>#}
+{#                </tr>#}
+{#              </table>#}
+{#            </div>#}
+{#          </div>#}
+{#        </div>#}
+{#        <div class="col-lg-4">#}
+{#          <div class="panel panel-default">#}
+{#            <div class="panel-heading">#}
+{#              <p class="lead text-center remove-bottom">Задачи</p>#}
+{#            </div>#}
+{#            <div class="panel-body">#}
+{#              <table class="table">#}
+{#                <tr>#}
+{#                  <td><a href="{% url 'adjustertask:list' %}">Список задач</a></td>#}
+{#                  <td><a href="{% url 'adjustertask:add' %}">Добавить задачу</a></td>#}
+{#                </tr>#}
+{#              </table>#}
+{#            </div>#}
+{#          </div>#}
+{#        </div>#}
+{#        <div class="col-lg-12">#}
+{#          <div class="panel panel-default">#}
+{#            <div class="panel-heading">#}
+{#              <p class="lead text-center remove-bottom">Города</p>#}
+{#            </div>#}
+{#            <div class="panel-body">#}
+{#              <table class="table">#}
+{#                <tr>#}
+{#                  <td><a href="{% url 'city:list' %}">Список городов</a></td>#}
+{#                  <td><a href="{% url 'city:add' %}">Добавить город</a></td>#}
+{#                  <td><a href="{% url 'surface:list' %}">Список рекламных поерхностей</a></td>#}
+{#                  <td><a href="{% url 'surface:add' %}">Добавить рекламную поверхность</a></td>#}
+{#                </tr>#}
+{#              </table>#}
+{#            </div>#}
+{#          </div>#}
+{#        </div>#}
+{#      </div>#}
     </div>
   </div>
 {% endblock %}
