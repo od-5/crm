@@ -1,5 +1,62 @@
 {% extends 'cabinet_base.html' %}
+{% block extra_js %}
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <script type="text/javascript">
 
+    // Load the Visualization API and the piechart package.
+    google.load('visualization', '1.0', {'packages':['corechart']});
+
+    // Set a callback to run when the Google Visualization API is loaded.
+    google.setOnLoadCallback(drawChart);
+
+    // Callback that creates and populates a data table,
+    // instantiates the pie chart, passes in the data and
+    // draws it.
+    function drawChart() {
+
+      // Create the data table.
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'Topping');
+      data.addColumn('number', 'Slices');
+      data.addRows([
+        ['Волгоград', 3],
+        ['Ростов на дону', 1],
+        ['Саратов', 1],
+        ['Казань', 1],
+        ['Санкт Петербург', 2]
+      ]);
+
+      // Set chart options
+      var options = {'title':'Количество поверхностей в городах',
+                     'width':540,
+                     'height':400};
+
+      // Instantiate and draw our chart, passing in some options.
+      var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+      chart.draw(data, options);
+
+      // Create the data table.
+      var new_data = new google.visualization.DataTable();
+      new_data.addColumn('string', 'Topping');
+      new_data.addColumn('number', 'Slices');
+      new_data.addRows([
+        ['Заявки', 311],
+        ['Продажи', 112],
+      ]);
+
+      // Set chart options
+      var new_options = {'title':'Конверсия продаж с сайта',
+                     'width':540,
+                     'height':400};
+
+      // Instantiate and draw our chart, passing in some options.
+      var new_chart = new google.visualization.PieChart(document.getElementById('second_chart_div'));
+      new_chart.draw(new_data, new_options);
+
+    }
+
+  </script>
+{% endblock %}
 {% block header %}
 <header>
   {% include '__cabinet/header.html' %}
@@ -85,6 +142,12 @@
           </tr>
         </tbody>
       </table>
+    </div>
+    <div class="col-lg-6">
+      <div id="chart_div"></div>
+    </div>
+    <div class="col-lg-6">
+      <div id="second_chart_div"></div>
     </div>
 {#      <div class="col-12">#}
 {#        <div class="col-lg-12">#}
