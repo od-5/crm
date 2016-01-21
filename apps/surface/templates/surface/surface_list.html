@@ -74,7 +74,7 @@
                 <td>&nbsp;</td>
               </tr>
             {% for object in object_list %}
-              <tr data-id="{{ object.id }}" data-name="{{ object.street }}" data-model="Surface" id="id_Surface_{{ object.id }}">
+              <tr {% if object.damaged %}class="danger"{% endif %} data-id="{{ object.id }}" data-name="{{ object.street }}" data-model="Surface" id="id_Surface_{{ object.id }}">
                 <td>{{ object.city|default:'' }}</td>
                 <td>{{ object.street.area|default:'' }}</td>
                 <td><a href="{% url 'surface:update' object.id %}">{{ object.street|default:'' }}</a></td>
@@ -86,12 +86,16 @@
                   </a>
                 </td>
               </tr>
+            {% empty %}
+              <tr>
+                <td colspan="6">
+                  <p class="alert alert-info">Рекламных поверхностей нет</p>
+                </td>
+              </tr>
             {% endfor %}
             </tbody>
           </table>
-          {% if not object_list %}
-            <div class="alert alert-info">Рекламных поверхностей нет</div>
-          {% endif %}
+        {% include '__includes/pagination.html' %}
         </div>
       </div>
     </div>

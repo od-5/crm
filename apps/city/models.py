@@ -90,6 +90,13 @@ class Surface(models.Model):
     def porch_count(self):
         return self.porch_set.all().count()
 
+    def damaged(self):
+        for porch in self.porch_set.all():
+            if porch.damaged():
+                return True
+        else:
+            return False
+
     def save(self, *args, **kwargs):
         address = u'%s %s %s' % (self.city.name, self.street.name, self.house_number)
         pos = api.geocode(api_key, address)

@@ -7,6 +7,7 @@ from django.shortcuts import render
 from django.utils.dateparse import parse_date, parse_time
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView, UpdateView
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from apps.adjuster.models import SurfacePhoto
 from apps.city.forms import CityAddForm, StreetForm, AreaAddForm, AreaModelFormset
 from apps.city.models import City, Area, Surface, Street
@@ -74,8 +75,18 @@ class CityListView(ListView):
             context.update({
                 'grid': True
             })
+        paginator = Paginator(a_qs, 20) # Show 25 contacts per page
+        page = self.request.GET.get('page')
+        try:
+            address_list = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            address_list = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            address_list = paginator.page(paginator.num_pages)
         context.update({
-            'address_list': a_qs
+            'address_list': address_list
         })
 
         return context

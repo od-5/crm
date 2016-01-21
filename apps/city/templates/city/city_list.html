@@ -158,7 +158,7 @@
               </thead>
               <tbody>
               {% for item in address_list %}
-              <tr>
+              <tr {% if item.porch.damaged %}class="danger"{% endif %}>
                 <td>{{ item.porch.surface.city.name }}</td>
                 <td>{{ item.porch.surface.street.area.name }}</td>
                 <td>{{ item.porch.surface.street.name }}</td>
@@ -179,6 +179,7 @@
               </tbody>
             </table>
           {% endif %}
+          {% include '__includes/pagination.html' with page_obj=address_list%}
           </div>
 
         </div>

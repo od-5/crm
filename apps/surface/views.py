@@ -3,6 +3,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from apps.adjuster.models import SurfacePhoto
 from .forms import SurfaceAddForm, SurfaceClientAddForm, PorchAddForm, SurfacePhotoForm
 from apps.city.models import City, Area, Surface, Street, Porch
@@ -13,6 +14,7 @@ __author__ = 'alexy'
 class SurfaceListView(ListView):
     model = Surface
     template_name = 'surface/surface_list.html'
+    paginate_by = 50
 
     def get_queryset(self):
         user_id = self.request.user.id
@@ -118,7 +120,6 @@ class SurfacePhotoDeleteView(DeleteView):
         return context
 
 
-
 def surface_porch(request, pk):
     context = {}
     surface = Surface.objects.get(pk=int(pk))
@@ -159,9 +160,21 @@ def surface_porch_update(request, pk):
     photo_form = SurfacePhotoForm(initial={
         'porch': porch
     })
+    photo_qs = porch.surfacephoto_set.all()
+    paginator = Paginator(photo_qs, 20) # Show 25 contacts per page
+    page = request.GET.get('page')
+    try:
+        photo_list = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        photo_list = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        photo_list = paginator.page(paginator.num_pages)
     context.update({
         'object': porch,
         'surface': porch.surface,
+        'photo_list': photo_list,
         'porch_form': form,
         'photo_form': photo_form
     })

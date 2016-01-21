@@ -18,7 +18,8 @@ __author__ = 'alexy'
 
 class AdministratorListView(ListView):
     queryset = User.objects.filter(type=1)
-    template_name='administrator/administrator_list.html'
+    template_name = 'administrator/administrator_list.html'
+    paginate_by = 50
 
     def get_queryset(self):
         qs = User.objects.filter(type=1)
@@ -54,7 +55,7 @@ def administrator_add(request):
             user = form.save(commit=False)
             user.type = 1
             user.save()
-            return HttpResponseRedirect(reverse('administrator:change', args=(user.id, )))
+            return HttpResponseRedirect(reverse('administrator:change', args=(user.id,)))
         else:
             context.update({
                 'error': u'Проверьте правильность ввода полей'
@@ -96,4 +97,3 @@ def administrator_change(request, pk):
         'object': user
     })
     return render(request, 'administrator/administrator_change.html', context)
-

@@ -639,6 +639,26 @@ $(function() {
   });
   // логика работы формы добавления задачи по клиенту
   var act_form = $('#js-adjuster-client_task-add-form');
+  // валидация формы добавления задачи по клиенту
+  act_form.validate({
+    rules: {
+      adjuster: {
+        required: true
+      },
+      type: {
+        required: true
+      },
+      date: {
+        required: true
+      },
+      client: {
+        required: true
+      },
+      clientorder: {
+        required: true
+      }
+    }
+  });
   act_form.find('#id_client').change(function(){
     if ($(this).val().length){
       act_form.find('#clientorder_group').removeClass('hide');
@@ -672,29 +692,7 @@ $(function() {
 
     }
   });
-  // валидация формы добавления задачи по клиенту
-  act_form.validate({
-    rules: {
-      adjuster: {
-        required: true
-      },
-      surface: {
-        required: true
-      },
-      type: {
-        required: true
-      },
-      date: {
-        required: true
-      },
-      client: {
-        required: true
-      },
-      clientorder: {
-        required: true
-      }
-    }
-  });
+
   act_form.find('#id_clientorder').change(function(){
     $('.js-task-surface-list tr.result').remove();
     console.log($(this).val());

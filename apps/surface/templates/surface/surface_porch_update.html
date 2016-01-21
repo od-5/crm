@@ -90,7 +90,7 @@
           </div>
           <div class="clearfix"></div>
           <div class="row">
-          {% for photo in object.surfacephoto_set.all %}
+          {% for photo in photo_list %}
             <div class="col-lg-3">
               <div>
                 <a href="{{ photo.image.url }}" rel="group" class="js-gallery" title="{{ photo.address }}, подъезд: {{ item.porch.number }}">
@@ -112,6 +112,7 @@
               <p class="alert alert-info">Фотографий не найдено</p>
             </div>
           {% endfor %}
+            {% include '__includes/pagination.html' with page_obj=photo_list %}
           </div>
         </div>
       </div>

@@ -12,6 +12,7 @@ __author__ = 'alexy'
 class ModeratorListView(ListView):
     queryset = User.objects.filter(type=2)
     template_name='moderator/moderator_list.html'
+    paginate_by = 50
 
     def get_queryset(self):
         qs = User.objects.filter(type=2)

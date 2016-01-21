@@ -1,21 +1,35 @@
-{#<div class="col-lg-12">#}
-{#  <div class="text-center">#}
-{#    <ul class="pagination">#}
-{#      <li>#}
-{#        <a href="#" aria-label="Previous">#}
-{#          <span aria-hidden="true">&laquo;</span>#}
-{#        </a>#}
-{#      </li>#}
-{#      <li><a href="#">1</a></li>#}
-{#      <li><a href="#">2</a></li>#}
-{#      <li><a href="#">3</a></li>#}
-{#      <li><a href="#">4</a></li>#}
-{#      <li><a href="#">5</a></li>#}
-{#      <li>#}
-{#        <a href="#" aria-label="Next">#}
-{#          <span aria-hidden="true">&raquo;</span>#}
-{#        </a>#}
-{#      </li>#}
-{#    </ul>#}
-{#  </div>#}
-{#</div>#}
+<div class="col-lg-12">
+  <div class="text-center">
+    <ul class="pagination pagination-sm">
+      {% if page_obj.has_previous %}
+      <li>
+        <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      {% else %}
+      <li class="disabled">
+        <a aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      {% endif %}
+      {% for i in page_obj.paginator.page_range %}
+      <li {% if i == page_obj.number %}class="active"{% endif %}><a href="{{ request.path }}?page={{ i }}">{{ i }}</a></li>
+      {% endfor %}
+      {% if page_obj.has_next %}
+      <li>
+        <a href="{{ request.path }}?page={{ page_obj.next_page_number }}" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+      {% else %}
+      <li class="disabled">
+        <a aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+      {% endif %}
+    </ul>
+  </div>
+</div>
