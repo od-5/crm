@@ -6252,6 +6252,7 @@ body {
 }
 .table tbody tr td.name {
   background-color: #fff;
+  width: 320px;
 }
 .glyphlink .glyphicon {
   color: #5cb85c;

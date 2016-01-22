@@ -39,6 +39,17 @@ class SurfacePhoto(models.Model):
     def address(self):
         return self.porch.surface
 
+    def save(self, *args, **kwargs):
+        if self.porch.damaged():
+            self.is_broken = True
+            print 'damaged'
+        else:
+            self.is_broken = False
+            print 'not damaged'
+        print 'save'
+        super(SurfacePhoto, self).save()
+
+
     porch = models.ForeignKey(to=Porch, verbose_name=u'Подъезд')
     adjuster = models.ForeignKey(to=Adjuster, blank=True, null=True, verbose_name=u'Монтажник')
     date = models.DateField(verbose_name=u'Дата фотографии')
@@ -46,6 +57,7 @@ class SurfacePhoto(models.Model):
     image_resize = ImageSpecField(
         [SmartResize(*settings.SURFACE_THUMB_SIZE)], source='image', format='JPEG', options={'quality': 94}
     )
+    is_broken = models.BooleanField(default=False)
 
 
 class AdjusterTask(models.Model):

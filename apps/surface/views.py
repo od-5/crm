@@ -197,12 +197,15 @@ def surface_photo_update(request, pk):
     photo = SurfacePhoto.objects.get(pk=int(pk))
     success_msg = u''
     error_msg = u''
+    print 'step 1'
     if request.method == 'POST':
         form = SurfacePhotoForm(request.POST, request.FILES, instance=photo)
+        print form
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('surface:porch', args=(photo.porch.id, )))
+            return HttpResponseRedirect(reverse('surface:porch-update', args=(photo.porch.id, )))
     else:
+        print 'step else'
         form = SurfacePhotoForm(instance=photo, initial={
             'file': photo.image.file
         })
