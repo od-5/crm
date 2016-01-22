@@ -34,7 +34,7 @@ class SurfacePhoto(models.Model):
         app_label = 'adjuster'
 
     def __unicode__(self):
-        return u'%s подъезд № %s' % (self.surface, self.porch)
+        return u'%s подъезд № %s' % (self.porch.surface, self.porch)
 
     def address(self):
         return self.porch.surface
@@ -48,7 +48,6 @@ class SurfacePhoto(models.Model):
             print 'not damaged'
         print 'save'
         super(SurfacePhoto, self).save()
-
 
     porch = models.ForeignKey(to=Porch, verbose_name=u'Подъезд')
     adjuster = models.ForeignKey(to=Adjuster, blank=True, null=True, verbose_name=u'Монтажник')
