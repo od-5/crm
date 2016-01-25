@@ -84,14 +84,16 @@ class AdjusterTask(models.Model):
         return porch_count
 
     def get_total_cost(self):
-        if self.type == 0:
+        if self.type == 0 and self.adjuster.cost_mounting:
             cost = self.adjuster.cost_mounting
-        elif self.type == 1:
+        elif self.type == 1 and self.adjuster.cost_change:
             cost = self.adjuster.cost_change
-        elif self.type == 2:
+        elif self.type == 2 and self.adjuster.cost_repair:
             cost = self.adjuster.cost_repair
-        else:
+        elif self.type == 3 and self.adjuster.cost_dismantling:
             cost = self.adjuster.cost_dismantling
+        else:
+            cost = 0
         return cost * self.adjustertasksurface_set.count()
 
     TYPE_CHOICES = (
