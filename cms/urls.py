@@ -21,6 +21,7 @@ urlpatterns = patterns('',
     url(r'^task/', include('apps.adjustertask.urls', namespace='adjustertask'),),
     url(r'^surface/', include('apps.surface.urls', namespace='surface'),),
     url(r'^ticket/', include('apps.ticket.urls', namespace='ticket'),),
+    url(r'^journal/', include('apps.journal.urls', namespace='journal'),),
     url(r'', include('core.urls')),
 
     url(r'^ckeditor/', include('ckeditor.urls')),

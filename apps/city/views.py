@@ -56,10 +56,8 @@ class CityListView(ListView):
                     'show_broken': True
                 })
                 a_qs = a_qs.filter(is_broken=True)
-                print 1
             else:
                 a_qs = a_qs.filter(is_broken=False)
-                print 2
             if self.request.GET.get('start_date'):
                 context.update({
                     'start_date': self.request.GET.get('start_date')

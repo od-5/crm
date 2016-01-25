@@ -2,59 +2,41 @@
 {% block content %}
   <div class="container">
     <div class="col-lg-12">
-      {% include 'client/__include/client_menu.html' %}
       <div class="panel panel-default">
         <div class="panel-heading">
-          <p class="lead text-center remove-bottom">Журнал покупок</p>
+          <p class="lead remove-bottom text-center">Журнал покупок</p>
         </div>
         <div class="panel-body">
-          <form action="" method="post" id="js-client-journal-add-form" role="form">
-            <div class="col-lg-6">
-            {% csrf_token %}
-              <div class="form-group">
-                {{ clientjournal_form.client }}
-                <div class="col-lg-5">{{ clientjournal_form.clientorder.label_tag }}</div>
-                <div class="col-lg-7">{{ clientjournal_form.clientorder }}</div>
-                {{ clientjournal_form.clientorder.errors }}
-                <div class="clearfix"></div>
-              </div>
-              <div class="form-group">
-                <div class="col-lg-5">{{ clientjournal_form.cost.label_tag }}</div>
-                <div class="col-lg-7">{{ clientjournal_form.cost }}</div>
-                {{ clientjournal_form.cost.errors }}
-                <div class="clearfix"></div>
-              </div>
-              <div class="form-group">
-                <div class="col-lg-5">{{ clientjournal_form.add_cost.label_tag }}</div>
-                <div class="col-lg-7">{{ clientjournal_form.add_cost }}</div>
-                {{ clientjournal_form.add_cost.errors }}
-                <div class="clearfix"></div>
-              </div>
-              <div class="form-group">
-                <div class="col-lg-5">{{ clientjournal_form.discount.label_tag }}</div>
-                <div class="col-lg-7">{{ clientjournal_form.discount }}</div>
-                {{ clientjournal_form.discount.errors }}
-                <div class="clearfix"></div>
-              </div>
-            <input type="submit" class="btn btn-default" value="Сформировать">
-            </div>
+          <p class="lead">Общая стоимость всех покупок: <strong>{{ total_cost }}</strong> руб.</p>
+          <form action="" method="GET" role="form" class="form-inline">
+            <select name="city" id="" class="form-control input-sm">
+              <option value="">Город</option>
+              {% for city in city_list %}
+              <option value="{{ city.id }}" {% if city.id == r_city %}selected="selected"{% endif %}>{{ city.name }}</option>
+              {% endfor %}
+            </select>
+            <input type="text" name="date_s" value="" id="js-journal-filter-date_s" class="form-control input-sm" placeholder="Дата от">
+            <input type="text" name="date_e" value="" id="js-journal-filter-date_e" class="form-control input-sm" placeholder="Дата до">
+            <button type="submit" class="btn btn-info btn-sm"> <span class="glyphicon glyphicon-search"></span> Искать</button>
           </form>
           <table class="table table-hover">
             <thead>
               <tr>
+                <th>Юридическоe название</th>
                 <th>Заказ</th>
-                <th>Цена за стенд, руб.</th>
-                <th>Наценка, %.</th>
+                <th>Цена за стенд, руб</th>
+                <th>Наценка, %</th>
                 <th>Скидка, %</th>
                 <th>Количество стендов</th>
-                <th>Полная стоимость, руб.</th>
+                <th>Полная стоимость, руб</th>
                 <th>&nbsp;</th>
                 <th>&nbsp;</th>
               </tr>
             </thead>
             <tbody class="js-list">
-              {% for item in object.clientjournal_set.all %}
+              {% for item in object_list %}
               <tr data-id="{{ item.id }}" data-name="{{ item }}" data-model="ClientJournal" id="id_ClientJournal_{{ item.id }}">
+                <td>{{ item.client.legal_name|default:'Не указано' }}</td>
                 <td>{{ item.clientorder|default:'Не указано' }}</td>
                 <td>{{ item.cost|default:'Не указано' }}</td>
                 <td>{{ item.add_cost|default:'Не указано' }}</td>
@@ -74,7 +56,7 @@
               </tr>
               {% empty %}
               <tr>
-                <td colspan="4">
+                <td colspan="9">
                   <p class="alert alert-info">Покупок не найдено</p>
                 </td>
               </tr>
@@ -82,9 +64,10 @@
               <tr></tr>
             </tbody>
           </table>
+          {% include '__includes/pagination.html' %}
         </div>
       </div>
     </div>
   </div>
-{% include '__modal/js_ajax_remove_form.html' %}
+  {% include '__modal/js_ajax_remove_form.html' %}
 {% endblock %}

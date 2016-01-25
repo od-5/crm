@@ -101,6 +101,14 @@ $(function() {
     defaultDate: 1,
     dateFormat: "dd.mm.yy"
   });
+  $("#js-journal-filter-date_e").datepicker({
+    defaultDate: 1,
+    dateFormat: "dd.mm.yy"
+  });
+  $("#js-journal-filter-date_s").datepicker({
+    defaultDate: 1,
+    dateFormat: "dd.mm.yy"
+  });
 
   // валидация формы добавления города
   $( '#js-city-form' ).validate({

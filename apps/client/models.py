@@ -118,6 +118,7 @@ class ClientJournal(models.Model):
     cost = models.PositiveIntegerField(verbose_name=u'Цена за стенд, руб')
     add_cost = models.PositiveIntegerField(verbose_name=u'Наценка, %', blank=True, null=True)
     discount = models.PositiveIntegerField(verbose_name=u'Скидка, %', blank=True, null=True)
+    created = models.DateField(auto_now=True, default=datetime.date.today())
 
 
 class ClientSurface(models.Model):
