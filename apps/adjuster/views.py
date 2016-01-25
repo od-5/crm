@@ -1,9 +1,11 @@
 # coding=utf-8
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import ListView
-from apps.adjuster.forms import AdjusterAddForm, AdjusterUpdateForm
+from apps.adjuster.forms import AdjusterAddForm, AdjusterUpdateForm, AdjusterPaymentForm
+from apps.city.models import City
 from core.forms import UserAddForm, UserUpdateForm
 from .models import Adjuster
 
@@ -12,6 +14,7 @@ __author__ = 'alexy'
 
 class AdjusterListView(ListView):
     model = Adjuster
+    paginate_by = 25
 
     def get_queryset(self):
         user_id = self.request.user.id
@@ -21,8 +24,39 @@ class AdjusterListView(ListView):
             qs = Adjuster.objects.filter(city__moderator=user_id)
         else:
             qs = None
-        queryset = qs
-        return queryset
+        if self.request.GET.get('email'):
+            qs = qs.filter(user__email=self.request.GET.get('email'))
+        if self.request.GET.get('last_name'):
+            qs = qs.filter(user__last_name=self.request.GET.get('last_name'))
+        if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
+            qs = qs.filter(city__id=int(self.request.GET.get('city')))
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super(AdjusterListView, self).get_context_data()
+        user_id = self.request.user.id
+        if self.request.user.type == 1:
+            city_qs = City.objects.all()
+        elif self.request.user.type == 2:
+            city_qs = City.objects.filter(moderator=user_id)
+        else:
+            city_qs = None
+        context.update({
+            'city_list': city_qs
+        })
+        if self.request.GET.get('city'):
+            context.update({
+                'city_id': int(self.request.GET.get('city'))
+            })
+        if self.request.GET.get('email'):
+            context.update({
+                'r_email': self.request.GET.get('email')
+            })
+        if self.request.GET.get('last_name'):
+            context.update({
+                'r_last_name': self.request.GET.get('last_name')
+            })
+        return context
 
 
 def adjuster_add(request):
@@ -92,7 +126,35 @@ def adjuster_update(request, pk):
 def adjuster_task(request, pk):
     context = {}
     adjuster = Adjuster.objects.get(pk=int(pk))
+    task_list_qs = adjuster.adjustertask_set.all()
+    paginator = Paginator(task_list_qs, 25)
+    page = request.GET.get('page')
+    try:
+        task_list = paginator.page(page)
+    except PageNotAnInteger:
+        task_list = paginator.page(1)
+    except EmptyPage:
+        task_list = paginator.page(paginator.num_pages)
     context.update({
-        'adjuster': adjuster
+        'adjuster': adjuster,
+        'task_list': task_list
     })
     return render(request, 'adjuster/adjuster_task.html', context)
+
+
+def adjuster_payment(request, pk):
+    adjuster = Adjuster.objects.get(pk=int(pk))
+    context = {
+        'adjuster': adjuster
+    }
+    if request.method == 'POST':
+        form = AdjusterPaymentForm(request.POST, instance=adjuster)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('adjuster:change', args=(adjuster.id, )))
+    else:
+        form = AdjusterPaymentForm(instance=adjuster)
+    context.update({
+        'form': form
+    })
+    return render(request, 'adjuster/adjuster_payment.html', context)

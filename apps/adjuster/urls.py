@@ -10,4 +10,5 @@ urlpatterns = patterns(
     url(r'^add/$', 'adjuster_add', name='add'),
     url(r'^(?P<pk>\d+)/$', 'adjuster_update', name='change'),
     url(r'^(?P<pk>\d+)/task/$', 'adjuster_task', name='task'),
+    url(r'^(?P<pk>\d+)/payment/$', 'adjuster_payment', name='payment'),
 )

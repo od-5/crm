@@ -1,5 +1,6 @@
 # coding=utf-8
 from datetime import datetime
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -19,6 +20,7 @@ class AdjusterTaskListView(ListView):
     """
     model = AdjusterTask
     template_name = 'adjustertask/adjustertask_list.html'
+    paginate_by = 25
 
     def get_queryset(self):
         user_id = self.request.user.id
@@ -77,12 +79,18 @@ def adjuster_c_task(request):
                 task = adjustertask_client_form.save()
                 surfaces = request.POST.getlist('chk_group[]')
                 for item in surfaces:
-                    surface = Surface.objects.get(pk=int(item))
-                    task_surface = AdjusterTaskSurface(
-                        adjustertask=task,
-                        surface=surface
-                    )
-                    task_surface.save()
+                    try:
+                        """
+                        Если поверхность есть у клиента в заказе, но из системы уже удалена - нужно проверять, что бы не было ошибок
+                        """
+                        surface = Surface.objects.get(pk=int(item))
+                        task_surface = AdjusterTaskSurface(
+                            adjustertask=task,
+                            surface=surface
+                        )
+                        task_surface.save()
+                    except:
+                        pass
                 return HttpResponseRedirect(task.get_absolute_url())
         else:
             print adjustertask_client_form
@@ -136,8 +144,18 @@ def adjuster_task_update(request, pk):
     """
     context = {}
     adjustertask = AdjusterTask.objects.get(pk=int(pk))
+    task_surface_qs = adjustertask.adjustertasksurface_set.all()
+    paginator = Paginator(task_surface_qs, 25)
+    page = request.GET.get('page')
+    try:
+        task_surface_list = paginator.page(page)
+    except PageNotAnInteger:
+        task_surface_list = paginator.page(1)
+    except EmptyPage:
+        task_surface_list = paginator.page(paginator.num_pages)
     context.update({
-        'object': adjustertask
+        'object': adjustertask,
+        'task_surface_list': task_surface_list
     })
     if request.method == "POST":
         adjuster_task_form = AdjusterTaskUpdateForm(request.POST, request=request, instance=adjustertask)

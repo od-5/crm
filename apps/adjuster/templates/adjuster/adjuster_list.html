@@ -7,14 +7,23 @@
           <p class="lead remove-bottom text-center">Монтажники</p>
         </div>
         <div class="panel-body">
-          <a href="{% url 'adjuster:add' %}" class="btn btn-success">
+          <a href="{% url 'adjuster:add' %}" class="btn btn-success add-bottom">
             <span class="glyphicon glyphicon-plus-sign"></span> Добавить монтажника
           </a>
-          {% if object_list %}
+          <form action="" class="form-inline add-bottom" method="GET">
+            <select name="city" id="client_city_filter" class="form-control input-sm">
+              <option value="0">Город</option>
+              {% for city in city_list %}
+                <option value="{{ city.id }}" {% if city.id == city_id %}selected="selected"{% endif %}>{{ city }}</option>
+              {% endfor %}
+            </select>
+            <input type="text" name="email" class="form-control input-sm" placeholder="email" value="{{ r_email }}">
+            <input type="text" name="last_name" class="form-control input-sm" placeholder="Фамилия" value="{{ r_last_name }}">
+            <button class="btn btn-info btn-sm" type="submit"><span class="glyphicon glyphicon-search"></span> Искать</button>
+          </form>
           <table class="table table-hover">
             <thead>
               <tr>
-                <th>id</th>
                 <th>email</th>
                 <th>ФИО</th>
                 <th>Город</th>
@@ -24,7 +33,6 @@
             <tbody class="js-list">
             {% for object in object_list %}
               <tr data-id="{{ object.id }}" data-name="{{ object.user.get_full_name }}" data-model="Adjuster" id="id_Adjuster_{{ object.id }}">
-                <td>{{ object.id|default:'--' }}</td>
                 <td><a href="{% url 'adjuster:change' object.pk %}">{{ object.user.email|default:'--' }}</a></td>
                 <td>{{ object.user.get_full_name|default:'--' }}</td>
                 <td>{{ object.city|default:'--' }}</td>
@@ -34,10 +42,14 @@
                   </a>
                 </td>
               </tr>
+            {% empty %}
+              <tr>
+                <td colspan="5"><p class="alert alert-info">Монтажников не найдено.</p></td>
+              </tr>
             {% endfor %}
             </tbody>
           </table>
-          {% endif %}
+          {% include '__includes/pagination.html' %}
         </div>
       </div>
     </div>

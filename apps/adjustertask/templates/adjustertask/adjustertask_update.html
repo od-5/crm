@@ -84,7 +84,7 @@
                       </tr>
                     </thead>
                     <tbody class="js-task-surface-list">
-                    {% for ats in object.adjustertasksurface_set.all %}
+                    {% for ats in task_surface_list %}
                       <tr>
                         <td>{{ ats.id }}</td>
                         <td>{{ ats.surface.street.city }}</td>
@@ -97,6 +97,7 @@
                     {% endfor %}
                     </tbody>
                   </table>
+                  {% include '__includes/pagination.html' with page_obj=task_surface_list %}
                 </div>
                 <div class="clearfix"></div>
                 <button type="submit" class="btn btn-default">Сохранить</button>

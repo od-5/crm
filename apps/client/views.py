@@ -1,5 +1,6 @@
 # coding=utf-8
 import datetime
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 import xlwt
 from datetime import date
@@ -47,6 +48,7 @@ def client_add(request):
 
 class ClientListView(ListView):
     model = Client
+    paginate_by = 25
 
     def get_queryset(self):
         user_id = self.request.user.id
@@ -133,13 +135,22 @@ def client_maket(request, pk):
             'client': client
         }
     )
-
+    maket_list_qs = client.clientmaket_set.all()
+    paginator = Paginator(maket_list_qs, 25)
+    page = request.GET.get('page')
+    try:
+        maket_list = paginator.page(page)
+    except PageNotAnInteger:
+        maket_list = paginator.page(1)
+    except EmptyPage:
+        maket_list = paginator.page(paginator.num_pages)
     context.update({
         'success': success_msg,
         'error': error_msg,
         'client_maket_form': client_maket_form,
         'object': client,
         'client': client,
+        'maket_list': maket_list
     })
     return render(request, 'client/client_maket.html', context)
 
@@ -173,6 +184,15 @@ def client_order(request, pk):
     client = Client.objects.get(pk=int(pk))
     success_msg = u''
     error_msg = u''
+    order_list_qs = client.clientorder_set.all()
+    paginator = Paginator(order_list_qs, 25)
+    page = request.GET.get('page')
+    try:
+        order_list = paginator.page(page)
+    except PageNotAnInteger:
+        order_list = paginator.page(1)
+    except EmptyPage:
+        order_list = paginator.page(paginator.num_pages)
     if request.method == 'POST':
         form = ClientOrderForm(request.POST)
         if form.is_valid():
@@ -187,7 +207,8 @@ def client_order(request, pk):
         'error': error_msg,
         'client_order_form': form,
         'object': client,
-        'client': client
+        'client': client,
+        'order_list': order_list
     })
     return render(request, 'client/client_order.html', context)
 
@@ -287,6 +308,16 @@ def client_journal(request, pk):
     client = Client.objects.get(pk=int(pk))
     success_msg = u''
     error_msg = u''
+    journal_list_qs = client.clientjournal_set.all()
+    paginator = Paginator(journal_list_qs, 25)
+    page = request.GET.get('page')
+    try:
+        journal_list = paginator.page(page)
+    except PageNotAnInteger:
+        journal_list = paginator.page(1)
+    except EmptyPage:
+        journal_list = paginator.page(paginator.num_pages)
+
     if request.method == 'POST':
         form = ClientJournalForm(request.POST)
         if form.is_valid():
@@ -302,7 +333,8 @@ def client_journal(request, pk):
         'error': error_msg,
         'clientjournal_form': form,
         'object': client,
-        'client': client
+        'client': client,
+        'journal_list': journal_list
     })
     return render(request, 'client/client_journal.html', context)
 

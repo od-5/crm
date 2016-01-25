@@ -17,26 +17,35 @@
                 <th>Тип задачи</th>
                 <th>Дата выполнения</th>
                 <th>Количество адресов</th>
+                <th>Стоимость работы, руб</th>
                 <th>&nbsp;</th>
               </tr>
               </thead>
               <tbody class="js-list">
-              {% for task in adjuster.adjustertask_set.all %}
+              {% for task in task_list %}
                 <tr data-id="{{ task.id }}" data-name="{{ task }}" data-model="AdjusterTask" id="id_AdjusterTask_{{ task.id }}">
                   <td><a href="{% url 'adjustertask:update' task.id %}" >{{ task }}</a></td>
                   <td>{{ task.adjuster.city.name }}</td>
-                  <td>{{ task.type }}</td>
+                  <td>{{ task.get_type_display }}</td>
                   <td>{{ task.date }}</td>
                   <td>{{ task.adjustertasksurface_set.all.count|default:'0' }}</td>
+                  <td>{{ task.get_total_cost|default:'0' }}</td>
                   <td>
                     <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-AdjusterTask-{{ task.id }}" class="btn btn-danger js-ajax-remove-btn">
                       Удалить
                     </a>
                   </td>
                 </tr>
+              {% empty %}
+                <tr>
+                  <td colspan="7">
+                    <p class="alert alert-info">Задач не найдено.</p>
+                  </td>
+                </tr>
               {% endfor %}
               </tbody>
             </table>
+            {% include '__includes/pagination.html' with page_obj=task_list %}
           </div>
         </div>
       </div>

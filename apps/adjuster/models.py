@@ -25,6 +25,10 @@ class Adjuster(models.Model):
 
     user = models.OneToOneField(to=User, verbose_name=u'Пользователь')
     city = models.ForeignKey(to=City, verbose_name=u'Город')
+    cost_mounting = models.PositiveIntegerField(verbose_name=u'Оплата за монтаж, руб', blank=True, null=True)
+    cost_change = models.PositiveIntegerField(verbose_name=u'Оплата за замену, руб', blank=True, null=True)
+    cost_repair = models.PositiveIntegerField(verbose_name=u'Оплата за ремонт, руб', blank=True, null=True)
+    cost_dismantling = models.PositiveIntegerField(verbose_name=u'Оплата за демонтаж, руб', blank=True, null=True)
 
 
 class SurfacePhoto(models.Model):
@@ -78,6 +82,17 @@ class AdjusterTask(models.Model):
             for i in self.adjustertasksurface_set.all():
                 porch_count += i.surface.porch_count()
         return porch_count
+
+    def get_total_cost(self):
+        if self.type == 0:
+            cost = self.adjuster.cost_mounting
+        elif self.type == 1:
+            cost = self.adjuster.cost_change
+        elif self.type == 2:
+            cost = self.adjuster.cost_repair
+        else:
+            cost = self.adjuster.cost_dismantling
+        return cost * self.adjustertasksurface_set.count()
 
     TYPE_CHOICES = (
         (0, u'Монтаж новой конструкции'),

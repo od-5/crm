@@ -31,7 +31,6 @@
             </div>
             <div class="clearfix"></div>
           </form>
-          {% if object.clientorder_set.all %}
           <table class="table table-hover">
             <thead>
               <tr>
@@ -44,7 +43,7 @@
               </tr>
             </thead>
             <tbody class="js-list">
-            {% for order in object.clientorder_set.all %}
+            {% for order in order_list %}
               <tr data-id="{{ order.id }}" data-name="{{ order }}" data-model="ClientOrder" id="id_ClientOrder_{{ order.id }}">
                 <td><a href="{% url 'client:order-update' order.id %}">{{ order|default:'Не указано' }}</a></td>
                 <td>{{ order.date_start|default:'Не указано' }}</td>
@@ -61,12 +60,16 @@
                   </a>
                 </td>
               </tr>
+            {% empty %}
+              <tr>
+              <td colspan="6">
+                <p class="alert alert-info">Заказов не найдено</p>
+              </td>
+              </tr>
             {% endfor %}
             </tbody>
           </table>
-          {% else %}
-            <p class="alert alert-info">Заказов не найдено</p>
-          {% endif %}
+          {% include '__includes/pagination.html' with page_obj=order_list %}
         </div>
       </div>
     </div>
