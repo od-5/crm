@@ -21,6 +21,8 @@ class JournalListView(ListView):
             qs = None
         if self.request.GET.get('city'):
             qs = qs.filter(client__city=self.request.GET.get('city'))
+        if self.request.GET.get('legal_name'):
+            qs = qs.filter(client__legal_name__iexact=self.request.GET.get('legal_name'))
         if self.request.GET.get('date_s'):
             qs = qs.filter(created__gte=datetime.strptime(self.request.GET.get('date_s'), '%d.%m.%Y'))
         if self.request.GET.get('date_e'):
