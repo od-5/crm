@@ -85,11 +85,11 @@ $(function() {
     defaultDate: 7,
     dateFormat: "dd.mm.yy"
   });
-  $("#js-address-filter-form #id_start_date").datepicker({
+  $("#js-address-filter-form #id_a_date_s").datepicker({
     defaultDate: 1,
     dateFormat: "dd.mm.yy"
   });
-  $("#js-address-filter-form #id_end_date").datepicker({
+  $("#js-address-filter-form #id_a_date_e").datepicker({
     defaultDate: 1,
     dateFormat: "dd.mm.yy"
   });
@@ -969,6 +969,91 @@ $(function() {
       number: {
         required: true
       }
+    }
+  });
+
+//  форма поиска фотографий поверхностей на странице "Города"
+  var aff = $('#js-address-filter-form');
+  // получение списка районов по выбранному городу
+  aff.find('#id_a_city').change(function(){
+    if ($(this).val().length){
+      console.log($(this).val());
+      $.ajax({
+        type: "GET",
+        url: $(this).data('ajax-url'),
+        data: {
+          city: $(this).val()
+        }
+      }).done(function(data) {
+        if (data.area_list) {
+          var area_list = data.area_list;
+          console.log(area_list);
+          aff.find('#id_a_area').find('option').remove();
+          aff.find('#id_a_area').append($("<option/>", {
+                value: '',
+                text: 'Район'
+            }));
+          aff.find('#id_a_street').find('option').remove();
+          aff.find('#id_a_street').append($("<option/>", {
+              value: '',
+              text: 'Улица'
+          }));
+          for (var i = 0; i < area_list.length; i++) {
+            aff.find('#id_a_area').append($("<option/>", {
+                value: area_list[i]['id'],
+                text: area_list[i]['name']
+            }));
+          }
+        }
+      });
+    } else {
+      console.log('empty');
+      aff.find('#id_a_area').find('option').remove();
+      aff.find('#id_a_area').append($("<option/>", {
+          value: '',
+          text: 'Район'
+      }));
+      aff.find('#id_a_street').find('option').remove();
+      aff.find('#id_a_street').append($("<option/>", {
+          value: '',
+          text: 'Улица'
+      }));
+    }
+  });
+  // получение списка улиц по выбранному району
+  aff.find('#id_a_area').change(function(){
+    if ($(this).val().length){
+      console.log($(this).val());
+      $.ajax({
+        type: "GET",
+        url: $(this).data('ajax-url'),
+        data: {
+          area: $(this).val()
+        }
+      }).done(function(data) {
+        if (data.street_list) {
+          var street_list = data.street_list;
+          console.log(street_list);
+          aff.find('#id_a_street').find('option').remove();
+          aff.find('#id_a_street').append($("<option/>", {
+                value: '',
+                text: 'Улица'
+            }));
+          for (var i = 0; i < street_list.length; i++) {
+            aff.find('#id_a_street').append($("<option/>", {
+                value: street_list[i]['id'],
+                text: street_list[i]['name']
+            }));
+          }
+        }
+      });
+    } else {
+      console.log('empty');
+      aff.find('#id_a_street').find('option').remove();
+      aff.find('#id_a_street').append($("<option/>", {
+          value: '',
+          text: 'Улица'
+      }));
     }
   });
 

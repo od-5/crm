@@ -3,38 +3,50 @@
   <div class="panel-body">
 
     <div class="address-list">
-      <div class="row add-bottom">
-        <div class="col-lg-12">
-          <form action="" method="GET" role="form" id="js-address-filter-form" class="form-inline add-bottom">
-            <select name="a_city" id="id_a_city_id" class="form-control input-sm">
-              <option value="">Город</option>
-              {% for city in object_list %}
-              <option value="{{ city.id }}">{{ city.name }}</option>
-              {% endfor %}
-            </select>
-            <select name="a_area" id="id_a_area_id" class="form-control input-sm">
-              <option value="">Район</option>
-            </select>
-            <input type="text" id="a_street_id" name="a_street" placeholder="улица" class="form-control input-sm">
-            <input type="text" name="start_date" id="id_start_date" placeholder="дата от" class="form-control input-sm" value="{{ start_date|default:'' }}">
-            <input type="text" name="end_date" id="id_end_date" placeholder="дата до" class="form-control input-sm" value="{{ end_date|default:'' }}">
-            <button class="btn btn-info btn-sm" type="submit"><span class="glyphicon glyphicon-search"></span> Искать</button>
-          </form>
-        </div>
-        <div class="col-lg-12">
+      <div class="row">
+        <div class="col-lg-12 add-bottom">
           {% if show_broken %}
-          <a href="{% url 'city:list' %}" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Показать целые</a>
+          <a href="{% url 'city:list' %}?broken=0" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Показать целые</a>
           {% else %}
           <a href="{% url 'city:list' %}?broken=1" class="btn btn-warning"><span class="glyphicon glyphicon-wrench"></span> Показать повреждённые</a>
           {% endif %}
           {% if grid %}
-            <a href="{% url 'city:list' %}" class="btn btn-info" title="Показать таблицей"><span class="glyphicon glyphicon-th-list"></span> Показать таблицей</a>
+            <a href="{% url 'city:list' %}?grid=0" class="btn btn-info" title="Показать таблицей"><span class="glyphicon glyphicon-th-list"></span> Показать таблицей</a>
           {% else %}
             <a href="{% url 'city:list' %}?grid=1" class="btn btn-info" title="Показать плиткой"><span class="glyphicon glyphicon-th"></span> Показать плиткой</a>
           {% endif %}
           <a class="btn btn-info"><span class="glyphicon glyphicon-globe"></span> На карте</a>
-
         </div>
+        <div class="col-lg-12">
+          <form action="" method="GET" role="form" id="js-address-filter-form" class="form-inline add-bottom">
+            <select name="a_city" id="id_a_city" class="form-control input-sm" data-ajax-url="{% url 'city:get_area_list' %}">
+              <option value="">Город</option>
+              {% for city in object_list %}
+              <option value="{{ city.id }}" {% if city.id == a_city %}selected="selected"{% endif %}>{{ city.name }}</option>
+              {% endfor %}
+            </select>
+            <select name="a_area" id="id_a_area" class="form-control input-sm"  data-ajax-url="{% url 'city:simple_get_area_streets' %}">
+              <option value="">Район</option>
+              {% if area_list %}
+                {% for area in area_list %}
+                <option value="{{ area.id }}" {% if area.id == a_area %}selected="selected"{% endif %}>{{ area.name }}</option>
+                {% endfor %}
+              {% endif %}
+            </select>
+            <select name="a_street" id="id_a_street" class="form-control input-sm">
+              <option value="">Улица</option>
+              {% if street_list %}
+                {% for street in street_list %}
+                <option value="{{ street.id }}" {% if street.id == a_street %}selected="selected"{% endif %}>{{ street.name }}</option>
+                {% endfor %}
+              {% endif %}
+            </select>
+            <input type="text" name="a_date_s" id="id_a_date_s" placeholder="дата от" class="form-control input-sm" value="{{ a_date_s|default:'' }}">
+            <input type="text" name="a_date_e" id="id_a_date_e" placeholder="дата до" class="form-control input-sm" value="{{ a_date_e|default:'' }}">
+            <button class="btn btn-info btn-sm" type="submit"><span class="glyphicon glyphicon-search"></span> Искать</button>
+          </form>
+        </div>
+
         <div class="clearfix"></div>
       </div>
     {% if grid %}

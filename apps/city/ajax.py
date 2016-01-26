@@ -29,6 +29,31 @@ def get_city_area(request):
             'error': True
         }
 
+
+@ajax_request
+def simple_get_area_streets(request):
+    if request.GET.get('area'):
+        street_list = []
+        area_pk = int(request.GET.get('area'))
+
+        street_qs = Street.objects.filter(area=area_pk)
+        print street_qs
+        for street in street_qs:
+            # if surface.id not in client_surfaces:
+            street_list.append({
+                'id': street.id,
+                'name': street.name,
+            })
+        return {
+            'street_list': street_list
+        }
+    else:
+        return {
+            'error': u'Что то пошло не так!'
+        }
+
+
+
 @ajax_request
 def get_area_streets(request):
     if request.GET.get('area') and request.GET.get('client'):

@@ -47,6 +47,7 @@ def ymap_surface(request):
         for item in query:
             result_json = {}
             result_json['name'] = u'%s %s' % (item.street.name, item.house_number)
+            result_json['porch'] = item.porch_set.count()
             result_json['coord_x'] = float(item.coord_x)
             result_json['coord_y'] = float(item.coord_y)
             result.append(result_json)

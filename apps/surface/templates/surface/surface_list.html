@@ -16,7 +16,7 @@
           </a>
           <div class="panel panel-success">
             <div class="panel-heading js-show-map">Посмотреть рекламные поверхности на карте <span class="caret"></span></div>
-            <div class="panel-body js-map" data-city="{{ city_list.first }}">
+            <div class="panel-body js-map" data-city="{{ city_list.first }}" data-city-count="{{ city_list.count }}" data-coord-x="{{ city_list.first.coord_x }}" data-coord-y="{{ city_list.first.coord_y }}">
               <div id="surfaceMap" style="height: 500px;"></div>
             </div>
           </div>

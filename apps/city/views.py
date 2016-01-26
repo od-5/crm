@@ -47,41 +47,100 @@ class CityListView(ListView):
         if self.request.user.type == 1:
             a_qs = SurfacePhoto.objects.all()
         elif self.request.user.type == 2:
-            a_qs = SurfacePhoto.objects.select_related('moderator').filter(pk=int(self.request.user.id))
+            a_qs = SurfacePhoto.objects.filter(porch__surface__city__moderator=int(self.request.user.id))
         else:
             a_qs = None
-        if a_qs:
-            if self.request.GET.get('broken'):
-                context.update({
-                    'show_broken': True
-                })
-                a_qs = a_qs.filter(is_broken=True)
+        # установка флага отображения - таблица, плитка
+        try:
+            self.request.session['grid']
+        except:
+            self.request.session['grid'] = False
+        if self.request.GET.get('grid'):
+            if int(self.request.GET.get('grid')) == 1:
+                self.request.session['grid'] = True
             else:
-                a_qs = a_qs.filter(is_broken=False)
-            if self.request.GET.get('start_date'):
-                context.update({
-                    'start_date': self.request.GET.get('start_date')
-                })
-                start_date = self.request.GET.get('start_date')
-                rs_date = datetime.strptime(start_date, '%d.%m.%Y')
+                self.request.session['grid'] = False
+        # установка флага фильтрации - порвеждённые, целые
+        try:
+            self.request.session['show_broken']
+        except:
+            self.request.session['show_broken'] = False
+        if self.request.GET.get('broken'):
+            if int(self.request.GET.get('broken')) == 1:
+                self.request.session['show_broken'] = True
+            else:
+                self.request.session['show_broken'] = False
+        context.update({
+            'show_broken': self.request.session['show_broken'],
+            'grid': self.request.session['grid']
+        })
+        # try:
+        #     self.request.session['a_city']
+        # except:
+        #     self.request.session['a_city'] = False
+        # if self.request.GET.get('a_city'):
+        # установка флага города для фильтрации
+        try:
+            a_city = int(self.request.GET.get('a_city'))
+            area_list = Area.objects.filter(city=a_city)
+        except:
+            a_city = None
+            area_list = None
+        # self.request.session['a_city'] = a_city
+        # установка флага района для фильтрации
+        try:
+            a_area = int(self.request.GET.get('a_area'))
+            street_list = Street.objects.filter(area=a_area)
+        except:
+            a_area = None
+            street_list = None
+        # self.request.session['a_area'] = a_area
+        # установка флага улицы для фильтрации
+        try:
+            a_street = int(self.request.GET.get('a_street'))
+        except:
+            a_street = None
+        # self.request.session['a_street'] = a_street
+        print a_city
+        print a_area
+        print a_street
+        # установка флага начальной даты для фильтрации
+        try:
+            a_date_s = self.request.GET.get('a_date_s')
+        except:
+            a_date_s = None
+        # установка флага начальной даты для фильтрации
+        try:
+            a_date_e = self.request.GET.get('a_date_e')
+        except:
+            a_date_e = None
+        # self.request.session['a_date_s'] = a_date_s
+        context.update({
+            'a_city': a_city,
+            'a_area': a_area,
+            'a_street': a_street,
+            'area_list': area_list,
+            'street_list': street_list,
+            'a_date_s': a_date_s,
+            'a_date_e': a_date_e
+        })
+        if a_qs:
+            a_qs = a_qs.filter(is_broken=self.request.session['show_broken'])
+            if a_city:
+                a_qs = a_qs.filter(porch__surface__city=int(a_city))
+                if a_area:
+                    a_qs = a_qs.filter(porch__surface__street__area=int(a_area))
+                    if a_street:
+                        a_qs = a_qs.filter(porch__surface__street=int(a_street))
+            if a_date_s:
+                rs_date = datetime.strptime(a_date_s, '%d.%m.%Y')
                 s_date = datetime.date(rs_date)
-                # c_surface.date_start = datetime.date(raw_date.year, raw_date.month, raw_date.day)
                 a_qs = a_qs.filter(date__gte=s_date)
-                # print s_date
-                if self.request.GET.get('end_date'):
-                    print self.request.GET.get('end_date')
-                    end_date = self.request.GET.get('end_date')
-                    re_date = datetime.strptime(end_date, '%d.%m.%Y')
+                if a_date_e:
+                    re_date = datetime.strptime(a_date_e, '%d.%m.%Y')
                     e_date = datetime.date(re_date)
-                    # c_surface.date_start = datetime.date(raw_date.year, raw_date.month, raw_date.day)
                     a_qs = a_qs.filter(date__lte=e_date)
-                    context.update({
-                        'end_date': self.request.GET.get('end_date')
-                    })
-        if self.request.GET.get('grid') and int(self.request.GET.get('grid')) == 1:
-            context.update({
-                'grid': True
-            })
+
         paginator = Paginator(a_qs, 20) # Show 25 contacts per page
         page = self.request.GET.get('page')
         try:

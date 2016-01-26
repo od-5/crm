@@ -38,7 +38,7 @@ class SurfacePhoto(models.Model):
         app_label = 'adjuster'
 
     def __unicode__(self):
-        return u'%s подъезд № %s' % (self.porch.surface, self.porch)
+        return u'%s %s' % (self.porch.surface, self.porch)
 
     def address(self):
         return self.porch.surface
