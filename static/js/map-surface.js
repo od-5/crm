@@ -62,7 +62,6 @@ ymaps.ready(function () {
   console.log(new_points);
   console.log(new_baloon);
   var myMap = new ymaps.Map('surfaceMap', {
-        //TODO: подумать над центрированием и масштабом, когда нужно показать поверхности по нескольким городам
         center: [coord_y.replace(',','.'), coord_x.replace(',','.')],
         //center: [55.751574, 37.573856],
         zoom: map_zoom,

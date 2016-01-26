@@ -15,3 +15,6 @@ body {
   color: #5cb85c;
   margin-right: 5px;
 }
+#js-photo-map-wrapper {
+  display: none;
+}

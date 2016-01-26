@@ -1056,5 +1056,8 @@ $(function() {
       }));
     }
   });
+  $('#js-photo-map-button').click(function(){
+    $('#js-photo-map-wrapper').slideToggle()
+  });
 
 });

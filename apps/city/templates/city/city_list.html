@@ -43,49 +43,40 @@
               <thead>
                 <tr>
                   <th>Название</th>
-                  {% if user.type == 1 %}
-                  <th>Модератор</th>
-                  {% endif %}
-
+                  <th>{% if user.type == 1 %}Модератор{% else %}&nbsp;{% endif %}</th>
                   <th>Количество рекламных поверхностей</th>
                   <th>Количество клиентов</th>
-                  {% if user.type == 1 %}
                   <th>&nbsp;</th>
-                  {% endif %}
                 </tr>
               </thead>
               <tbody class="js-list">
               {% for object in object_list %}
                 <tr data-id="{{ object.id }}" data-name="{{ object.name }}" data-model="City" id="id_City_{{ object.id }}">
                   <td><a href="{% url 'city:update' object.pk %}">{{ object.name|default:'' }}</a></td>
-                {% if user.type == 1 %}
-                  {% if object.moderator %}
-                  <td><a href="{% url 'moderator:change' object.moderator.id %}">{{ object.moderator|default:'Не указан' }}</a></td>
-                  {% else %}
-                  <td>{{ object.moderator|default:'Не указан' }}</td>
+                  <td>
+                  {% if user.type == 1 %}
+                    {% if object.moderator %}
+                  <a href="{% url 'moderator:change' object.moderator.id %}">{{ object.moderator|default:'Не указан' }}</a>
+                    {% else %}
+                  {{ object.moderator|default:'Не указан' }}
+                    {% endif %}
                   {% endif %}
-                {% endif %}
+                  </td>
                   <td>{{ object.surface_count }}</td>
                   <td>{{ object.client_set.all.count }}</td>
-                  {% if user.type == 1 %}
                   <td>
+                    {% if user.type == 1 %}
                     <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ object.id }}" class="btn btn-danger js-ajax-remove-btn">
                       <span class="glyphicon glyphicon-remove"></span> Удалить
                     </a>
+                    {% endif %}
                   </td>
-                  {% endif %}
                 </tr>
               {% empty %}
                 <tr style="width:100%">
-                {% if user.type == 1 %}
                   <td colspan="5" style="width:100%">
                     <p class="alert alert-info">Городов не найдено</p>
                   </td>
-                {% else %}
-                  <td colspan="3" style="width:100%">
-                    <p class="alert alert-info">Городов не найдено</p>
-                  </td>
-                {% endif %}
                 </tr>
               {% endfor %}
               </tbody>

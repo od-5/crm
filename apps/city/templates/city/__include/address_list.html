@@ -15,7 +15,7 @@
           {% else %}
             <a href="{% url 'city:list' %}?grid=1" class="btn btn-info" title="Показать плиткой"><span class="glyphicon glyphicon-th"></span> Показать плиткой</a>
           {% endif %}
-          <a class="btn btn-info"><span class="glyphicon glyphicon-globe"></span> На карте</a>
+          <button id="js-photo-map-button" class="btn btn-info"><span class="glyphicon glyphicon-globe"></span> Показать на карте</button>
         </div>
         <div class="col-lg-12">
           <form action="" method="GET" role="form" id="js-address-filter-form" class="form-inline add-bottom">
@@ -48,6 +48,10 @@
         </div>
 
         <div class="clearfix"></div>
+      </div>
+      {% include 'city/__include/map-photo.html' %}
+      <div class="row" id="js-photo-map-wrapper">
+        <div id="photoMap" style="height: 500px;"></div>
       </div>
     {% if grid %}
       <div class="row">

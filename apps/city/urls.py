@@ -19,8 +19,6 @@ urlpatterns = patterns(
     url(r'^(?P<pk>\d+)/street/$', 'city_street', name='street'),
     url(r'^street/(?P<pk>\d+)/$', 'city_street_update', name='street-update'),
 
-
-
     url(r'^surface-ajax/$', surface_ajax, name='surface-ajax'),
 
     url(r'^get_city_adjusters/$', get_city_adjusters, name='get_adjuster_list'),
