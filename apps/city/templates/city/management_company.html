@@ -1,0 +1,56 @@
+{% extends 'cabinet_index.html' %}
+{% block content %}
+  <div class="container">
+    <div class="col-lg-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          {% if m_object %}
+          <p class="lead text-center remove-bottom">Редактирование {{ object.name }}</p>
+          {% else %}
+          <p class="lead text-center remove-bottom">Добавление управляющей компании</p>
+          {% endif %}
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-lg-6">
+              <form action="" role="form" id="js-management-company-form" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                  <div class="col-lg-5">{{ form.city.label_tag }}</div>
+                  <div class="col-lg-7">{{ form.city }}</div>
+                  {{ form.city.errors }}
+                  <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-5">{{ form.name.label_tag }}</div>
+                  <div class="col-lg-7">{{ form.name }}</div>
+                  {{ form.name.errors }}
+                  <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-5">{{ form.leader_function.label_tag }}</div>
+                  <div class="col-lg-7">{{ form.leader_function }}</div>
+                  {{ form.leader_function.errors }}
+                  <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-5">{{ form.leader_name.label_tag }}</div>
+                  <div class="col-lg-7">{{ form.leader_name }}</div>
+                  {{ form.leader_name.errors }}
+                  <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-5">{{ form.phone.label_tag }}</div>
+                  <div class="col-lg-7">{{ form.phone }}</div>
+                  {{ form.phone.errors }}
+                  <div class="clearfix"></div>
+                </div>
+                <button type="submit" class="btn btn-default">Сохранить</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

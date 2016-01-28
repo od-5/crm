@@ -74,6 +74,25 @@ class Street(models.Model):
     name = models.CharField(max_length=256, verbose_name=u'Название улицы')
 
 
+class ManagementCompany(models.Model):
+    class Meta:
+        verbose_name = u'Управляющая компания'
+        verbose_name_plural = u'Управляющие компании'
+        app_label = 'city'
+
+    def __unicode__(self):
+        return u'г. %s, %s' % (self.city.name, self.name)
+
+    def get_absolute_url(self):
+        return reverse('city:management-company-update', args=(self.pk,))
+
+    city = models.ForeignKey(to=City, verbose_name=u'Город')
+    name = models.CharField(verbose_name=u'Название', max_length=255)
+    leader_function = models.CharField(verbose_name=u'Должность руководители', max_length=255, blank=True, null=True)
+    leader_name = models.CharField(verbose_name=u'ФИО руководители', max_length=255, blank=True, null=True)
+    phone = models.CharField(verbose_name=u'Контактный телефон', max_length=20, blank=True, null=True)
+
+
 class Surface(models.Model):
     class Meta:
         verbose_name = u'Поверхность'
@@ -107,6 +126,7 @@ class Surface(models.Model):
     city = models.ForeignKey(to=City, verbose_name=u'Город')
     street = models.ForeignKey(to=Street, verbose_name=u'Улица')
     house_number = models.CharField(max_length=50, verbose_name=u'Номер дома')
+    management = models.ForeignKey(to=ManagementCompany, verbose_name=u'Управляющая контора', blank=True, null=True)
     coord_x = models.DecimalField(max_digits=8, decimal_places=6, blank=True, null=True, verbose_name=u'Ширина')
     coord_y = models.DecimalField(max_digits=8, decimal_places=6, blank=True, null=True, verbose_name=u'Долгота')
     free = models.BooleanField(default=True)

@@ -19,6 +19,11 @@ urlpatterns = patterns(
     url(r'^(?P<pk>\d+)/street/$', 'city_street', name='street'),
     url(r'^street/(?P<pk>\d+)/$', 'city_street_update', name='street-update'),
 
+    # url(r'^$', CityListView.as_view(model=City), name='management-company'),
+    url(r'^management_company/$', 'management_company_list', name='management-company'),
+    url(r'^management_company/add/$', 'management_company_add', name='management-company-add'),
+    url(r'^management_company/(?P<pk>\d+)/$', 'management_company_update', name='management-company-update'),
+
     url(r'^surface-ajax/$', surface_ajax, name='surface-ajax'),
 
     url(r'^get_city_adjusters/$', get_city_adjusters, name='get_adjuster_list'),

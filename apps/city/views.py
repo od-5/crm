@@ -1,16 +1,14 @@
 # coding=utf-8
 from datetime import datetime
 from django.core.urlresolvers import reverse
-from django.forms import inlineformset_factory, TextInput, Select, formset_factory, modelformset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.utils.dateparse import parse_date, parse_time
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import ListView, CreateView, UpdateView
+from django.views.generic import ListView, CreateView
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from apps.adjuster.models import SurfacePhoto
-from apps.city.forms import CityAddForm, StreetForm, AreaAddForm, AreaModelFormset
-from apps.city.models import City, Area, Surface, Street
+from apps.city.forms import CityAddForm, StreetForm, AreaAddForm, ManagementCompanyForm
+from apps.city.models import City, Area, Street, ManagementCompany
 
 __author__ = 'alexy'
 
@@ -259,7 +257,6 @@ def city_street(request, pk):
 def city_street_update(request, pk):
     context = {}
     street = Street.objects.get(pk=int(pk))
-    City
     if request.method == 'POST':
         form = StreetForm(request.POST, instance=street)
         if form.is_valid():
@@ -276,3 +273,59 @@ def city_street_update(request, pk):
         'street_form': form
     })
     return render(request, 'city/city_street_update.html', context)
+
+
+def management_company_list(request):
+    context = {}
+    if request.user.type == 1:
+        qs = ManagementCompany.objects.all()
+        city_qs = City.objects.all()
+    elif request.user.type == 2:
+        qs = ManagementCompany.objects.filter(city__moderator=request.user)
+        city_qs = City.objects.filter(moderator=request.user)
+    else:
+        qs = None
+        city_qs = None
+    if request.GET.get('city') and int(request.GET.get('city')) != 0:
+        qs = qs.filter(city=int(request.GET.get('city')))
+        context.update({
+            'city_id': int(request.GET.get('city'))
+        })
+    if request.GET.get('name'):
+        qs = qs.filter(name__icontains=request.GET.get('name'))
+    context.update({
+        'object_list': qs,
+        'city_list': city_qs
+    })
+    return render(request, 'city/management_company_list.html', context)
+
+
+def management_company_add(request):
+    context = {}
+    if request.method == 'POST':
+        form = ManagementCompanyForm(request.POST, request=request)
+        if form.is_valid():
+            management_company = form.save()
+            return HttpResponseRedirect(reverse('city:management-company-update', args=(management_company.id, )))
+    else:
+        form = ManagementCompanyForm(request=request)
+    context.update({
+        'form': form
+    })
+    return render(request, 'city/management_company.html', context)
+
+
+def management_company_update(request, pk):
+    context = {}
+    m_company = ManagementCompany.objects.get(pk=int(pk))
+    if request.method == 'POST':
+        form = ManagementCompanyForm(request.POST, request=request, instance=m_company)
+        if form.is_valid():
+            form.save()
+    else:
+        form = ManagementCompanyForm(request=request, instance=m_company)
+    context.update({
+        'form': form,
+        'object': m_company
+    })
+    return render(request, 'city/management_company.html', context)

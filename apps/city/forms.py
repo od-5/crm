@@ -1,10 +1,7 @@
 # coding=utf-8
-from django.forms import ModelForm, TextInput, Select, DateInput, inlineformset_factory, FileInput, HiddenInput, \
-    modelformset_factory
-from apps.adjuster.models import SurfacePhoto
-from apps.client.models import ClientSurface
+from django.forms import ModelForm, TextInput, Select, DateInput, HiddenInput
 from core.models import User
-from .models import City, Surface, Porch, Street, Area
+from .models import City, Street, Area, ManagementCompany
 
 __author__ = 'alexy'
 
@@ -46,5 +43,20 @@ class StreetForm(ModelForm):
         }
 
 
-PorchFormSet = inlineformset_factory(Surface, Porch, extra=1, can_delete=True, exclude=[])
-AreaModelFormset = modelformset_factory(Area, form=AreaAddForm)
+class ManagementCompanyForm(ModelForm):
+    class Meta:
+        model = ManagementCompany
+        fields = '__all__'
+        widgets = {
+            'city': Select(attrs={'class': 'form-control'}),
+            'name': TextInput(attrs={'class': 'form-control'}),
+            'leader_function': TextInput(attrs={'class': 'form-control'}),
+            'leader_name': TextInput(attrs={'class': 'form-control'}),
+            'phone': TextInput(attrs={'class': 'form-control'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request")
+        super(ManagementCompanyForm, self).__init__(*args, **kwargs)
+        if self.request.user and self.request.user.type == 2:
+            self.fields['city'].queryset = City.objects.filter(moderator=self.request.user)

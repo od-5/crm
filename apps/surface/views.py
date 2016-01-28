@@ -17,6 +17,10 @@ class SurfaceListView(ListView):
     paginate_by = 50
 
     def get_queryset(self):
+        """
+        Если пользователь администратор - ему доступны всё города.
+        Если пользователь модератор - ему доступны только те города, которыми он управляет.
+        """
         user_id = self.request.user.id
         if self.request.user.type == 1:
             qs = Surface.objects.all()
@@ -24,19 +28,22 @@ class SurfaceListView(ListView):
             qs = Surface.objects.filter(city__moderator=user_id)
         else:
             qs = None
+        # фильтрация поверхностей по городам, районам, улицам
         if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
-            queryset = qs.filter(city__id=int(self.request.GET.get('city')))
-            if self.request.GET.get('area') and int(self.request.GET.get('area')) != 0:
-                queryset = queryset.filter(street__area__id=int(self.request.GET.get('area')))
-                if self.request.GET.get('street') and int(self.request.GET.get('street')) != 0:
-                    queryset = queryset.filter(street__id=int(self.request.GET.get('street')))
-        else:
-            queryset = qs
-        return queryset
+            qs = qs.filter(city__id=int(self.request.GET.get('city')))
+        if self.request.GET.get('area') and int(self.request.GET.get('area')) != 0:
+            qs = qs.filter(street__area__id=int(self.request.GET.get('area')))
+        if self.request.GET.get('street') and int(self.request.GET.get('street')) != 0:
+            qs = qs.filter(street__id=int(self.request.GET.get('street')))
+        return qs
 
     def get_context_data(self, **kwargs):
         context = super(SurfaceListView, self).get_context_data(**kwargs)
         user_id = self.request.user.id
+        """
+        Администратор может выбирать любой город системы.
+        Модератор - только те города, которыми он управляет.
+        """
         if self.request.user.type == 1:
             qs = City.objects.all()
         elif self.request.user.type == 2:
@@ -161,15 +168,13 @@ def surface_porch_update(request, pk):
         'porch': porch
     })
     photo_qs = porch.surfacephoto_set.all()
-    paginator = Paginator(photo_qs, 20) # Show 25 contacts per page
+    paginator = Paginator(photo_qs, 20)
     page = request.GET.get('page')
     try:
         photo_list = paginator.page(page)
     except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
         photo_list = paginator.page(1)
     except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
         photo_list = paginator.page(paginator.num_pages)
     context.update({
         'object': porch,
@@ -185,7 +190,6 @@ def surface_photo_add(request):
     if request.method == 'POST':
         form = SurfacePhotoForm(request.POST, request.FILES)
         if form.is_valid():
-            # file is saved
             instance = form.save()
             return HttpResponseRedirect(reverse('surface:porch-update', args=(instance.porch.id, )))
         else:
@@ -217,25 +221,3 @@ def surface_photo_update(request, pk):
         'surface': photo.porch.surface
     })
     return render(request, 'surface/surface_photo_update.html', context)
-# def client_order(request, pk):
-#     context = {}
-#     client = Client.objects.get(pk=int(pk))
-#     success_msg = u''
-#     error_msg = u''
-#     if request.method == 'POST':
-#         form = ClientOrderForm(request.POST)
-#         if form.is_valid():
-#             order = form.save()
-#             return HttpResponseRedirect(reverse('client:order-update', args=(order.id, )))
-#     else:
-#         form = ClientOrderForm(initial={
-#             'client': client
-#         })
-#     context.update({
-#         'success': success_msg,
-#         'error': error_msg,
-#         'client_order_form': form,
-#         'object': client,
-#         'client': client
-#     })
-#     return render(request, 'client/client_order.html', context)

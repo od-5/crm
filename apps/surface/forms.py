@@ -1,7 +1,7 @@
 # coding=utf-8
 from django import forms
 from apps.adjuster.models import SurfacePhoto
-from apps.city.models import Surface, City, Street, Porch
+from apps.city.models import Surface, City, Street, Porch, ManagementCompany
 from apps.client.models import ClientSurface
 
 __author__ = 'alexy'
@@ -10,16 +10,17 @@ __author__ = 'alexy'
 class SurfaceAddForm(forms.ModelForm):
     class Meta:
         model = Surface
-        fields = ('city', 'street', 'house_number')
+        fields = ('city', 'street', 'house_number', 'management')
         widgets = {
             'city': forms.Select(attrs={'class': 'form-control'}),
             'street': forms.Select(attrs={'class': 'form-control'}),
             'house_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'management': forms.Select(attrs={'class': 'form-control'}),
         }
 
     def __init__(self, *args, **kwargs):
         """
-        Ограничение выбора города в зависимости от ровня доступа пользователя.
+        Ограничение выбора города в зависимости от уровня доступа пользователя.
         Администратор может создавать поверхности для всех городов.
         Модератор - только для своих городов
         """
@@ -29,6 +30,7 @@ class SurfaceAddForm(forms.ModelForm):
         if user.type == 2:
             self.fields['city'].queryset = City.objects.filter(moderator=user)
             self.fields['street'].queryset = Street.objects.filter(city__moderator=user)
+            self.fields['management'].queryset = ManagementCompany.objects.filter(city__moderator=user)
 
 
 class SurfacePhotoForm(forms.ModelForm):

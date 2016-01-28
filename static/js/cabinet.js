@@ -286,7 +286,7 @@ $(function() {
       }
     }
   });
-  // валидация формы добавления монтажника
+  // валидация формы редактирования монтажника
   $( '.js-form-adjuster-update' ).validate({
     rules: {
       city: {
@@ -312,21 +312,7 @@ $(function() {
   //});
 
 
-  $('#city_filter').change(function(){
-    $('.search-form__city').val($(this).val());
-    $('.search-form__area').val(0);
-    $('.search-form__street').val(0);
-    $('.search-form').submit();
-  });
-  $('#area_filter').change(function(){
-    $('.search-form__area').val($(this).val());
-    $('.search-form__street').val(0);
-    $('.search-form').submit();
-  });
-  $('#street_filter').change(function(){
-    $('.search-form__street').val($(this).val());
-    $('.search-form').submit();
-  });
+
   //$('#house_number_filter').change(function(){
   //  $('.search-form__house_number').val($(this).val())
   //  console.log($(this).val());
@@ -1059,5 +1045,18 @@ $(function() {
   $('#js-photo-map-button').click(function(){
     $('#js-photo-map-wrapper').slideToggle()
   });
+
+   // Валидация формы добавления подъезда
+  $('#js-management-company-form').validate({
+    rules: {
+      city: {
+        required: true
+      },
+      name: {
+        required: true
+      }
+    }
+  });
+
 
 });

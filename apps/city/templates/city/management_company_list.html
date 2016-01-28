@@ -1,0 +1,67 @@
+{% extends 'cabinet_index.html' %}
+{% block extra_js %}
+  <script src="http://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+  <script src="{{ STATIC_URL }}js/map.js"></script>
+{% endblock %}
+{% block content %}
+  <div class="container">
+    <div class="col-lg-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="lead remove-bottom text-center">Управляющие компании</p>
+        </div>
+        <div class="panel-body">
+          <form action="" method="GET" role="form" class="form-inline">
+            <select name="city" id="city_filter" class="form-control input-sm">
+              <option value="0">Город</option>
+              {% for city in city_list %}
+                <option value="{{ city.id }}" {% if city.id == city_id %}selected="selected"{% endif %}>{{ city }}</option>
+              {% endfor %}
+            </select>
+            <input type="text" name="name" class="form-control  input-sm" placeholder="Название организации">
+            <button type="submit" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-search"></span> Искать</button>
+          </form>
+
+          <div>
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Город</th>
+                  <th>Название</th>
+                  <th>Должность руководителя</th>
+                  <th>ФИО руководителя</th>
+                  <th>Контактный телефон</th>
+                  <th>&nbsp;</th>
+                </tr>
+              </thead>
+              <tbody class="js-list">
+              {% for object in object_list %}
+                <tr data-id="{{ object.id }}" data-name="{{ object.name }}" data-model="ManagementCompany" id="id_ManagementCompany_{{ object.id }}">
+                  <td>{{ object.city.name|default:'Не указано' }}</td>
+                  <td><a href="{% url 'city:management-company-update' object.pk %}">{{ object.name|default:'' }}</a></td>
+                  <td>{{ object.leader_function|default:'Не указано' }}</td>
+                  <td>{{ object.leader_name|default:'Не указано' }}</td>
+                  <td>{{ object.phone|default:'Не указано' }}</td>
+                  <td>
+                    <a href="#js-ajax-item-remove" id="js-ajax-remove-btт-ManagementCompany-{{ object.id }}" class="btn btn-danger js-ajax-remove-btn">
+                      <span class="glyphicon glyphicon-remove"></span> Удалить
+                    </a>
+                  </td>
+                </tr>
+              {% empty %}
+                <tr style="width:100%">
+                  <td colspan="6">
+                    <p class="alert alert-info">Городов не найдено</p>
+                  </td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+{% include '__modal/js_ajax_remove_form.html' %}
+{% endblock %}
