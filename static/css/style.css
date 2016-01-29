@@ -6197,6 +6197,9 @@ img {
 .js-map-task-heading {
   cursor: pointer;
 }
+.js-map-task-body {
+  display: none;
+}
 .js-calendar-heading {
   cursor: pointer;
 }
