@@ -142,6 +142,17 @@ class Porch(models.Model):
     def __unicode__(self):
         return u'подъезд № %s' % self.number
 
+    def save(self, *args, **kwargs):
+        """
+        Если есть какие либо повреждения - стенд считается сломаным
+        и для него может быть поставлена только задача на ремонт.
+        """
+        if self.damaged():
+            self.is_broken = True
+        else:
+            self.is_broken = False
+        super(Porch, self).save()
+
     def damaged(self):
         """
         Метод возвращает True, если стенд на подъезде имеет хотя бы одно повреждение.
@@ -160,3 +171,4 @@ class Porch(models.Model):
     replace_glass = models.BooleanField(verbose_name=u'Заменить защитное стекло', default=False)
     against_tenants = models.BooleanField(verbose_name=u'Жильцы против', default=False)
     no_social_info = models.BooleanField(verbose_name=u'Отсутствует социальная информация', default=False)
+    is_broken = models.BooleanField(verbose_name=u'Стенд поломан', default=False)

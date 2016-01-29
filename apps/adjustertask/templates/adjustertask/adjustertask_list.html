@@ -1,4 +1,8 @@
 {% extends 'cabinet_index.html' %}
+{% block extra_js %}
+  <script src="http://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+  <script src="{{ STATIC_URL }}js/map.js"></script>
+{% endblock %}
 {% block content %}
   <div class="container">
     <div class="col-lg-12">
@@ -28,6 +32,21 @@
               </div>
             {% endif %}
           </div>
+
+          <div class="col-lg-12">
+            <div class="add-bottom panel panel-success">
+              <div class="panel-heading js-map-task-heading">
+                Карта монтажных работ <span class="caret"></span>
+              </div>
+              <div class="panel-body js-map-task-body">
+                <div id="tasksMap" style="height: 500px;"></div>
+                <div class="clearfix"></div>
+              </div>
+            </div>
+          </div>
+
+
+
           <div>
             <form action="" method="get" class="inline-form add-bottom" id="js-adjuster-task-filter-form" role="form">
               <div class="col-lg-2">
@@ -74,7 +93,7 @@
               {% for object in object_list %}
               <tr data-id="{{ object.id }}" data-name="{{ object }}" data-model="AdjusterTask" id="id_AdjusterTask_{{ object.id }}">
                 <td><a href="{% url 'adjustertask:update' object.id %}" >{{ object }}</a></td>
-                <td>{{ object.adjuster.user.get_full_name|default:'--' }}</td>
+                <td><a href="{% url 'adjuster:change' object.adjuster.id %}" >{{ object.adjuster.user.get_full_name|default:'--' }}</a></td>
                 <td>{{ object.adjuster.city.name|default:'--' }}</td>
                 <td>{{ object.get_type_display|default:'--' }}</td>
                 <td>{{ object.date|default:'--' }}</td>
@@ -102,4 +121,6 @@
     </div>
   </div>
 {% include '__modal/js_ajax_remove_form.html' %}
+{% include 'adjustertask/__include/map-task.html' %}
+
 {% endblock %}

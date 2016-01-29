@@ -31,18 +31,21 @@ class AdjusterTaskListView(ListView):
         else:
             qs = None
         if self.request.GET.get('city'):
+            print 'city = %s' % self.request.GET.get('city')
             qs = qs.filter(adjuster__city=int(self.request.GET.get('city')))
         if self.request.GET.get('adjuster'):
             qs = qs.filter(adjuster=int(self.request.GET.get('adjuster')))
+            print 'adjuster = %s' % self.request.GET.get('adjuster')
         if self.request.GET.get('type'):
             qs = qs.filter(type=int(self.request.GET.get('type')))
+            print 'type = %s' % self.request.GET.get('type')
         if self.request.GET.get('date_s'):
             qs = qs.filter(date__gte=datetime.strptime(self.request.GET.get('date_s'), '%d.%m.%Y'))
+            print 'date_s = %s' % self.request.GET.get('date_s')
         if self.request.GET.get('date_e'):
             qs = qs.filter(date__lte=datetime.strptime(self.request.GET.get('date_e'), '%d.%m.%Y'))
+            print 'date_e = %s' % self.request.GET.get('date_e')
 
-        # end_date = self.request.GET.get('end_date')
-        # re_date = datetime.strptime(end_date, '%d.%m.%Y')
         if self.request.GET.get('date__day') and self.request.GET.get('date__month') and self.request.GET.get('date__year'):
             day = self.request.GET.get('date__day')
             month = self.request.GET.get('date__month')
@@ -56,10 +59,32 @@ class AdjusterTaskListView(ListView):
         context.update(
             get_months(),
         )
-        filter_form = AdjusterTaskFilterForm()
+        initial_args = {}
+        if self.request.GET.get('city'):
+            initial_args.update({
+                'city': int(self.request.GET.get('city'))
+            })
+        if self.request.GET.get('adjuster'):
+            initial_args.update({
+                'adjuster': int(self.request.GET.get('adjuster'))
+            })
+        if self.request.GET.get('type'):
+            initial_args.update({
+                'type': int(self.request.GET.get('type'))
+            })
+        if self.request.GET.get('date_s'):
+            initial_args.update({
+                'date_s': self.request.GET.get('date_s')
+            })
+        if self.request.GET.get('date_e'):
+            initial_args.update({
+                'date_e': self.request.GET.get('date_e')
+            })
+        filter_form = AdjusterTaskFilterForm(initial=initial_args)
         if self.request.user.type == 2:
-            filter_form.fields['city'] = City.objects.filter(moderator=self.request.user)
-            filter_form.fields['adjuster'] = Adjuster.objects.filter(city__moderator=self.request.user)
+            print self.request.user.type
+            filter_form.fields['city'].queryset = City.objects.filter(moderator=self.request.user)
+            filter_form.fields['adjuster'].queryset = Adjuster.objects.filter(city__moderator=self.request.user)
         context.update({
             'filter_form': filter_form
         })

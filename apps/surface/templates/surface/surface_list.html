@@ -49,6 +49,14 @@
                   {% endfor %}
               {% endif %}
               </select>
+              <select name="management" id="management_filter" class="form-control input-sm" >
+                <option value="0">Управляющая компания</option>
+                {% if management_list %}
+                  {% for management in management_list %}
+                  <option value="{{ management.id }}" {% if management.id == management_id %}selected="selected"{% endif %}>{{ management.name }}</option>
+                  {% endfor %}
+              {% endif %}
+              </select>
               <button type="submit" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-search"></span> Искать</button>
             </form>
           <table class="table table-hover">
@@ -59,17 +67,19 @@
                 <th>Улица</th>
                 <th>Номер дома</th>
                 <th>Количество подездов</th>
+                <th>Управляющая компания</th>
                 <th></th>
               </tr>
             </thead>
             <tbody class="js-list">
             {% for object in object_list %}
               <tr {% if object.damaged %}class="danger"{% endif %} data-id="{{ object.id }}" data-name="{{ object.street }}" data-model="Surface" id="id_Surface_{{ object.id }}">
-                <td>{{ object.city|default:'' }}</td>
-                <td>{{ object.street.area|default:'' }}</td>
-                <td><a href="{% url 'surface:update' object.id %}">{{ object.street|default:'' }}</a></td>
-                <td>{{ object.house_number|default:'' }}</td>
+                <td>{{ object.city|default:'Не указано' }}</td>
+                <td>{{ object.street.area|default:'Не указано' }}</td>
+                <td><a href="{% url 'surface:update' object.id %}">{{ object.street|default:'Не указано' }}</a></td>
+                <td>{{ object.house_number|default:'Не указано' }}</td>
                 <td>{{ object.porch_count|default:'Не указано' }}</td>
+                <td>{{ object.management.name|default:'Не указано' }}</td>
                 <td>
                   <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-Surface-{{ object.id }}" class="btn btn-danger js-ajax-remove-btn">
                     Удалить

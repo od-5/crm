@@ -369,6 +369,9 @@ $(function() {
   $('.js-calendar-heading').click(function(){
     $('.js-calendar-body').slideToggle();
   });
+  $('.js-map-task-heading').click(function(){
+    $('.js-map-task-body').slideToggle();
+  });
 
 
     // валидация формы добвления фотографии поверхности

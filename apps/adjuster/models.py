@@ -107,6 +107,7 @@ class AdjusterTask(models.Model):
     type = models.PositiveSmallIntegerField(verbose_name=u'Вид работы', choices=TYPE_CHOICES)
     date = models.DateField(verbose_name=u'Дата проведения работы')
     comment = models.TextField(verbose_name=u'Комментарий', blank=True, null=True)
+    is_closed = models.BooleanField(verbose_name=u'Задача закрыта', default=False)
 
 
 class AdjusterTaskSurface(models.Model):
@@ -120,3 +121,4 @@ class AdjusterTaskSurface(models.Model):
 
     adjustertask = models.ForeignKey(to=AdjusterTask, verbose_name=u'Задача')
     surface = models.ForeignKey(to=Surface, verbose_name=u'Поверхность')
+    is_closed = models.BooleanField(verbose_name=u'Работы по поверхности выполнены', default=False)

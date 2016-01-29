@@ -6194,6 +6194,9 @@ img {
 .calendar td.filled {
   background-color: blanchedalmond;
 }
+.js-map-task-heading {
+  cursor: pointer;
+}
 .js-calendar-heading {
   cursor: pointer;
 }

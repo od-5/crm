@@ -6,7 +6,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from apps.adjuster.models import SurfacePhoto
 from .forms import SurfaceAddForm, SurfaceClientAddForm, PorchAddForm, SurfacePhotoForm
-from apps.city.models import City, Area, Surface, Street, Porch
+from apps.city.models import City, Area, Surface, Street, Porch, ManagementCompany
 
 __author__ = 'alexy'
 
@@ -29,12 +29,14 @@ class SurfaceListView(ListView):
         else:
             qs = None
         # фильтрация поверхностей по городам, районам, улицам
+        if self.request.GET.get('management') and int(self.request.GET.get('management')) != 0:
+            qs = qs.filter(management=int(self.request.GET.get('management')))
         if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
-            qs = qs.filter(city__id=int(self.request.GET.get('city')))
+            qs = qs.filter(city=int(self.request.GET.get('city')))
         if self.request.GET.get('area') and int(self.request.GET.get('area')) != 0:
-            qs = qs.filter(street__area__id=int(self.request.GET.get('area')))
+            qs = qs.filter(street__area=int(self.request.GET.get('area')))
         if self.request.GET.get('street') and int(self.request.GET.get('street')) != 0:
-            qs = qs.filter(street__id=int(self.request.GET.get('street')))
+            qs = qs.filter(street=int(self.request.GET.get('street')))
         return qs
 
     def get_context_data(self, **kwargs):
@@ -46,13 +48,18 @@ class SurfaceListView(ListView):
         """
         if self.request.user.type == 1:
             qs = City.objects.all()
+            management_qs = ManagementCompany.objects.all()
         elif self.request.user.type == 2:
             qs = City.objects.filter(moderator=user_id)
+            management_qs = ManagementCompany.objects.filter(city__moderator=user_id)
         else:
             qs = None
+            management_qs = None
         context.update({
-            'city_list': qs
+            'city_list': qs,
+            'management_list': management_qs
         })
+
         if self.request.GET.get('city'):
             area_qs = Area.objects.filter(city__id=int(self.request.GET.get('city')))
             context.update({
@@ -69,6 +76,10 @@ class SurfaceListView(ListView):
                     context.update({
                         'street_id': int(self.request.GET.get('street'))
                     })
+        if self.request.GET.get('management'):
+            context.update({
+                'management_id': int(self.request.GET.get('management'))
+            })
 
         return context
 
