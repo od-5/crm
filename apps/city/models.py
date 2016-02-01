@@ -130,6 +130,7 @@ class Surface(models.Model):
     coord_x = models.DecimalField(max_digits=8, decimal_places=6, blank=True, null=True, verbose_name=u'Ширина')
     coord_y = models.DecimalField(max_digits=8, decimal_places=6, blank=True, null=True, verbose_name=u'Долгота')
     free = models.BooleanField(default=True)
+    has_broken = models.BooleanField(default=False)
 
 
 class Porch(models.Model):
@@ -149,8 +150,14 @@ class Porch(models.Model):
         """
         if self.damaged():
             self.is_broken = True
+            surface = Surface.objects.get(pk=self.surface.id)
+            surface.has_broken = True
+            surface.save()
         else:
             self.is_broken = False
+            surface = Surface.objects.get(pk=self.surface.id)
+            surface.has_broken = True
+            surface.save()
         super(Porch, self).save()
 
     def damaged(self):

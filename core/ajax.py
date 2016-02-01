@@ -80,6 +80,10 @@ def ajax_remove_item(request):
                 print 'delete adjuster user'
                 user = User.objects.get(pk=item.user.id)
                 user.delete()
+            if model == 'ClientOrderSurface':
+                surface = Surface.objects.get(pk=item.surface.id)
+                surface.free = True
+                surface.save()
             item.delete()
             return {
                 'id': int(request.GET.get('item_id')),

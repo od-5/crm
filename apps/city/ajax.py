@@ -137,6 +137,7 @@ def get_city_adjusters(request):
             'error': True
         }
 
+
 @ajax_request
 def get_area_surface_list(request):
     if request.GET.get('area'):
@@ -144,6 +145,12 @@ def get_area_surface_list(request):
         area_pk = int(request.GET.get('area'))
         # TODO: продумать queryset - только свободные поверхности показывать или только занятые?
         surface_qs = Surface.objects.filter(street__area=area_pk)
+        if request.GET.get('damaged'):
+            damaged = int(request.GET.get('damaged'))
+            if damaged == 1:
+                surface_qs = surface_qs.filter(has_broken=True)
+            else:
+                surface_qs = surface_qs.filter(has_broken=False)
         for surface in surface_qs:
             # if surface.id not in client_surfaces:
             if surface.id:

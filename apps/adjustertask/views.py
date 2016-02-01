@@ -7,7 +7,7 @@ from django.shortcuts import render
 from django.views.generic import ListView
 from apps.adjuster.models import AdjusterTask, AdjusterTaskSurface, Adjuster
 from apps.adjustertask.forms import AdjusterTaskClientAddForm, AdjusterTaskAddForm, AdjusterTaskUpdateForm, \
-    AdjusterTaskFilterForm
+    AdjusterTaskFilterForm, AdjusterTaskRepairAddForm
 from apps.adjustertask.task_calendar import get_months
 from apps.city.models import Surface, City
 
@@ -25,9 +25,9 @@ class AdjusterTaskListView(ListView):
     def get_queryset(self):
         user_id = self.request.user.id
         if self.request.user.type == 1:
-            qs = AdjusterTask.objects.all()
+            qs = AdjusterTask.objects.filter(is_closed=False)
         elif self.request.user.type == 2:
-            qs = AdjusterTask.objects.filter(adjuster__city__moderator=user_id)
+            qs = AdjusterTask.objects.filter(is_closed=False, adjuster__city__moderator=user_id)
         else:
             qs = None
         if self.request.GET.get('city'):
@@ -59,6 +59,74 @@ class AdjusterTaskListView(ListView):
         context.update(
             get_months(),
         )
+        initial_args = {}
+        if self.request.GET.get('city'):
+            initial_args.update({
+                'city': int(self.request.GET.get('city'))
+            })
+        if self.request.GET.get('adjuster'):
+            initial_args.update({
+                'adjuster': int(self.request.GET.get('adjuster'))
+            })
+        if self.request.GET.get('type'):
+            initial_args.update({
+                'type': int(self.request.GET.get('type'))
+            })
+        if self.request.GET.get('date_s'):
+            initial_args.update({
+                'date_s': self.request.GET.get('date_s')
+            })
+        if self.request.GET.get('date_e'):
+            initial_args.update({
+                'date_e': self.request.GET.get('date_e')
+            })
+        filter_form = AdjusterTaskFilterForm(initial=initial_args)
+        if self.request.user.type == 2:
+            print self.request.user.type
+            filter_form.fields['city'].queryset = City.objects.filter(moderator=self.request.user)
+            filter_form.fields['adjuster'].queryset = Adjuster.objects.filter(city__moderator=self.request.user)
+        context.update({
+            'filter_form': filter_form
+        })
+        return context
+
+
+class TaskArchiveListView(ListView):
+    """
+    Архив задач
+    """
+    model = AdjusterTask
+    template_name = 'adjustertask/adjustertask_archive.html'
+    paginate_by = 25
+
+    def get_queryset(self):
+        user_id = self.request.user.id
+        if self.request.user.type == 1:
+            qs = AdjusterTask.objects.filter(is_closed=True)
+        elif self.request.user.type == 2:
+            qs = AdjusterTask.objects.filter(is_closed=True, adjuster__city__moderator=user_id)
+        else:
+            qs = None
+        if self.request.GET.get('city'):
+            print 'city = %s' % self.request.GET.get('city')
+            qs = qs.filter(adjuster__city=int(self.request.GET.get('city')))
+        if self.request.GET.get('adjuster'):
+            qs = qs.filter(adjuster=int(self.request.GET.get('adjuster')))
+            print 'adjuster = %s' % self.request.GET.get('adjuster')
+        if self.request.GET.get('type'):
+            qs = qs.filter(type=int(self.request.GET.get('type')))
+            print 'type = %s' % self.request.GET.get('type')
+        if self.request.GET.get('date_s'):
+            qs = qs.filter(date__gte=datetime.strptime(self.request.GET.get('date_s'), '%d.%m.%Y'))
+            print 'date_s = %s' % self.request.GET.get('date_s')
+        if self.request.GET.get('date_e'):
+            qs = qs.filter(date__lte=datetime.strptime(self.request.GET.get('date_e'), '%d.%m.%Y'))
+            print 'date_e = %s' % self.request.GET.get('date_e')
+        queryset = qs
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super(TaskArchiveListView, self).get_context_data()
         initial_args = {}
         if self.request.GET.get('city'):
             initial_args.update({
@@ -161,6 +229,37 @@ def adjuster_a_task(request):
         'adjustertask_form': adjustertask_form
     })
     return render(request, 'adjustertask/adjustertask_a_add.html', context)
+
+
+def adjuster_r_task(request):
+    """
+    функция добавления задачи на ремонт
+    """
+    context = {}
+    if request.method == 'POST':
+        adjustertask_form = AdjusterTaskRepairAddForm(request.POST, request=request)
+        if adjustertask_form.is_valid():
+            if request.POST.getlist('chk_group[]'):
+                task = adjustertask_form.save()
+                surfaces = request.POST.getlist('chk_group[]')
+                for item in surfaces:
+                    surface = Surface.objects.get(pk=int(item))
+                    task_surface = AdjusterTaskSurface(
+                        adjustertask=task,
+                        surface=surface
+                    )
+                    task_surface.save()
+                return HttpResponseRedirect(task.get_absolute_url())
+        else:
+            context.update({
+                'error': 'Achtung! Form is invalid!'
+            })
+    else:
+        adjustertask_form = AdjusterTaskRepairAddForm(request=request)
+    context.update({
+        'adjustertask_form': adjustertask_form
+    })
+    return render(request, 'adjustertask/adjustertask_r_add.html', context)
 
 
 def adjuster_task_update(request, pk):

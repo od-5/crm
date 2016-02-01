@@ -1,0 +1,11 @@
+input.error {
+  background-color: #fffde0;
+  border-color: #FF4646;
+}
+label.error {
+  color: #FF4646;
+  font-weight: lighter;
+}
+.errorlist {
+  color: #FF4646;
+}

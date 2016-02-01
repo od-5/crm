@@ -1,55 +1,15 @@
 {% extends 'cabinet_index.html' %}
-{% block extra_js %}
-  <script src="http://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
-  <script src="{{ STATIC_URL }}js/map.js"></script>
-{% endblock %}
 {% block content %}
   <div class="container">
     <div class="col-lg-12">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <p class="lead remove-bottom text-center">Список задач</p>
+          <p class="lead remove-bottom text-center">Архив задач</p>
         </div>
         <div class="panel-body">
-          <a href="{% url 'adjustertask:add' %}" class="btn btn-success add-bottom">
-            <span class="glyphicon glyphicon-plus-sign"></span> Добавить задачу
+          <a href="{% url 'adjustertask:list' %}" class="btn btn-success add-bottom">
+            <span class="glyphicon glyphicon-folder-open"></span> Список актуальных задач
           </a>
-          <a href="{% url 'adjustertask:archive' %}" class="btn btn-success add-bottom">
-            <span class="glyphicon glyphicon-folder-close"></span> Архив задач
-          </a>
-          <div class="col-lg-12">
-            {% load tasks %}
-            {% if months %}
-              <div class="add-bottom panel panel-success">
-                <div class="panel-heading js-calendar-heading">
-                  Календарь монтажных работ <span class="caret"></span>
-                </div>
-                <div class="panel-body js-calendar-body">
-              {% for date in months %}
-                  <div class="calendar col-lg-3 add-bottom">
-                  {% calendar date.year date.month %}
-                  </div>
-              {% endfor %}
-                  <div class="clearfix"></div>
-                </div>
-              </div>
-            {% endif %}
-          </div>
-
-          <div class="col-lg-12">
-            <div class="add-bottom panel panel-success">
-              <div class="panel-heading js-map-task-heading">
-                Карта монтажных работ <span class="caret"></span>
-              </div>
-              <div class="panel-body js-map-task-body">
-                <div id="tasksMap" style="height: 500px;"></div>
-                <div class="clearfix"></div>
-              </div>
-            </div>
-          </div>
-
-
-
           <div>
             <form action="" method="get" class="inline-form add-bottom" id="js-adjuster-task-filter-form" role="form">
               <div class="col-lg-2">
@@ -124,6 +84,5 @@
     </div>
   </div>
 {% include '__modal/js_ajax_remove_form.html' %}
-{% include 'adjustertask/__include/map-task.html' %}
 
 {% endblock %}

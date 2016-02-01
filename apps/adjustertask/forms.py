@@ -19,8 +19,20 @@ class AdjusterTaskClientAddForm(forms.ModelForm):
             'comment': forms.Textarea(attrs={'class': 'form-control', 'placeholder': u'Текст комментария к задаче'}),
         }
 
+    TYPE_CHOICES = (
+        (0, u'Монтаж новой конструкции'),
+        (1, u'Замена'),
+        # (2, u'Ремонт стенда'),
+        (3, u'Демонтаж стенда'),
+    )
+
     client = forms.ModelChoiceField(queryset=Client.objects.all(), label=u'Клиент', widget=forms.Select(attrs={'class': 'form-control'}))
     # clientorder = forms.ChoiceField(choices=((0, '---------'),), label=u'Заказ', widget=forms.Select(attrs={'class': 'form-control'}))
+    type = forms.ChoiceField(
+        choices=TYPE_CHOICES,
+        label=u'Тип работы',
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
@@ -41,12 +53,54 @@ class AdjusterTaskAddForm(forms.ModelForm):
             'comment': forms.Textarea(attrs={'class': 'form-control', 'placeholder': u'Текст комментария к задаче'}),
         }
 
+    TYPE_CHOICES = (
+        (0, u'Монтаж новой конструкции'),
+        (1, u'Замена'),
+        # (2, u'Ремонт стенда'),
+        (3, u'Демонтаж стенда'),
+    )
+
     city = forms.ModelChoiceField(queryset=City.objects.all(), label=u'Город', widget=forms.Select(attrs={'class': 'form-control'}))
     area = forms.ModelChoiceField(queryset=Area.objects.all(), label=u'Район', widget=forms.Select(attrs={'class': 'form-control'}))
+    type = forms.ChoiceField(
+        choices=TYPE_CHOICES,
+        label=u'Тип работы',
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
         super(AdjusterTaskAddForm, self).__init__(*args, **kwargs)
+        if self.request.user and self.request.user.type == 2:
+            self.fields['city'].queryset = City.objects.filter(moderator=self.request.user)
+            self.fields['adjuster'].queryset = Adjuster.objects.filter(city__moderator=self.request.user)
+            self.fields['area'].queryset = Area.objects.filter(city__moderator=self.request.user)
+
+
+class AdjusterTaskRepairAddForm(forms.ModelForm):
+    class Meta:
+        model = AdjusterTask
+        fields = ('adjuster', 'date', 'type', 'comment')
+        widgets = {
+            'adjuster': forms.Select(attrs={'class': 'form-control'}),
+            'date': forms.DateInput(attrs={'class': 'form-control at_date'}),
+            'comment': forms.Textarea(attrs={'class': 'form-control', 'placeholder': u'Текст комментария к задаче'}),
+        }
+
+    # TYPE_CHOICES = (
+    #     # (0, u'Монтаж новой конструкции'),
+    #     # (1, u'Замена'),
+    #     (2, u'Ремонт стенда'),
+    #     # (3, u'Демонтаж стенда'),
+    # )
+
+    city = forms.ModelChoiceField(queryset=City.objects.all(), label=u'Город', widget=forms.Select(attrs={'class': 'form-control'}))
+    area = forms.ModelChoiceField(queryset=Area.objects.all(), label=u'Район', widget=forms.Select(attrs={'class': 'form-control'}))
+    type = forms.CharField(label=u'Тип работы', initial=2)
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request")
+        super(AdjusterTaskRepairAddForm, self).__init__(*args, **kwargs)
         if self.request.user and self.request.user.type == 2:
             self.fields['city'].queryset = City.objects.filter(moderator=self.request.user)
             self.fields['adjuster'].queryset = Adjuster.objects.filter(city__moderator=self.request.user)
