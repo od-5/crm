@@ -156,7 +156,7 @@ class Porch(models.Model):
         else:
             self.is_broken = False
             surface = Surface.objects.get(pk=self.surface.id)
-            surface.has_broken = True
+            surface.has_broken = False
             surface.save()
         super(Porch, self).save()
 
