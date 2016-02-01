@@ -150,7 +150,6 @@ class Porch(models.Model):
         """
         super(Porch, self).save()
         if self.damaged():
-            print u'Стенд сломан'
             self.is_broken = True
             surface = Surface.objects.get(pk=self.surface.id)
             surface.has_broken = True
