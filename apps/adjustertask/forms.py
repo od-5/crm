@@ -96,7 +96,7 @@ class AdjusterTaskRepairAddForm(forms.ModelForm):
 
     city = forms.ModelChoiceField(queryset=City.objects.all(), label=u'Город', widget=forms.Select(attrs={'class': 'form-control'}))
     area = forms.ModelChoiceField(queryset=Area.objects.all(), label=u'Район', widget=forms.Select(attrs={'class': 'form-control'}))
-    type = forms.CharField(label=u'Тип работы', initial=2)
+    type = forms.CharField(label=u'Тип работы', initial=2, widget=forms.HiddenInput)
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
