@@ -148,14 +148,21 @@ class Porch(models.Model):
         Если есть какие либо повреждения - стенд считается сломаным
         и для него может быть поставлена только задача на ремонт.
         """
-
-        self.is_broken = self.damaged()
-        surface = Surface.objects.get(pk=self.surface.id)
-        surface.has_broken = self.damaged()
-        surface.save()
         super(Porch, self).save()
+        if self.damaged():
+            print u'Стенд сломан'
+            self.is_broken = True
+            surface = Surface.objects.get(pk=self.surface.id)
+            surface.has_broken = True
+            surface.save()
+        else:
+            self.is_broken = False
+            surface = Surface.objects.get(pk=self.surface.id)
+            surface.has_broken = False
+            surface.save()
         print surface
         print surface.has_broken
+
 
     def damaged(self):
         """
