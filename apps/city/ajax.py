@@ -149,8 +149,6 @@ def get_area_surface_list(request):
             damaged = int(request.GET.get('damaged'))
             if damaged == 1:
                 surface_qs = surface_qs.filter(has_broken=True)
-            else:
-                surface_qs = surface_qs.filter(has_broken=False)
         for surface in surface_qs:
             # if surface.id not in client_surfaces:
             if surface.id:
