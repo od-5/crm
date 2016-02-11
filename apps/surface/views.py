@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from apps.adjuster.models import SurfacePhoto
-from .forms import SurfaceAddForm, SurfaceClientAddForm, PorchAddForm, SurfacePhotoForm
+from .forms import SurfaceAddForm, PorchAddForm, SurfacePhotoForm
 from apps.city.models import City, Area, Surface, Street, Porch, ManagementCompany
 
 __author__ = 'alexy'

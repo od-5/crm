@@ -2,7 +2,6 @@
 from django import forms
 from apps.adjuster.models import SurfacePhoto
 from apps.city.models import Surface, City, Street, Porch, ManagementCompany
-from apps.client.models import ClientSurface
 
 __author__ = 'alexy'
 
@@ -41,18 +40,6 @@ class SurfacePhotoForm(forms.ModelForm):
             'porch': forms.HiddenInput(attrs={'class': 'form-control'}),
             'date': forms.DateInput(attrs={'class': 'form-control'}),
             'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
-        }
-
-
-class SurfaceClientAddForm(forms.ModelForm):
-    class Meta:
-        model = ClientSurface
-        fields = ('client', 'surface', 'date_start', 'date_end')
-        widgets = {
-            'client': forms.Select(attrs={'class': 'form-control'}),
-            'surface': forms.HiddenInput(attrs={'class': 'form-control'}),
-            'date_start': forms.DateInput(attrs={'class': 'form-control'}),
-            'date_end': forms.DateInput(attrs={'class': 'form-control'}),
         }
 
 

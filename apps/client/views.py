@@ -11,10 +11,10 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView
 from apps.city.models import City, Surface
-from apps.client.forms import ClientUpdateForm, ClientAddForm, ClientSurfaceAddForm, ClientMaketForm, ClientOrderForm, \
+from apps.client.forms import ClientUpdateForm, ClientAddForm, ClientMaketForm, ClientOrderForm, \
     ClientJournalForm
 from core.forms import UserAddForm, UserUpdateForm
-from .models import Client, ClientSurface, ClientMaket, ClientOrder, ClientOrderSurface, ClientJournal
+from .models import Client, ClientMaket, ClientOrder, ClientOrderSurface, ClientJournal
 
 __author__ = 'alexy'
 
@@ -502,6 +502,7 @@ def add_client_surface(request):
         for item in surfaces:
             surface = Surface.objects.get(pk=int(item))
             surface.free = False
+            surface.release_date = order.date_end
             surface.save()
             print surface
             c_surface = ClientOrderSurface(

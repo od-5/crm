@@ -375,8 +375,8 @@ $(function() {
         type: "GET",
         url: $(this).data('ajax-url'),
         data: {
-          area: $(this).val(),
-          client: $('#id_cos_client').val()
+          order: $(this).data('client-order'),
+          area: $(this).val()
         }
       }).done(function( data ) {
         if (data.surface_list) {
@@ -505,6 +505,9 @@ $(function() {
         required: true
       },
       date_start: {
+        required: true
+      },
+      date_end: {
         required: true
       }
     }

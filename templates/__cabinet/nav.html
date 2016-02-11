@@ -21,6 +21,13 @@
     <div>
       <ul class="nav navbar-nav">
         <li><a href="{% url 'cabinet:cabinet' %}">Рабочий стол</a></li>
+        <li class="dropdown">
+          <a href="{% url 'manager:list' %}" class="dropdown-toggle" data-toggle="dropdown">CRM <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="{% url 'manager:list' %}">Список менеджеров</a></li>
+            <li><a href="{% url 'manager:add' %}">Добавить менеджера</a></li>
+          </ul>
+        </li>
       {% if user.type == 1 %}
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -49,8 +56,7 @@
             {% if user.type == 1 %}
             <li><a href="{% url 'city:add' %}">Добавить город</a></li>
             {% endif %}
-            <li><a href="{% url 'city:management-company' %}">Управляющие компании</a></li>
-            <li><a href="{% url 'city:management-company-add' %}">Добавить управляющую компанию</a></li>
+
           </ul>
         </li>
 
@@ -59,6 +65,8 @@
           <ul class="dropdown-menu">
             <li><a href="{% url 'surface:list' %}">Список поверхностей</a></li>
             <li><a href="{% url 'surface:add' %}">Добавить рекламную поверхность</a></li>
+            <li><a href="{% url 'city:management-company' %}">Управляющие компании</a></li>
+            <li><a href="{% url 'city:management-company-add' %}">Добавить управляющую компанию</a></li>
           </ul>
         </li>
         <li class="dropdown">

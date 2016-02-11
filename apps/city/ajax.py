@@ -3,7 +3,7 @@ from annoying.decorators import ajax_request
 from apps.adjuster.models import Adjuster
 from apps.city.forms import AreaAddForm, StreetForm
 from apps.city.models import Area, City, Street, Surface, Porch
-from apps.client.models import Client, ClientSurface
+from apps.client.models import Client, ClientOrder
 from apps.surface.forms import PorchAddForm
 from core.models import User
 
@@ -55,24 +55,14 @@ def simple_get_area_streets(request):
 
 
 @ajax_request
-def get_area_streets(request):
-    if request.GET.get('area') and request.GET.get('client'):
+def get_free_area_surface(request):
+    if request.GET.get('area') and request.GET.get('order'):
         surface_list = []
         area_pk = int(request.GET.get('area'))
-
-        surface_qs = Surface.objects.filter(street__area=area_pk, free=True)
-        # TODO: сделать проверку поверхностей. Выводить только те, которые ещё никто не заказал, и которые будут свободны на начало указанной даты заказа
-        # try:
-        #     client = Client.objects.get(id=int(request.GET.get('client')))
-        #     # print(surface_qs & ClientSurface.objects.filter(client=client))
-        #     client_surfaces = []
-        #     for item in ClientSurface.objects.filter(client=client):
-        #         client_surfaces.append(item.surface.id)
-        #         #     surface_qs = surface_qs.exclude(surface=item.surface)
-        # except:
-        #     pass
+        order = ClientOrder.objects.get(pk=int(request.GET.get('order')))
+        print u'дата начала размещения по заказу %s' % order.date_start
+        surface_qs = Surface.objects.filter(street__area=area_pk, release_date__lt=order.date_start)
         for surface in surface_qs:
-            # if surface.id not in client_surfaces:
             if surface.id:
                 surface_list.append({
                     'id': surface.id,
@@ -140,15 +130,21 @@ def get_city_adjusters(request):
 
 @ajax_request
 def get_area_surface_list(request):
+    """
+    Функция отображает список поверхностей для постановки задачи.
+    Если задача по адресам - показываются только целые и не полностью повреждённые поверхности (флаг damaged=0).
+    Если зада на ремонт - показываются только поверхности имеющие повреждения (флаг damaged=1).
+    """
     if request.GET.get('area'):
         surface_list = []
         area_pk = int(request.GET.get('area'))
-        # TODO: продумать queryset - только свободные поверхности показывать или только занятые?
         surface_qs = Surface.objects.filter(street__area=area_pk)
         if request.GET.get('damaged'):
             damaged = int(request.GET.get('damaged'))
             if damaged == 1:
                 surface_qs = surface_qs.filter(has_broken=True)
+            elif damaged == 0:
+                surface_qs = surface_qs.filter(full_broken=False)
         for surface in surface_qs:
             # if surface.id not in client_surfaces:
             if surface.id:

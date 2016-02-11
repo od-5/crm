@@ -22,6 +22,7 @@ urlpatterns = patterns('',
     url(r'^surface/', include('apps.surface.urls', namespace='surface'),),
     url(r'^ticket/', include('apps.ticket.urls', namespace='ticket'),),
     url(r'^journal/', include('apps.journal.urls', namespace='journal'),),
+    url(r'^manager/', include('apps.manager.urls', namespace='manager'),),
     url(r'', include('core.urls')),
 
     url(r'^ckeditor/', include('ckeditor.urls')),

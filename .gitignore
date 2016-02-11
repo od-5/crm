@@ -1,3 +1,4 @@
+/apps/manager/migrations
 /apps/city/migrations
 .idea/
 *.pyc

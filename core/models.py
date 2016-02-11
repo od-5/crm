@@ -63,6 +63,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         (2, u'Модератор'),
         (3, u'Клиент'),
         (4, u'Монтажник'),
+        (5, u'Менеджер'),
     )
 
     email = models.EmailField(_('email address'), unique=True)
@@ -91,7 +92,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
-
         if self.type == 1 and not self.is_superuser:
             self.is_superuser = True
         else:

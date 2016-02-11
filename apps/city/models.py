@@ -1,4 +1,5 @@
 # coding=utf-8
+import datetime
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -109,6 +110,12 @@ class Surface(models.Model):
     def porch_count(self):
         return self.porch_set.all().count()
 
+    def all_porch_damaged(self):
+        count = self.porch_count()
+        for porch in self.porch_set.all():
+            count -= porch.is_broken
+        return not count
+
     def damaged(self):
         for porch in self.porch_set.all():
             if porch.damaged():
@@ -117,6 +124,8 @@ class Surface(models.Model):
             return False
 
     def save(self, *args, **kwargs):
+        if not self.release_date:
+            self.release_date = datetime.date.today() - datetime.timedelta(days=1)
         address = u'%s %s %s' % (self.city.name, self.street.name, self.house_number)
         pos = api.geocode(api_key, address)
         self.coord_x = float(pos[0])
@@ -130,7 +139,9 @@ class Surface(models.Model):
     coord_x = models.DecimalField(max_digits=8, decimal_places=6, blank=True, null=True, verbose_name=u'Ширина')
     coord_y = models.DecimalField(max_digits=8, decimal_places=6, blank=True, null=True, verbose_name=u'Долгота')
     free = models.BooleanField(default=True)
-    has_broken = models.BooleanField(default=False)
+    has_broken = models.BooleanField(default=False, verbose_name=u'Есть повреждения')
+    full_broken = models.BooleanField(default=False, verbose_name=u'Все стенды повреждены')
+    release_date = models.DateField(blank=True, null=True, verbose_name=u'Дата освобождения поверхности')
 
 
 class Porch(models.Model):
@@ -147,21 +158,30 @@ class Porch(models.Model):
         """
         Если есть какие либо повреждения - стенд считается сломаным
         и для него может быть поставлена только задача на ремонт.
+        Для поверхности, устанавливается флаг "has_broken" в True, если у подъезда есть повреждения.
         """
-        super(Porch, self).save()
         if self.damaged():
             self.is_broken = True
-            surface = Surface.objects.get(pk=self.surface.id)
-            surface.has_broken = True
-            surface.save()
+            # surface = Surface.objects.get(pk=self.surface.id)
+            # surface.has_broken = True
+            # surface.save()
         else:
             self.is_broken = False
-            surface = Surface.objects.get(pk=self.surface.id)
+            # surface = Surface.objects.get(pk=self.surface.id)
+            # surface.has_broken = False
+            # surface.save()
+        super(Porch, self).save()
+        # todo: если что - искать неполадки с сохранением подъезда здесь!
+        surface = Surface.objects.get(pk=self.surface.id)
+        if surface.damaged():
+            surface.has_broken = True
+        else:
             surface.has_broken = False
-            surface.save()
-        print surface
-        print surface.has_broken
-
+        if surface.all_porch_damaged():
+            surface.full_broken = True
+        else:
+            surface.full_broken = False
+        surface.save()
 
     def damaged(self):
         """

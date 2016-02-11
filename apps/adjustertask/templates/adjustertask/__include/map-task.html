@@ -1,28 +1,18 @@
 <script>
-{#{% for task in object_list %}#}
-{#  {% for adjustertasksurface in task.adjustertasksurface_set.all %}#}
-{#      console.log({{ adjustertasksurface.surface.coord_y|safe }}, {{ adjustertasksurface.surface.coord_x|safe }}, '{{ adjustertasksurface.surface|safe }}');#}
-{#  {% endfor %}#}
-{#{% endfor %}#}
-
 ymaps.ready(function () {
     var tasks_points = [
-      {% for task in object_list %}
-        {% for adjustertasksurface in task.adjustertasksurface_set.all %}
+        {% for adjustertasksurface in object.adjustertasksurface_set.all %}
           [{{ adjustertasksurface.surface.coord_y|safe }}, {{ adjustertasksurface.surface.coord_x|safe }}],
         {% endfor %}
-      {% endfor %}
     ];
     var tasks_baloons = [
-      {% for task in object_list %}
-        {% for adjustertasksurface in task.adjustertasksurface_set.all %}
-          ['{{ adjustertasksurface.surface|safe }}', '{{ adjustertasksurface.adjustertask.date|safe }}', '{{ adjustertasksurface.adjustertask.get_type_display|safe }}', '{{ adjustertasksurface.adjustertask.adjuster.user.get_full_name|safe }}'],
+        {% for adjustertasksurface in object.adjustertasksurface_set.all %}
+          ['{{ adjustertasksurface.surface|safe }}'],
         {% endfor %}
-      {% endfor %}
     ];
     var myMap = new ymaps.Map('tasksMap', {
             center: tasks_points[0],
-            zoom: 4,
+            zoom: 9,
             behaviors: ['default', 'scrollZoom']
         }, {
             searchControlProvider: 'yandex#search'
@@ -62,10 +52,7 @@ ymaps.ready(function () {
          */
             getPointData = function (index) {
             return {
-                balloonContentBody: '<strong>Адрес:</strong> ' + tasks_baloons[index][0] + '<br/>' +
-                '<strong>дата проведения работы:</strong> ' + tasks_baloons[index][1] + '<br/>' +
-                '<strong>Вид работы:</strong> ' + tasks_baloons[index][2] + '<br/>' +
-                '<strong>Монтажник:</strong> ' + tasks_baloons[index][3] + '<br/>',
+                balloonContentBody: '<span>' + tasks_baloons[index][0] + '</span>',
                 clusterCaption: '<span>' + tasks_baloons[index][0] + '</span>'
             };
         },

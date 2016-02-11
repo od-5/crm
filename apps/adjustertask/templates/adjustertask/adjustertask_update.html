@@ -1,4 +1,8 @@
 {% extends 'cabinet_index.html' %}
+{% block extra_js %}
+  <script src="http://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+  {% include 'adjustertask/__include/map-task.html' %}
+{% endblock %}
 {% block content %}
   <div class="container">
     <div class="col-lg-12">
@@ -7,8 +11,20 @@
           <p class="lead text-center remove-bottom">
             Редактирование задачи
           </p>
+          {{ coord }}
         </div>
         <div class="panel-body">
+          <div class="col-lg-12">
+            <div class="add-bottom panel panel-success">
+              <div class="panel-heading js-map-task-heading">
+                Карта монтажных работ <span class="caret"></span>
+              </div>
+              <div class="panel-body js-map-task-body">
+                <div id="tasksMap" style="height: 500px;"></div>
+                <div class="clearfix"></div>
+              </div>
+            </div>
+          </div>
           <div class="col-lg-12">
           {% if error %}
             <div class="alert alert-danger">

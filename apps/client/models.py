@@ -54,6 +54,18 @@ class ClientOrder(models.Model):
         else:
             return u'Заказ на даты %s - <дата окончания не указана> ' % self.date_start
 
+    def delete(self, *args, **kwargs):
+        """
+        При удалении заказа, для всех заказанных поверхностей автоматически устанавливется флаг "Поверхность свободна",
+        т.е. доступна для заказа
+        """
+        if self.clientordersurface_set.all():
+            for c_surface in self.clientordersurface_set.all():
+                surface = Surface.objects.get(pk=c_surface.surface.id)
+                surface.free = True
+                surface.save()
+        super(ClientOrder, self).delete()
+
     def stand_count(self):
         if self.clientordersurface_set.all():
             total = 0
@@ -65,7 +77,7 @@ class ClientOrder(models.Model):
 
     client = models.ForeignKey(to=Client, verbose_name=u'Клиент')
     date_start = models.DateField(verbose_name=u'Дата начала размещения')
-    date_end = models.DateField(verbose_name=u'Дата окончания размещения', blank=True, null=True)
+    date_end = models.DateField(verbose_name=u'Дата окончания размещения')
 
 
 class ClientOrderSurface(models.Model):
@@ -119,22 +131,6 @@ class ClientJournal(models.Model):
     add_cost = models.PositiveIntegerField(verbose_name=u'Наценка, %', blank=True, null=True)
     discount = models.PositiveIntegerField(verbose_name=u'Скидка, %', blank=True, null=True)
     created = models.DateField(auto_now=True, default=datetime.date.today())
-
-
-class ClientSurface(models.Model):
-    class Meta:
-        verbose_name = u'Рекламная поверхность'
-        verbose_name_plural = u'Рекламные поверхности'
-        app_label = 'client'
-        ordering = ['-date_start', ]
-
-    def __unicode__(self):
-        return u'%s %s ' % (self.surface.street.name, self.surface.house_number)
-
-    client = models.ForeignKey(to=Client, verbose_name=u'Клиент')
-    surface = models.ForeignKey(to=Surface, verbose_name=u'Рекламная поверхность')
-    date_start = models.DateField(verbose_name=u'Дата начала размещения')
-    date_end = models.DateField(verbose_name=u'Дата окончания размещения', blank=True, null=True)
 
 
 class ClientMaket(models.Model):

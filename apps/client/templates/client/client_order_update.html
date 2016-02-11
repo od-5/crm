@@ -41,7 +41,7 @@
               <div class="form-group">
                 <div class="col-lg-5"><label for="cos_area">Выберите район:</label></div>
                 <div class="col-lg-7">
-                  <select name="cos_area" id="id_cos_area" class="form-control" data-ajax-url="{% url 'city:get_area_streets' %}">
+                  <select name="cos_area" id="id_cos_area" class="form-control" data-ajax-url="{% url 'city:get_free_area_surface' %}" data-client-order="{{ object.id }}">
                     <option value="">---- выберите район ----</option>
                   {% for area in area_list %}
                     <option value="{{ area.id }}">{{ area.name }}</option>

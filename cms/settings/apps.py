@@ -25,5 +25,6 @@ INSTALLED_APPS = (
     'apps.adjustertask',
     'apps.surface',
     'apps.journal',
+    'apps.manager',
     'django_cleanup',
 )

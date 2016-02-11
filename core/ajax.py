@@ -5,6 +5,7 @@ from apps.city.models import City, Surface, Porch, Area, Street, ManagementCompa
 from core.models import User
 from apps.client.models import Client, ClientMaket, ClientOrder, ClientOrderSurface, ClientJournal
 from apps.adjuster.models import Adjuster, AdjusterTask, AdjusterTaskSurface
+from apps.manager.models import Manager
 
 
 __author__ = 'alexy'
@@ -74,6 +75,10 @@ def ajax_remove_item(request):
             print item
             if model == 'Client':
                 print 'delete client user'
+                user = User.objects.get(pk=item.user.id)
+                user.delete()
+            if model == 'Manager':
+                print 'delete manager user'
                 user = User.objects.get(pk=item.user.id)
                 user.delete()
             if model == 'Adjuster':

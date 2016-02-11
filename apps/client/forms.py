@@ -1,7 +1,7 @@
 # coding=utf-8
 from django import forms
 from apps.city.models import City
-from apps.client.models import Client, ClientSurface, ClientMaket, ClientOrder, ClientJournal
+from apps.client.models import Client, ClientMaket, ClientOrder, ClientJournal
 from core.models import User
 
 __author__ = 'alexy'
@@ -69,17 +69,6 @@ class ClientAddForm(forms.ModelForm):
         if self.request.user and self.request.user.type == 2:
             self.fields['city'].queryset = City.objects.filter(moderator=self.request.user)
 
-
-class ClientSurfaceAddForm(forms.ModelForm):
-    class Meta:
-        model = ClientSurface
-        fields = ('client', 'surface', 'date_start', 'date_end')
-        widgets = {
-            'client': forms.HiddenInput(attrs={'class': 'form-control'}),
-            'surface': forms.Select(attrs={'class': 'form-control'}),
-            'date_start': forms.DateInput(attrs={'class': 'form-control'}),
-            'date_end': forms.DateInput(attrs={'class': 'form-control'}),
-        }
 
 
 class ClientMaketForm(forms.ModelForm):
