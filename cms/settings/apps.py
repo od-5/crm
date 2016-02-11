@@ -26,5 +26,6 @@ INSTALLED_APPS = (
     'apps.surface',
     'apps.journal',
     'apps.manager',
+    'apps.incoming',
     'django_cleanup',
 )

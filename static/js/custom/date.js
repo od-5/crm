@@ -101,4 +101,13 @@ $(function() {
     defaultDate: 1,
     dateFormat: "dd.mm.yy"
   });
+  $("#js-form-incomingtask-add").find('#id_date').datepicker({
+    defaultDate: 1,
+    dateFormat: "dd.mm.yy"
+  });
+  $("#js-form-incomingtask-update").find('#id_date').datepicker({
+    defaultDate: 1,
+    dateFormat: "dd.mm.yy"
+  });
+
 });

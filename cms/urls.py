@@ -23,6 +23,7 @@ urlpatterns = patterns('',
     url(r'^ticket/', include('apps.ticket.urls', namespace='ticket'),),
     url(r'^journal/', include('apps.journal.urls', namespace='journal'),),
     url(r'^manager/', include('apps.manager.urls', namespace='manager'),),
+    url(r'^incoming/', include('apps.incoming.urls', namespace='incoming'),),
     url(r'', include('core.urls')),
 
     url(r'^ckeditor/', include('ckeditor.urls')),

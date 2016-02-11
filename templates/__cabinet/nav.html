@@ -26,6 +26,10 @@
           <ul class="dropdown-menu">
             <li><a href="{% url 'manager:list' %}">Список менеджеров</a></li>
             <li><a href="{% url 'manager:add' %}">Добавить менеджера</a></li>
+            <li><a href="{% url 'incoming:list' %}">Список входящих клиентов</a></li>
+            <li><a href="{% url 'incoming:add' %}">Добавить входящего клиента</a></li>
+            <li><a href="{% url 'incoming:task-list' %}">Список задач по входящим клиентам</a></li>
+            <li><a href="{% url 'incoming:task-add' %}">Добавить задачу по входящим клиентам</a></li>
           </ul>
         </li>
       {% if user.type == 1 %}

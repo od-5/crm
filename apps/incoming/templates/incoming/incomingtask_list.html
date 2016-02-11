@@ -1,0 +1,56 @@
+{% extends 'cabinet_index.html' %}
+{% block content %}
+  <div class="container">
+    <div class="col-lg-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="lead remove-bottom text-center">Входящие клиенты</p>
+        </div>
+        <div class="panel-body">
+          <a href="{% url 'incoming:task-add' %}" class="btn btn-success add-bottom">
+            <span class="glyphicon glyphicon-plus-sign"></span> Добавить задачу по входящему клиенту
+          </a>
+          <form action="" method="GET" role="form" class="form-inline add-bottom">
+            <input type="text" name="name" value="{{ r_name|default:'' }}" class="form-control input-sm" placeholder="Название">
+            <button type="submit" class="btn btn-info btn-sm"> <span class="glyphicon glyphicon-search"></span> Искать</button>
+          </form>
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Тип задачи</th>
+                <th>Менеджер</th>
+                <th>Название</th>
+                <th>Дата</th>
+                <th>&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody class="js-list">
+            {% for object in object_list %}
+              <tr data-id="{{ object.id }}" data-name="{{ object.get_type_display }}" data-model="IncomingTask" id="id_Incomingtask_{{ object.id }}">
+{#                <td><a href="{% url 'incoming:task_update' object.id %}"> {{ object.name|default:'' }}</a></td>#}
+                <td><a href="{% url 'incoming:task-update' object.id %}"> {{ object.get_type_display|default:'' }}</a></td>
+                <td>{{ object.manager|default:'Не указано' }}</td>
+                <td>{{ object.name|default:'Не указано' }}</td>
+                <td>{{ object.date|default:'Не указано' }}</td>
+                <td>
+                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-IncomingTask-{{ object.id }}" class="btn btn-danger js-ajax-remove-btn">
+                    <span class="glyphicon glyphicon-remove"></span> Удалить
+                  </a>
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="5">
+                  <p class="alert alert-info">Задач по входящим клиентам не найдено</p>
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+          {% include '__includes/pagination.html' %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% include '__modal/js_ajax_remove_form.html' %}
+{% endblock %}
