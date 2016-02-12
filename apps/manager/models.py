@@ -19,4 +19,4 @@ class Manager(models.Model):
         return reverse('manager:update', args=(self.pk, ))
 
     user = models.OneToOneField(to=User, verbose_name=u'Пользователь')
-    # moderator = models.ForeignKey(to=User, verbose_name=u'Модератор', related_name='moderator')
+    moderator = models.ForeignKey(to=User, verbose_name=u'Модератор', related_name='moderator')
