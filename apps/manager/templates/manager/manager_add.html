@@ -10,7 +10,7 @@
         </div>
         <div class="panel-body">
           <div class="col-lg-6">
-            <form action="" role="form" class="js-form-manager-add" method="post">
+            <form action="" role="form" id="js-form-manager-add" method="post">
               {% csrf_token %}
               <div class="form-group {% if user.type == 2 %}hide{% endif %}">
                 <div class="col-lg-5">{{ m_form.moderator.label_tag }}</div>

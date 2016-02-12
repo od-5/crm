@@ -965,5 +965,81 @@ $(function() {
     }
   });
 
+  // Валидация формы добавления задачи по входящему клиенту
+  $('#js-form-incomingtask-add').validate({
+    rules: {
+      manager: {
+        required: true
+      },
+      incomingclient: {
+        required: true
+      },
+      type: {
+        required: true
+      },
+      date: {
+        required: true
+      }
+    }
+  });
+  // Валидация формы редактирования задачи по входящему клиенту
+  $('#js-form-incomingtask-update').validate({
+    rules: {
+      manager: {
+        required: true
+      },
+      incomingclient: {
+        required: true
+      },
+      type: {
+        required: true
+      },
+      date: {
+        required: true
+      }
+    }
+  });
+
+  // Валидация формы дбавления менеджера
+  $('#js-form-manager-add').validate({
+    rules: {
+      moderator: {
+        required: true
+      },
+      email: {
+        required: true
+      },
+      last_name: {
+        required: true
+      },
+      first_name: {
+        required: true
+      },
+      password1: {
+        required: true
+      },
+      password2: {
+        required: true
+      }
+    }
+  });
+  // Валидация формы редактирования менеджера
+  $('#js-form-manager-update').validate({
+    rules: {
+      moderator: {
+        required: true
+      },
+      email: {
+        required: true
+      },
+      last_name: {
+        required: true
+      },
+      first_name: {
+        required: true
+      }
+    }
+  });
+
 
 });

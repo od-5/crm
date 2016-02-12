@@ -11,7 +11,7 @@
             <span class="glyphicon glyphicon-plus-sign"></span> Добавить монтажника
           </a>
           <form action="" class="form-inline add-bottom" method="GET">
-            <select name="city" id="client_city_filter" class="form-control input-sm">
+            <select name="city" class="form-control input-sm">
               <option value="0">Город</option>
               {% for city in city_list %}
                 <option value="{{ city.id }}" {% if city.id == city_id %}selected="selected"{% endif %}>{{ city }}</option>

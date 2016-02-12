@@ -12,10 +12,16 @@
           </a>
 
           <form action="{% url 'client:list' %}" class="client-search-form" method="GET">
-            <select name="city" id="client_city_filter" class="form-control">
+            <select name="city" class="form-control">
               <option value="0">Город</option>
               {% for city in city_list %}
                 <option value="{{ city.id }}" {% if city.id == city_id %}selected="selected"{% endif %}>{{ city }}</option>
+              {% endfor %}
+            </select>
+            <select name="manager" class="form-control">
+              <option value="0">Менеджер</option>
+              {% for manager in manager_list %}
+                <option value="{{ manager.id }}" {% if manager.id == manager_id %}selected="selected"{% endif %}>{{ manager }}</option>
               {% endfor %}
             </select>
             <input type="text" name="email" class="form-control" placeholder="email">
@@ -29,6 +35,7 @@
                 <th>Юридические наименование</th>
                 <th>Фактичесское наименование</th>
                 <th>Город</th>
+                <th>Менеджер</th>
                 <th>Пользователь</th>
                 <th>Руководитель</th>
                 <th>Должность руководителя</th>
@@ -39,13 +46,14 @@
             {% if object_list %}
               {% for object in object_list %}
               <tr data-id="{{ object.id }}" data-name="{{ object.legal_name }}" data-model="Client" id="id_Client_{{ object.id }}">
-                <td>{{ object.id|default:'--' }}</td>
-                <td><a href="{% url 'client:change' object.pk %}">{{ object.legal_name|default:'--' }}</a></td>
-                <td>{{ object.actual_name|default:'--' }}</td>
-                <td>{{ object.city|default:'--' }}</td>
-                <td>{{ object.user|default:'--' }}</td>
-                <td>{{ object.leader|default:'--' }}</td>
-                <td>{{ object.leader_function|default:'--' }}</td>
+                <td>{{ object.id|default:'Не указано' }}</td>
+                <td><a href="{% url 'client:change' object.pk %}">{{ object.legal_name|default:'Не указано' }}</a></td>
+                <td>{{ object.actual_name|default:'Не указано' }}</td>
+                <td>{{ object.city|default:'Не указано' }}</td>
+                <td>{{ object.manager|default:'Не указано' }}</td>
+                <td>{{ object.user|default:'Не указано' }}</td>
+                <td>{{ object.leader|default:'Не указано' }}</td>
+                <td>{{ object.leader_function|default:'Не указано' }}</td>
                 <td>
                   <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ object.id }}" class="btn btn-danger js-ajax-remove-btn">
                     Удалить

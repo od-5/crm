@@ -6,6 +6,7 @@ from django.db import models
 from apps.city.models import City, Surface
 from core.files import upload_to
 from core.models import User
+from apps.manager.models import Manager
 
 __author__ = 'alexy'
 
@@ -21,6 +22,7 @@ class Client(models.Model):
 
     user = models.OneToOneField(to=User, verbose_name=u'Пользователь')
     city = models.ForeignKey(to=City, verbose_name=u'Город')
+    manager = models.ForeignKey(to=Manager, verbose_name=u'Менеджер', blank=True, null=True)
     legal_name = models.CharField(max_length=256, blank=True, null=True, verbose_name=u'Юридическое название')
     actual_name = models.CharField(max_length=256, blank=True, null=True, verbose_name=u'Фактичексое название')
     inn = models.CharField(max_length=50, blank=True, null=True, verbose_name=u'ИНН')

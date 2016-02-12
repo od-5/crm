@@ -109,5 +109,9 @@ $(function() {
     defaultDate: 1,
     dateFormat: "dd.mm.yy"
   });
+  $("#js-incomingtask-search-form").find('#id_date').datepicker({
+    defaultDate: 1,
+    dateFormat: "dd.mm.yy"
+  });
 
 });

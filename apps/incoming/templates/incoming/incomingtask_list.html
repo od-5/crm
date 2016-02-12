@@ -10,8 +10,9 @@
           <a href="{% url 'incoming:task-add' %}" class="btn btn-success add-bottom">
             <span class="glyphicon glyphicon-plus-sign"></span> Добавить задачу по входящему клиенту
           </a>
-          <form action="" method="GET" role="form" class="form-inline add-bottom">
+          <form action="" method="GET" role="form" id="js-incomingtask-search-form" class="form-inline add-bottom">
             <input type="text" name="name" value="{{ r_name|default:'' }}" class="form-control input-sm" placeholder="Название">
+            <input type="text" name="date" id="id_date" value="{{ r_date|default:'' }}" class="form-control input-sm" placeholder="Дата">
             <button type="submit" class="btn btn-info btn-sm"> <span class="glyphicon glyphicon-search"></span> Искать</button>
           </form>
           <table class="table table-hover">

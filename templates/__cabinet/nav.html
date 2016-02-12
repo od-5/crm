@@ -24,8 +24,10 @@
         <li class="dropdown">
           <a href="{% url 'manager:list' %}" class="dropdown-toggle" data-toggle="dropdown">CRM <span class="caret"></span></a>
           <ul class="dropdown-menu">
+            {% if user.type != 5 %}
             <li><a href="{% url 'manager:list' %}">Список менеджеров</a></li>
             <li><a href="{% url 'manager:add' %}">Добавить менеджера</a></li>
+            {% endif %}
             <li><a href="{% url 'incoming:list' %}">Список входящих клиентов</a></li>
             <li><a href="{% url 'incoming:add' %}">Добавить входящего клиента</a></li>
             <li><a href="{% url 'incoming:task-list' %}">Список задач по входящим клиентам</a></li>
@@ -52,7 +54,7 @@
           </ul>
         </li>
       {% endif %}
-
+      {% if user.type != 5 %}
         <li class="dropdown">
           <a href="{% url 'city:list' %}" class="dropdown-toggle" data-toggle="dropdown">Города <span class="caret"></span></a>
           <ul class="dropdown-menu">
@@ -63,7 +65,8 @@
 
           </ul>
         </li>
-
+      {% endif %}
+      {% if user.type != 5 %}
         <li class="dropdown">
           <a href="{% url 'surface:list' %}" class="dropdown-toggle" data-toggle="dropdown">Поверхности <span class="caret"></span></a>
           <ul class="dropdown-menu">
@@ -73,6 +76,7 @@
             <li><a href="{% url 'city:management-company-add' %}">Добавить управляющую компанию</a></li>
           </ul>
         </li>
+      {% endif %}
         <li class="dropdown">
           <a href="{% url 'client:list' %}" class="dropdown-toggle" data-toggle="dropdown">Клиенты <span class="caret"></span></a>
           <ul class="dropdown-menu">
@@ -81,6 +85,7 @@
             <li><a href="{% url 'journal:list' %}">Журнал покупок</a></li>
           </ul>
         </li>
+      {% if user.type != 5 %}
         <li class="dropdown">
           <a href="{% url 'adjuster:list' %}" class="dropdown-toggle" data-toggle="dropdown">Монтажники <span class="caret"></span></a>
           <ul class="dropdown-menu">
@@ -91,6 +96,7 @@
             <li><a href="{% url 'adjustertask:archive' %}">Архив задач</a></li>
           </ul>
         </li>
+      {% endif %}
       </ul>
 {#      <ul class="nav navbar-nav navbar-right">#}
 {#        <li><a href="{% url 'cabinet:profile' %}"> <span class="glyphicon glyphicon-user"></span> {{ user }} </a></li>#}

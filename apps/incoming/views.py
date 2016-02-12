@@ -2,7 +2,7 @@
 import datetime
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 import xlwt
-from datetime import date
+from datetime import date, datetime
 from annoying.decorators import ajax_request
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
@@ -61,6 +61,7 @@ class IncomingClientListView(ListView):
 
 def incomingclient_add(request):
     context = {}
+    initial = {}
     user = request.user
     if user.type == 1:
         manager_qs = Manager.objects.all()
@@ -69,10 +70,11 @@ def incomingclient_add(request):
         manager_qs = Manager.objects.filter(moderator=user)
         city_qs = City.objects.filter(moderator=user)
     elif user.type == 5:
-        manager_qs = Manager.objects.filter(moderator=user.moderator)
-        city_qs = City.objects.filter(moderator=user.moderator)
+        user_manager = Manager.objects.get(user=user)
+        manager_qs = Manager.objects.filter(moderator=user_manager.moderator)
+        city_qs = City.objects.filter(moderator=user_manager.moderator)
         initial = {
-            'manager': user
+            'manager': user_manager
         }
     else:
         manager_qs = None
@@ -88,7 +90,7 @@ def incomingclient_add(request):
                 'error': u'Проверьте правильность ввода полей'
             })
     else:
-        form = IncomingClientForm()
+        form = IncomingClientForm(initial=initial)
     form.fields['manager'].queryset = manager_qs
     form.fields['city'].queryset = city_qs
     context.update({
@@ -154,6 +156,8 @@ class IncomingTaskListView(ListView):
             qs = None
         if self.request.GET.get('name'):
             qs = qs.filter(incomingclient__name__icontains=self.request.GET.get('name'))
+        if self.request.GET.get('date'):
+            qs = qs.filter(date__gte=datetime.strptime(self.request.GET.get('date'), '%d.%m.%Y'))
         return qs
 
     def get_context_data(self, **kwargs):
@@ -162,12 +166,16 @@ class IncomingTaskListView(ListView):
             context.update({
                 'r_name': self.request.GET.get('name')
             })
-
+        if self.request.GET.get('date'):
+            context.update({
+                'r_date': self.request.GET.get('date')
+            })
         return context
 
 
 def incomingtask_add(request):
     context = {}
+    initial = {}
     user = request.user
     if user.type == 1:
         manager_qs = Manager.objects.all()

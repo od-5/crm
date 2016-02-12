@@ -13,6 +13,7 @@ from django.views.generic import ListView
 from apps.city.models import City, Surface
 from apps.client.forms import ClientUpdateForm, ClientAddForm, ClientMaketForm, ClientOrderForm, \
     ClientJournalForm
+from apps.manager.models import Manager
 from core.forms import UserAddForm, UserUpdateForm
 from .models import Client, ClientMaket, ClientOrder, ClientOrderSurface, ClientJournal
 
@@ -21,6 +22,7 @@ __author__ = 'alexy'
 
 def client_add(request):
     context = {}
+    user = request.user
     if request.method == "POST":
         user_form = UserAddForm(request.POST)
         client_form = ClientAddForm(request.POST, request=request)
@@ -39,6 +41,8 @@ def client_add(request):
     else:
         user_form = UserAddForm()
         client_form = ClientAddForm(request=request)
+    if user.type == 2:
+        client_form.fields['manager'].queryset = Manager.objects.filter(moderator=user)
     context.update({
         'user_form': user_form,
         'client_form': client_form
@@ -51,38 +55,57 @@ class ClientListView(ListView):
     paginate_by = 25
 
     def get_queryset(self):
-        user_id = self.request.user.id
-        if self.request.user.type == 1:
+        # todo: менеджер(user.type=5) должен видеть список только своих клиентов
+        user = self.request.user
+        if user.type == 1:
             qs = Client.objects.all()
-        elif self.request.user.type == 2:
-            qs = Client.objects.filter(city__moderator=user_id)
+        elif user.type == 2:
+            qs = Client.objects.filter(city__moderator=user)
+        elif user.type == 5:
+            qs = Client.objects.filter(manager=user)
         else:
             qs = None
-        queryset = qs
         if self.request.GET.get('email'):
-            queryset = qs.filter(user__email=self.request.GET.get('email'))
-        elif self.request.GET.get('legal_name'):
-            queryset = qs.filter(legal_name=self.request.GET.get('legal_name'))
-        else:
-            if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
-                queryset = qs.filter(city__id=int(self.request.GET.get('city')))
-        return queryset
+            qs = qs.filter(user__email=self.request.GET.get('email'))
+        if self.request.GET.get('legal_name'):
+            qs = qs.filter(legal_name=self.request.GET.get('legal_name'))
+        if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
+            qs = qs.filter(city__id=int(self.request.GET.get('city')))
+        if self.request.GET.get('manager'):
+            qs = qs.filter(manager__id=int(self.request.GET.get('manager')))
+        return qs
 
     def get_context_data(self, **kwargs):
         context = super(ClientListView, self).get_context_data(**kwargs)
-        user_id = self.request.user.id
-        if self.request.user.type == 1:
+        user = self.request.user
+        if user.type == 1:
             city_qs = City.objects.all()
-        elif self.request.user.type == 2:
-            city_qs = City.objects.filter(moderator=user_id)
+            manager_qs = Manager.objects.all()
+        elif user.type == 2:
+            city_qs = City.objects.filter(moderator=user)
+            manager_qs = Manager.objects.filter(moderator=user)
         else:
             city_qs = None
+            manager_qs = None
         context.update({
-            'city_list': city_qs
+            'city_list': city_qs,
+            'manager_list': manager_qs
         })
         if self.request.GET.get('city'):
             context.update({
                 'city_id': int(self.request.GET.get('city'))
+            })
+        if self.request.GET.get('manager'):
+            context.update({
+                'manager_id': int(self.request.GET.get('manager'))
+            })
+        if self.request.GET.get('email'):
+            context.update({
+                'r_email': self.request.GET.get('email')
+            })
+        if self.request.GET.get('legal_name'):
+            context.update({
+                'r_legal_name': self.request.GET.get('legal_name')
             })
         return context
 
@@ -113,7 +136,8 @@ def client_update(request, pk):
     else:
         user_form = UserUpdateForm(instance=user)
         client_form = ClientUpdateForm(request=request, instance=client)
-
+    if user.type == 2:
+        client_form.fields['manager'].queryset = Manager.objects.filter(moderator=user)
     context.update({
         'success': success_msg,
         'error': error_msg,

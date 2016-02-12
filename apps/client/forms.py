@@ -45,6 +45,7 @@ class ClientAddForm(forms.ModelForm):
         exclude = ['user', ]
         widgets = {
             'city': forms.Select(attrs={'class': 'form-control'}),
+            'manager': forms.Select(attrs={'class': 'form-control'}),
             'legal_name': forms.TextInput(attrs={'class': 'form-control'}),
             'actual_name': forms.TextInput(attrs={'class': 'form-control'}),
             'inn': forms.TextInput(attrs={'class': 'form-control'}),
@@ -68,7 +69,6 @@ class ClientAddForm(forms.ModelForm):
         super(ClientAddForm, self).__init__(*args, **kwargs)
         if self.request.user and self.request.user.type == 2:
             self.fields['city'].queryset = City.objects.filter(moderator=self.request.user)
-
 
 
 class ClientMaketForm(forms.ModelForm):
