@@ -18,12 +18,19 @@
             <input type="text" name="date_s" value="" id="js-journal-filter-date_s" class="form-control input-sm" placeholder="Дата от">
             <input type="text" name="date_e" value="" id="js-journal-filter-date_e" class="form-control input-sm" placeholder="Дата до">
             <input type="text" name="legal_name" value="" class="form-control input-sm" placeholder="Юридическое название">
+            <select name="manager" id="" class="form-control input-sm">
+              <option value="">Менеджер</option>
+              {% for manager in manager_list %}
+              <option value="{{ manager.id }}" {% if manager.id == r_manager %}selected="selected"{% endif %}>{{ manager.user.get_full_name }}</option>
+              {% endfor %}
+            </select>
             <button type="submit" class="btn btn-info btn-sm"> <span class="glyphicon glyphicon-search"></span> Искать</button>
           </form>
           <table class="table table-hover">
             <thead>
               <tr>
                 <th>Юридическое название</th>
+                <th>Менеджер</th>
                 <th>Заказ</th>
                 <th>Цена за стенд, руб</th>
                 <th>Наценка, %</th>
@@ -38,6 +45,7 @@
               {% for item in object_list %}
               <tr data-id="{{ item.id }}" data-name="{{ item }}" data-model="ClientJournal" id="id_ClientJournal_{{ item.id }}">
                 <td>{{ item.client.legal_name|default:'Не указано' }}</td>
+                <td>{{ item.client.manager|default:'Не указано' }}</td>
                 <td>{{ item.clientorder|default:'Не указано' }}</td>
                 <td>{{ item.cost|default:'Не указано' }}</td>
                 <td>{{ item.add_cost|default:'Не указано' }}</td>

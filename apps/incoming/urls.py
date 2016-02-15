@@ -1,6 +1,7 @@
 # coding=utf-8
 from django.conf.urls import patterns, url
 from .views import IncomingClientListView, IncomingTaskListView
+from .ajax import reassign_manager
 
 __author__ = 'alexy'
 
@@ -12,5 +13,6 @@ urlpatterns = patterns(
     url(r'^task/$', IncomingTaskListView.as_view(), name='task-list'),
     url(r'^task/add/$', 'incomingtask_add', name='task-add'),
     url(r'^task/(?P<pk>\d+)/$', 'incomingtask_update', name='task-update'),
+    url(r'^reassign-manager/$', reassign_manager, name='reassign-manager'),
 )
 

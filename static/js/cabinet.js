@@ -1041,5 +1041,24 @@ $(function() {
     }
   });
 
+//  модальное окно переназначения менеджера в crm
+  $('#js-reassign-manager').fancybox();
+
+  $('#js-reassign-manager').find('input[type="submit"]').click(function(){
+    $.fancybox.close();
+  });
+  $('.js-modal-update-street-form').ajaxForm({
+    success: function(data){
+      if (data.success) {
+        $.notify('Название улицы было изменено', 'success');
+        console.log(data.name);
+        $('td[data-id='+data.id+']').text(data.name);
+        $('tr[data-id='+data.id+']').attr('data-name', data.name);
+      } else {
+        $.notify('Название улицы не может быть пустым', 'error');
+      }
+      $('.js-modal-update-street-form').resetForm();
+    }
+  });
 
 });

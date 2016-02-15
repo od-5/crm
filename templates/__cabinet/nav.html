@@ -2,7 +2,12 @@
   <div class="welcome">
     <div class="col-lg-6">
       <div class="navbar-header">
-        <a href="{% url 'cabinet:cabinet' %}" class="navbar-brand">Контроль рекламных поверхностей</a>
+{#        <a href="{% url 'cabinet:cabinet' %}" class="navbar-brand">#}
+{#          Контроль рекламных поверхностей#}
+{#        </a>#}
+        <a href="{% url 'cabinet:cabinet' %}" style="display: block">
+          <img src="{{ STATIC_URL }}img/banner.jpg" alt="">
+        </a>
       </div>
     </div>
     <div class="col-lg-6 text-right">

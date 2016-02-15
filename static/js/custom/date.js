@@ -109,7 +109,11 @@ $(function() {
     defaultDate: 1,
     dateFormat: "dd.mm.yy"
   });
-  $("#js-incomingtask-search-form").find('#id_date').datepicker({
+  $("#js-incomingtask-search-form").find('#id_date_s').datepicker({
+    defaultDate: 1,
+    dateFormat: "dd.mm.yy"
+  });
+  $("#js-incomingtask-search-form").find('#id_date_e').datepicker({
     defaultDate: 1,
     dateFormat: "dd.mm.yy"
   });

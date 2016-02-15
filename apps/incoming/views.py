@@ -9,6 +9,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView
+from django.utils import timezone
 from apps.city.models import City
 from apps.manager.models import Manager
 from core.forms import UserAddForm, UserUpdateForm
@@ -56,6 +57,7 @@ class IncomingClientListView(ListView):
             context.update({
                 'r_phone': self.request.GET.get('phone')
             })
+        user = self.request.user
         return context
 
 
@@ -146,6 +148,7 @@ class IncomingTaskListView(ListView):
 
     def get_queryset(self):
         user = self.request.user
+
         if user.type == 1:
             qs = IncomingTask.objects.all()
         elif user.type == 2:
@@ -154,10 +157,22 @@ class IncomingTaskListView(ListView):
             qs = IncomingTask.objects.filter(manager=user)
         else:
             qs = None
-        if self.request.GET.get('name'):
-            qs = qs.filter(incomingclient__name__icontains=self.request.GET.get('name'))
-        if self.request.GET.get('date'):
-            qs = qs.filter(date__gte=datetime.strptime(self.request.GET.get('date'), '%d.%m.%Y'))
+        r_name = self.request.GET.get('name')
+        r_date_s = self.request.GET.get('date_s')
+        r_date_e = self.request.GET.get('date_e')
+        r_all = self.request.GET.get('all')
+        if not r_name and not r_date_s and not r_date_e and not r_all:
+            qs = qs.filter(date=timezone.localtime(timezone.now()))
+            print 'TODAY'
+        else:
+            if r_name:
+                qs = qs.filter(incomingclient__name__icontains=r_name)
+            if r_date_s:
+                qs = qs.filter(date__gte=datetime.strptime(r_date_s, '%d.%m.%Y'))
+            if r_date_e:
+                qs = qs.filter(date__lte=datetime.strptime(r_date_e, '%d.%m.%Y'))
+            print "FILTERED INPUT"
+
         return qs
 
     def get_context_data(self, **kwargs):
@@ -166,9 +181,17 @@ class IncomingTaskListView(ListView):
             context.update({
                 'r_name': self.request.GET.get('name')
             })
-        if self.request.GET.get('date'):
+        if self.request.GET.get('date_s'):
             context.update({
-                'r_date': self.request.GET.get('date')
+                'r_date_s': self.request.GET.get('date_s')
+            })
+        if self.request.GET.get('date_e'):
+            context.update({
+                'r_date_e': self.request.GET.get('date_e')
+            })
+        if self.request.GET.get('all'):
+            context.update({
+                'show_all': True
             })
         return context
 

@@ -39,7 +39,7 @@ class IncomingTask(models.Model):
         app_label = 'incoming'
 
     def __unicode__(self):
-        return self.get_type_display
+        return self.get_type_display()
 
     def get_absolute_url(self):
         return reverse('incoming:task-update', args=(self.pk, ))
@@ -51,8 +51,15 @@ class IncomingTask(models.Model):
         (3, u'Тип задачи 1'),
     )
 
+    TASK_STATUS = (
+        (0, u'В процессе'),
+        (1, u'Сделано'),
+        (2, u'Продажа - перенесён в базу обработки'),
+    )
+
     manager = models.ForeignKey(to=Manager, verbose_name=u'Менеджер')
     incomingclient = models.ForeignKey(to=IncomingClient, verbose_name=u'Входящий клиент')
     type = models.PositiveIntegerField(choices=TASK_TYPE_CHOICES, verbose_name=u'Тип задачи')
     date = models.DateField(verbose_name=u'Дата')
     comment = models.TextField(verbose_name=u'Комментарий', blank=True, null=True)
+    status = models.PositiveIntegerField(choices=TASK_STATUS, default=0, verbose_name=u'Статус')

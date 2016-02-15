@@ -42,6 +42,12 @@
                 {{ form.comment.errors }}
                 <div class="clearfix"></div>
               </div>
+              <div class="form-group">
+                <div class="col-lg-5"> {{ form.status.label_tag }} </div>
+                <div class="col-lg-7"> {{ form.status }} </div>
+                {{ form.status.errors }}
+                <div class="clearfix"></div>
+              </div>
               <div class="text-center">
                 <button type="submit" class="btn btn-default">Сохранить</button>
               </div>

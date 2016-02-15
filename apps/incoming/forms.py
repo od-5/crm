@@ -24,6 +24,15 @@ class IncomingClientForm(forms.ModelForm):
             'leader': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
+    # todo: сделать проверку на уникальнось комбинации data[name] и data[city]
+    def clean_name(self):
+        data = self.cleaned_data
+        try:
+            IncomingClient.objects.get(name=data['name'])
+        except IncomingClient.DoesNotExist:
+            return data['name']
+        raise forms.ValidationError(u'Клиент с таким названием уже есть в системе')
+
 
 class IncomingTaskForm(forms.ModelForm):
     class Meta:
@@ -35,5 +44,5 @@ class IncomingTaskForm(forms.ModelForm):
             'type': forms.Select(attrs={'class': 'form-control'}),
             'date': forms.DateInput(attrs={'class': 'form-control'}),
             'comment': forms.Textarea(attrs={'class': 'form-control', 'placeholder': u'Текст комментария к задаче'}),
+            'status': forms.Select(attrs={'class': 'form-control'})
         }
-
