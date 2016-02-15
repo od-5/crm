@@ -31,12 +31,14 @@
           <ul class="dropdown-menu">
             {% if user.type != 5 %}
             <li><a href="{% url 'manager:list' %}">Список менеджеров</a></li>
-            <li><a href="{% url 'manager:add' %}">Добавить менеджера</a></li>
+            <li><a href="{% url 'manager:add' %}"><span class="glyphicon glyphicon-plus-sign"></span> Добавить менеджера</a></li>
             {% endif %}
+            <li class="divider"></li>
             <li><a href="{% url 'incoming:list' %}">Список входящих клиентов</a></li>
-            <li><a href="{% url 'incoming:add' %}">Добавить входящего клиента</a></li>
+            <li><a href="{% url 'incoming:add' %}"><span class="glyphicon glyphicon-plus-sign"></span> Добавить входящего клиента</a></li>
+            <li class="divider"></li>
             <li><a href="{% url 'incoming:task-list' %}">Список задач по входящим клиентам</a></li>
-            <li><a href="{% url 'incoming:task-add' %}">Добавить задачу по входящим клиентам</a></li>
+            <li><a href="{% url 'incoming:task-add' %}"><span class="glyphicon glyphicon-plus-sign"></span> Добавить задачу по входящим клиентам</a></li>
           </ul>
         </li>
       {% if user.type == 1 %}
@@ -46,7 +48,7 @@
           </a>
           <ul class="dropdown-menu">
             <li><a href="{% url 'administrator:list' %}">Список администраторов</a></li>
-            <li><a href="{% url 'administrator:add' %}">Добавить администратора</a></li>
+            <li><a href="{% url 'administrator:add' %}"><span class="glyphicon glyphicon-plus-sign"></span> Добавить администратора</a></li>
           </ul>
         </li>
         <li class="dropdown">
@@ -55,7 +57,7 @@
           </a>
           <ul class="dropdown-menu">
             <li><a href="{% url 'moderator:list' %}">Список модераторов</a></li>
-            <li><a href="{% url 'moderator:add' %}">Добавить модератора</a></li>
+            <li><a href="{% url 'moderator:add' %}"><span class="glyphicon glyphicon-plus-sign"></span> Добавить модератора</a></li>
           </ul>
         </li>
       {% endif %}
@@ -65,7 +67,7 @@
           <ul class="dropdown-menu">
             <li><a href="{% url 'city:list' %}">Список городов</a></li>
             {% if user.type == 1 %}
-            <li><a href="{% url 'city:add' %}">Добавить город</a></li>
+            <li><a href="{% url 'city:add' %}"><span class="glyphicon glyphicon-plus-sign"></span> Добавить город</a></li>
             {% endif %}
 
           </ul>
@@ -76,9 +78,10 @@
           <a href="{% url 'surface:list' %}" class="dropdown-toggle" data-toggle="dropdown">Поверхности <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="{% url 'surface:list' %}">Список поверхностей</a></li>
-            <li><a href="{% url 'surface:add' %}">Добавить рекламную поверхность</a></li>
+            <li><a href="{% url 'surface:add' %}"><span class="glyphicon glyphicon-plus-sign"></span> Добавить рекламную поверхность</a></li>
+            <li class="divider"></li>
             <li><a href="{% url 'city:management-company' %}">Управляющие компании</a></li>
-            <li><a href="{% url 'city:management-company-add' %}">Добавить управляющую компанию</a></li>
+            <li><a href="{% url 'city:management-company-add' %}"><span class="glyphicon glyphicon-plus-sign"></span> Добавить управляющую компанию</a></li>
           </ul>
         </li>
       {% endif %}
@@ -86,7 +89,8 @@
           <a href="{% url 'client:list' %}" class="dropdown-toggle" data-toggle="dropdown">Клиенты <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="{% url 'client:list' %}">Список клиентов</a></li>
-            <li><a href="{% url 'client:add' %}">Добавить клиента</a></li>
+            <li><a href="{% url 'client:add' %}"><span class="glyphicon glyphicon-plus-sign"></span> Добавить клиента</a></li>
+            <li class="divider"></li>
             <li><a href="{% url 'journal:list' %}">Журнал покупок</a></li>
           </ul>
         </li>
@@ -95,9 +99,10 @@
           <a href="{% url 'adjuster:list' %}" class="dropdown-toggle" data-toggle="dropdown">Монтажники <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="{% url 'adjuster:list' %}">Список монтажников</a></li>
-            <li><a href="{% url 'adjuster:add' %}">Добавить монтажника</a></li>
+            <li><a href="{% url 'adjuster:add' %}"><span class="glyphicon glyphicon-plus-sign"></span> Добавить монтажника</a></li>
+            <li class="divider"></li>
             <li><a href="{% url 'adjustertask:list' %}">Список задач</a></li>
-            <li><a href="{% url 'adjustertask:add' %}">Добавить задачу</a></li>
+            <li><a href="{% url 'adjustertask:add' %}"><span class="glyphicon glyphicon-plus-sign"></span> Добавить задачу</a></li>
             <li><a href="{% url 'adjustertask:archive' %}">Архив задач</a></li>
           </ul>
         </li>
