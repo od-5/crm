@@ -41,10 +41,7 @@
 {#                <td><a href="{% url 'incoming:task_update' object.id %}"> {{ object.name|default:'' }}</a></td>#}
                 <td>{{ object.date|default:'Не указано' }}</td>
                 {% if user.type != 5 %}
-                <td data-manager-id="{{ object.manager.id }}">{{ object.manager|default:'Не указано' }}
-                  <a href="#reassign-manager" id="js-reassign-manager" class="btn btn-warning btn-sm">
-                    <span class="glyphicon glyphicon-refresh"></span> переназначить</a>
-                </td>
+                <td>{{ object.manager|default:'Не указано' }}</td>
                 {% endif %}
                 <td>{{ object.name|default:'Не указано' }}</td>
                 <td><a href="{% url 'incoming:task-update' object.id %}"> {{ object.get_type_display|default:'' }}</a></td>
@@ -72,18 +69,5 @@
   </div>
   {% include '__modal/js_ajax_remove_form.html' %}
 
-  <div id="reassign-manager" style="display:none; width: 300px; height: auto;">
-    <p class="text-center lead">Переназначение менеджера</p>
-    <form role="form">
-      <label for="manager">Текущий менеджер</label>
-      <input type="text" name="manager" class="form-control" placeholder="менеджер" disabled>
-      <label for="new_manager">Новый менеджер</label>
-      <select name="new_manager" id="" class="form-control add-bottom">
-        <option value="0">Менеджер 1</option>
-        <option value="1">Менеджер 2</option>
-        <option value="2">Менеджер 3</option>
-      </select>
-      <input type="submit" class="btn btn-success" value="Переназначить">
-    </form>
-  </div>
+
 {% endblock %}

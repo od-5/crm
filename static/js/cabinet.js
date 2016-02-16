@@ -1042,22 +1042,63 @@ $(function() {
   });
 
 //  модальное окно переназначения менеджера в crm
-  $('#js-reassign-manager').fancybox();
+  var reassign_manager_form = $('#js-reassign-manager-form');
+  $('#js-reassign-manager').fancybox({
+    afterClose: function () {
+      $('#js-reassign-manager-form').resetForm();
+    },
+    beforeLoad: function () {
+      var item_id = '#' + this.element[0].id;
+      var item = $(item_id);
+      var manager_name = item.parents('td').data('manager-name');
+      var manager_id = item.parents('td').data('manager-id');
+      var client = item.parents('tr').data('id');
+      reassign_manager_form.find('input[name=manager_name]').val(manager_name);
+      reassign_manager_form.find('input[name=manager]').val(manager_id);
+      reassign_manager_form.find('input[name=incomingclient]').val(client);
+      $.ajax({
+        type: "GET",
+        data: {
+          manager: item.parents('td').data('manager-id')
+        },
+        url: item.parents('td').data('url')
+      }).done(function(data) {
+        var manager_list = data.manager_list;
+        var manager_list_selector = $('#js-manager-list');
+        manager_list_selector.find('option').remove();
+        manager_list_selector.append($("<option value selected='selected'>---------</option>"));
+        for (var i = 0; i < manager_list.length; i++) {
+          manager_list_selector.append($("<option/>", {
+              value: manager_list[i]['id'],
+              text: manager_list[i]['name']
+          }));
+        }
+      });
+      //$('#js-ajax-item-remove-id').val(item.parents('tr').data('id'));
+      //$('#js-ajax-item-remove-name').text(item.parents('tr').data('name'));
+      //$('#js-ajax-item-remove-model').val(item.parents('tr').data('model'));
+    }
+  });
 
-  $('#js-reassign-manager').find('input[type="submit"]').click(function(){
+  reassign_manager_form.find('input[type="submit"]').click(function(){
     $.fancybox.close();
   });
-  $('.js-modal-update-street-form').ajaxForm({
+  reassign_manager_form.ajaxForm({
     success: function(data){
       if (data.success) {
-        $.notify('Название улицы было изменено', 'success');
+        $.notify('Менеджер был переназначен', 'success');
+        console.log(data.old_id);
+        console.log(data.id);
         console.log(data.name);
-        $('td[data-id='+data.id+']').text(data.name);
-        $('tr[data-id='+data.id+']').attr('data-name', data.name);
+        var td_selector = $('td[data-manager-id="'+data.old_id+'"]');
+        console.log(td_selector);
+        td_selector.find('.js-manager-name').text(data.name);
+        td_selector.attr('data-manager-id', data.id);
+        td_selector.attr('data-manager-name', data.name);
       } else {
-        $.notify('Название улицы не может быть пустым', 'error');
+        $.notify('Произошла ошибка. Возможно вы не выбрали нового менеджера', 'error');
       }
-      $('.js-modal-update-street-form').resetForm();
+      reassign_manager_form.resetForm();
     }
   });
 

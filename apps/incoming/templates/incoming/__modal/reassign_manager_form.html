@@ -1,0 +1,16 @@
+<div id="reassign-manager" style="display:none; width: 300px; height: auto;">
+  <p class="text-center lead">Переназначение менеджера</p>
+  <form action="{% url 'incoming:reassign-manager' %}" role="form" method="get" id="js-reassign-manager-form">
+    <input type="text" name="incomingclient" class="form-control">
+    <label for="manager">Текущий менеджер</label>
+    <input type="text" name="manager_name" class="form-control" disabled>
+    <input type="text" name="manager" class="form-control">
+    <label for="new_manager">Новый менеджер</label>
+    <select name="new_manager" id="js-manager-list" class="form-control add-bottom">
+      <option value="0">Менеджер 1</option>
+      <option value="1">Менеджер 2</option>
+      <option value="2">Менеджер 3</option>
+    </select>
+    <input type="submit" class="btn btn-success" value="Переназначить">
+  </form>
+</div>

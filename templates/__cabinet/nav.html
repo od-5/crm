@@ -1,6 +1,6 @@
 <nav class="navbar navbar-default">
   <div class="welcome">
-    <div class="col-lg-6">
+    <div class="col-lg-5">
       <div class="navbar-header">
 {#        <a href="{% url 'cabinet:cabinet' %}" class="navbar-brand">#}
 {#          Контроль рекламных поверхностей#}
@@ -8,13 +8,20 @@
         <a href="{% url 'cabinet:cabinet' %}" style="display: block">
           <img src="{{ STATIC_URL }}img/banner.jpg" alt="">
         </a>
+
       </div>
     </div>
-    <div class="col-lg-6 text-right">
+    <div class="col-lg-3">
+      <img src="{{ STATIC_URL }}img/need_clients.gif" alt="">
+    </div>
+    <div class="col-lg-4 text-right">
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="{% url 'cabinet:profile' %}">Добро пожаловать <span class="glyphicon glyphicon-user"></span> {{ user }} </a></li>
+        <li><a href="{% url 'cabinet:profile' %}"><span class="glyphicon glyphicon-user"></span> {{ user }} </a></li>
         <li><a href="{% url 'cabinet:logout' %}?next={% url 'cabinet:cabinet' %}"><span class="glyphicon glyphicon-log-out"></span> Выход</a></li>
       </ul>
+      <div class="text-center">
+        <img src="{{ STATIC_URL }}img/button_.gif" alt="" style="height: 60px;">
+      </div>
     </div>
     <div class="clearfix"></div>
   </div>
