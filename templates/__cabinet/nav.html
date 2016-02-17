@@ -1,18 +1,16 @@
 <nav class="navbar navbar-default">
   <div class="welcome">
-    <div class="col-lg-5">
-      <div class="navbar-header">
-{#        <a href="{% url 'cabinet:cabinet' %}" class="navbar-brand">#}
-{#          Контроль рекламных поверхностей#}
-{#        </a>#}
-        <a href="{% url 'cabinet:cabinet' %}" style="display: block">
-          <img src="{{ STATIC_URL }}img/banner.jpg" alt="">
-        </a>
-
+    <div class="col-lg-8">
+      <div class="banner-block">
+        <div class="banner-block_logo">
+          <a href="{% url 'cabinet:cabinet' %}">
+            <img src="{{ STATIC_URL }}img/banner.jpg" alt="">
+          </a>
+        </div>
+        <div class="banner-block_client">
+          <img src="{{ STATIC_URL }}img/need_clients.gif" alt="">
+        </div>
       </div>
-    </div>
-    <div class="col-lg-3">
-      <img src="{{ STATIC_URL }}img/need_clients.gif" alt="">
     </div>
     <div class="col-lg-4 text-right">
       <ul class="nav navbar-nav navbar-right">

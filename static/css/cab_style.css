@@ -6264,6 +6264,20 @@ body {
 #js-photo-map-wrapper {
   display: none;
 }
+.banner-block {
+  display: table-row;
+}
+.banner-block img {
+  height: 92px;
+}
+.banner-block_logo {
+  display: table-cell;
+  width: 70%;
+}
+.banner-block_client {
+  display: table-cell;
+  width: 30%;
+}
 .login {
   width: 300px;
   height: 220px;

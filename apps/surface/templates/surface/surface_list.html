@@ -8,14 +8,14 @@
     <div class="col-lg-12">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <p class="lead remove-bottom text-center">Рекламные поверхности</p>
+          <p class="lead remove-bottom text-center">Список поверхностей</p>
         </div>
         <div class="panel-body">
           <a href="{% url 'surface:add' %}" class="btn btn-success add-bottom">
-            <span class="glyphicon glyphicon-plus-sign"></span> Добавить рекламную поверхность
+            <span class="glyphicon glyphicon-plus-sign"></span> Добавить новую поверхность
           </a>
           <div class="panel panel-success">
-            <div class="panel-heading js-show-map">Посмотреть рекламные поверхности на карте <span class="caret"></span></div>
+            <div class="panel-heading js-show-map">Посмотреть поверхности на карте <span class="caret"></span></div>
             <div class="panel-body js-map" data-city="{{ city_list.first }}" data-city-count="{{ city_list.count }}" data-coord-x="{{ city_list.first.coord_x }}" data-coord-y="{{ city_list.first.coord_y }}">
               <div id="surfaceMap" style="height: 500px;"></div>
             </div>
@@ -104,7 +104,7 @@
             {% empty %}
               <tr>
                 <td colspan="6">
-                  <p class="alert alert-info">Рекламных поверхностей нет</p>
+                  <p class="alert alert-info">Поверхностей не найдено</p>
                 </td>
               </tr>
             {% endfor %}
