@@ -4,30 +4,24 @@
     <div class="col-lg-12">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <p class="lead remove-bottom text-center">Входящие клиенты</p>
+          <p class="lead remove-bottom text-center">Журнал клиентов</p>
         </div>
         <div class="panel-body">
           <a href="{% url 'incoming:add' %}" class="btn btn-success add-bottom">
-            <span class="glyphicon glyphicon-plus-sign"></span> Добавить входящего клиента
+            <span class="glyphicon glyphicon-plus-sign"></span> Добавить нового клиента
           </a>
           <form action="" method="GET" role="form" class="form-inline add-bottom">
-            <input type="text" name="email" value="{{ r_email|default:'' }}" class="form-control input-sm" placeholder="e-mail">
             <input type="text" name="name" value="{{ r_name|default:'' }}" class="form-control input-sm" placeholder="Название">
-            <input type="text" name="phone" value="{{ r_phone|default:'' }}" class="form-control input-sm" placeholder="Телефон">
             <button type="submit" class="btn btn-info btn-sm"> <span class="glyphicon glyphicon-search"></span> Искать</button>
           </form>
-          <table class="table table-hover">
+          <table class="table table-hover" id="js-incomingclient-list">
             <thead>
               <tr>
                 <th>Название</th>
                 <th>Деятельность</th>
-                {% if user.type != 5 %}
                 <th>Менеджер</th>
-                {% endif %}
                 <th>Город</th>
-                <th>Телефон</th>
-                <th>e-mail</th>
-                <th>Руководитель</th>
+                <th>&nbsp;</th>
                 <th>&nbsp;</th>
               </tr>
             </thead>
@@ -36,17 +30,17 @@
               <tr data-id="{{ object.id }}" data-name="{{ object.name }}" data-model="IncomingClient" id="id_IncomingClient_{{ object.id }}">
                 <td><a href="{% url 'incoming:update' object.id %}"> {{ object.name|default:'' }}</a></td>
                 <td>{{ object.kind_of_activity|default:'Не указано' }}</td>
-                {% if user.type != 5 %}
                 <td data-manager-id="{{ object.manager.id }}" data-manager-name="{{ object.manager }}" data-url="{% url 'incoming:get_available_manager_list' %}">
                   <span class="js-manager-name">{{ object.manager|default:'Не указано' }}</span>
-                  <a href="#reassign-manager" id="js-reassign-manager" class="btn btn-warning btn-sm">
+                  <a href="#reassign-manager" id="js-reassign-manager-{{ object.id }}" class="js-reassign-manager btn btn-warning btn-sm">
                     <span class="glyphicon glyphicon-refresh"></span> переназначить</a>
                 </td>
-                {% endif %}
                 <td>{{ object.city|default:'Не указано' }}</td>
-                <td>{{ object.phone|default:'Не указано' }}</td>
-                <td>{{ object.email|default:'Не указано' }}</td>
-                <td>{{ object.leader|default:'Не указано' }}</td>
+                <td>
+                  <a href="#incomingclient-contact" data-url="{% url 'incoming:get_contact_list' %}" data-incomingclient="{{ object.id }}" id="js-incomingclient-{{ object.id }}-button" class="btn btn-info btn-sm js-show-incomingclient-contact">
+                    <span class="glyphicon glyphicon-search"></span> Контактные лица
+                  </a>
+                </td>
                 <td>
                   <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-IncomingClient-{{ object.id }}" class="btn btn-danger js-ajax-remove-btn">
                     <span class="glyphicon glyphicon-remove"></span> Удалить
@@ -55,7 +49,7 @@
               </tr>
             {% empty %}
               <tr>
-                <td colspan="5">
+                <td colspan="6">
                   <p class="alert alert-info">Входящих клиентов не найдено</p>
                 </td>
               </tr>
@@ -69,4 +63,24 @@
   </div>
   {% include '__modal/js_ajax_remove_form.html' %}
   {% include 'incoming/__modal/reassign_manager_form.html' %}
+{% endblock %}
+{% block footer %}
+  <div class="bottom-block" id="incomingclient-contact">
+    <p class="lead text-center remove-bottom">Контактные лица</p>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ФИО</th>
+          <th>Должность</th>
+          <th>Телефон</th>
+          <th>e-mail</th>
+        </tr>
+      </thead>
+      <tbody id="js-incomingclient-contact-list">
+      <tr>
+        <td colspan="4">&nbsp;</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
 {% endblock %}

@@ -2,6 +2,7 @@
 from annoying.decorators import ajax_request
 from .models import IncomingClient, IncomingTask
 from apps.manager.models import Manager
+from .models import IncomingClient, IncomingClientManager
 
 __author__ = 'alexy'
 
@@ -14,16 +15,19 @@ def reassign_manager(request):
     incomingclient_id = int(request.GET.get('incomingclient'))
     incomingclient = IncomingClient.objects.get(pk=incomingclient_id)
     tasks = IncomingTask.objects.filter(incomingclient=incomingclient_id)
-    if tasks.count() != 0 :
+    if tasks.count() != 0:
         for task in tasks:
             task.manager = new_manager
             task.save()
 
     incomingclient.manager = new_manager
     incomingclient.save()
+    new_incomingclientmanager = IncomingClientManager(manager=new_manager, incomingclient=incomingclient)
+    new_incomingclientmanager.save()
     return {
         'success': True,
         'old_id': old_id,
+        'incomingclient_id': incomingclient.id,
         'id': new_id,
         'name': incomingclient.manager.user.get_full_name(),
     }
@@ -41,3 +45,25 @@ def get_available_manager_list(request):
     return {
         'manager_list': manager_list
     }
+
+
+@ajax_request
+def get_contact_list(request):
+    contact_list = []
+    incomingclient = IncomingClient.objects.get(pk=int(request.GET.get('incomingclient')))
+    for contact in incomingclient.incomingclientcontact_set.all():
+        contact_list.append({
+            'name': contact.name,
+            'function': contact.function,
+            'phone': contact.phone,
+            'email': contact.email,
+        })
+    if len(contact_list) != 0:
+        return {
+            'contact_list': contact_list
+        }
+    else:
+        return {
+            'nothing': True
+        }
+

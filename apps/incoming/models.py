@@ -19,17 +19,38 @@ class IncomingClient(models.Model):
     def get_absolute_url(self):
         return reverse('incoming:update', args=(self.pk, ))
 
+    # todo: если нужна возможность модератору вести клиентов - manager должен быть null=True
     manager = models.ForeignKey(to=Manager, verbose_name=u'Менеджер')
     name = models.CharField(verbose_name=u'Название', max_length=255)
     city = models.ForeignKey(to=City, verbose_name=u'Город')
     kind_of_activity = models.CharField(verbose_name=u'Вид деятельности', max_length=255, blank=True, null=True)
     actual_address = models.CharField(verbose_name=u'Фактический адрес', max_length=255, blank=True, null=True)
-    phone = models.CharField(verbose_name=u'Телефон', blank=True, null=True, max_length=20)
-    fax = models.CharField(verbose_name=u'Телефон\Факс', blank=True, null=True, max_length=20)
-    mobile_phone = models.CharField(verbose_name=u'Мобильный телефон', blank=True, null=True,  max_length=20)
-    email = models.EmailField(verbose_name=u'Email', blank=True, null=True,  max_length=30)
     site = models.CharField(verbose_name=u'Сайт', blank=True, null=True,  max_length=100)
-    leader = models.CharField(verbose_name=u'ФИО руководителя', blank=True, null=True,  max_length=2550)
+
+
+class IncomingClientManager(models.Model):
+    manager = models.ForeignKey(to=Manager, verbose_name=u'Менеджер')
+    incomingclient = models.ForeignKey(to=IncomingClient, verbose_name=u'Клиент')
+    date = models.DateField(auto_now_add=True, verbose_name=u'Дата назначения')
+
+
+class IncomingClientContact(models.Model):
+    class Meta:
+        verbose_name = u'Контактное лицо'
+        verbose_name_plural = u'Контактные лица'
+        app_label = 'incoming'
+
+    def __unicode__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('incoming:contact-update', args=(self.pk, ))
+
+    incomingclient = models.ForeignKey(to=IncomingClient, verbose_name=u'Клиент')
+    name = models.CharField(verbose_name=u'ФИО', max_length=255)
+    function = models.CharField(verbose_name=u'Должность', max_length=255, blank=True, null=True)
+    phone = models.CharField(verbose_name=u'Телефон', max_length=30, blank=True, null=True)
+    email = models.EmailField(verbose_name=u'e-mail', max_length=50, blank=True, null=True)
 
 
 class IncomingTask(models.Model):

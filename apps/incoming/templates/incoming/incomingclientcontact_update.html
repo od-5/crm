@@ -1,0 +1,55 @@
+{% extends 'cabinet_index.html' %}
+{% block content %}
+  <div class="container">
+    <div class="col-lg-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="lead text-center remove-bottom">
+            Добавление контактного лица клиента {{ object.name }}
+          </p>
+        </div>
+        <div class="panel-body">
+          {% include 'incoming/__include/incoming_menu.html' %}
+          <div class="col-lg-6">
+            <form action="" role="form" class="js-form-incomingclientcontact-add" method="post">
+              {% csrf_token %}
+              <div class="form-group">
+                <div class="col-lg-5"> {{ form.incomingclient.label_tag }} </div>
+                <div class="col-lg-7"> {{ form.incomingclient }} </div>
+                {{ form.incomingclient.errors }}
+                <div class="clearfix"></div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-5"> {{ form.name.label_tag }} </div>
+                <div class="col-lg-7"> {{ form.name }} </div>
+                {{ form.name.errors }}
+                <div class="clearfix"></div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-5"> {{ form.function.label_tag }} </div>
+                <div class="col-lg-7"> {{ form.function }} </div>
+                {{ form.function.errors }}
+                <div class="clearfix"></div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-5"> {{ form.phone.label_tag }} </div>
+                <div class="col-lg-7"> {{ form.phone }} </div>
+                {{ form.phone.errors }}
+                <div class="clearfix"></div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-5"> {{ form.email.label_tag }} </div>
+                <div class="col-lg-7"> {{ form.email }} </div>
+                {{ form.email.errors }}
+                <div class="clearfix"></div>
+              </div>
+              <div class="text-center">
+                <button type="submit" class="btn btn-default">Сохранить изменения</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

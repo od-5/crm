@@ -14,8 +14,8 @@ from apps.city.models import City
 from apps.manager.models import Manager
 from core.forms import UserAddForm, UserUpdateForm
 from core.models import User
-from .models import IncomingClient, IncomingTask
-from .forms import IncomingClientForm, IncomingTaskForm
+from .models import IncomingClient, IncomingTask, IncomingClientContact, IncomingClientManager
+from .forms import IncomingClientAddForm, IncomingClientUpdateForm, IncomingTaskForm, IncomingClientContactForm
 
 __author__ = 'alexy'
 
@@ -35,29 +35,16 @@ class IncomingClientListView(ListView):
             qs = IncomingClient.objects.filter(manager=user)
         else:
             qs = None
-        if self.request.GET.get('email'):
-            qs = qs.filter(email__icontains=self.request.GET.get('email'))
         if self.request.GET.get('name'):
             qs = qs.filter(name__icontains=self.request.GET.get('name'))
-        if self.request.GET.get('phone'):
-            qs = qs.filter(phone__icontains=self.request.GET.get('phone'))
         return qs
 
     def get_context_data(self, **kwargs):
         context = super(IncomingClientListView, self).get_context_data(**kwargs)
-        if self.request.GET.get('email'):
-            context.update({
-                'r_email': self.request.GET.get('email')
-            })
         if self.request.GET.get('name'):
             context.update({
                 'r_name': self.request.GET.get('name')
             })
-        if self.request.GET.get('phone'):
-            context.update({
-                'r_phone': self.request.GET.get('phone')
-            })
-        user = self.request.user
         return context
 
 
@@ -82,17 +69,19 @@ def incomingclient_add(request):
         manager_qs = None
         city_qs = None
     if request.method == "POST":
-        form = IncomingClientForm(request.POST)
+        form = IncomingClientAddForm(request.POST)
         if form.is_valid():
             incoming = form.save(commit=False)
             incoming.save()
+            incomingclientmanager = IncomingClientManager(manager=incoming.manager, incomingclient=incoming)
+            incomingclientmanager.save()
             return HttpResponseRedirect(reverse('incoming:update', args=(incoming.id,)))
         else:
             context.update({
                 'error': u'Проверьте правильность ввода полей'
             })
     else:
-        form = IncomingClientForm(initial=initial)
+        form = IncomingClientAddForm(initial=initial)
     form.fields['manager'].queryset = manager_qs
     form.fields['city'].queryset = city_qs
     context.update({
@@ -120,14 +109,17 @@ def incomingclient_update(request, pk):
         manager_qs = None
         city_qs = None
     if request.method == 'POST':
-        form = IncomingClientForm(request.POST, instance=incomingclient)
+        form = IncomingClientUpdateForm(request.POST, instance=incomingclient)
         if form.is_valid():
-            form.save()
+            incoming = form.save(commit=False)
+            incoming.save()
+            incomingclientmanager = IncomingClientManager(manager=incoming.manager, incomingclient=incoming)
+            incomingclientmanager.save()
             success_msg = u' Изменения успешно сохранены'
         else:
             error_msg = u'Проверьте правильность ввода полей!'
     else:
-        form = IncomingClientForm(instance=incomingclient)
+        form = IncomingClientUpdateForm(instance=incomingclient)
 
     form.fields['manager'].queryset = manager_qs
     form.fields['city'].queryset = city_qs
@@ -139,6 +131,77 @@ def incomingclient_update(request, pk):
         'object': incomingclient,
     })
     return render(request, 'incoming/incoming_update.html', context)
+
+
+def incomingclientcontact_history(request, pk):
+    incomingclient = IncomingClient.objects.get(pk=int(pk))
+    context = {
+        'object': incomingclient,
+        'object_list': incomingclient.incomingclientmanager_set.all()
+    }
+    return render(request, 'incoming/incomingclientcontact_history.html', context)
+
+
+def incomingclientcontact_list(request, pk):
+    incomingclient = IncomingClient.objects.get(pk=int(pk))
+    context = {
+        'object': incomingclient,
+        'object_list': incomingclient.incomingclientcontact_set.all()
+    }
+    return render(request, 'incoming/incomingclientcontact_list.html', context)
+
+
+def incomingclientcontact_add(request, pk):
+    context = {}
+    success_msg = None
+    error_msg = None
+    incomingclient = IncomingClient.objects.get(pk=int(pk))
+    if request.method == 'POST':
+        form = IncomingClientContactForm(request.POST)
+        if form.is_valid():
+            form.save()
+            success_msg = u'Контактное лицо успешно добавлено'
+            return HttpResponseRedirect(reverse('incoming:contact-list', args=(incomingclient.id,)))
+        else:
+            error_msg = u'Проверьте правильность ввода полей!'
+    else:
+        form = IncomingClientContactForm(
+            initial={
+                'incomingclient': incomingclient
+            }
+        )
+    context = {
+        'object': incomingclient,
+        'form': form,
+        'success_msg': success_msg,
+        'error_msg': error_msg
+    }
+    return render(request, 'incoming/incomingclientcontact_add.html', context)
+
+
+def incomingclientcontact_update(request, pk):
+    context = {}
+    success_msg = None
+    error_msg = None
+    contact = IncomingClientContact.objects.get(pk=int(pk))
+    if request.method == 'POST':
+        form = IncomingClientContactForm(request.POST, instance=contact)
+        if form.is_valid():
+            form.save()
+            success_msg = u'Изменения сохранены'
+            return HttpResponseRedirect(reverse('incoming:contact-list', args=(contact.incomingclient.id,)))
+        else:
+            error_msg = u'Проверьте правильность ввода полей!'
+    else:
+        form = IncomingClientContactForm(instance=contact)
+    context = {
+        'contact': contact,
+        'object': contact.incomingclient,
+        'form': form,
+        'success_msg': success_msg,
+        'error_msg': error_msg
+    }
+    return render(request, 'incoming/incomingclientcontact_update.html', context)
 
 
 class IncomingTaskListView(ListView):

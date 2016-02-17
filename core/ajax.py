@@ -6,7 +6,7 @@ from core.models import User
 from apps.client.models import Client, ClientMaket, ClientOrder, ClientOrderSurface, ClientJournal
 from apps.adjuster.models import Adjuster, AdjusterTask, AdjusterTaskSurface
 from apps.manager.models import Manager
-from apps.incoming.models import IncomingClient, IncomingTask
+from apps.incoming.models import IncomingClient, IncomingTask, IncomingClientContact
 
 
 __author__ = 'alexy'

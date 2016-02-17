@@ -1,12 +1,12 @@
 # coding=utf-8
 from django import forms
 from core.models import User
-from .models import IncomingClient, IncomingTask
+from .models import IncomingClient, IncomingTask, IncomingClientContact
 
 __author__ = 'alexy'
 
 
-class IncomingClientForm(forms.ModelForm):
+class IncomingClientAddForm(forms.ModelForm):
     class Meta:
         model = IncomingClient
         fields = '__all__'
@@ -16,12 +16,7 @@ class IncomingClientForm(forms.ModelForm):
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'kind_of_activity': forms.TextInput(attrs={'class': 'form-control'}),
             'actual_address': forms.TextInput(attrs={'class': 'form-control'}),
-            'phone': forms.TextInput(attrs={'class': 'form-control'}),
-            'fax': forms.TextInput(attrs={'class': 'form-control'}),
-            'mobile_phone': forms.TextInput(attrs={'class': 'form-control'}),
-            'email': forms.TextInput(attrs={'class': 'form-control'}),
             'site': forms.TextInput(attrs={'class': 'form-control'}),
-            'leader': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
     # todo: сделать проверку на уникальнось комбинации data[name] и data[city]
@@ -32,6 +27,33 @@ class IncomingClientForm(forms.ModelForm):
         except IncomingClient.DoesNotExist:
             return data['name']
         raise forms.ValidationError(u'Клиент с таким названием уже есть в системе')
+
+
+class IncomingClientUpdateForm(forms.ModelForm):
+    class Meta:
+        model = IncomingClient
+        fields = '__all__'
+        widgets = {
+            'manager': forms.Select(attrs={'class': 'form-control'}),
+            'city': forms.Select(attrs={'class': 'form-control'}),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'kind_of_activity': forms.TextInput(attrs={'class': 'form-control'}),
+            'actual_address': forms.TextInput(attrs={'class': 'form-control'}),
+            'site': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+
+class IncomingClientContactForm(forms.ModelForm):
+    class Meta:
+        model = IncomingClientContact
+        fields = '__all__'
+        widgets = {
+            'incomingclient': forms.Select(attrs={'class': 'form-control'}),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'function': forms.TextInput(attrs={'class': 'form-control'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'})
+        }
 
 
 class IncomingTaskForm(forms.ModelForm):

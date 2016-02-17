@@ -1043,43 +1043,49 @@ $(function() {
 
 //  модальное окно переназначения менеджера в crm
   var reassign_manager_form = $('#js-reassign-manager-form');
-  $('#js-reassign-manager').fancybox({
-    afterClose: function () {
-      $('#js-reassign-manager-form').resetForm();
-    },
-    beforeLoad: function () {
-      var item_id = '#' + this.element[0].id;
-      var item = $(item_id);
-      var manager_name = item.parents('td').data('manager-name');
-      var manager_id = item.parents('td').data('manager-id');
-      var client = item.parents('tr').data('id');
-      reassign_manager_form.find('input[name=manager_name]').val(manager_name);
-      reassign_manager_form.find('input[name=manager]').val(manager_id);
-      reassign_manager_form.find('input[name=incomingclient]').val(client);
-      $.ajax({
-        type: "GET",
-        data: {
-          manager: item.parents('td').data('manager-id')
-        },
-        url: item.parents('td').data('url')
-      }).done(function(data) {
-        var manager_list = data.manager_list;
-        var manager_list_selector = $('#js-manager-list');
-        manager_list_selector.find('option').remove();
-        manager_list_selector.append($("<option value selected='selected'>---------</option>"));
-        for (var i = 0; i < manager_list.length; i++) {
-          manager_list_selector.append($("<option/>", {
+  var reassign_fancy_initial = function() {
+    $('.js-reassign-manager').fancybox({
+      afterClose: function () {
+        $('.js-reassign-manager-form').resetForm();
+      },
+      beforeLoad: function () {
+        var item_id = '#' + this.element[0].id;
+        var item = $(item_id);
+        var manager_name = item.parents('td').attr('data-manager-name');
+        //var manager_name = item.prev('.js-manager-name').text();
+        console.log('Сейчас менеджер: ' + manager_name);
+        var manager_id = item.parents('td').attr('data-manager-id');
+        var client = item.parents('tr').attr('data-id');
+        reassign_manager_form.find('input[name=manager_name]').val(manager_name);
+        reassign_manager_form.find('input[name=manager]').val(manager_id);
+        reassign_manager_form.find('input[name=incomingclient]').val(client);
+        $.ajax({
+          type: "GET",
+          data: {
+            manager: item.parents('td').data('manager-id')
+          },
+          url: item.parents('td').data('url')
+        }).done(function (data) {
+          var manager_list = data.manager_list;
+          var manager_list_selector = $('#js-manager-list');
+          manager_list_selector.find('option').remove();
+          manager_list_selector.append($("<option value selected='selected'>---------</option>"));
+          for (var i = 0; i < manager_list.length; i++) {
+            manager_list_selector.append($("<option/>", {
               value: manager_list[i]['id'],
               text: manager_list[i]['name']
-          }));
-        }
-      });
-      //$('#js-ajax-item-remove-id').val(item.parents('tr').data('id'));
-      //$('#js-ajax-item-remove-name').text(item.parents('tr').data('name'));
-      //$('#js-ajax-item-remove-model').val(item.parents('tr').data('model'));
-    }
+            }));
+          }
+        });
+        //$('#js-ajax-item-remove-id').val(item.parents('tr').data('id'));
+        //$('#js-ajax-item-remove-name').text(item.parents('tr').data('name'));
+        //$('#js-ajax-item-remove-model').val(item.parents('tr').data('model'));
+      }
+    });
+  };
+  $('.js-list').on('click', '.js-reassign-manager', function(){
+    reassign_fancy_initial();
   });
-
   reassign_manager_form.find('input[type="submit"]').click(function(){
     $.fancybox.close();
   });
@@ -1087,19 +1093,65 @@ $(function() {
     success: function(data){
       if (data.success) {
         $.notify('Менеджер был переназначен', 'success');
-        console.log(data.old_id);
-        console.log(data.id);
+        console.log('Старый менеджер' + data.old_id);
+        console.log('новый менеджер' + data.id);
         console.log(data.name);
-        var td_selector = $('td[data-manager-id="'+data.old_id+'"]');
+        var td_selector = $('tr[data-id="' + data.incomingclient_id +'"] td[data-manager-id="'+data.old_id+'"]');
         console.log(td_selector);
         td_selector.find('.js-manager-name').text(data.name);
         td_selector.attr('data-manager-id', data.id);
         td_selector.attr('data-manager-name', data.name);
+
       } else {
         $.notify('Произошла ошибка. Возможно вы не выбрали нового менеджера', 'error');
       }
       reassign_manager_form.resetForm();
+      //reassign_fancy_initial();
     }
   });
+
+  //$('.js-show-incomingclient-contact').fancybox();
+  $('.js-show-incomingclient-contact').fancybox({
+      afterClose: function () {
+        $('#js-incomingclient-contact-list').html('');
+      },
+      beforeLoad: function () {
+        var item_id = '#' + this.element[0].id;
+        var item = $(item_id);
+        console.log(item.data('incomingclient'));
+
+        $.ajax({
+          type: "GET",
+          url: item.data('url'),
+          data: {
+            incomingclient: item.data('incomingclient')
+          }
+        }).done(function (data) {
+          if (data.contact_list) {
+            var contact_list = data.contact_list;
+            //var manager_list_selector = $('#js-manager-list');
+            //manager_list_selector.find('option').remove();
+            //manager_list_selector.append($("<option value selected='selected'>---------</option>"));
+            for (var i = 0; i < contact_list.length; i++) {
+              $('#js-incomingclient-contact-list').append(
+                '<tr>' +
+                '<td>' + contact_list[i]['name'] +
+                '</td><td>' + contact_list[i]['name'] +
+                '</td><td>' + contact_list[i]['phone'] +
+                '</td><td>' + contact_list[i]['email'] +
+                '</td>' +
+                '</tr>'
+              );
+              console.log(contact_list[i]['name']),
+                console.log(contact_list[i]['name']),
+                console.log(contact_list[i]['phone']),
+                console.log(contact_list[i]['email'])
+            }
+          } else {
+            $('#js-incomingclient-contact-list').html('<tr><td colspan="4">Контактных лиц не найдено</td></tr>');
+          }
+        });
+      }
+    });
 
 });

@@ -1,0 +1,11 @@
+<div class="div add-bottom">
+  <a href="{% url 'incoming:update' object.id %}" class="btn btn-default">
+    <span class="glyphicon glyphicon-edit"></span> Данные клиента
+  </a>
+  <a href="{% url 'incoming:contact-list' object.id %}" class="btn btn-default">
+    <span class="glyphicon glyphicon-user"></span> Контактные лица
+  </a>
+  <a href="{% url 'incoming:history' object.id %}" class="btn btn-default">
+    <span class="glyphicon glyphicon-briefcase"></span> Менеджер - история
+  </a>
+</div>

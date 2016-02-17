@@ -1,0 +1,53 @@
+{% extends 'cabinet_index.html' %}
+{% block content %}
+  <div class="container">
+    <div class="col-lg-12">
+      {% include 'incoming/__include/incoming_menu.html' %}
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="lead text-center remove-bottom">Контактные лица клиента {{ object.name }}</p>
+        </div>
+        <div class="panel-body">
+          <a href="{% url 'incoming:contact-add' object.id %}" class="btn btn-success add-bottom">
+            <span class="glyphicon glyphicon-plus-sign"></span> Добавить новое контактное лицо клиента
+          </a>
+          <div class="col-lg-12">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>ФИО</th>
+                  <th>Должность</th>
+                  <th>Телефон</th>
+                  <th>e-mail</th>
+                  <th>&nbsp;</th>
+                </tr>
+              </thead>
+              <tbody class="js-list">
+              {% for contact in object_list %}
+                <tr data-id="{{ contact.id }}" data-name="{{ contact.name }}" data-model="IncomingClientContact" id="id_IncomingClientContact_{{ contact.id }}">
+                  <td><a href="{{ contact.get_absolute_url }}">{{ contact.name|default:'Не указано' }}</a></td>
+                  <td>{{ contact.function|default:'Не указано' }}</td>
+                  <td>{{ contact.phone|default:'Не указано' }}</td>
+                  <td>{{ contact.email|default:'Не указано' }}</td>
+                  <td>
+                    <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-IncomingClientContact-{{ contact.id }}" class="btn btn-danger js-ajax-remove-btn">
+                      <span class="glyphicon glyphicon-remove"></span> Удалить
+                    </a>
+                  </td>
+                </tr>
+              {% empty %}
+                <tr>
+                  <td colspan="5">
+                    <p class="alert alert-info">Контактных лиц не найдено</p>
+                  </td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% include '__modal/js_ajax_remove_form.html' %}
+{% endblock %}
