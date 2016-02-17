@@ -1,0 +1,12 @@
+.dashboard__link {
+  display: block;
+  text-align: center;
+}
+.dashboard__link_icon {
+  height: 60px;
+  display: block;
+  margin: 0 auto;
+}
+.dashboard__link_text {
+  font-size: 12px;
+}
