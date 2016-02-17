@@ -117,5 +117,10 @@ $(function() {
     defaultDate: 1,
     dateFormat: "dd.mm.yy"
   });
+  $("#js-surface-filter-form").find('#id_date_e').datepicker({
+    defaultDate: 1,
+    dateFormat: "dd.mm.yy"
+  });
+
 
 });
