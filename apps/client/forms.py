@@ -14,6 +14,7 @@ class ClientUpdateForm(forms.ModelForm):
         widgets = {
             'user': forms.Select(attrs={'class': 'form-control hide'}),
             'city': forms.Select(attrs={'class': 'form-control'}),
+            'manager': forms.Select(attrs={'class': 'form-control'}),
             'legal_name': forms.TextInput(attrs={'class': 'form-control'}),
             'actual_name': forms.TextInput(attrs={'class': 'form-control'}),
             'inn': forms.TextInput(attrs={'class': 'form-control'}),
