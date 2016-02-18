@@ -92,7 +92,7 @@
   </div>
   <div id="js-new-incomingtask-modal" class="incomingtask-modal">
     <p class="lead text-center remove-bottom">Создание задачи</p>
-    <form action="{% url 'incoming:ajax-task-add' %}" id="js-incomingtask-modal-add-form" class="incomingtask-modal-add-form form-horizontal">
+    <form action="{% url 'incoming:ajax-task-add' %}" method="get" id="js-incomingtask-modal-add-form" class="incomingtask-modal-add-form form-horizontal">
       <input type="hidden" name="incomingclient" id="id_incomingclient_id" class="form-control">
       <div class="form-group">
         <div class="col-lg-4">
@@ -108,7 +108,7 @@
         </div>
         <div class="col-lg-8">
           <select name="manager" id="id_manager" class="form-control">
-            <option value="0">--------</option>
+            <option value="">--------</option>
             {% for manager in manager_list %}
             <option value="{{ manager.id }}">{{ manager.user.get_full_name }}</option>
             {% endfor %}
@@ -129,7 +129,7 @@
         </div>
         <div class="col-lg-8">
           <select name="incomingclient_contact" id="id_incomingclient_contact" class="form-control">
-            <option value="0">----------</option>
+            <option value="">----------</option>
           </select>
         </div>
       </div>

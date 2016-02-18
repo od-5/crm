@@ -1160,7 +1160,6 @@ $(function() {
       var item_id = '#' + this.element[0].id;
       var item = $(item_id);
       console.log(item.parents('tr').data('id'));
-
       $.ajax({
         type: "GET",
         url: item.data('url'),
@@ -1193,9 +1192,26 @@ $(function() {
       if (data.success) {
         $.notify('Задача по клиенту добавлена', 'success');
         $.fancybox.close();
-      } else {
-        $.notify('Произошла ошибка. Задача не добавлена', 'error');
-        $.fancybox.close();
+      }
+    }
+  });
+//  валидация модальной формы создания задачи
+  $('#js-incomingtask-modal-add-form').validate({
+    rules: {
+      manager: {
+        required: true
+      },
+      incomingclient: {
+        required: true
+      },
+      incomingclient_contact: {
+        required: true
+      },
+      type: {
+        required: true
+      },
+      date: {
+        required: true
       }
     }
   });

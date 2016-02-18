@@ -88,13 +88,13 @@ def get_incomingclient_info(request):
 
 @ajax_request
 def ajax_task_add(request):
-    incomingclient = IncomingClient.objects.get(pk=int(request.GET.get('incomingclient')))
-    type = int(request.GET.get('type'))
-    date = datetime.strptime(request.GET.get('date'), '%d.%m.%Y')
-    comment = request.GET.get('comment')
-    manager = Manager.objects.get(pk=int(request.GET.get('manager')))
-    incomingclient_contact = IncomingClientContact.objects.get(pk=int(request.GET.get('incomingclient_contact')))
     try:
+        incomingclient = IncomingClient.objects.get(pk=int(request.GET.get('incomingclient')))
+        type = int(request.GET.get('type'))
+        date = datetime.strptime(request.GET.get('date'), '%d.%m.%Y')
+        comment = request.GET.get('comment')
+        manager = Manager.objects.get(pk=int(request.GET.get('manager')))
+        incomingclient_contact = IncomingClientContact.objects.get(pk=int(request.GET.get('incomingclient_contact')))
         task = IncomingTask(
             manager=manager,
             incomingclient=incomingclient,
