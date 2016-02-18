@@ -89,17 +89,11 @@ def get_incomingclient_info(request):
 @ajax_request
 def ajax_task_add(request):
     incomingclient = IncomingClient.objects.get(pk=int(request.GET.get('incomingclient')))
-    print incomingclient
     type = int(request.GET.get('type'))
     date = datetime.strptime(request.GET.get('date'), '%d.%m.%Y')
     comment = request.GET.get('comment')
     manager = Manager.objects.get(pk=int(request.GET.get('manager')))
     incomingclient_contact = IncomingClientContact.objects.get(pk=int(request.GET.get('incomingclient_contact')))
-    print type
-    print date
-    print comment
-    print manager
-    print incomingclient_contact
     try:
         task = IncomingTask(
             manager=manager,
@@ -111,7 +105,6 @@ def ajax_task_add(request):
             status=0
         )
         task.save()
-        print task
         return {
             'success': True
         }
