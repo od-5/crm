@@ -1,6 +1,7 @@
 # coding=utf-8
 from annoying.decorators import ajax_request
-from .models import IncomingClient, IncomingTask
+from datetime import datetime
+from .models import IncomingClient, IncomingTask, IncomingClientContact
 from apps.manager.models import Manager
 from .models import IncomingClient, IncomingClientManager
 
@@ -67,3 +68,54 @@ def get_contact_list(request):
             'nothing': True
         }
 
+
+@ajax_request
+def get_incomingclient_info(request):
+    incomingclient = IncomingClient.objects.get(pk=int(request.GET.get('incomingclient')))
+    contact_list = []
+    for i in incomingclient.incomingclientcontact_set.all():
+        contact_list.append({
+            'id': i.id,
+            'name': i.name
+        })
+    return {
+        'id': incomingclient.id,
+        'name': incomingclient.name,
+        'type': incomingclient.get_type_display(),
+        'contact_list': contact_list
+    }
+
+
+@ajax_request
+def ajax_task_add(request):
+    incomingclient = IncomingClient.objects.get(pk=int(request.GET.get('incomingclient')))
+    print incomingclient
+    type = int(request.GET.get('type'))
+    date = datetime.strptime(request.GET.get('date'), '%d.%m.%Y')
+    comment = request.GET.get('comment')
+    manager = Manager.objects.get(pk=int(request.GET.get('manager')))
+    incomingclient_contact = IncomingClientContact.objects.get(pk=int(request.GET.get('incomingclient_contact')))
+    print type
+    print date
+    print comment
+    print manager
+    print incomingclient_contact
+    try:
+        task = IncomingTask(
+            manager=manager,
+            incomingclient=incomingclient,
+            incomingclientcontact=incomingclient_contact,
+            type=type,
+            date=date,
+            comment=comment,
+            status=0
+        )
+        task.save()
+        print task
+        return {
+            'success': True
+        }
+    except:
+        return {
+            'success': False
+        }

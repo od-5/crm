@@ -6281,12 +6281,22 @@ body {
 .bottom-block {
   display: none;
 }
+.incomingtask-modal {
+  display: none;
+  width: 500px;
+}
+.incomingtask-modal-add-form {
+  width: 480px;
+}
 #incomingclient-contact {
   width: 500px;
   height: auto;
   max-height: 300px;
   overflow-y: scroll;
   overflow-x: hidden;
+}
+.btn-right {
+  float: right;
 }
 .modal_ticket {
   display: none;

@@ -28,11 +28,16 @@
             <tbody class="js-list">
             {% for object in object_list %}
               <tr data-id="{{ object.id }}" data-name="{{ object.name }}" data-model="IncomingClient" id="id_IncomingClient_{{ object.id }}">
-                <td><a href="{% url 'incoming:update' object.id %}"> {{ object.name|default:'' }}</a></td>
+                <td>
+                  <a href="{% url 'incoming:update' object.id %}"> {{ object.name|default:'' }}</a>
+                  <a href="#js-new-incomingtask-modal" data-url="{% url 'incoming:get_incomingclient_info' %}" id="new-incomingtask-btn-{{ object.id }}" class="btn btn-success btn-sm btn-right js-new-incomingtask-btn">
+                    <span class="glyphicon glyphicon-plus-sign"></span> Назначить задачу
+                  </a>
+                </td>
                 <td>{{ object.kind_of_activity|default:'Не указано' }}</td>
                 <td data-manager-id="{{ object.manager.id }}" data-manager-name="{{ object.manager }}" data-url="{% url 'incoming:get_available_manager_list' %}">
                   <span class="js-manager-name">{{ object.manager|default:'Не указано' }}</span>
-                  <a href="#reassign-manager" id="js-reassign-manager-{{ object.id }}" class="js-reassign-manager btn btn-warning btn-sm">
+                  <a href="#reassign-manager" id="js-reassign-manager-{{ object.id }}" class="js-reassign-manager btn-right btn btn-warning btn-sm">
                     <span class="glyphicon glyphicon-refresh"></span> переназначить</a>
                 </td>
                 <td>{{ object.city|default:'Не указано' }}</td>
@@ -42,7 +47,7 @@
                   </a>
                 </td>
                 <td>
-                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-IncomingClient-{{ object.id }}" class="btn btn-danger js-ajax-remove-btn">
+                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-IncomingClient-{{ object.id }}" class="btn btn-danger btn-sm js-ajax-remove-btn">
                     <span class="glyphicon glyphicon-remove"></span> Удалить
                   </a>
                 </td>
@@ -82,5 +87,80 @@
       </tr>
       </tbody>
     </table>
+  </div>
+  <div id="js-new-incomingtask-modal" class="incomingtask-modal">
+    <p class="lead text-center remove-bottom">Создание задачи</p>
+    <form action="{% url 'incoming:ajax-task-add' %}" id="js-incomingtask-modal-add-form" class="incomingtask-modal-add-form form-horizontal">
+      <input type="hidden" name="incomingclient" id="id_incomingclient_id" class="form-control">
+      <div class="form-group">
+        <div class="col-lg-4">
+          <label class="control-label">Тип клиента</label>
+        </div>
+        <div class="col-lg-8">
+          <p class="form-control-static" id="id_incomingclient_type"></p>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-lg-4">
+          <label for="id_manager" class="control-label">Менеджер</label>
+        </div>
+        <div class="col-lg-8">
+          <select name="manager" id="id_manager" class="form-control">
+            <option value="0">--------</option>
+            {% for manager in manager_list %}
+            <option value="{{ manager.id }}">{{ manager.user.get_full_name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-lg-4">
+          <label class="control-label">Название</label>
+        </div>
+        <div class="col-lg-8">
+          <p class="form-control-static" id="id_incomingclient_name"></p>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-lg-4">
+          <label for="id_incomingclient_contact" class="control-label">Контактное лицо</label>
+        </div>
+        <div class="col-lg-8">
+          <select name="incomingclient_contact" id="id_incomingclient_contact" class="form-control">
+            <option value="0">----------</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-lg-4">
+          <label for="id_type" class="control-label">Тип задачи</label>
+        </div>
+        <div class="col-lg-8">
+          <select name="type" id="id_type" class="form-control">
+            <option value="0">Назначена встреча</option>
+            <option value="1">Назначен звонок</option>
+            <option value="2">Продажа</option>
+            <option value="3">Отказ</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-lg-4">
+          <label for="id_comment" class="control-label">Комментарий</label>
+        </div>
+        <div class="col-lg-8">
+          <textarea name="comment" id="id_comment" class="form-control"></textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-lg-4">
+          <label for="id_date" class="control-label">Дата</label>
+        </div>
+        <div class="col-lg-8">
+          <input type="text" name="date" id="id_date" class="form-control">
+        </div>
+      </div>
+      <input type="submit" value="Создать" class="btn btn-default">
+    </form>
   </div>
 {% endblock %}

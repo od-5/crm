@@ -63,6 +63,7 @@ class IncomingTaskForm(forms.ModelForm):
         widgets = {
             'manager': forms.Select(attrs={'class': 'form-control'}),
             'incomingclient': forms.Select(attrs={'class': 'form-control'}),
+            'incomingclientcontact': forms.Select(attrs={'class': 'form-control'}),
             'type': forms.Select(attrs={'class': 'form-control'}),
             'date': forms.DateInput(attrs={'class': 'form-control'}),
             'comment': forms.Textarea(attrs={'class': 'form-control', 'placeholder': u'Текст комментария к задаче'}),

@@ -19,6 +19,12 @@ class IncomingClient(models.Model):
     def get_absolute_url(self):
         return reverse('incoming:update', args=(self.pk, ))
 
+    TYPE_CHOICES = (
+        (0, u'Входящая заявка'),
+        (1, u'Клиент'),
+        (2, u'Переданный клиент'),
+    )
+
     # todo: если нужна возможность модератору вести клиентов - manager должен быть null=True
     manager = models.ForeignKey(to=Manager, verbose_name=u'Менеджер')
     name = models.CharField(verbose_name=u'Название', max_length=255)
@@ -26,6 +32,7 @@ class IncomingClient(models.Model):
     kind_of_activity = models.CharField(verbose_name=u'Вид деятельности', max_length=255, blank=True, null=True)
     actual_address = models.CharField(verbose_name=u'Фактический адрес', max_length=255, blank=True, null=True)
     site = models.CharField(verbose_name=u'Сайт', blank=True, null=True,  max_length=100)
+    type = models.PositiveSmallIntegerField(verbose_name=u'Тип клиента', choices=TYPE_CHOICES, default=1)
 
 
 class IncomingClientManager(models.Model):
@@ -66,20 +73,20 @@ class IncomingTask(models.Model):
         return reverse('incoming:task-update', args=(self.pk, ))
 
     TASK_TYPE_CHOICES = (
-        (0, u'Тип задачи 1'),
-        (1, u'Тип задачи 1'),
-        (2, u'Тип задачи 1'),
-        (3, u'Тип задачи 1'),
+        (0, u'Назначена встреча'),
+        (1, u'Назначен звонок'),
+        (2, u'Продажа'),
+        (3, u'Отказ'),
     )
 
     TASK_STATUS = (
-        (0, u'В процессе'),
+        (0, u'План'),
         (1, u'Сделано'),
-        (2, u'Продажа - перенесён в базу обработки'),
     )
 
     manager = models.ForeignKey(to=Manager, verbose_name=u'Менеджер')
     incomingclient = models.ForeignKey(to=IncomingClient, verbose_name=u'Входящий клиент')
+    incomingclientcontact = models.ForeignKey(to=IncomingClientContact, verbose_name=u'Контактное лицо', null=True, blank=True)
     type = models.PositiveIntegerField(choices=TASK_TYPE_CHOICES, verbose_name=u'Тип задачи')
     date = models.DateField(verbose_name=u'Дата')
     comment = models.TextField(verbose_name=u'Комментарий', blank=True, null=True)

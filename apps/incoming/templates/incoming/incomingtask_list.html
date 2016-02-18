@@ -8,7 +8,7 @@
         </div>
         <div class="panel-body">
           <a href="{% url 'incoming:task-add' %}" class="btn btn-success add-bottom">
-            <span class="glyphicon glyphicon-plus-sign"></span> Добавить задачу по входящему клиенту
+            <span class="glyphicon glyphicon-plus-sign"></span> Добавить новую задачу по клиенту
           </a>
           <form action="" method="GET" role="form" id="js-incomingtask-search-form" class="form-inline add-bottom">
             <input type="text" name="name" value="{{ r_name|default:'' }}" class="form-control input-sm" placeholder="Название">
@@ -21,17 +21,18 @@
               <a href="?all=1" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-list-alt"></span> Показать все задачи</a>
             {% endif %}
           </form>
-          <table class="table table-hover">
+          <table class="table table-hover" style="font-size: 12px;">
             <thead>
               <tr>
                 <th>Дата</th>
                 <th>Менеджер</th>
-                {% if user.type != 5 %}
-                <th>Менеджер</th>
-                {% endif %}
+                <th>Название клиента</th>
+                <th>Вид деятельности</th>
+                <th>Контактное лица</th>
                 <th>Тип задачи</th>
                 <th>Комментарий</th>
                 <th>Статус</th>
+                <th>&nbsp;</th>
                 <th>&nbsp;</th>
               </tr>
             </thead>
@@ -40,23 +41,32 @@
               <tr data-id="{{ object.id }}" data-name="{{ object.get_type_display }}" data-model="IncomingTask" id="id_Incomingtask_{{ object.id }}">
 {#                <td><a href="{% url 'incoming:task_update' object.id %}"> {{ object.name|default:'' }}</a></td>#}
                 <td>{{ object.date|default:'Не указано' }}</td>
-                {% if user.type != 5 %}
                 <td>{{ object.manager|default:'Не указано' }}</td>
-                {% endif %}
-                <td>{{ object.name|default:'Не указано' }}</td>
+                <td>{{ object.incomingclient.name|default:'Не указано' }}</td>
+                <td>{{ object.incomingclient.kind_of_activity|default:'Не указано' }}</td>
+                <td>
+                  {{ object.incomingclientcontact.name|default:'Не указано' }}<br>
+                  {{ object.incomingclientcontact.phone }}<br>
+                  {{ object.incomingclientcontact.email }}
+                </td>
                 <td><a href="{% url 'incoming:task-update' object.id %}"> {{ object.get_type_display|default:'' }}</a></td>
                 <td>{{ object.comment|default:'Не указано' }}</td>
                 <td>{{ object.get_status_display|default:'Не указано' }}</td>
                 <td>
-                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-IncomingTask-{{ object.id }}" class="btn btn-danger js-ajax-remove-btn">
+                  <button class="btn btn-info btn-sm">
+                    <span class="glyphicon glyphicon-edit"></span> Редактировать
+                  </button>
+                </td>
+                <td>
+                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-IncomingTask-{{ object.id }}" class="btn btn-danger btn-sm js-ajax-remove-btn">
                     <span class="glyphicon glyphicon-remove"></span> Удалить
                   </a>
                 </td>
               </tr>
             {% empty %}
               <tr>
-                <td colspan="6">
-                  <p class="alert alert-info">Задач по входящим клиентам не найдено</p>
+                <td colspan="12">
+                  <p class="alert alert-info">Задач по клиентам не найдено</p>
                 </td>
               </tr>
             {% endfor %}

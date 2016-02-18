@@ -1142,10 +1142,10 @@ $(function() {
                 '</td>' +
                 '</tr>'
               );
-              console.log(contact_list[i]['name']),
-                console.log(contact_list[i]['name']),
-                console.log(contact_list[i]['phone']),
-                console.log(contact_list[i]['email'])
+              console.log(contact_list[i]['name']);
+              console.log(contact_list[i]['name']);
+              console.log(contact_list[i]['phone']);
+              console.log(contact_list[i]['email']);
             }
           } else {
             $('#js-incomingclient-contact-list').html('<tr><td colspan="4">Контактных лиц не найдено</td></tr>');
@@ -1153,5 +1153,51 @@ $(function() {
         });
       }
     });
+
+//  модальное окно формы создания задачи по клиенту
+  $('.js-new-incomingtask-btn').fancybox({
+    beforeLoad: function () {
+      var item_id = '#' + this.element[0].id;
+      var item = $(item_id);
+      console.log(item.parents('tr').data('id'));
+
+      $.ajax({
+        type: "GET",
+        url: item.data('url'),
+        data: {
+          incomingclient: item.parents('tr').data('id')
+        }
+      }).done(function (data) {
+        console.log(data.id);
+        console.log(data.type);
+        console.log(data.name);
+        var form = $('#js-incomingtask-modal-add-form');
+        form.find('#id_incomingclient_type').text(data.type);
+        form.find('#id_incomingclient_name').text(data.name);
+        form.find('#id_incomingclient_id').val(data.id);
+        var contact_list = data.contact_list;
+          var contact_list_selector = form.find('#id_incomingclient_contact');
+          contact_list_selector.find('option').remove();
+          contact_list_selector.append($("<option value selected='selected'>---------</option>"));
+          for (var i = 0; i < contact_list.length; i++) {
+            contact_list_selector.append($("<option/>", {
+              value: contact_list[i]['id'],
+              text: contact_list[i]['name']
+            }));
+          }
+      });
+    }
+  });
+  $('#js-incomingtask-modal-add-form').ajaxForm({
+    success: function(data){
+      if (data.success) {
+        $.notify('Задача по клиенту добавлена', 'success');
+        $.fancybox.close();
+      } else {
+        $.notify('Произошла ошибка. Задача не добавлена', 'error');
+        $.fancybox.close();
+      }
+    }
+  });
 
 });
