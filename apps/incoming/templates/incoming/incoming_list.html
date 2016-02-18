@@ -30,14 +30,16 @@
               <tr data-id="{{ object.id }}" data-name="{{ object.name }}" data-model="IncomingClient" id="id_IncomingClient_{{ object.id }}">
                 <td>
                   <a href="{% url 'incoming:update' object.id %}"> {{ object.name|default:'' }}</a>
-                  <a href="#js-new-incomingtask-modal" data-url="{% url 'incoming:get_incomingclient_info' %}" id="new-incomingtask-btn-{{ object.id }}" class="btn btn-success btn-sm btn-right js-new-incomingtask-btn">
+                  <br>
+                  <a href="#js-new-incomingtask-modal" data-url="{% url 'incoming:get_incomingclient_info' %}" id="new-incomingtask-btn-{{ object.id }}" class="btn btn-success btn-sm js-new-incomingtask-btn">
                     <span class="glyphicon glyphicon-plus-sign"></span> Назначить задачу
                   </a>
                 </td>
                 <td>{{ object.kind_of_activity|default:'Не указано' }}</td>
                 <td data-manager-id="{{ object.manager.id }}" data-manager-name="{{ object.manager }}" data-url="{% url 'incoming:get_available_manager_list' %}">
                   <span class="js-manager-name">{{ object.manager|default:'Не указано' }}</span>
-                  <a href="#reassign-manager" id="js-reassign-manager-{{ object.id }}" class="js-reassign-manager btn-right btn btn-warning btn-sm">
+                  <br>
+                  <a href="#reassign-manager" id="js-reassign-manager-{{ object.id }}" class="js-reassign-manager btn btn-warning btn-sm">
                     <span class="glyphicon glyphicon-refresh"></span> переназначить</a>
                 </td>
                 <td>{{ object.city|default:'Не указано' }}</td>
