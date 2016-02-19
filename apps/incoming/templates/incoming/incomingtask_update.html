@@ -13,15 +13,15 @@
             <form action="" role="form" id="js-form-incomingtask-update" method="post">
               {% csrf_token %}
               <div class="form-group">
-                <div class="col-lg-5"> {{ form.manager.label_tag }} </div>
-                <div class="col-lg-7"> {{ form.manager }} </div>
-                {{ form.manager.errors }}
-                <div class="clearfix"></div>
-              </div>
-              <div class="form-group">
                 <div class="col-lg-5"> {{ form.incomingclient.label_tag }} </div>
                 <div class="col-lg-7"> {{ form.incomingclient }} </div>
                 {{ form.incomingclient.errors }}
+                <div class="clearfix"></div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-5"> {{ form.manager.label_tag }} </div>
+                <div class="col-lg-7"> {{ form.manager }} </div>
+                {{ form.manager.errors }}
                 <div class="clearfix"></div>
               </div>
               <div class="form-group">

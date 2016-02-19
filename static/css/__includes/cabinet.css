@@ -42,6 +42,9 @@ body {
 .incomingtask-modal-add-form {
   width: 480px;
 }
+.incomingtask-modal-update-form {
+  width: 480px;
+}
 #incomingclient-contact {
   width: 500px;
   height: auto;

@@ -32,7 +32,7 @@ class IncomingClientListView(ListView):
         elif user.type == 2:
             qs = IncomingClient.objects.filter(city__moderator=user)
         elif user.type == 5:
-            qs = IncomingClient.objects.filter(manager=user)
+            qs = IncomingClient.objects.filter(manager__user=user)
         else:
             qs = None
         if self.request.GET.get('name'):
@@ -51,7 +51,8 @@ class IncomingClientListView(ListView):
         elif user.type == 2:
             manager_qs = Manager.objects.filter(moderator=user)
         elif user.type == 5:
-            manager_qs = Manager.objects.filter(moderator=user.moderator)
+            current_manager = Manager.objects.get(user=user)
+            manager_qs = Manager.objects.filter(moderator=current_manager.moderator)
         else:
             manager_qs = None
         context.update({
@@ -71,11 +72,11 @@ def incomingclient_add(request):
         manager_qs = Manager.objects.filter(moderator=user)
         city_qs = City.objects.filter(moderator=user)
     elif user.type == 5:
-        user_manager = Manager.objects.get(user=user)
-        manager_qs = Manager.objects.filter(moderator=user_manager.moderator)
-        city_qs = City.objects.filter(moderator=user_manager.moderator)
+        current_manager = Manager.objects.get(user=user)
+        manager_qs = Manager.objects.filter(moderator=current_manager.moderator)
+        city_qs = City.objects.filter(moderator=current_manager.moderator)
         initial = {
-            'manager': user_manager
+            'manager': current_manager
         }
     else:
         manager_qs = None
@@ -116,8 +117,9 @@ def incomingclient_update(request, pk):
         manager_qs = Manager.objects.filter(moderator=user)
         city_qs = City.objects.filter(moderator=user)
     elif user.type == 5:
-        manager_qs = Manager.objects.filter(moderator=user.moderator)
-        city_qs = City.objects.filter(moderator=user.moderator)
+        current_manager = Manager.objects.get(user=user)
+        manager_qs = Manager.objects.filter(moderator=current_manager.moderator)
+        city_qs = City.objects.filter(moderator=current_manager.moderator)
     else:
         manager_qs = None
         city_qs = None
@@ -126,9 +128,10 @@ def incomingclient_update(request, pk):
         if form.is_valid():
             incoming = form.save(commit=False)
             incoming.save()
-            print incoming.manager.id
-            print old_manager_id
             if old_manager_id != incoming.manager.id:
+                incoming.type = 2
+                incoming.save()
+                print incoming.get_type_display()
                 incomingclientmanager = IncomingClientManager(manager=incoming.manager, incomingclient=incoming)
                 incomingclientmanager.save()
                 print 'Change manager'

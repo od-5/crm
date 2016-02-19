@@ -10,6 +10,7 @@ class IncomingClientAddForm(forms.ModelForm):
     class Meta:
         model = IncomingClient
         fields = '__all__'
+        exclude = ['type', ]
         widgets = {
             'manager': forms.Select(attrs={'class': 'form-control'}),
             'city': forms.Select(attrs={'class': 'form-control'}),
@@ -32,7 +33,7 @@ class IncomingClientAddForm(forms.ModelForm):
 class IncomingClientUpdateForm(forms.ModelForm):
     class Meta:
         model = IncomingClient
-        fields = '__all__'
+        exclude = ['type', ]
         widgets = {
             'manager': forms.Select(attrs={'class': 'form-control'}),
             'city': forms.Select(attrs={'class': 'form-control'}),

@@ -9,6 +9,13 @@
           </p>
         </div>
         <div class="panel-body">
+          <div class="col-lg-12">
+            {% if error %}
+            <div class="alert alert-danger">
+              {{ error }}
+            </div>
+          {%  endif %}
+          </div>
           <div class="col-lg-6">
             <form action="" role="form" class="js-form-incomingclient-add" method="post">
               {% csrf_token %}

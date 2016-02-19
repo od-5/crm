@@ -64,6 +64,7 @@ $(function() {
     success: function(data){
       if (data.id) {
         $.notify('Объект был удалён', 'success');
+        console.log($('#id_'+data.model+'_'+data.id));
         $('#id_'+data.model+'_'+data.id).remove();
         $.fancybox.close();
       } else {
@@ -1086,8 +1087,18 @@ $(function() {
   $('.js-list').on('click', '.js-reassign-manager', function(){
     reassign_fancy_initial();
   });
-  reassign_manager_form.find('input[type="submit"]').click(function(){
-    $.fancybox.close();
+  //reassign_manager_form.find('input[type="submit"]').click(function(){
+  //  $.fancybox.close();
+  //});
+  reassign_manager_form.validate({
+    rules: {
+      manager: {
+        required: true
+      },
+      new_manager: {
+        required: true
+      }
+    }
   });
   reassign_manager_form.ajaxForm({
     success: function(data){
@@ -1101,7 +1112,7 @@ $(function() {
         td_selector.find('.js-manager-name').text(data.name);
         td_selector.attr('data-manager-id', data.id);
         td_selector.attr('data-manager-name', data.name);
-
+        $.fancybox.close();
       } else {
         $.notify('Произошла ошибка. Возможно вы не выбрали нового менеджера', 'error');
       }
@@ -1215,5 +1226,76 @@ $(function() {
       }
     }
   });
+
+  // валидация формы редактирования задачи
+  var validator = $('#js-incomingtask-modal-update-form').validate({
+    rules: {
+      incomingclient_contact: {
+        required: true
+      },
+      type: {
+        required: true
+      },
+      date: {
+        required: true
+      }
+    }
+  });
+  //  модальное окно формы редактирования задачи по клиенту
+  $('.js-change-incomingtask-btn').fancybox({
+    afterClose: function () {
+      validator.resetForm();
+    },
+    beforeLoad: function () {
+      var item_id = '#' + this.element[0].id;
+      var item = $(item_id);
+      console.log(item);
+      console.log(item.parents('tr').data('id'));
+      $.ajax({
+        type: "GET",
+        url: item.data('url'),
+        data: {
+          incomingtask: item.parents('tr').data('id')
+        }
+      }).done(function (data) {
+        console.log('id задачи' + data.incomingtask_id);
+        console.log('id клиента' + data.incomingclient_id);
+        console.log('название клиента' + data.incomingclient_name);
+        console.log('тип клиента' + data.incomingclient_type);
+        console.log('id менеджера' + data.manager_id);
+        console.log('список контактных лиц' + data.contact_list);
+        var form = $('#js-incomingtask-modal-update-form');
+        form.find('#id_incomingclient_type').text(data.incomingclient_type);
+        form.find('#id_incomingclient_name').text(data.incomingclient_name);
+        form.find('#id_incomingclient').val(data.incomingclient_id);
+        form.find('#id_incomingtask').val(data.incomingtask_id);
+        form.find('#id_manager').val(data.manager_id);
+        var contact_list = data.contact_list;
+          var contact_list_selector = form.find('#id_incomingclient_contact');
+          contact_list_selector.find('option').remove();
+          contact_list_selector.append($("<option value>---------</option>"));
+          for (var i = 0; i < contact_list.length; i++) {
+            contact_list_selector.append($("<option/>", {
+              value: contact_list[i]['id'],
+              text: contact_list[i]['name']
+            }));
+          }
+      });
+    }
+  });
+  // ajax форма редактирования задачи
+  $('#js-incomingtask-modal-update-form').ajaxForm({
+    success: function(data){
+      if (data.success) {
+        $.notify('Задача по клиенту обновлена', 'success');
+        $.fancybox.close();
+        location.reload();
+      } else {
+        $.notify('Произошла ошибка', 'error');
+      }
+    }
+  });
+
+
 
 });

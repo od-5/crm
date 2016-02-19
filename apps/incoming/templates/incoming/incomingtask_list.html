@@ -38,7 +38,7 @@
             </thead>
             <tbody class="js-list">
             {% for object in object_list %}
-              <tr data-id="{{ object.id }}" data-name="{{ object.get_type_display }}" data-model="IncomingTask" id="id_Incomingtask_{{ object.id }}">
+              <tr data-id="{{ object.id }}" data-name="{{ object.get_type_display }}" data-model="IncomingTask" id="id_IncomingTask_{{ object.id }}">
 {#                <td><a href="{% url 'incoming:task_update' object.id %}"> {{ object.name|default:'' }}</a></td>#}
                 <td>{{ object.date|default:'Не указано' }}</td>
                 <td>{{ object.manager|default:'Не указано' }}</td>
@@ -53,9 +53,9 @@
                 <td>{{ object.comment|default:'Не указано' }}</td>
                 <td>{{ object.get_status_display|default:'Не указано' }}</td>
                 <td>
-                  <button class="btn btn-info btn-sm">
+                  <a href="#js-change-incomingtask-modal" id="change-incomingtask-btn-{{ object.id }}" data-url="{% url 'incoming:get_incomingtask_info' %}" class="btn btn-info btn-sm js-change-incomingtask-btn">
                     <span class="glyphicon glyphicon-edit"></span> Редактировать
-                  </button>
+                  </a>
                 </td>
                 <td>
                   <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-IncomingTask-{{ object.id }}" class="btn btn-danger btn-sm js-ajax-remove-btn">
@@ -78,6 +78,7 @@
     </div>
   </div>
   {% include '__modal/js_ajax_remove_form.html' %}
+  {% include 'incoming/__modal/change_incomingtask_form.html' %}
 
 
 {% endblock %}

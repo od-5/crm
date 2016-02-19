@@ -32,7 +32,7 @@ class IncomingClient(models.Model):
     kind_of_activity = models.CharField(verbose_name=u'Вид деятельности', max_length=255, blank=True, null=True)
     actual_address = models.CharField(verbose_name=u'Фактический адрес', max_length=255, blank=True, null=True)
     site = models.CharField(verbose_name=u'Сайт', blank=True, null=True,  max_length=100)
-    type = models.PositiveSmallIntegerField(verbose_name=u'Тип клиента', choices=TYPE_CHOICES, default=1)
+    type = models.PositiveSmallIntegerField(verbose_name=u'Тип клиента', choices=TYPE_CHOICES, default=TYPE_CHOICES[1][0])
 
 
 class IncomingClientManager(models.Model):
@@ -65,6 +65,7 @@ class IncomingTask(models.Model):
         verbose_name = u'Задача'
         verbose_name_plural = u'Задачи'
         app_label = 'incoming'
+        ordering = ['-date', ]
 
     def __unicode__(self):
         return self.get_type_display()

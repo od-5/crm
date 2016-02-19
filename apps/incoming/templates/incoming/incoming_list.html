@@ -31,7 +31,7 @@
                 <td>
                   <a href="{% url 'incoming:update' object.id %}"> {{ object.name|default:'' }}</a>
                   <br>
-                  <a href="#js-new-incomingtask-modal" data-url="{% url 'incoming:get_incomingclient_info' %}" id="new-incomingtask-btn-{{ object.id }}" class="btn btn-success btn-sm js-new-incomingtask-btn">
+                  <a href="#js-new-incomingtask-modal" data-url="{% url 'incoming:get_incomingclient_info' %}" id="add-incomingtask-btn-{{ object.id }}" class="btn btn-success btn-sm js-new-incomingtask-btn">
                     <span class="glyphicon glyphicon-plus-sign"></span> Назначить задачу
                   </a>
                 </td>
