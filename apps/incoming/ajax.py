@@ -95,10 +95,7 @@ def get_incomingclient_info(request):
 
 @ajax_request
 def get_incomingtask_info(request):
-    print request.GET.get('incomingtask')
     incomingtask = IncomingTask.objects.get(pk=int(request.GET.get('incomingtask')))
-    print incomingtask
-    print incomingtask.incomingclient.name
     contact_list = []
     for i in incomingtask.incomingclient.incomingclientcontact_set.all():
         contact_list.append({
@@ -147,28 +144,17 @@ def ajax_task_add(request):
 def ajax_task_update(request):
     try:
         manager_id = int(request.GET.get('manager'))
-        print 'manager: %s' % manager_id
         incomingclient_id = int(request.GET.get('incomingclient'))
-        print 'incomingclient: %s' % incomingclient_id
         incomingtask_id = int(request.GET.get('incomingtask'))
-        print 'incomingtask: %s' % incomingtask_id
         incomingclient_contact_id = int(request.GET.get('incomingclient_contact'))
-        print 'incomingclient_contact: %s' % incomingclient_contact_id
         type_id = int(request.GET.get('type'))
-        print 'type: %s' % type_id
         comment = request.GET.get('comment')
-        print 'comment: %s' % comment
         date = datetime.strptime(request.GET.get('date'), '%d.%m.%Y')
-        print 'date: %s' % date
 
         incomingclient = IncomingClient.objects.get(pk=incomingclient_id)
-        print incomingclient
         incomingtask = IncomingTask.objects.get(pk=incomingtask_id)
-        print incomingtask
         manager = Manager.objects.get(pk=manager_id)
-        print manager
         incomingclientcontact = IncomingClientContact.objects.get(pk=incomingclient_contact_id)
-        print incomingclientcontact
         task = IncomingTask(
             manager=manager,
             incomingclient=incomingclient,
@@ -185,7 +171,6 @@ def ajax_task_update(request):
             'success': True
         }
     except:
-        print 'Fail'
         return {
             'success': False
         }
