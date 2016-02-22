@@ -57,12 +57,12 @@
                   {% endfor %}
               {% endif %}
               </select>
-              <select name="free"  class="form-control input-sm" >
-                <option value="0">Состояние</option>
-                <option value="1">Свободна</option>
-                <option value="2">занята</option>
+              <select name="free"  class="form-control input-sm">
+                <option value="0" {% if free == 0%}selected="selected"{% endif %}>Занятость</option>
+                <option value="1" {% if free == 1%}selected="selected"{% endif %}>Свободна</option>
+                <option value="2" {% if free == 2%}selected="selected"{% endif %}>Занята</option>
               </select>
-              <input type="text" name="release_date" placeholder="свободна от:" id="id_release_date">
+              <input type="text" name="release_date" class="form-control input-sm" placeholder="свободна от:" id="id_release_date" value="{{ release_date }}">
               <button type="submit" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-search"></span> Искать</button>
             </form>
           <table class="table table-hover">

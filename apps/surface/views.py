@@ -1,4 +1,5 @@
 # coding=utf-8
+from datetime import datetime
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -37,6 +38,12 @@ class SurfaceListView(ListView):
             qs = qs.filter(street__area=int(self.request.GET.get('area')))
         if self.request.GET.get('street') and int(self.request.GET.get('street')) != 0:
             qs = qs.filter(street=int(self.request.GET.get('street')))
+        if self.request.GET.get('release_date'):
+            qs = qs.filter(release_date__lte=datetime.strptime(self.request.GET.get('release_date'), '%d.%m.%Y'))
+        if self.request.GET.get('free') and int(self.request.GET.get('free')) == 1:
+            qs = qs.filter(free=True)
+        elif self.request.GET.get('free') and int(self.request.GET.get('free')) == 2:
+            qs = qs.filter(free=False)
         return qs
 
     def get_context_data(self, **kwargs):
@@ -79,6 +86,14 @@ class SurfaceListView(ListView):
         if self.request.GET.get('management'):
             context.update({
                 'management_id': int(self.request.GET.get('management'))
+            })
+        if self.request.GET.get('free'):
+            context.update({
+                'free': int(self.request.GET.get('free'))
+            })
+        if self.request.GET.get('release_date'):
+            context.update({
+                'release_date': self.request.GET.get('release_date')
             })
 
         return context
