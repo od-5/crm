@@ -6291,6 +6291,13 @@ body {
 .incomingtask-modal-update-form {
   width: 480px;
 }
+.client-modal-add-text {
+  display: none;
+}
+.client-modal-add-form {
+  width: 480px;
+  display: none;
+}
 #incomingclient-contact {
   width: 500px;
   height: auto;

@@ -226,60 +226,151 @@ def incomingclientcontact_update(request, pk):
     return render(request, 'incoming/incomingclientcontact_update.html', context)
 
 
-class IncomingTaskListView(ListView):
-    model = IncomingTask
-    template_name = 'incoming/incomingtask_list.html'
-    paginate_by = 25
+def incomingtask_list(request):
+    context = {}
+    if request.GET.get('error') and int(request.GET.get('error')) == 1:
+        context.update({
+            'error': True
+        })
 
-    def get_queryset(self):
-        user = self.request.user
+    user = request.user
+    print user.type
+    if user.type == 1:
+        print 'ok'
+        qs = IncomingTask.objects.all()
+    elif user.type == 2:
+        qs = IncomingTask.objects.filter(manager__moderator=user)
+    elif user.type == 5:
+        qs = IncomingTask.objects.filter(manager__user=user)
+    else:
+        qs = None
 
-        if user.type == 1:
-            qs = IncomingTask.objects.all()
-        elif user.type == 2:
-            qs = IncomingTask.objects.filter(manager__moderator=user)
-        elif user.type == 5:
-            qs = IncomingTask.objects.filter(manager=user)
-        else:
-            qs = None
-        r_name = self.request.GET.get('name')
-        r_date_s = self.request.GET.get('date_s')
-        r_date_e = self.request.GET.get('date_e')
-        r_all = self.request.GET.get('all')
-        if not r_name and not r_date_s and not r_date_e and not r_all:
-            qs = qs.filter(date=timezone.localtime(timezone.now()))
-            print 'TODAY'
-        else:
-            if r_name:
-                qs = qs.filter(incomingclient__name__icontains=r_name)
-            if r_date_s:
-                qs = qs.filter(date__gte=datetime.strptime(r_date_s, '%d.%m.%Y'))
-            if r_date_e:
-                qs = qs.filter(date__lte=datetime.strptime(r_date_e, '%d.%m.%Y'))
-            print "FILTERED INPUT"
+    r_name = request.GET.get('name')
+    r_date_s = request.GET.get('date_s')
+    r_date_e = request.GET.get('date_e')
+    r_all = request.GET.get('all')
+    r_type = request.GET.get('type')
+    r_status = request.GET.get('status')
+    if r_all and int(r_all) == 1:
+        request.session['show_all_incomingtask'] = True
+    elif r_all and int(r_all) == 0:
+        request.session['show_all_incomingtask'] = False
+    try:
+        show_all = request.session['show_all_incomingtask']
+    except:
+        show_all = False
 
-        return qs
+    if not r_name and not r_date_s and not r_date_e and not show_all:
+        qs = qs.filter(date=timezone.localtime(timezone.now()))
+    else:
+        if r_name:
+            qs = qs.filter(incomingclient__name__icontains=r_name)
+        if r_date_s:
+            qs = qs.filter(date__gte=datetime.strptime(r_date_s, '%d.%m.%Y'))
+        if r_date_e:
+            qs = qs.filter(date__lte=datetime.strptime(r_date_e, '%d.%m.%Y'))
 
-    def get_context_data(self, **kwargs):
-        context = super(IncomingTaskListView, self).get_context_data(**kwargs)
-        if self.request.GET.get('name'):
-            context.update({
-                'r_name': self.request.GET.get('name')
-            })
-        if self.request.GET.get('date_s'):
-            context.update({
-                'r_date_s': self.request.GET.get('date_s')
-            })
-        if self.request.GET.get('date_e'):
-            context.update({
-                'r_date_e': self.request.GET.get('date_e')
-            })
-        if self.request.GET.get('all'):
-            context.update({
-                'show_all': True
-            })
-        return context
+    if r_type:
+        qs = qs.filter(type=int(r_type))
+        context.update({
+            'r_type': True
+        })
+    if r_status:
+        qs = qs.filter(status=int(r_status))
+        context.update({
+            'r_status': int(r_status)
+        })
+    if r_name:
+        context.update({
+            'r_name': r_name
+        })
 
+    if r_date_s:
+        context.update({
+            'r_date_s': r_date_s
+        })
+    if r_date_e:
+        context.update({
+            'r_date_e': r_date_e
+        })
+    if show_all:
+        context.update({
+            'show_all': True
+        })
+    paginator = Paginator(qs, 25)
+    page = request.GET.get('page')
+    try:
+        object_list = paginator.page(page)
+    except PageNotAnInteger:
+        object_list = paginator.page(1)
+    except EmptyPage:
+        object_list = paginator.page(paginator.num_pages)
+    context.update({
+        'object_list': object_list
+    })
+    return render(request, 'incoming/incomingtask_list.html', context)
+
+
+# class IncomingTaskListView(ListView):
+#     model = IncomingTask
+#     template_name = 'incoming/incomingtask_list.html'
+#     paginate_by = 5
+#
+#     def get_queryset(self):
+#         qs = super(IncomingTaskListView, self).get_queryset()
+#         print qs
+#         user = self.request.user
+#
+#         if user.type == 1:
+#             qs = qs
+#         elif user.type == 2:
+#             qs = qs.filter(manager__moderator=user)
+#         elif user.type == 5:
+#             qs = qs.filter(manager__user=user)
+#         else:
+#             qs = None
+#         r_name = self.request.GET.get('name')
+#         r_date_s = self.request.GET.get('date_s')
+#         r_date_e = self.request.GET.get('date_e')
+#         r_all = self.request.GET.get('all')
+#         r_type = self.request.GET.get('type')
+#         if not r_name and not r_date_s and not r_date_e and not r_all:
+#             qs = qs.filter(date=timezone.localtime(timezone.now()))
+#         else:
+#             if r_name:
+#                 qs = qs.filter(incomingclient__name__icontains=r_name)
+#             if r_date_s:
+#                 qs = qs.filter(date__gte=datetime.strptime(r_date_s, '%d.%m.%Y'))
+#             if r_date_e:
+#                 qs = qs.filter(date__lte=datetime.strptime(r_date_e, '%d.%m.%Y'))
+#         if r_type:
+#             qs = qs.filter(type=int(r_type))
+#         return qs
+#
+#     def get_context_data(self, **kwargs):
+#         context = super(IncomingTaskListView, self).get_context_data(**kwargs)
+#         if self.request.GET.get('name'):
+#             context.update({
+#                 'r_name': self.request.GET.get('name')
+#             })
+#         if self.request.GET.get('date_s'):
+#             context.update({
+#                 'r_date_s': self.request.GET.get('date_s')
+#             })
+#         if self.request.GET.get('date_e'):
+#             context.update({
+#                 'r_date_e': self.request.GET.get('date_e')
+#             })
+#         if self.request.GET.get('all'):
+#             context.update({
+#                 'show_all': True
+#             })
+#         if self.request.GET.get('type'):
+#             context.update({
+#                 'r_type': True
+#             })
+#         return context
+#
 
 def incomingtask_add(request):
     context = {}
@@ -288,15 +379,13 @@ def incomingtask_add(request):
     if user.type == 1:
         manager_qs = Manager.objects.all()
         incomingclient_qs = IncomingClient.objects.all()
-        incomingclientcontact_qs = IncomingClientContact.objects.all()
     elif user.type == 2:
         manager_qs = Manager.objects.filter(moderator=user)
         incomingclient_qs = IncomingClient.objects.filter(manager__moderator=user)
-        incomingclientcontact_qs = IncomingClientContact.objects.filter(incomingclient__city__moderator=user)
     elif user.type == 5:
-        manager_qs = Manager.objects.filter(moderator=user.moderator)
-        incomingclient_qs = IncomingClient.objects.filter(manager=user)
-        incomingclientcontact_qs = IncomingClientContact.objects.filter(incomingclient__city__moderator=user.moderator)
+        current_manager = Manager.objects.get(user=user)
+        manager_qs = Manager.objects.filter(moderator=current_manager.moderator)
+        incomingclient_qs = IncomingClient.objects.filter(manager=current_manager)
         initial = {
             'manager': user
         }

@@ -9,6 +9,14 @@
         </div>
         <div class="panel-body">
           <div class="col-lg-12">
+            <p class="lead">Общая сумма выплат монтажнику составляет: <strong>{{ total_sum|default:'0' }} руб.</strong> </p>
+            <form action="" role="form" method="get" class="form-inline add-bottom" id="js-adjuster-task-filter-form">
+              <input type="text" id="id_date_s" name="date_s" class="form-control input-sm" placeholder="дата от:" value="{{ r_date_s|default:'' }}">
+              <input type="text" id="id_date_e" name="date_e" class="form-control input-sm" placeholder="дата до:" value="{{ r_date_e|default:'' }}">
+              <button type="submit" class="btn btn-info btn-sm">
+                <span class="glyphicon glyphicon-search"></span> Искать
+              </button>
+            </form>
             <table class="table">
               <thead>
               <tr>

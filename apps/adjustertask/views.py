@@ -14,13 +14,77 @@ from apps.city.models import Surface, City
 __author__ = 'alexy'
 
 
+def adjustertask_list(request):
+    context = {}
+    context.update(
+        get_months(),
+    )
+    initial_args = {}
+    user = request.user
+    if user.type == 1:
+        qs = AdjusterTask.objects.filter(is_closed=False)
+    elif user.type == 2:
+        qs = AdjusterTask.objects.filter(is_closed=False, adjuster__city__moderator=user)
+    else:
+        qs = None
+    if request.GET.get('city'):
+        qs = qs.filter(adjuster__city=int(request.GET.get('city')))
+        initial_args.update({
+            'city': request.GET.get('city')
+        })
+    if request.GET.get('adjuster'):
+        qs = qs.filter(adjuster=int(request.GET.get('adjuster')))
+        initial_args.update({
+            'adjuster': int(request.GET.get('adjuster'))
+        })
+    if request.GET.get('type'):
+        qs = qs.filter(type=int(request.GET.get('type')))
+        initial_args.update({
+            'type': int(request.GET.get('type'))
+        })
+    if request.GET.get('date_s'):
+        qs = qs.filter(date__gte=datetime.strptime(request.GET.get('date_s'), '%d.%m.%Y'))
+        initial_args.update({
+            'date_s': request.GET.get('date_s')
+        })
+    if request.GET.get('date_e'):
+        qs = qs.filter(date__lte=datetime.strptime(request.GET.get('date_e'), '%d.%m.%Y'))
+        initial_args.update({
+            'date_e': request.GET.get('date_e')
+        })
+    if request.GET.get('date__day') and request.GET.get('date__month') and request.GET.get('date__year'):
+        day = request.GET.get('date__day')
+        month = request.GET.get('date__month')
+        year = request.GET.get('date__year')
+        qs = qs.filter(date__day=day, date__month=month, date__year=year)
+    filter_form = AdjusterTaskFilterForm(initial=initial_args)
+    if user.type == 2:
+        filter_form.fields['city'].queryset = City.objects.filter(moderator=user)
+        filter_form.fields['adjuster'].queryset = Adjuster.objects.filter(city__moderator=user)
+    context.update({
+        'filter_form': filter_form
+    })
+    paginator = Paginator(qs, 25)
+    page = request.GET.get('page')
+    try:
+        object_list = paginator.page(page)
+    except PageNotAnInteger:
+        object_list = paginator.page(1)
+    except EmptyPage:
+        object_list = paginator.page(paginator.num_pages)
+    context.update({
+        'object_list': object_list
+    })
+    return render(request, 'adjustertask/adjustertask_list.html', context)
+
+
 class AdjusterTaskListView(ListView):
     """
     Список задач
     """
     model = AdjusterTask
     template_name = 'adjustertask/adjustertask_list.html'
-    paginate_by = 25
+    paginate_by = 2
 
     def get_queryset(self):
         user_id = self.request.user.id
@@ -31,20 +95,15 @@ class AdjusterTaskListView(ListView):
         else:
             qs = None
         if self.request.GET.get('city'):
-            print 'city = %s' % self.request.GET.get('city')
             qs = qs.filter(adjuster__city=int(self.request.GET.get('city')))
         if self.request.GET.get('adjuster'):
             qs = qs.filter(adjuster=int(self.request.GET.get('adjuster')))
-            print 'adjuster = %s' % self.request.GET.get('adjuster')
         if self.request.GET.get('type'):
             qs = qs.filter(type=int(self.request.GET.get('type')))
-            print 'type = %s' % self.request.GET.get('type')
         if self.request.GET.get('date_s'):
             qs = qs.filter(date__gte=datetime.strptime(self.request.GET.get('date_s'), '%d.%m.%Y'))
-            print 'date_s = %s' % self.request.GET.get('date_s')
         if self.request.GET.get('date_e'):
             qs = qs.filter(date__lte=datetime.strptime(self.request.GET.get('date_e'), '%d.%m.%Y'))
-            print 'date_e = %s' % self.request.GET.get('date_e')
 
         if self.request.GET.get('date__day') and self.request.GET.get('date__month') and self.request.GET.get('date__year'):
             day = self.request.GET.get('date__day')
@@ -82,7 +141,6 @@ class AdjusterTaskListView(ListView):
             })
         filter_form = AdjusterTaskFilterForm(initial=initial_args)
         if self.request.user.type == 2:
-            print self.request.user.type
             filter_form.fields['city'].queryset = City.objects.filter(moderator=self.request.user)
             filter_form.fields['adjuster'].queryset = Adjuster.objects.filter(city__moderator=self.request.user)
         context.update({
@@ -108,20 +166,15 @@ class TaskArchiveListView(ListView):
         else:
             qs = None
         if self.request.GET.get('city'):
-            print 'city = %s' % self.request.GET.get('city')
             qs = qs.filter(adjuster__city=int(self.request.GET.get('city')))
         if self.request.GET.get('adjuster'):
             qs = qs.filter(adjuster=int(self.request.GET.get('adjuster')))
-            print 'adjuster = %s' % self.request.GET.get('adjuster')
         if self.request.GET.get('type'):
             qs = qs.filter(type=int(self.request.GET.get('type')))
-            print 'type = %s' % self.request.GET.get('type')
         if self.request.GET.get('date_s'):
             qs = qs.filter(date__gte=datetime.strptime(self.request.GET.get('date_s'), '%d.%m.%Y'))
-            print 'date_s = %s' % self.request.GET.get('date_s')
         if self.request.GET.get('date_e'):
             qs = qs.filter(date__lte=datetime.strptime(self.request.GET.get('date_e'), '%d.%m.%Y'))
-            print 'date_e = %s' % self.request.GET.get('date_e')
         queryset = qs
         return queryset
 
@@ -150,7 +203,6 @@ class TaskArchiveListView(ListView):
             })
         filter_form = AdjusterTaskFilterForm(initial=initial_args)
         if self.request.user.type == 2:
-            print self.request.user.type
             filter_form.fields['city'].queryset = City.objects.filter(moderator=self.request.user)
             filter_form.fields['adjuster'].queryset = Adjuster.objects.filter(city__moderator=self.request.user)
         context.update({
@@ -186,7 +238,6 @@ def adjuster_c_task(request):
                         pass
                 return HttpResponseRedirect(task.get_absolute_url())
         else:
-            print adjustertask_client_form
             context.update({
                 'error': 'Achtung! Form is invalid!'
             })

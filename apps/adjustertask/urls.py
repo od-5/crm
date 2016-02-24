@@ -7,7 +7,8 @@ __author__ = 'alexy'
 
 urlpatterns = patterns(
     'apps.adjustertask.views',
-    url(r'^$', AdjusterTaskListView.as_view(), name='list'),
+    url(r'^$', 'adjustertask_list', name='list'),
+    # url(r'^$', AdjusterTaskListView.as_view(), name='list'),
     url(r'^archive/$', TaskArchiveListView.as_view(), name='archive'),
     url(r'^c_add/$', 'adjuster_c_task', name='add'),
     url(r'^a_add/$', 'adjuster_a_task', name='a_add'),

@@ -7,6 +7,11 @@
           <p class="lead remove-bottom text-center">Задачи по клиентам</p>
         </div>
         <div class="panel-body">
+          {% if error %}
+          <p class="alert alert-danger">
+            Продажа не может быть создана: клиент с таким email уже зарегистрирован в системе.
+          </p>
+          {% endif %}
           <a href="{% url 'incoming:task-add' %}" class="btn btn-success add-bottom">
             <span class="glyphicon glyphicon-plus-sign"></span> Добавить новую задачу по клиенту
           </a>
@@ -14,9 +19,21 @@
             <input type="text" name="name" value="{{ r_name|default:'' }}" class="form-control input-sm" placeholder="Название">
             <input type="text" name="date_s" id="id_date_s" value="{{ r_date_s|default:'' }}" class="form-control input-sm" placeholder="Дата от">
             <input type="text" name="date_e" id="id_date_e" value="{{ r_date_e|default:'' }}" class="form-control input-sm" placeholder="Дата до">
+            <select name="type"  class="form-control input-sm">
+              <option value="">Тип задачи</option>
+              <option value="0" {% if r_type == 0 %}selected="selected"{% endif %}>Назначена встреча</option>
+              <option value="1" {% if r_type == 1 %}selected="selected"{% endif %}>Назначен звонок</option>
+              <option value="2" {% if r_type == 2 %}selected="selected"{% endif %}>Продажа</option>
+              <option value="3" {% if r_type == 3 %}selected="selected"{% endif %}>Отказ</option>
+            </select>
+            <select name="status"  class="form-control input-sm">
+              <option value="">Статус</option>
+              <option value="0" {% if r_status == 0 %}selected="selected"{% endif %}>План</option>
+              <option value="1" {% if r_status == 1 %}selected="selected"{% endif %}>Сделано</option>
+            </select>
             <button type="submit" class="btn btn-info btn-sm"> <span class="glyphicon glyphicon-search"></span> Искать</button>
             {% if show_all %}
-              <a href="{% url 'incoming:task-list' %}" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-calendar"></span> Показать задачи на сегодня</a>
+              <a href="?all=0" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-calendar"></span> Показать задачи на сегодня</a>
             {% else %}
               <a href="?all=1" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-list-alt"></span> Показать все задачи</a>
             {% endif %}
@@ -72,7 +89,7 @@
             {% endfor %}
             </tbody>
           </table>
-          {% include '__includes/pagination.html' %}
+          {% include '__includes/pagination.html' with page_obj=object_list%}
         </div>
       </div>
     </div>

@@ -20,6 +20,7 @@ __author__ = 'alexy'
 class ManagerListView(ListView):
     model = Manager
     template_name = 'manager/manager_list.html'
+    paginate_by = 25
 
     def get_queryset(self):
         user_id = self.request.user.id

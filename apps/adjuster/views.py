@@ -1,4 +1,5 @@
 # coding=utf-8
+from datetime import datetime
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
@@ -125,9 +126,35 @@ def adjuster_update(request, pk):
 
 def adjuster_task(request, pk):
     context = {}
+    # todo: перенести в middleware
+    get_data = request.GET.copy()
+    filtered_url = '?'
+    for i in get_data:
+        if i != 'page':
+            filtered_url += u'%s=%s&' % (i, get_data[i])
+    context.update({
+        'filtered_url': filtered_url
+    })
+    if get_data.get('page'):
+        print 'has page'
+    else:
+        print 'has not page'
+    r_date_s = request.GET.get('date_s')
+    r_date_e = request.GET.get('date_e')
+    context.update({
+        'r_date_s': r_date_s,
+        'r_date_e': r_date_e
+    })
     adjuster = Adjuster.objects.get(pk=int(pk))
-    task_list_qs = adjuster.adjustertask_set.all()
-    paginator = Paginator(task_list_qs, 25)
+    qs = adjuster.adjustertask_set.all()
+    if r_date_s:
+        qs = qs.filter(date__gte=datetime.strptime(r_date_s, '%d.%m.%Y'))
+    if r_date_e:
+        qs = qs.filter(date__lte=datetime.strptime(r_date_e, '%d.%m.%Y'))
+    total_sum = 0
+    for i in qs:
+        total_sum += i.get_total_cost()
+    paginator = Paginator(qs, 25)
     page = request.GET.get('page')
     try:
         task_list = paginator.page(page)
@@ -135,9 +162,11 @@ def adjuster_task(request, pk):
         task_list = paginator.page(1)
     except EmptyPage:
         task_list = paginator.page(paginator.num_pages)
+    print qs
     context.update({
         'adjuster': adjuster,
-        'task_list': task_list
+        'task_list': task_list,
+        'total_sum': total_sum
     })
     return render(request, 'adjuster/adjuster_task.html', context)
 

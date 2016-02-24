@@ -1,8 +1,8 @@
 # coding=utf-8
 from django.conf.urls import patterns, url
-from .views import IncomingClientListView, IncomingTaskListView
+from .views import IncomingClientListView
 from .ajax import reassign_manager, get_available_manager_list, get_contact_list, get_incomingclient_info, \
-    ajax_task_add, get_incomingtask_info, ajax_task_update
+    ajax_task_add, get_incomingtask_info, ajax_task_update, ajax_client_add
 
 __author__ = 'alexy'
 
@@ -15,9 +15,11 @@ urlpatterns = patterns(
     url(r'^(?P<pk>\d+)/contact/$', 'incomingclientcontact_list', name='contact-list'),
     url(r'^(?P<pk>\d+)/contact/add/$', 'incomingclientcontact_add', name='contact-add'),
     url(r'^contact/(?P<pk>\d+)/$', 'incomingclientcontact_update', name='contact-update'),
-    url(r'^task/$', IncomingTaskListView.as_view(), name='task-list'),
+    url(r'^task/$', 'incomingtask_list', name='task-list'),
+    # url(r'^task/$', IncomingTaskListView.as_view(), name='task-list'),
     url(r'^task/add/$', 'incomingtask_add', name='task-add'),
     url(r'^task/ajax-add/$', ajax_task_add, name='ajax-task-add'),
+    url(r'^ajax-client-add/$', ajax_client_add, name='ajax-client-add'),
     url(r'^task/ajax-update/$', ajax_task_update, name='ajax-task-update'),
     url(r'^task/(?P<pk>\d+)/$', 'incomingtask_update', name='task-update'),
     url(r'^reassign-manager/$', reassign_manager, name='reassign-manager'),

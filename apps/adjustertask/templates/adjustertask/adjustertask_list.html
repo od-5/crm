@@ -103,7 +103,7 @@
               {% endfor %}
             </tbody>
           </table>
-          {% include '__includes/pagination.html' %}
+          {% include '__includes/pagination.html' with page_obj=object_list %}
         </div>
       </div>
     </div>

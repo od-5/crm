@@ -1241,10 +1241,22 @@ $(function() {
       }
     }
   });
+  // валидация формы редактирования задачи
+  var client_modal_validator = $('#js-ajax-client-add').validate({
+    rules: {
+      email: {
+        required: true
+      },
+      password: {
+        required: true
+      }
+    }
+  });
   //  модальное окно формы редактирования задачи по клиенту
   $('.js-change-incomingtask-btn').fancybox({
     afterClose: function () {
       validator.resetForm();
+      client_modal_validator.resetForm();
     },
     beforeLoad: function () {
       var item_id = '#' + this.element[0].id;
@@ -1296,6 +1308,49 @@ $(function() {
     }
   });
 
+  $('#js-ajax-sale-add').on('click', function(){
+    console.log('ПРОДАЖА!');
+    var form = $('#js-incomingtask-modal-update-form');
+    var manager = form.find('#id_manager').val();
+    console.log(manager);
+    var incomingclient = form.find('#id_incomingclient').val();
+    console.log(incomingclient);
+    var comment = form.find('#id_comment').val();
+    console.log(comment);
+    var date = form.find('#id_date').val();
+    console.log(date);
+    var incomingcontact = form.find('#id_incomingclient_contact').val();
+    console.log(incomingcontact);
+    var incomingtask = form.find('#id_incomingtask').val();
+    console.log(incomingtask);
+    var incomingclient_type = form.find('#id_incomingclient_type').text();
+    console.log(incomingclient_type);
+    var incomingclient_name = form.find('#id_incomingclient_name').text();
+    console.log(incomingclient_name);
+
+    var c_form = $('#js-ajax-client-add');
+    c_form.find('#id_incomingclient').val(incomingclient);
+    c_form.find('#id_manager').val(manager);
+    c_form.find('#id_incomingtask').val(incomingtask);
+    c_form.find('#id_comment').val(comment);
+    c_form.find('#id_date').val(date);
+    c_form.find('#id_incomingcontact').val(incomingcontact);
+    c_form.find('#id_client_name').text(incomingclient_name);
+    c_form.find('#id_client_type').text(incomingclient_type);
+
+
+    $('.client-modal-add-form').toggle();
+    $('.incomingtask-modal-update-form').toggle();
+    $('.incomingtask-modal-text').toggle();
+    $('.client-modal-add-text').toggle();
+
+  });
+  $('#js-back-to-incomingtask-modal-update-form').on('click', function(){
+    $('.client-modal-add-form').toggle();
+    $('.incomingtask-modal-update-form').toggle();
+    $('.incomingtask-modal-text').toggle();
+    $('.client-modal-add-text').toggle();
+  });
 
 
 });

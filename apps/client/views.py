@@ -13,6 +13,7 @@ from django.views.generic import ListView
 from apps.city.models import City, Surface
 from apps.client.forms import ClientUpdateForm, ClientAddForm, ClientMaketForm, ClientOrderForm, \
     ClientJournalForm
+from apps.incoming.models import IncomingClient
 from apps.manager.models import Manager
 from core.forms import UserAddForm, UserUpdateForm
 from .models import Client, ClientMaket, ClientOrder, ClientOrderSurface, ClientJournal
@@ -39,8 +40,11 @@ def client_add(request):
                 'error': u'Проверьте правильность ввода полей'
             })
     else:
+        legal_name = ''
+        if request.GET.get('id'):
+            legal_name = IncomingClient.objects.get(id=int(request.GET.get('id'))).name
         user_form = UserAddForm()
-        client_form = ClientAddForm(request=request)
+        client_form = ClientAddForm(request=request, initial={'legal_name': legal_name})
     if user.type == 2:
         client_form.fields['manager'].queryset = Manager.objects.filter(moderator=user)
     context.update({

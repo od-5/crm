@@ -1,6 +1,10 @@
 # coding=utf-8
 from annoying.decorators import ajax_request
 from datetime import datetime
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect, JsonResponse
+from apps.client.models import Client
+from core.models import User
 from .models import IncomingClient, IncomingTask, IncomingClientContact
 from apps.manager.models import Manager
 from .models import IncomingClient, IncomingClientManager
@@ -174,3 +178,60 @@ def ajax_task_update(request):
         return {
             'success': False
         }
+
+
+def ajax_client_add(request):
+    r_incomingclient = request.POST.get('incomingclient')
+    r_manager = request.POST.get('manager')
+    r_incomingtask = request.POST.get('incomingtask')
+    r_incomingcontact = request.POST.get('incomingcontact')
+    r_date = request.POST.get('date')
+    r_comment = request.POST.get('comment')
+    r_email = request.POST.get('email')
+    r_password = request.POST.get('password')
+    print '*'*10
+    print u'ВЫВОД ПОЛУЧЕННЫХ ДАННЫХ ИЗ ФОРМЫ'
+    print '*'*10
+    print r_incomingcontact
+    print r_incomingtask
+    print r_manager
+    print r_date
+    print r_comment
+    print r_email
+    print r_password
+    print r_incomingclient
+
+    print '='*10
+    print u'ВЫВОД ОБЪЕКТОВ ДЛЯ МАНИПУЛЯЦИЙ'
+    print '='*10
+    incomingclient = IncomingClient.objects.get(pk=int(r_incomingclient))
+    print u'incomingclient: %s' % incomingclient
+    incomingtask = IncomingTask.objects.get(pk=int(r_incomingtask))
+    print u'incomingtask: %s' % incomingtask
+    if r_incomingcontact:
+        incomingcontact = IncomingClientContact.objects.get(pk=int(r_incomingcontact))
+    else:
+        incomingcontact = incomingtask.incomingclientcontact
+    print u'incomingcontact: %s' % incomingcontact
+    manager = Manager.objects.get(pk=int(r_manager))
+    print u'manager: %s' % manager
+    try:
+        User.objects.get(email=r_email)
+    except User.DoesNotExist:
+        print u'Польователя не существует. Можно создавать'
+        user = User(email=r_email, password=r_password, type=3)
+        user.save()
+        client = Client(
+            user=user,
+            city=incomingclient.city,
+            manager=incomingclient.manager,
+            legal_name=incomingclient.name,
+            actual_name=incomingclient.name,
+            legal_address=incomingclient.actual_address
+        )
+        client.save()
+        incomingtask.status = 1
+        incomingtask.save()
+        return HttpResponseRedirect(reverse('client:change', args=(client.id, )))
+    return_url = reverse('incoming:task-list') + '?error=1'
+    return HttpResponseRedirect(return_url)
