@@ -131,12 +131,8 @@ def incomingclient_update(request, pk):
             if old_manager_id != incoming.manager.id:
                 incoming.type = 2
                 incoming.save()
-                print incoming.get_type_display()
                 incomingclientmanager = IncomingClientManager(manager=incoming.manager, incomingclient=incoming)
                 incomingclientmanager.save()
-                print 'Change manager'
-            else:
-                print 'not change'
             success_msg = u' Изменения успешно сохранены'
         else:
             error_msg = u'Проверьте правильность ввода полей!'
@@ -234,9 +230,7 @@ def incomingtask_list(request):
         })
 
     user = request.user
-    print user.type
     if user.type == 1:
-        print 'ok'
         qs = IncomingTask.objects.all()
     elif user.type == 2:
         qs = IncomingTask.objects.filter(manager__moderator=user)

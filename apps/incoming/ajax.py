@@ -189,32 +189,13 @@ def ajax_client_add(request):
     r_comment = request.POST.get('comment')
     r_email = request.POST.get('email')
     r_password = request.POST.get('password')
-    print '*'*10
-    print u'ВЫВОД ПОЛУЧЕННЫХ ДАННЫХ ИЗ ФОРМЫ'
-    print '*'*10
-    print r_incomingcontact
-    print r_incomingtask
-    print r_manager
-    print r_date
-    print r_comment
-    print r_email
-    print r_password
-    print r_incomingclient
-
-    print '='*10
-    print u'ВЫВОД ОБЪЕКТОВ ДЛЯ МАНИПУЛЯЦИЙ'
-    print '='*10
     incomingclient = IncomingClient.objects.get(pk=int(r_incomingclient))
-    print u'incomingclient: %s' % incomingclient
     incomingtask = IncomingTask.objects.get(pk=int(r_incomingtask))
-    print u'incomingtask: %s' % incomingtask
     if r_incomingcontact:
         incomingcontact = IncomingClientContact.objects.get(pk=int(r_incomingcontact))
     else:
         incomingcontact = incomingtask.incomingclientcontact
-    print u'incomingcontact: %s' % incomingcontact
     manager = Manager.objects.get(pk=int(r_manager))
-    print u'manager: %s' % manager
     try:
         User.objects.get(email=r_email)
     except User.DoesNotExist:
