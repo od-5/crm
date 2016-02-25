@@ -403,7 +403,7 @@ def adjustertask_repair(request):
                 for item in porch_list:
                     porch = Porch.objects.get(pk=int(item))
                     try:
-                        adjustertasksurface = AdjusterTaskSurface.objects.get(surface=porch.surface)
+                        adjustertasksurface = AdjusterTaskSurface.objects.get(adjustertask=task, surface=porch.surface)
                     except:
                         adjustertasksurface = AdjusterTaskSurface(
                             adjustertask=task,
