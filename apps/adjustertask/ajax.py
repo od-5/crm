@@ -12,9 +12,7 @@ __author__ = 'alexy'
 def adjuster_task_client(request):
     if request.GET.get('client'):
         surface_list = []
-        print int(request.GET.get('client'))
         client = Client.objects.get(pk=int(request.GET.get('client')))
-        print client.clientsurface_set.all()
         for c_surface in client.clientsurface_set.all():
             surface_list.append({
                 'id': c_surface.surface.id,
@@ -56,14 +54,10 @@ def adjuster_get_area_streets(request):
 @ajax_request
 def ajax_order_adjuster_list(request):
     r_client = request.GET.get('client')
-    print r_client
     if int(r_client) != 0:
         client = Client.objects.get(pk=int(r_client))
-        print client
         adjuster_qs = Adjuster.objects.filter(city=client.city)
-        print adjuster_qs
         clientorder_qs = client.clientorder_set.all()
-        print clientorder_qs
         adjuster_list = []
         clientorder_list = []
         for adjuster in adjuster_qs:
@@ -76,14 +70,11 @@ def ajax_order_adjuster_list(request):
                 'id': clientorder.id,
                 'name': clientorder.__unicode__()
             })
-        print adjuster_list
-        print clientorder_list
         return {
             'adjuster_list': adjuster_list,
             'clientorder_list': clientorder_list
         }
     else:
-        print 'else'
         return {
             'error': u'Что то пошло не так!'
         }

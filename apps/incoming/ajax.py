@@ -199,7 +199,6 @@ def ajax_client_add(request):
     try:
         User.objects.get(email=r_email)
     except User.DoesNotExist:
-        print u'Польователя не существует. Можно создавать'
         user = User(email=r_email, password=r_password, type=3)
         user.save()
         client = Client(

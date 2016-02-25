@@ -518,13 +518,10 @@ def client_journal_export(request, pk):
 
 # @ajax_request
 def add_client_surface(request):
-    print 'STEP 1'
     if request.method == 'POST':
-        print 'STEP 2 - POST'
         # print request.POST
         # client = Client.objects.get(pk=int(request.POST.get('cos_client')))
         # print 'client %s' % int(request.POST.get('cos_client'))
-        print 'client %s' % int(request.POST.get('cos_order'))
         order = ClientOrder.objects.get(pk=int(request.POST.get('cos_order')))
         surfaces = request.POST.getlist('chk_group[]')
         for item in surfaces:
@@ -532,7 +529,6 @@ def add_client_surface(request):
             surface.free = False
             surface.release_date = order.date_end
             surface.save()
-            print surface
             c_surface = ClientOrderSurface(
                 clientorder=order,
                 surface=surface
@@ -540,7 +536,6 @@ def add_client_surface(request):
             c_surface.save()
         return HttpResponseRedirect(reverse('client:order-update', args=(int(request.POST.get('cos_order')),)))
     else:
-        print 'STEP FAIL'
         return HttpResponseRedirect(reverse('client:order', args=(int(request.POST.get('cos_order')),)))
 
 

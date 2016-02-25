@@ -36,16 +36,12 @@ def ymap(request):
 @ajax_request
 def ymap_surface(request):
     request.encoding = 'utf-8'
-    print 'step 1'
     if request.is_ajax():
         if request.user.type == 1:
             query = Surface.objects.all()
-            print 'admin'
         else:
             query = Surface.objects.filter(city__moderator=request.user)
-            print 'moderator'
         result = []
-        print 'query = %s' % query
         for item in query:
             result_json = {}
             result_json['name'] = u'%s %s' % (item.street.name, item.house_number)
@@ -57,33 +53,25 @@ def ymap_surface(request):
 
     else:
         data = {'msg': 'fail'}
-    print 'data = %s' % data
     return data
 
 
 @ajax_request
 def ajax_remove_item(request):
     if request.method == 'GET':
-        print 'request = GET'
         if request.GET.get('item_id') and request.GET.get('item_model'):
             model = request.GET.get('item_model')
             item_id = request.GET.get('item_id')
-            print model
-            print item_id
             # client = Client.objects.get(id=int(request.GET.get('item_id')))
             # user = User.objects.get(pk=client.user.id)
             item = get_object_or_404(eval(model), pk=int(item_id))
-            print item
             if model == 'Client':
-                print 'delete client user'
                 user = User.objects.get(pk=item.user.id)
                 user.delete()
             if model == 'Manager':
-                print 'delete manager user'
                 user = User.objects.get(pk=item.user.id)
                 user.delete()
             if model == 'Adjuster':
-                print 'delete adjuster user'
                 user = User.objects.get(pk=item.user.id)
                 user.delete()
             if model == 'ClientOrderSurface':
@@ -96,12 +84,10 @@ def ajax_remove_item(request):
                 'model': request.GET.get('item_model'),
             }
         else:
-            print 'not element in request'
             return {
                 'error': True
             }
     else:
-        print 'request != GET'
         return {
             'error': True
         }

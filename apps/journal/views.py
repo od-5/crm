@@ -53,7 +53,6 @@ class JournalListView(ListView):
         r_manager = self.request.GET.get('manager')
         total_cost = 0
         for i in self.object_list:
-            print i.total_cost()
             total_cost += i.total_cost()
         if not r_city:
             r_city = 0

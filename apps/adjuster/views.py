@@ -135,10 +135,6 @@ def adjuster_task(request, pk):
     context.update({
         'filtered_url': filtered_url
     })
-    if get_data.get('page'):
-        print 'has page'
-    else:
-        print 'has not page'
     r_date_s = request.GET.get('date_s')
     r_date_e = request.GET.get('date_e')
     context.update({
@@ -162,7 +158,6 @@ def adjuster_task(request, pk):
         task_list = paginator.page(1)
     except EmptyPage:
         task_list = paginator.page(paginator.num_pages)
-    print qs
     context.update({
         'adjuster': adjuster,
         'task_list': task_list,

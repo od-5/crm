@@ -46,11 +46,8 @@ class SurfacePhoto(models.Model):
     def save(self, *args, **kwargs):
         if self.porch.damaged():
             self.is_broken = True
-            print 'damaged'
         else:
             self.is_broken = False
-            print 'not damaged'
-        print 'save'
         super(SurfacePhoto, self).save()
 
     porch = models.ForeignKey(to=Porch, verbose_name=u'Подъезд')

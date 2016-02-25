@@ -99,9 +99,6 @@ class CityListView(ListView):
         except:
             a_street = None
         # self.request.session['a_street'] = a_street
-        print a_city
-        print a_area
-        print a_street
         # установка флага начальной даты для фильтрации
         try:
             a_date_s = self.request.GET.get('a_date_s')

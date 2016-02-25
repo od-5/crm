@@ -14,7 +14,7 @@ __author__ = 'alexy'
 def get_city_area(request):
     """
     получение списка районов данного города.
-    Опциоанльно - список монтажников данного города
+    Опционально - список монтажников данного города
     """
     if request.GET.get('city'):
         area_list = []
@@ -22,8 +22,6 @@ def get_city_area(request):
         r_city = request.GET.get('city')
         area_qs = Area.objects.filter(city=int(r_city))
         adjuster_qs = Adjuster.objects.filter(city=int(r_city))
-        print area_qs
-        print adjuster_qs
         for i in area_qs:
             area_list.append({
                 'id': i.id,
@@ -36,8 +34,6 @@ def get_city_area(request):
                     'name': i.user.get_full_name()
                 }
             )
-        print area_list
-        print adjuster_list
         return {
             'area_list': area_list,
             'adjuster_list': adjuster_list
@@ -55,7 +51,6 @@ def simple_get_area_streets(request):
         area_pk = int(request.GET.get('area'))
 
         street_qs = Street.objects.filter(area=area_pk)
-        print street_qs
         for street in street_qs:
             # if surface.id not in client_surfaces:
             street_list.append({
@@ -78,7 +73,6 @@ def get_free_area_surface(request):
         surface_list = []
         area_pk = int(request.GET.get('area'))
         order = ClientOrder.objects.get(pk=int(request.GET.get('order')))
-        print u'дата начала размещения по заказу %s' % order.date_start
         surface_qs = Surface.objects.filter(street__area=area_pk, release_date__lt=order.date_start)
         for surface in surface_qs:
             if surface.id:
@@ -158,17 +152,13 @@ def get_area_surface_list(request):
         r_area = request.GET.get('area')
         surface_qs = Surface.objects.filter(street__area=int(r_area), full_broken=False)
         for surface in surface_qs:
-            print u'Поверхность: %s' % surface
             broken_porch = []
             intact_porch = []
             for porch in surface.porch_set.all():
-                print porch
                 if porch.is_broken:
                     broken_porch.append(porch.number)
                 else:
                     intact_porch.append(porch.number)
-            print u'Поломанные подъезды: %s' % broken_porch
-            print u'Целые подъезды: %s' % intact_porch
             surface_list.append({
                 'id': surface.id,
                 'city': surface.city.name,
@@ -199,8 +189,6 @@ def get_area_surface_list_with_damage(request):
         surface_qs = Surface.objects.filter(street__area=int(r_area), has_broken=True)
         for surface in surface_qs:
             porch_qs = surface.porch_set.filter(is_broken=True)
-            print porch_qs
-
             for porch in porch_qs:
                 type_list = []
                 if porch.broken_shield:
@@ -225,7 +213,6 @@ def get_area_surface_list_with_damage(request):
                     'number': porch.number,
                     'type': damage_type,
                 })
-            print porch_list
         return {
             'porch_list': porch_list
         }

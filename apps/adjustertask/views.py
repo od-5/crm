@@ -397,7 +397,6 @@ def adjustertask_repair(request):
     if request.method == 'POST':
         form = AdjusterTaskRepairAddForm(request.POST)
         if form.is_valid():
-            print 'valid'
             if request.POST.getlist('chk_group[]'):
                 task = form.save()
                 porch_list = request.POST.getlist('chk_group[]')
