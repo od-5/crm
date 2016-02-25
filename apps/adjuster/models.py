@@ -80,7 +80,7 @@ class AdjusterTask(models.Model):
         porch_count = 0
         if self.adjustertasksurface_set.all() > 0:
             for i in self.adjustertasksurface_set.all():
-                porch_count += i.surface.porch_count()
+                porch_count += i.adjustertasksurfaceporch_set.count()
         return porch_count
 
     def get_total_cost(self):
@@ -94,7 +94,7 @@ class AdjusterTask(models.Model):
             cost = self.adjuster.cost_dismantling
         else:
             cost = 0
-        return cost * self.adjustertasksurface_set.count()
+        return cost * self.get_porch_count()
 
     TYPE_CHOICES = (
         (0, u'Монтаж новой конструкции'),
@@ -122,3 +122,16 @@ class AdjusterTaskSurface(models.Model):
     adjustertask = models.ForeignKey(to=AdjusterTask, verbose_name=u'Задача')
     surface = models.ForeignKey(to=Surface, verbose_name=u'Поверхность')
     is_closed = models.BooleanField(verbose_name=u'Работы по поверхности выполнены', default=False)
+
+
+class AdjusterTaskSurfacePorch(models.Model):
+    class Meta:
+        verbose_name = u'Подъезд по задаче'
+        verbose_name_plural = u'Подъезды па задаче'
+        app_label = 'adjuster'
+
+    def __unicode__(self):
+        return u'№ %s' % self.porch.number
+
+    adjustertasksurface = models.ForeignKey(to=AdjusterTaskSurface, verbose_name=u'Поверхность для задачи')
+    porch = models.ForeignKey(to=Porch, verbose_name=u'Подъезд поверхности для задачи')

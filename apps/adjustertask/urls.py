@@ -1,6 +1,6 @@
 # coding=utf-8
 from django.conf.urls import patterns, url
-from apps.adjustertask.ajax import adjuster_task_client, adjuster_get_area_streets
+from apps.adjustertask.ajax import adjuster_task_client, adjuster_get_area_streets, ajax_order_adjuster_list
 from .views import AdjusterTaskListView, TaskArchiveListView
 
 __author__ = 'alexy'
@@ -10,9 +10,11 @@ urlpatterns = patterns(
     url(r'^$', 'adjustertask_list', name='list'),
     # url(r'^$', AdjusterTaskListView.as_view(), name='list'),
     url(r'^archive/$', TaskArchiveListView.as_view(), name='archive'),
-    url(r'^c_add/$', 'adjuster_c_task', name='add'),
-    url(r'^a_add/$', 'adjuster_a_task', name='a_add'),
-    url(r'^r_add/$', 'adjuster_r_task', name='r_add'),
+    url(r'^c_add/$', 'adjuster_c_task', name='add'),  # todo: удалить с хвостами
+    url(r'^client/add/$', 'adjustertask_client', name='client-add'),
+    url(r'^area/add/$', 'adjustertask_area', name='area-add'),
+    url(r'^a_add/$', 'adjuster_a_task', name='a_add'),  # todo: удалить с хвостами
+    url(r'^repair/add/$', 'adjustertask_repair', name='repair-add'),
 
     # url(r'^add/$', 'adjuster_task_add', name='add'),
     # url(r'^simple_task_add/$', 'adjuster_simple_task_add', name='simple_add'),
@@ -20,4 +22,6 @@ urlpatterns = patterns(
 
     url(r'^task_client_ajax/$', adjuster_task_client, name='client-ajax'),
     url(r'^task_area_ajax/$', adjuster_get_area_streets, name='area-ajax'),
+    # получить список монтажников и заказов по id клиента
+    url(r'^ajax_order_adjuster_list/$', ajax_order_adjuster_list, name='ajax-order-adjuster-list'),
 )

@@ -40,16 +40,28 @@ def get_client_order_address_list(request):
             order = ClientOrder.objects.get(id=int(request.GET.get('clientorder')))
             print order
             surface_list = []
-            for surface in order.clientordersurface_set.all():
+            for clientordersurface in order.clientordersurface_set.all():
+                print u'Поверхность: %s' % clientordersurface.surface
+                broken_porch = []
+                intact_porch = []
+                for porch in clientordersurface.surface.porch_set.all():
+                    print porch
+                    if porch.is_broken:
+                        broken_porch.append(porch.number)
+                    else:
+                        intact_porch.append(porch.number)
+                print u'Поломанные подъезды: %s' % broken_porch
+                print u'Целые подъезды: %s' % intact_porch
                 surface_list.append({
-                    'id': surface.id,
-                    'city': surface.surface.city.name,
-                    'area': surface.surface.street.area.name,
-                    'street': surface.surface.street.name,
-                    'number': surface.surface.house_number,
-                    'porch': int(surface.porch_count())
+                    'id': clientordersurface.surface.id,
+                    'city': clientordersurface.surface.city.name,
+                    'area': clientordersurface.surface.street.area.name,
+                    'street': clientordersurface.surface.street.name,
+                    'number': clientordersurface.surface.house_number,
+                    'porch': int(clientordersurface.porch_count()),
+                    'intact_porch': intact_porch,
+                    'broken_porch': broken_porch
                 })
-            print surface_list
             return {
                 'success': True,
                 'surface_list': surface_list

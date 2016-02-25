@@ -5,11 +5,12 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import ListView
-from apps.adjuster.models import AdjusterTask, AdjusterTaskSurface, Adjuster
-from apps.adjustertask.forms import AdjusterTaskClientAddForm, AdjusterTaskAddForm, AdjusterTaskUpdateForm, \
-    AdjusterTaskFilterForm, AdjusterTaskRepairAddForm
-from apps.adjustertask.task_calendar import get_months
-from apps.city.models import Surface, City
+from apps.adjuster.models import AdjusterTask, AdjusterTaskSurface, Adjuster, AdjusterTaskSurfacePorch
+from .forms import AdjusterTaskClientAddForm, AdjusterTaskAddForm, AdjusterTaskUpdateForm, \
+    AdjusterTaskFilterForm, AdjusterTaskRepairAddForm, AdjusterTaskClientForm, AdjusterTaskAreaAddForm
+from .task_calendar import get_months
+from apps.city.models import Surface, City, Porch
+from apps.client.models import Client, ClientOrder
 
 __author__ = 'alexy'
 
@@ -211,9 +212,61 @@ class TaskArchiveListView(ListView):
         return context
 
 
+def adjustertask_client(request):
+    """
+    функция добавления задачи по клиенту
+    версия 2
+    """
+    context = {}
+    user = request.user
+    if request.method == 'POST':
+        form = AdjusterTaskClientForm(request.POST)
+        if form.is_valid():
+            if request.POST.getlist('chk_group[]'):
+                # сохраняем задачу
+                task = form.save()
+                surfaces = request.POST.getlist('chk_group[]')
+                for item in surfaces:
+                    try:
+                        surface = Surface.objects.get(pk=int(item))
+                        # Если полностью сломана - не создавать поверхность задачи
+                        # сохраняем поверхности для задачи
+                        if not surface.full_broken:
+                            adjustertasksurface = AdjusterTaskSurface(
+                                adjustertask=task,
+                                surface=surface
+                            )
+                            adjustertasksurface.save()
+                            for porch in surface.porch_set.all():
+                                if not porch.is_broken:
+                                    atsporch = AdjusterTaskSurfacePorch(
+                                        adjustertasksurface=adjustertasksurface,
+                                        porch=porch
+                                    )
+                                    atsporch.save()
+                    except:
+                        pass
+                return HttpResponseRedirect(task.get_absolute_url())
+    else:
+        form = AdjusterTaskClientForm()
+        if user.type == 1:
+            client_qs = Client.objects.all()
+        elif user.type == 2:
+            client_qs = Client.objects.filter(city__moderator=user)
+        else:
+            client_qs = None
+        form.fields['client'].queryset = client_qs
+
+    context.update({
+        'form': form
+    })
+    return render(request, 'adjustertask/adjustertask_client_add.html', context)
+
+
 def adjuster_c_task(request):
     """
     функция добавления задачи по клиенту
+    версия 1
     """
     context = {}
     if request.method == 'POST':
@@ -251,9 +304,60 @@ def adjuster_c_task(request):
     return render(request, 'adjustertask/adjustertask_c_add.html', context)
 
 
+def adjustertask_area(request):
+    """
+    функция добавления задачи по районам
+    версия 2
+    """
+    context = {}
+    user = request.user
+    if request.method == 'POST':
+        form = AdjusterTaskAreaAddForm(request.POST)
+        if form.is_valid():
+            if request.POST.getlist('chk_group[]'):
+                # сохраняем задачу
+                task = form.save()
+                surfaces = request.POST.getlist('chk_group[]')
+                for item in surfaces:
+                    try:
+                        surface = Surface.objects.get(pk=int(item))
+                        # Если полностью сломана - не создавать поверхность задачи
+                        # сохраняем поверхности для задачи
+                        if not surface.full_broken:
+                            adjustertasksurface = AdjusterTaskSurface(
+                                adjustertask=task,
+                                surface=surface
+                            )
+                            adjustertasksurface.save()
+                            for porch in surface.porch_set.all():
+                                if not porch.is_broken:
+                                    atsporch = AdjusterTaskSurfacePorch(
+                                        adjustertasksurface=adjustertasksurface,
+                                        porch=porch
+                                    )
+                                    atsporch.save()
+                    except:
+                        pass
+                return HttpResponseRedirect(task.get_absolute_url())
+    else:
+        form = AdjusterTaskAreaAddForm()
+        if user.type == 1:
+            city_qs = City.objects.all()
+        elif user.type == 2:
+            city_qs = City.objects.filter(moderator=user)
+        else:
+            city_qs = None
+        form.fields['city'].queryset = city_qs
+    context.update({
+        'form': form
+    })
+    return render(request, 'adjustertask/adjustertask_area_add.html', context)
+
+
 def adjuster_a_task(request):
     """
     функция добавления задачи по адресам
+    версия 1
     """
     context = {}
     if request.method == 'POST':
@@ -282,35 +386,55 @@ def adjuster_a_task(request):
     return render(request, 'adjustertask/adjustertask_a_add.html', context)
 
 
-def adjuster_r_task(request):
+def adjustertask_repair(request):
     """
     функция добавления задачи на ремонт
+    версия 2
     """
     context = {}
+    error = None
+    user = request.user
     if request.method == 'POST':
-        adjustertask_form = AdjusterTaskRepairAddForm(request.POST, request=request)
-        if adjustertask_form.is_valid():
+        form = AdjusterTaskRepairAddForm(request.POST)
+        if form.is_valid():
+            print 'valid'
             if request.POST.getlist('chk_group[]'):
-                task = adjustertask_form.save()
-                surfaces = request.POST.getlist('chk_group[]')
-                for item in surfaces:
-                    surface = Surface.objects.get(pk=int(item))
-                    task_surface = AdjusterTaskSurface(
-                        adjustertask=task,
-                        surface=surface
+                task = form.save()
+                porch_list = request.POST.getlist('chk_group[]')
+                for item in porch_list:
+                    porch = Porch.objects.get(pk=int(item))
+                    try:
+                        adjustertasksurface = AdjusterTaskSurface.objects.get(surface=porch.surface)
+                    except:
+                        adjustertasksurface = AdjusterTaskSurface(
+                            adjustertask=task,
+                            surface=porch.surface
+                        )
+                        adjustertasksurface.save()
+                    atsporch = AdjusterTaskSurfacePorch(
+                        adjustertasksurface=adjustertasksurface,
+                        porch=porch
                     )
-                    task_surface.save()
+                    atsporch.save()
                 return HttpResponseRedirect(task.get_absolute_url())
+            else:
+                error = u'Не выбрано ни одно подъезда для ремонта'
         else:
-            context.update({
-                'error': 'Achtung! Form is invalid!'
-            })
+            error = u'Проверьте правильность ввода полей. Все поля, кроме комментария, обязательны к заполнению'
     else:
-        adjustertask_form = AdjusterTaskRepairAddForm(request=request)
+        form = AdjusterTaskRepairAddForm()
+    if user.type == 1:
+        city_qs = City.objects.all()
+    elif user.type == 2:
+        city_qs = City.objects.filter(moderator=user)
+    else:
+        city_qs = None
+    form.fields['city'].queryset = city_qs
     context.update({
-        'adjustertask_form': adjustertask_form
+        'form': form,
+        'error': error
     })
-    return render(request, 'adjustertask/adjustertask_r_add.html', context)
+    return render(request, 'adjustertask/adjustertask_repair_add.html', context)
 
 
 def adjuster_task_update(request, pk):

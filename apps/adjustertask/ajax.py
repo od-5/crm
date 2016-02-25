@@ -1,7 +1,7 @@
 # coding=utf-8
 from annoying.decorators import ajax_request
 from django.views.decorators.csrf import csrf_exempt
-from apps.adjuster.models import AdjusterTask
+from apps.adjuster.models import AdjusterTask, Adjuster
 from apps.city.models import Surface
 from apps.client.models import Client
 
@@ -48,6 +48,42 @@ def adjuster_get_area_streets(request):
             'surface_list': surface_list
         }
     else:
+        return {
+            'error': u'Что то пошло не так!'
+        }
+
+
+@ajax_request
+def ajax_order_adjuster_list(request):
+    r_client = request.GET.get('client')
+    print r_client
+    if int(r_client) != 0:
+        client = Client.objects.get(pk=int(r_client))
+        print client
+        adjuster_qs = Adjuster.objects.filter(city=client.city)
+        print adjuster_qs
+        clientorder_qs = client.clientorder_set.all()
+        print clientorder_qs
+        adjuster_list = []
+        clientorder_list = []
+        for adjuster in adjuster_qs:
+            adjuster_list.append({
+                'id': adjuster.id,
+                'name': adjuster.user.get_full_name()
+            })
+        for clientorder in clientorder_qs:
+            clientorder_list.append({
+                'id': clientorder.id,
+                'name': clientorder.__unicode__()
+            })
+        print adjuster_list
+        print clientorder_list
+        return {
+            'adjuster_list': adjuster_list,
+            'clientorder_list': clientorder_list
+        }
+    else:
+        print 'else'
         return {
             'error': u'Что то пошло не так!'
         }

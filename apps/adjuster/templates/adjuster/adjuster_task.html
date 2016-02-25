@@ -24,7 +24,8 @@
                 <th>Город</th>
                 <th>Тип задачи</th>
                 <th>Дата выполнения</th>
-                <th>Количество адресов</th>
+                <th>Кол-во адресов</th>
+                <th>Кол-во подъездов</th>
                 <th>Стоимость работы, руб</th>
                 <th>&nbsp;</th>
               </tr>
@@ -37,6 +38,7 @@
                   <td>{{ task.get_type_display }}</td>
                   <td>{{ task.date }}</td>
                   <td>{{ task.adjustertasksurface_set.all.count|default:'0' }}</td>
+                  <td>{{ task.get_porch_count|default:'0' }}</td>
                   <td>{{ task.get_total_cost|default:'0' }}</td>
                   <td>
                     <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-AdjusterTask-{{ task.id }}" class="btn btn-danger js-ajax-remove-btn">
@@ -46,7 +48,7 @@
                 </tr>
               {% empty %}
                 <tr>
-                  <td colspan="7">
+                  <td colspan="8">
                     <p class="alert alert-info">Задач не найдено.</p>
                   </td>
                 </tr>

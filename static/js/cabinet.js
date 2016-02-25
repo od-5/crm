@@ -644,126 +644,6 @@ $(function() {
     }
   });
 
-  // валидация формы добавления задачи по району
-  var atf = $('#js-adjuster-task-add-form');
-  atf.validate({
-    rules: {
-      city: {
-        required: true
-      },
-      adjuster: {
-        required: true
-      },
-      type: {
-        required: true
-      },
-      date: {
-        required: true
-      },
-      area: {
-        required: true
-      }
-    }
-  });
-  atf.find('#id_city').change(function() {
-    if ($(this).val().length){
-
-
-      console.log($(this).val());
-      // запрос на получение списка монтажников выбранного города
-      $.ajax({
-        type: "GET",
-        url: $(this).parents('#city_group').data('adjuster-url'),
-        data: {
-          city: $(this).val()
-        }
-      }).done(function( data ) {
-        if (data.success) {
-          var adjuster_list = data.adjuster_list;
-          console.log(adjuster_list);
-          atf.find('#id_adjuster').find('option').remove();
-          atf.find('#id_adjuster').append($("<option/>", {
-                value: '',
-                text: '---------'
-            }));
-          for (var i = 0; i < adjuster_list.length; i++) {
-            atf.find('#id_adjuster').append($("<option/>", {
-                value: adjuster_list[i]['id'],
-                text: adjuster_list[i]['name']
-            }));
-          }
-          atf.find('#id_adjuster').parents('.form-group').removeClass('hide');
-        }
-      });
-      // запрос на получение списка районов выбранного города
-      $.ajax({
-        type: "GET",
-        url: $(this).parents('#city_group').data('area-url'),
-        data: {
-          city: $(this).val()
-        }
-      }).done(function(data) {
-        if (data.area_list) {
-          var area_list = data.area_list;
-          console.log(area_list);
-          atf.find('#id_area').find('option').remove();
-          atf.find('#id_area').append($("<option/>", {
-                value: '',
-                text: '---------'
-            }));
-          for (var i = 0; i < area_list.length; i++) {
-            atf.find('#id_area').append($("<option/>", {
-                value: area_list[i]['id'],
-                text: area_list[i]['name']
-            }));
-          }
-          atf.find('#id_area').parents('.form-group').removeClass('hide');
-        }
-      });
-    }
-    else {
-      atf.find('#id_adjuster').parents('.form-group').addClass('hide');
-      atf.find('#id_area').parents('.form-group').addClass('hide');
-      atf.find('#id_adjuster').find('option').remove();
-      atf.find('#id_area').find('option').remove();
-      $('.js-task-surface-list tr.result').remove();
-    //  TODO: очистить список заказов
-
-    }
-  });
-  atf.find('#id_area').change(function(){
-    $('.js-task-surface-list tr.result').remove();
-    $.ajax({
-      type: "GET",
-      url: $(this).parents('#area_group').data('surface-url'),
-      data: {
-        area: $(this).val(),
-        damaged: $(this).parents('#area_group').data('damaged')
-      }
-    }).done(function( data ) {
-      if (data.surface_list) {
-        var surface_list = data.surface_list;
-        var surface_table = $('.js-task-surface-list');
-        for (var i = 0; i < surface_list.length; i++){
-          surface_table.append(
-            '<tr class="result">'+
-            '<td><input type="checkbox" name="chk_group[]" value="' +surface_list[i]['id'] +'"></td>'+
-            '<td>'+surface_list[i]['city']+'</td>'+
-            '<td>'+surface_list[i]['area']+'</td>'+
-            '<td>'+surface_list[i]['street']+'</td>'+
-            '<td>'+surface_list[i]['number']+'</td>'+
-            '<td>'+surface_list[i]['porch']+'</td>'+
-            '</tr>'
-          )
-        }
-        $('#js-select-all').prop('checked', false);
-        $('#js-select-all').on('click', function(){
-            atf.find('tr.result input').prop('checked', $(this).prop('checked'));
-        })
-      }
-    });
-  });
-
   // валидация формы добавления района
   $( '#js-area-add-form' ).validate({
     rules: {
@@ -1351,6 +1231,16 @@ $(function() {
     $('.incomingtask-modal-text').toggle();
     $('.client-modal-add-text').toggle();
   });
+  // ajax форма редактирования задачи
+  $('#js-ajax-client-add').ajaxForm({
+    success: function (data) {
+      if (data.error) {
+        $.notify('Клиент с таким e-mail уже зарегистрирован в системе', 'error');
+        $.fancybox.close();
+      }
+    }
+  });
+
 
 
 });

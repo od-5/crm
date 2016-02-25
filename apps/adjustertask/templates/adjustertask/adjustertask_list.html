@@ -2,6 +2,11 @@
 {% block extra_js %}
   <script src="http://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
   <script src="{{ STATIC_URL }}js/map.js"></script>
+  <script>
+  $(document).ready(function() {
+   $(".progressbar").progressbar({value:35});
+  });
+  </script>
 {% endblock %}
 {% block content %}
   <div class="container">
@@ -11,7 +16,7 @@
           <p class="lead remove-bottom text-center">Список задач</p>
         </div>
         <div class="panel-body">
-          <a href="{% url 'adjustertask:add' %}" class="btn btn-success add-bottom">
+          <a href="{% url 'adjustertask:client-add' %}" class="btn btn-success add-bottom">
             <span class="glyphicon glyphicon-plus-sign"></span> Добавить задачу
           </a>
           <a href="{% url 'adjustertask:archive' %}" class="btn btn-success add-bottom">
@@ -73,7 +78,7 @@
                 <th>Дата выполнения</th>
                 <th>Кол-во адресов</th>
                 <th>Кол-во стендов</th>
-                <th>Стоимость работы, руб</th>
+                <th>% выполнения</th>
                 <th>&nbsp;</th>
               </tr>
             </thead>
@@ -87,7 +92,7 @@
                 <td>{{ object.date|default:'--' }}</td>
                 <td>{{ object.adjustertasksurface_set.all.count|default:'0' }}</td>
                 <td>{{ object.get_porch_count }}</td>
-                <td>{{ object.get_total_cost }}</td>
+                <td><div class="progressbar"></div></td>
                 <td>
                   <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-AdjusterTask-{{ object.id }}" class="btn btn-danger js-ajax-remove-btn">
                     Удалить

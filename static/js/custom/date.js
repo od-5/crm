@@ -130,5 +130,19 @@ $(function() {
     dateFormat: "dd.mm.yy"
   });
 
+  $("#js-adjustertask-client-add").find('#id_date').datepicker({
+    defaultDate: 1,
+    dateFormat: "dd.mm.yy"
+  });
+
+  $("#js-adjustertask-area-add").find('#id_date').datepicker({
+    defaultDate: 1,
+    dateFormat: "dd.mm.yy"
+  });
+  $("#js-adjustertask-repair-add").find('#id_date').datepicker({
+    defaultDate: 1,
+    dateFormat: "dd.mm.yy"
+  });
+
 
 });

@@ -80,6 +80,7 @@ class ClientOrder(models.Model):
     client = models.ForeignKey(to=Client, verbose_name=u'Клиент')
     date_start = models.DateField(verbose_name=u'Дата начала размещения')
     date_end = models.DateField(verbose_name=u'Дата окончания размещения')
+#     todo: продумать флаг "Заказ закрыт"
 
 
 class ClientOrderSurface(models.Model):

@@ -95,7 +95,7 @@
                         <th>Район</th>
                         <th>Улица</th>
                         <th>Номер дома</th>
-                        <th>Кол-во подъездов</th>
+                        <th>Подъезды</th>
                         <th>&nbsp;</th>
                       </tr>
                     </thead>
@@ -107,7 +107,7 @@
                         <td>{{ ats.surface.street.area }}</td>
                         <td>{{ ats.surface.street.name }}</td>
                         <td>{{ ats.surface.house_number }}</td>
-                        <td>{{ ats.surface.porch_count }}</td>
+                        <td>{% for atsp in ats.adjustertasksurfaceporch_set.all %} {{ atsp.porch.number }} {% endfor %}</td>
                         <td></td>
                       </tr>
                     {% endfor %}

@@ -1,0 +1,107 @@
+{% extends 'cabinet_index.html' %}
+{% block extra_js %}
+  <script src="{{ STATIC_URL }}adjustertask/js/adjustertask.js"></script>
+{% endblock %}
+{% block content %}
+  <div class="container">
+    <div class="col-lg-12">
+      {% include 'adjustertask/__include/adjustertask_menu.html' %}
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="lead text-center remove-bottom">Добавление задачи по клиенту</p>
+        </div>
+        <div class="panel-body">
+          <div class="col-lg-12">
+            {% if error %}
+            <div class="alert alert-danger">
+              {{ error }}
+            </div>
+            {%  endif %}
+            <form action="" role="form" id="js-adjustertask-client-add" method="post" data-client-ajax-url="{% url 'adjustertask:client-ajax' %}">
+              {% csrf_token %}
+              <div class="col-lg-12">
+                <p class="lead">Форма добавления задачи по клиенту</p>
+              </div>
+              <div class="col-lg-6">
+                <div class="form-group" data-ajax-url="{% url 'adjustertask:ajax-order-adjuster-list' %}">
+                  <div class="col-lg-5">
+                    {{ form.client.label_tag }}
+                  </div>
+                  <div class="col-lg-7">
+                    {{ form.client }}
+                  </div>
+                  {{ form.client.errors }}
+                  <div class="clearfix"></div>
+                </div>
+                <div class="form-group hide" id="adjuster-wrapper">
+                  <div class="col-lg-5">
+                    {{ form.adjuster.label_tag }}
+                  </div>
+                  <div class="col-lg-7">
+                    {{ form.adjuster }}
+                  </div>
+                  {{ form.adjuster.errors }}
+                  <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-5">
+                    {{ form.type.label_tag }}
+                  </div>
+                  <div class="col-lg-7">
+                    {{ form.type }}
+                  </div>
+                  {{ form.type.errors }}
+                  <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-5">
+                    {{ form.date.label_tag }}
+                  </div>
+                  <div class="col-lg-7">
+                    {{ form.date }}
+                  </div>
+                  {{ form.date.errors }}
+                  <div class="clearfix"></div>
+                </div>
+                <div class="form-group hide" id="clientorder_wrapper" data-url="{% url 'client:get_order_address_list' %}">
+                  <div class="col-lg-5">
+                    {{ form.clientorder.label_tag }}
+                  </div>
+                  <div class="col-lg-7">
+                    {{ form.clientorder }}
+                  </div>
+                  {{ form.clientorder.errors }}
+                  <div class="clearfix"></div>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                {{ form.comment }}
+                {{ form.comment.errors }}
+              </div>
+              <div class="col-lg-12">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th><input type="checkbox" name="select_all" id="js-select-all" value=""></th>
+                      <th>Город</th>
+                      <th>Район</th>
+                      <th>Улица</th>
+                      <th>Номер дома</th>
+                      <th>Кол-во подъездов</th>
+                      <th>Без повреждений, №</th>
+                      <th>С повреждениями, №</th>
+                    </tr>
+                  </thead>
+                  <tbody class="js-task-surface-list">
+                  </tbody>
+                </table>
+              </div>
+              <div class="clearfix"></div>
+              <input type="submit" class="btn btn-default" value="Сохранить">
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

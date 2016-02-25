@@ -1,0 +1,81 @@
+{% extends 'cabinet_index.html' %}
+{% block extra_js %}
+  <script src="{{ STATIC_URL }}adjustertask/js/adjustertask.js"></script>
+{% endblock %}
+{% block content %}
+  <div class="container">
+    <div class="col-lg-12">
+      {% include 'adjustertask/__include/adjustertask_menu.html' %}
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="lead text-center remove-bottom">Добавление задачи на ремонт</p>
+        </div>
+        <div class="panel-body">
+          <div class="col-lg-12">
+            {% if error %}
+            <p class="alert alert-danger">
+              {{ error }}
+            </p>
+            {% endif %}
+            <form action="" role="form" id="js-adjustertask-repair-add" class="add-bottom" method="post">
+              {% csrf_token %}
+              <div class="col-lg-12">
+                <p class="lead">Форма добавления задачи</p>
+              </div>
+              <div class="col-lg-6">
+                {{ form.type }}
+                <div class="form-group"  data-ajax-url="{% url 'city:get_area_list' %}">
+                  <div class="col-lg-5">{{ form.city.label_tag }}</div>
+                  <div class="col-lg-7">{{ form.city }}</div>
+                  {{ form.city.errors }}
+                  <div class="clearfix"></div>
+                </div>
+                <div class="form-group hide">
+                  <div class="col-lg-5">{{ form.adjuster.label_tag }}</div>
+                  <div class="col-lg-7">{{ form.adjuster }}</div>
+                  {{ form.adjuster.errors }}
+                  <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-5">{{ form.date.label_tag }}</div>
+                  <div class="col-lg-7">{{ form.date }}</div>
+                  {{ form.date.errors }}
+                  <div class="clearfix"></div>
+                </div>
+                <div class="form-group hide" data-ajax-url="{% url 'city:get_area_surface_list_with_damage' %}">
+                  <div class="col-lg-5">{{ form.area.label_tag }}</div>
+                  <div class="col-lg-7">{{ form.area }}</div>
+                  {{ form.area.errors }}
+                  <div class="clearfix"></div>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                {{ form.comment }}
+                {{ form.comment.errors }}
+              </div>
+              <div class="col-lg-12">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th><input type="checkbox" name="select_all" id="js-select-all" value=""></th>
+                      <th>Город</th>
+                      <th>Район</th>
+                      <th>Улица</th>
+                      <th>Номер дома</th>
+                      <th>Номера подъезда</th>
+                      <th>Тип повреждения</th>
+                    </tr>
+                  </thead>
+                  <tbody class="js-task-porch-list">
+                  </tbody>
+                </table>
+              </div>
+              <div class="clearfix"></div>
+              <input type="submit" value="Добавить задачу" class="btn btn-default">
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
