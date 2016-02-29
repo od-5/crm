@@ -1232,14 +1232,14 @@ $(function() {
     $('.client-modal-add-text').toggle();
   });
   // ajax форма редактирования задачи
-  $('#js-ajax-client-add').ajaxForm({
-    success: function (data) {
-      if (data.error) {
-        $.notify('Клиент с таким e-mail уже зарегистрирован в системе', 'error');
-        $.fancybox.close();
-      }
-    }
-  });
+  //$('#js-ajax-client-add').ajaxForm({
+  //  success: function (data) {
+  //    if (data.error) {
+  //      $.notify('Клиент с таким e-mail уже зарегистрирован в системе', 'error');
+  //      $.fancybox.close();
+  //    }
+  //  }
+  //});
 
 
 

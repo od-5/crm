@@ -80,6 +80,22 @@ class AdjusterTask(models.Model):
                 porch_count += i.adjustertasksurfaceporch_set.count()
         return porch_count
 
+    def get_actual_cost(self):
+        porch_count = 0
+        for asurface in self.adjustertasksurface_set.all():
+            porch_count += asurface.get_closed_porch_count()
+        if self.type == 0 and self.adjuster.cost_mounting:
+            cost = self.adjuster.cost_mounting
+        elif self.type == 1 and self.adjuster.cost_change:
+            cost = self.adjuster.cost_change
+        elif self.type == 2 and self.adjuster.cost_repair:
+            cost = self.adjuster.cost_repair
+        elif self.type == 3 and self.adjuster.cost_dismantling:
+            cost = self.adjuster.cost_dismantling
+        else:
+            cost = 0
+        return cost * porch_count
+
     def get_total_cost(self):
         if self.type == 0 and self.adjuster.cost_mounting:
             cost = self.adjuster.cost_mounting
@@ -102,9 +118,9 @@ class AdjusterTask(models.Model):
 
     adjuster = models.ForeignKey(to=Adjuster, verbose_name=u'Монтажник')
     type = models.PositiveSmallIntegerField(verbose_name=u'Вид работы', choices=TYPE_CHOICES)
-    date = models.DateField(verbose_name=u'Дата проведения работы')
+    date = models.DateField(verbose_name=u'Дата задачи')
     comment = models.TextField(verbose_name=u'Комментарий', blank=True, null=True)
-    is_closed = models.BooleanField(verbose_name=u'Задача закрыта', default=False)
+    is_closed = models.BooleanField(verbose_name=u'Выполнено', default=False)
 
 
 class AdjusterTaskSurface(models.Model):
@@ -116,9 +132,16 @@ class AdjusterTaskSurface(models.Model):
     def __unicode__(self):
         return u'#%d Задача для монтажника %s. Дата: %s' % (self.id, self.adjustertask.adjuster.user.get_full_name, self.adjustertask.date)
 
+    def get_closed_porch_count(self):
+        porch_count = 0
+        for aporch in self.adjustertasksurfaceporch_set.all():
+            if aporch.is_closed:
+                porch_count += 1
+        return porch_count
+
     adjustertask = models.ForeignKey(to=AdjusterTask, verbose_name=u'Задача')
     surface = models.ForeignKey(to=Surface, verbose_name=u'Поверхность')
-    is_closed = models.BooleanField(verbose_name=u'Работы по поверхности выполнены', default=False)
+    is_closed = models.BooleanField(verbose_name=u'Выполнено', default=False)
 
 
 class AdjusterTaskSurfacePorch(models.Model):
@@ -132,3 +155,4 @@ class AdjusterTaskSurfacePorch(models.Model):
 
     adjustertasksurface = models.ForeignKey(to=AdjusterTaskSurface, verbose_name=u'Поверхность для задачи')
     porch = models.ForeignKey(to=Porch, verbose_name=u'Подъезд поверхности для задачи')
+    is_closed = models.BooleanField(verbose_name=u'Выполнено', default=False)

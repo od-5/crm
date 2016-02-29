@@ -6219,7 +6219,7 @@ img {
 }
 .scroll td:nth-child(1),
 .scroll th:nth-child(1) {
-  width: 50px;
+  width: 170px;
 }
 .scroll td:nth-child(2),
 .scroll th:nth-child(2) {
@@ -6236,10 +6236,6 @@ img {
 .scroll td:nth-child(5),
 .scroll th:nth-child(5) {
   width: 200px;
-}
-.scroll td:nth-child(6),
-.scroll th:nth-child(6) {
-  width: 120px;
 }
 a.lead {
   display: inline-block;

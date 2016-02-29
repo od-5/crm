@@ -1,6 +1,8 @@
 # coding=utf-8
 import datetime
 from django.conf import settings
+import datetime
+from django.utils.timezone import utc
 from django.core.urlresolvers import reverse
 from django.db import models
 from apps.city.models import City, Surface
@@ -61,10 +63,12 @@ class ClientOrder(models.Model):
         При удалении заказа, для всех заказанных поверхностей автоматически устанавливется флаг "Поверхность свободна",
         т.е. доступна для заказа
         """
+        release_date = datetime.datetime.utcnow().replace(tzinfo=utc) - datetime.timedelta(days=1)
         if self.clientordersurface_set.all():
             for c_surface in self.clientordersurface_set.all():
                 surface = Surface.objects.get(pk=c_surface.surface.id)
                 surface.free = True
+                surface.release_date = release_date.date()
                 surface.save()
         super(ClientOrder, self).delete()
 

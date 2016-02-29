@@ -8,10 +8,7 @@
     <div class="col-lg-12">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <p class="lead text-center remove-bottom">
-            Редактирование задачи
-          </p>
-          {{ coord }}
+          <p class="lead text-center remove-bottom">Задача для монтажника {{ object }}</p>
         </div>
         <div class="panel-body">
           <div class="col-lg-12">
@@ -37,7 +34,7 @@
             </div>
           {% endif %}
 
-              <form action="." role="form" id="js-adjuster-client_task-update-form" method="post" data-client-ajax-url="{% url 'adjustertask:client-ajax' %}">
+              <form action="." role="form" class="add-bottom" id="js-adjuster-client_task-update-form" method="post" data-client-ajax-url="{% url 'adjustertask:client-ajax' %}">
                 {% csrf_token %}
                 <div class="col-lg-6">
                   <div class="col-lg-12">
@@ -90,25 +87,33 @@
                   <table class="table">
                     <thead>
                       <tr>
-                        <th>id</th>
                         <th>Город</th>
                         <th>Район</th>
                         <th>Улица</th>
                         <th>Номер дома</th>
-                        <th>Подъезды</th>
-                        <th>&nbsp;</th>
+                        <th>Кол-во стендов</th>
+                        <th>Номера подъездов</th>
                       </tr>
                     </thead>
                     <tbody class="js-task-surface-list">
                     {% for ats in task_surface_list %}
-                      <tr>
-                        <td>{{ ats.id }}</td>
+                      <tr {% if ats.is_closed %}class="alert alert-success{% endif %}">
                         <td>{{ ats.surface.street.city }}</td>
                         <td>{{ ats.surface.street.area }}</td>
                         <td>{{ ats.surface.street.name }}</td>
                         <td>{{ ats.surface.house_number }}</td>
-                        <td>{% for atsp in ats.adjustertasksurfaceporch_set.all %} {{ atsp.porch.number }} {% endfor %}</td>
-                        <td></td>
+                        <td>{{ ats.adjustertasksurfaceporch_set.count }}</td>
+                        <td>
+                          {% for atsp in ats.adjustertasksurfaceporch_set.all %}
+                            {{ atsp.porch.number }}{% if not forloop.last %}, {% endif %}
+                          {% endfor %}
+                        </td>
+                      </tr>
+                    {% empty %}
+                      <tr>
+                        <td colspan="6">
+                          <p class="alert alert-info">Адресов не найдено</p>
+                        </td>
                       </tr>
                     {% endfor %}
                     </tbody>

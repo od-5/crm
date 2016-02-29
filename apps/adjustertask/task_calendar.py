@@ -35,10 +35,8 @@ def get_months():
     date1 = next_month(current)
     date2 = next_month(date1)
     date3 = next_month(date2)
-    date4 = next_month(date3)
-    date5 = next_month(date4)
     return {
-        'months': [current, date1, date2, date3, date4, date5],
+        'months': [current, date1, date2, date3],
     }
 
 

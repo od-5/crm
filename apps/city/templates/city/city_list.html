@@ -43,7 +43,7 @@
               <thead>
                 <tr>
                   <th>Название</th>
-                  <th>{% if user.type == 1 %}Модератор{% else %}&nbsp;{% endif %}</th>
+                  <th>Модератор</th>
                   <th>Количество рекламных поверхностей</th>
                   <th>Количество клиентов</th>
                   <th>&nbsp;</th>
@@ -56,20 +56,22 @@
                   <td>
                   {% if user.type == 1 %}
                     {% if object.moderator %}
-                  <a href="{% url 'moderator:change' object.moderator.id %}">{{ object.moderator|default:'Не указан' }}</a>
-                    {% else %}
-                  {{ object.moderator|default:'Не указан' }}
+                    <a href="{% url 'moderator:change' object.moderator.id %}">{{ object.moderator|default:'Не указан' }}</a>
                     {% endif %}
+                  {% else %}
+                    {{ object.moderator|default:'Не указан' }}
                   {% endif %}
                   </td>
                   <td>{{ object.surface_count }}</td>
                   <td>{{ object.client_set.all.count }}</td>
                   <td>
-                    {% if user.type == 1 %}
+                  {% if user.type == 1 %}
                     <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ object.id }}" class="btn btn-danger js-ajax-remove-btn">
                       <span class="glyphicon glyphicon-remove"></span> Удалить
                     </a>
-                    {% endif %}
+                  {% else %}
+                      &nbsp;
+                  {% endif %}
                   </td>
                 </tr>
               {% empty %}

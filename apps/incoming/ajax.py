@@ -212,6 +212,8 @@ def ajax_client_add(request):
         client.save()
         incomingtask.status = 1
         incomingtask.save()
+        print '1'*10
         return HttpResponseRedirect(reverse('client:change', args=(client.id, )))
+    print '2'*10
     return_url = reverse('incoming:task-list') + '?error=1'
     return HttpResponseRedirect(return_url)

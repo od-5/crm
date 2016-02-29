@@ -41,7 +41,6 @@ class AdjusterTaskClientForm(forms.ModelForm):
     )
 
 
-
 class AdjusterTaskClientAddForm(forms.ModelForm):
     class Meta:
         model = AdjusterTask

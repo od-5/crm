@@ -2,13 +2,13 @@
   <a href="{% url 'client:change' client.id %}" class="btn btn-default">
     <span class="glyphicon glyphicon-edit"></span> Редактирование клиента
   </a>
-  <a href="{% url 'client:maket' client.id %}" class="btn btn-default">
-    <span class="glyphicon glyphicon-folder-open"></span> Архив макетов
-  </a>
   <a href="{% url 'client:order' client.id %}" class="btn btn-default">
     <span class="glyphicon glyphicon-check"></span> Заказы
   </a>
   <a href="{% url 'client:journal' client.id %}" class="btn btn-default">
     <span class="glyphicon glyphicon-calendar"></span> Журнал покупок
+  </a>
+  <a href="{% url 'client:maket' client.id %}" class="btn btn-default">
+    <span class="glyphicon glyphicon-folder-open"></span> Архив макетов
   </a>
 </div>

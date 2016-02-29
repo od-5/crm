@@ -194,7 +194,7 @@ class Porch(models.Model):
             return False
 
     surface = models.ForeignKey(to=Surface, verbose_name=u'Рекламная поверхность')
-    number = models.CharField(max_length=10, verbose_name=u'Номер подъезда')
+    number = models.PositiveSmallIntegerField(verbose_name=u'Номер подъезда')
     broken_shield = models.BooleanField(verbose_name=u'Щит сломан', default=False)
     broken_gib = models.BooleanField(verbose_name=u'Сломана прижимная планка', default=False)
     no_glass = models.BooleanField(verbose_name=u'Отсутствует защитное стекло', default=False)

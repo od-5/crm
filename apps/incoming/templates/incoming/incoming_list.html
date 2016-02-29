@@ -44,11 +44,13 @@
                 </td>
                 <td>{{ object.city|default:'Не указано' }}</td>
                 <td>
+                  <br>
                   <a href="#incomingclient-contact" data-url="{% url 'incoming:get_contact_list' %}" data-incomingclient="{{ object.id }}" id="js-incomingclient-{{ object.id }}-button" class="btn btn-info btn-sm js-show-incomingclient-contact">
                     <span class="glyphicon glyphicon-search"></span> Контактные лица
                   </a>
                 </td>
                 <td>
+                  <br>
                   <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-IncomingClient-{{ object.id }}" class="btn btn-danger btn-sm js-ajax-remove-btn">
                     <span class="glyphicon glyphicon-remove"></span> Удалить
                   </a>
