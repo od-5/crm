@@ -101,8 +101,10 @@ class ClientOrderSurface(models.Model):
             return self.surface.porch_set.all().count()
 
     def delete(self, *args, **kwargs):
+        release_date = datetime.datetime.utcnow().replace(tzinfo=utc) - datetime.timedelta(days=1)
         surface = Surface.objects.get(pk=self.surface.id)
         surface.free = True
+        surface.release_date = release_date.date()
         surface.save()
         super(ClientOrderSurface, self).delete()
 
