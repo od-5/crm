@@ -358,10 +358,10 @@
       <div class="footer-line">
         <div class="holder">
           <ul>
-            <li><a href="">Клиентам</a></li>
-            <li><a href="">Модераторам</a></li>
-            <li><a href="">Менеджерам</a></li>
-            <li><a href="">Монтажникам</a></li>
+            <li><a href="{% url 'sign:client' %}">Клиентам</a></li>
+            <li><a href="{% url 'sign:moderator' %}">Модераторам</a></li>
+            <li><a href="{% url 'sign:manager' %}">Менеджерам</a></li>
+            <li><a href="{% url 'sign:adjuster' %}">Монтажникам</a></li>
           </ul>
         </div>
       </div>
@@ -430,10 +430,11 @@
                 <div class="select-block">
                   <select name="city" class="styled">
                     <option value="">Выберите ваш город</option>
-                    <option value="Ростов-на-Дону">Ростов-на-Дону</option>
-                    <option value="Киров">Киров</option>
-                    <option value="Волгоград">Волгоград</option>
-                    <option value="Волжский">Волжский</option>
+                    {% if city_list %}
+                    {% for city in city_list %}
+                    <option value="{{ city.id }}">{{ city.name }}</option>
+                    {% endfor %}
+                    {% endif %}
                   </select>
                 </div>
                 <input type="hidden" name="theme" value="Заказать рекламу">
