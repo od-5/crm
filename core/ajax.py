@@ -35,12 +35,16 @@ def ymap(request):
 
 @ajax_request
 def ymap_surface(request):
+    user = request.user
     request.encoding = 'utf-8'
     if request.is_ajax():
-        if request.user.type == 1:
+        if user.type == 1:
             query = Surface.objects.all()
-        else:
+        elif user.type == 2:
             query = Surface.objects.filter(city__moderator=request.user)
+        elif user.type == 5:
+            manager = Manager.objects.get(user=user)
+            query = Surface.objects.filter(city__moderator=manager.moderator)
         result = []
         for item in query:
             result_json = {}

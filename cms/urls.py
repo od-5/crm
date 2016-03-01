@@ -10,8 +10,8 @@ from django.views.generic import TemplateView
 
 urlpatterns = patterns('',
     # Examples:
-    # url(r'^$', TemplateView.as_view(template_name='landing/landing.html'), name='home'),
     url(r'^$', 'apps.landing.views.home_view', name='home'),
+    url(r'^sign/', include('apps.sign.urls', namespace='sign'),),
     url(r'^cabinet/', include('apps.cabinet.urls', namespace='cabinet'),),
     url(r'^administrator/', include('apps.administrator.urls', namespace='administrator'),),
     url(r'^moderator/', include('apps.moderator.urls', namespace='moderator'),),

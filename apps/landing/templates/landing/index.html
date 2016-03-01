@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="keywords" content="{% block meta_keys %}{% endblock %}">
+  <meta name="description" content="{% block meta_desc %}{% endblock %}">
+  <meta name="format-detection" content="telephone=no">
+  <link href="favicon.ico" rel="shortcut icon" type="image/x-icon" />
+  <title>{% block title %}Рекламное агентство Дружба{% endblock %}</title>
+  {% load staticfiles %}
+  <link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/all.css' %}" />
+  <link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/jquery-ui.css' %}" />
+  <link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/jquery.bxslider.css' %}" />
+  <link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/jquery.fancybox.css' %}" />
+  <script src="{% static 'landing/js/jquery-1.9.1.min.js' %}"></script>
+  <script src="{% static 'landing/js/jquery-ui.min.js' %}"></script>
+  <script src="{% static 'landing/js/jquery.bxslider.min.js' %}"></script>
+  <script src="{% static 'landing/js/jquery.validate.js' %}"></script>
+  <script src="{% static 'landing/js/jquery.fancybox.js' %}"></script>
+  <script src="{% static 'landing/js/jquery.maskedinput.js' %}"></script>
+  <!--[if lt IE 9]><script type="text/javascript" src="{% static 'landing/js/html5.js' %}"></script><![endif]-->
+  <!--[if lt IE 9]><script type="text/javascript" src="{% static 'landing/js/placeholder.js' %}"></script><![endif]-->
+  <script src="{% static 'landing/js/all.js' %}"></script>
+</head>
+<body>
+  <div id="wrapper">
+    <header class="header">
+      <div class="header-top">
+        <div class="holder">
+          <div class="logo">
+            <span class="logo-text-black">Рекламные конструкции </span>
+            <span class="logo-text-big">на входных дверях</span>
+            <span class="logo-text-min">В городах России и СНГ</span>
+          </div>
+          <div class="header-phone">
+            <div class="header-number">{{ phone|default:"8 800 250-34-50" }}</div>
+            <div class="header-callback"><a href="#dialog2" class="modal">Заказать обратный звонок</a></div>
+          </div>
+          <div class="header-right">
+            <div class="header-right-text">Выбран город: Ростов-на-Дону</div>
+            <div class="select-item">
+              <div class="select-top">Выберите ваш город</div>
+              <ul class="select-hidden">
+              {% if city_list %}
+                {% for city in city_list %}
+                <li><a href="">{{ city.name|default:'не указано' }}</a></li>
+                {% endfor %}
+              {% endif %}
+              </ul>
+            </div>
+            <div class="select-item select-item-min">
+              <div class="select-top">Вход</div>
+              <ul class="select-hidden">
+                <li><a href="{% url 'sign:client' %}">Клиентам</a></li>
+                <li><a href="{% url 'sign:moderator' %}">Модераторам</a></li>
+                <li><a href="{% url 'sign:manager' %}">Менеджерам</a></li>
+                <li><a href="{% url 'sign:adjuster' %}">Монтажникам</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="header-main">
+        <div class="holder">
+          <div class="header-main-left">
+            <div class="header-main-text"><strong>Нужны клиенты?</strong>
+            Закажите эффективную рекламу по цене 10 коп. за показ</div>
+            <div class="form-block">
+              <div class="form-top"></div>
+              <div class="form-frame">
+                <div class="form-title">Заказать <br>рекламу</div>
+                <form action="send.php" method="post">
+                  <fieldset>
+                    <input type="text" name="name" class="input required" placeholder="Ваше имя *">
+                    <input type="text" name="phone" class="input no-margin required" placeholder="+7 (___) ___ - __ - __">
+                    <div class="select-block">
+                      <select name="city" class="styled">
+                        <option value="">Выберите ваш город</option>
+                        {% if city_list %}
+                        {% for city in city_list %}
+                        <option value="{{ city.id }}">{{ city.name|default:'не указано' }}</option>
+                        {% endfor %}
+                        {% endif %}
+                      </select>
+                    </div>
+                    <input type="hidden" name="theme" value="Заказать эффективную рекламу">
+                    <button class="submit">Заказать</button>
+                  </fieldset>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="header-box">
+            <div class="link link1">
+              <a data-part="part1" class="yellow">Место под Вашу рекламу</a>
+              <img src="{{ STATIC_URL }}landing/images/box/line1.png" alt="" class="link-line">
+            </div>
+            <div class="link link2">
+              <a data-part="part2">Информация о доме</a>
+              <img src="{{ STATIC_URL }}landing/images/box/line2.png" alt="" class="link-line">
+            </div>
+            <div class="link link3">
+              <a data-part="part3" >Защитное стекло<br> <span>(монолитный поликарбонат)</span></a>
+              <img src="{{ STATIC_URL }}landing/images/box/line3.png" alt="" class="link-line">
+            </div>
+            <div class="link link4">
+              <a data-part="part4" >Антивандальные винты</a>
+              <img src="{{ STATIC_URL }}landing/images/box/line4.png" alt="" class="link-line">
+            </div>
+            <div class="link link5">
+              <a data-part="part5" >Металлическая рама</a>
+              <img src="{{ STATIC_URL }}landing/images/box/line5.png" alt="" class="link-line">
+            </div>
+            <img src="{{ STATIC_URL }}landing/images/box/part1.png" alt="" class="part part1">
+            <img src="{{ STATIC_URL }}landing/images/box/part2.png" alt="" class="part part2">
+            <img src="{{ STATIC_URL }}landing/images/box/part3.png" alt="" class="part part3">
+            <img src="{{ STATIC_URL }}landing/images/box/part4.png" alt="" class="part part4">
+            <img src="{{ STATIC_URL }}landing/images/box/part5.png" alt="" class="part part5">
+          </div>
+        </div>
+      </div>
+    </header>
+    <section class="about">
+      <div class="holder">
+        <h2>Почему реклама на подъездах <span>настолько эффективна</span></h2>
+        <div class="about-holder">
+          <div class="about-item clear">
+            <div class="about-icon"><img src="{{ STATIC_URL }}landing/images/icon1.png" alt=""></div>
+            <div class="about-text">100% охват аудитории. Все жители дома увидят вашу рекламу.</div>
+          </div>
+          <div class="about-item">
+            <div class="about-icon"><img src="{{ STATIC_URL }}landing/images/icon2.png" alt=""></div>
+            <div class="about-text">Эксклюзивное размещение одного рекламодателя.</div>
+          </div>
+          <div class="about-item">
+            <div class="about-icon"><img src="{{ STATIC_URL }}landing/images/icon3.png" alt=""></div>
+            <div class="about-text">Гарантированный срок размещения. Защита от вандалов</div>
+          </div>
+          <div class="about-item clear">
+            <div class="about-icon"><img src="{{ STATIC_URL }}landing/images/icon4.png" alt=""></div>
+            <div class="about-text">Возможность выбора индивидуальной адресной программы для размещения</div>
+          </div>
+          <div class="about-item">
+            <div class="about-icon"><img src="{{ STATIC_URL }}landing/images/icon5.png" alt=""></div>
+            <div class="about-text">Содержит информацию по дому (адрес, номер подъезда, аварийные телефоны)</div>
+          </div>
+          <div class="about-item">
+            <div class="about-icon"><img src="{{ STATIC_URL }}landing/images/icon6.png" alt=""></div>
+            <div class="about-text">Программа онлайн-мониторинга размещения для клиентов.</div>
+          </div>
+        </div>
+        <article class="article">
+          <p>Адресная программа формируется в зависимости от пожеланий каждого конкретного рекламодателя. Вы выбираете только те
+          дома, которые  необходимы именно Вам. На табличке размещается информация только одного рекламодателя, поэтому рядом с
+          вашей рекламой не будет рекламы Ваших конкурентов.</p>
+          <p>Социальный аспект формирует благоприятное отношение жителей к данному стенду и рекламной информации, размещаемой
+          на нём. В верхнем блоке рекламной таблички  отображены: наименование управляющей компании, обслуживающей этот дом,
+          название улицы, номер подъезда и номера квартир, а также контакты УК  и телефоны различных служб.</p>
+        </article>
+      </div>
+    </section>
+    <section class="garanty">
+      <div class="holder">
+        <div class="garanty-title"><span>100% ГАРАНТИЯ </span>ЗАЩИТЫ РЕКЛАМЫ<br> И ИСПОЛНЕНИЯ<br> ЗАКАЗА</div>
+        <div class="video-tablet">
+          <a href="#dialog" class="tablet-link modal">
+            <img src="{{ STATIC_URL }}landing/images/play2.png" alt="" class="tablet-play pulsing">
+            <img src="{{ STATIC_URL }}landing/images/tablet-text.png" alt="" class="tablet-text">
+          </a>
+        </div>
+      </div>
+    </section>
+    <section class="map">
+      <div class="holder">
+        <h2>Карта возможностей размещения вашей
+        <span>рекламы в городах России</span></h2>
+        <div class="map-block">
+          <div class="city city1">
+            <b>Ростов-на-Дону</b> / 2500
+            <i>конструкций</i>
+            <img src="{{ STATIC_URL }}landing/images/map/1.png" alt="" class="city-line">
+          </div>
+          <div class="city city2">
+            <b>Киров</b> / 2500
+            <i>конструкций</i>
+            <img src="{{ STATIC_URL }}landing/images/map/2.png" alt="" class="city-line">
+          </div>
+          <div class="city city3">
+            <b>Волгоград</b> / 2500
+            <i>конструкций</i>
+            <img src="{{ STATIC_URL }}landing/images/map/3.png" alt="" class="city-line">
+          </div>
+          <div class="city city4">
+            <b>Волжский</b> / 2500
+            <i>конструкций</i>
+            <img src="{{ STATIC_URL }}landing/images/map/4.png" alt="" class="city-line">
+          </div>
+        </div>
+        <div class="city-button-holder">
+          <a href="" class="city-button">Посмотреть возможности по вашему городу</a>
+          <div class="city-hidden">
+            <ul class="city-list">
+              <li><a href="">Ростов-на-Дону</a></li>
+              <li><a href="">Киров</a></li>
+            </ul>
+            <ul class="city-list">
+              <li><a href="">Волгоград</a></li>
+              <li><a href="">Волжский</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="gallery">
+      <div class="holder">
+        <h2>Наши работы / Примеры <span>размещения рекламы</span></h2>
+        <div class="gallery-holder">
+          <div class="gallery-block">
+            <div class="gallery-item g1">
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/1.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/1.jpg" alt=""></a>
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/2.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/2.jpg" alt=""></a>
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/3.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/3.jpg" alt=""></a>
+            </div>
+            <div class="gallery-item g2">
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/4.jpg" class="g-big fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/4.jpg" alt=""></a>
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/5.jpg" class="g-big fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/5.jpg" alt=""></a>
+            </div>
+            <div class="gallery-item g3">
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/6.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/6.jpg" alt=""></a>
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/7.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/7.jpg" alt=""></a>
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/8.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/8.jpg" alt=""></a>
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/9.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/9.jpg" alt=""></a>
+            </div>
+            <div class="gallery-item g4">
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/10.jpg" class="g-big fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/10.jpg" alt=""></a>
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/11.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/11.jpg" alt=""></a>
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/12.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/12.jpg" alt=""></a>
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/13.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/13.jpg" alt=""></a>
+            </div>
+            <div class="gallery-item g5">
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/14.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/14.jpg" alt=""></a>
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/15.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/15.jpg" alt=""></a>
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/16.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/16.jpg" alt=""></a>
+            </div>
+            <div class="gallery-item g6">
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/17.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/17.jpg" alt=""></a>
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/18.jpg" class="g-mid fancybox last" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/18.jpg" alt=""></a>
+              <a href="" class="gallery-more">Больше<br> проектов</a>
+            </div>
+          </div>
+          <div class="gallery-block gallery-hidden">
+            <div class="gallery-item g1">
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/1.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/1.jpg" alt=""></a>
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/2.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/2.jpg" alt=""></a>
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/3.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/3.jpg" alt=""></a>
+            </div>
+            <div class="gallery-item g2">
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/4.jpg" class="g-big fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/4.jpg" alt=""></a>
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/5.jpg" class="g-big fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/5.jpg" alt=""></a>
+            </div>
+            <div class="gallery-item g3">
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/6.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/6.jpg" alt=""></a>
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/7.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/7.jpg" alt=""></a>
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/8.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/8.jpg" alt=""></a>
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/9.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/9.jpg" alt=""></a>
+            </div>
+            <div class="gallery-item g4">
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/10.jpg" class="g-big fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/10.jpg" alt=""></a>
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/11.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/11.jpg" alt=""></a>
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/12.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/12.jpg" alt=""></a>
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/13.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/13.jpg" alt=""></a>
+            </div>
+            <div class="gallery-item g5">
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/14.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/14.jpg" alt=""></a>
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/15.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/15.jpg" alt=""></a>
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/16.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/16.jpg" alt=""></a>
+            </div>
+            <div class="gallery-item g6">
+              <a href="{{ STATIC_URL }}landing/images/gallery-big/17.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/17.jpg" alt=""></a>
+              <a href="" class="gallery-hide">Свернуть<br> проекты</a>
+            </div>
+          </div>
+        </div>
+        <div class="button-holder">
+          <a href="#dialog3" class="button modal">Заказать рекламу</a>
+        </div>
+      </div>
+    </section>
+    <section class="review">
+      <div class="holder">
+        <h2>Отзывы об эффективности <span>нашей рекламы</span></h2>
+        <div class="review-holder">
+          <ul class="slider">
+<!--   Отзыв 1  -->
+            <li>
+              <div class="review-item">
+                <div class="review-top">
+                  <div class="review-img">
+                    <img src="{{ STATIC_URL }}landing/images/review.jpg" alt="">
+                  </div>
+                  <div class="review-name"><span>Неткач</span> Максим </div>
+                  <div class="review-status"><a href="">Vk.com/id186111122</a> / Директор сети магазинов спортивного питания "Мастер Спорта"</div>
+                </div>
+                <div class="review-text">На рынке мы уже более 6 лет, занимаемся розничной торговлей спортивным питанием. Первые
+                годы работы, к рекламе практически не прибегали, потому как не чувствовали в этом надобности. Но когда встал вопрос
+                о расширении бизнеса и открытия новых магазинов, мы решили воспользоваться данным инструментом продаж. Результат
+                не заставил себя долго ждать. С помощью большого охвата аудитории, который мы смогли получить благодаря размещению
+                рекламных продуктов на домофонных стендах нашего региона, мы, действительно, увидели много новых клиентов, о нас
+                узнало большее количество потенциальных покупателей. Будем надеется, что наше сотрудничество продолжится, и мы
+                не раз с большим удовольствием  будем работать в тандеме.</div>
+              </div>
+            </li>
+<!--   Отзыв 2  -->
+            <li>
+              <div class="review-item">
+                <div class="review-top">
+                  <div class="review-img">
+                    <img src="{{ STATIC_URL }}landing/images/review.jpg" alt="">
+                  </div>
+                  <div class="review-name"><span>Неткач</span> Максим </div>
+                  <div class="review-status"><a href="">Vk.com/id186111122</a> / Директор сети магазинов спортивного питания "Мастер Спорта"</div>
+                </div>
+                <div class="review-text">На рынке мы уже более 6 лет, занимаемся розничной торговлей спортивным питанием. Первые
+                годы работы, к рекламе практически не прибегали, потому как не чувствовали в этом надобности. Но когда встал вопрос
+                о расширении бизнеса и открытия новых магазинов, мы решили воспользоваться данным инструментом продаж. Результат
+                не заставил себя долго ждать. </div>
+              </div>
+            </li>
+
+          </ul>
+        </div>
+      </div>
+    </section>
+    <section class="ask">
+      <div class="holder">
+        <div class="form-block">
+          <div class="form-top"></div>
+          <div class="form-frame">
+            <div class="form-title">у Вас есть какой-либо вопрос, Вы можете задать его в форме ниже:</div>
+            <form action="send.php" method="post">
+              <fieldset>
+                <div class="form-right">
+                  <textarea name="text" cols="30" rows="10" class="textarea" placeholder="Ваш вопрос *"></textarea>
+                </div>
+                <div class="form-left">
+                  <input type="text" name="name" class="input required" placeholder="Ваше имя *">
+                  <input type="text" name="phone" class="input no-margin required" placeholder="+7 (___) ___ - __ - __">
+                </div>
+                <input type="hidden" name="theme" value="Задать вопрос">
+                <button class="submit">Отправить</button>
+              </fieldset>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+    <footer class="footer">
+      <div class="footer-line">
+        <div class="holder">
+          <ul>
+            <li><a href="">Клиентам</a></li>
+            <li><a href="">Модераторам</a></li>
+            <li><a href="">Менеджерам</a></li>
+            <li><a href="">Монтажникам</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="holder">
+        <div class="logo">
+          <span class="logo-text-black">Рекламные конструкции </span>
+          <span class="logo-text-big">на входных дверях</span>
+          <span class="logo-text-min">В городах России и СНГ</span>
+        </div>
+        <div class="copy"><a href="#hidden-block" class="fancybox">Политика конфиденциальности</a><br>
+        Все права защищены &copy; 2015</div>
+        <a href="http://5lands.ru/" target="_blank" class="studio">
+          Дизайн сайта<br>
+          <img src="{{ STATIC_URL }}landing/images/studio.png" alt="">
+        </a>
+        <div class="header-phone">
+          <div class="header-number">{{ phone|default:'8 800 250-34-50' }}</div>
+          <div class="header-callback"><a href="#dialog2" class="modal">Заказать обратный звонок</a></div>
+        </div>
+        <div id="hidden-block">
+          <h2>Политика конфиденциальности</h2>
+          <p>Мы не собираем личную информацию о Вас, когда Вы заходите на наш сайт.
+          Вы можете анонимно просматривать сайт. Тем не менее, Ваш браузер все же автоматически сообщает нам тип компьютера и операционной системы, которые Вы используете. Единственная личная информация о Вас, которую мы получаем, это те данные, которые Вы добровольно предоставляете при заполнении форм.
+          При заполнении форм на сайте у Вас запросят персональную информацию, такую как имя, номер телефона. Предоставление такой информации в ответ на запрос осуществляется Вами исключительно добровольно.
+          Предоставленная Вами информация используется чтобы оказать те услуги, которые Вы сами запрашиваете.
+          </p>
+        </div>
+      </div>
+    </footer>
+    <!--   Всплывающие окна  -->
+    <div id="boxes">
+      <div id="dialog" class="window">
+        <div class="tablet-popup">
+          <div class="tablet-video">
+            <iframe width="695" height="522" src="https://www.youtube.com/embed/Y1wWqG4UiTY" frameborder="0" allowfullscreen></iframe>
+          </div>
+        </div>
+        <a href="" class="close">X</a>
+      </div>
+      <div id="dialog2" class="window">
+        <div class="form-block">
+          <div class="form-top"></div>
+          <div class="form-frame">
+            <div class="form-title">Заказать <br>обратный звонок</div>
+            <form action="send.php" method="post">
+              <fieldset>
+                <input type="text" name="name" class="input required" placeholder="Ваше имя *">
+                <input type="text" name="phone" class="input no-margin required" placeholder="+7 (___) ___ - __ - __">
+                <input type="hidden" name="theme" value="Заказать обратный звонок">
+                <button class="submit">Заказать</button>
+              </fieldset>
+            </form>
+          </div>
+        </div>
+        <a href="" class="close">X</a>
+      </div>
+      <div id="dialog3" class="window">
+        <div class="form-block">
+          <div class="form-top"></div>
+          <div class="form-frame">
+            <div class="form-title">Заказать <br>рекламу</div>
+            <form action="send.php" method="post">
+              <fieldset>
+                <input type="text" name="name" class="input required" placeholder="Ваше имя *">
+                <input type="text" name="phone" class="input no-margin required" placeholder="+7 (___) ___ - __ - __">
+                <div class="select-block">
+                  <select name="city" class="styled">
+                    <option value="">Выберите ваш город</option>
+                    <option value="Ростов-на-Дону">Ростов-на-Дону</option>
+                    <option value="Киров">Киров</option>
+                    <option value="Волгоград">Волгоград</option>
+                    <option value="Волжский">Волжский</option>
+                  </select>
+                </div>
+                <input type="hidden" name="theme" value="Заказать рекламу">
+                <button class="submit">Заказать</button>
+              </fieldset>
+            </form>
+          </div>
+        </div>
+        <a href="" class="close">X</a>
+      </div>
+      <div id="mask"></div>
+    </div>
+    <!--   Всплывающие окна end  -->
+  </div>
+</body>
+</html>

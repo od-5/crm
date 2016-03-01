@@ -99,7 +99,11 @@
               <tr {% if object.damaged %}class="danger"{% endif %} data-id="{{ object.id }}" data-name="{{ object.street }}" data-model="Surface" id="id_Surface_{{ object.id }}">
                 <td>{{ object.city|default:'Не указано' }}</td>
                 <td>{{ object.street.area|default:'Не указано' }}</td>
+                {% if user.type == 5 %}
+                <td>{{ object.street|default:'Не указано' }}</td>
+                {% else %}
                 <td><a href="{% url 'surface:update' object.id %}">{{ object.street|default:'Не указано' }}</a></td>
+                {% endif %}
                 <td>{{ object.house_number|default:'Не указано' }}</td>
                 <td>{{ object.porch_count|default:'Не указано' }}</td>
                 <td>{{ object.management.name|default:'Не указано' }}</td>
@@ -112,9 +116,13 @@
                   {% endif %}
                 </td>
                 <td>
+                  {% if user.type == 5 %}
+                    &nbsp;
+                  {% else %}
                   <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-Surface-{{ object.id }}" class="btn btn-danger js-ajax-remove-btn">
                     Удалить
                   </a>
+                  {% endif %}
                 </td>
               </tr>
             {% empty %}

@@ -6,6 +6,7 @@ from django.shortcuts import render
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from apps.adjuster.models import SurfacePhoto
+from apps.manager.models import Manager
 from .forms import SurfaceAddForm, PorchAddForm, SurfacePhotoForm
 from apps.city.models import City, Area, Surface, Street, Porch, ManagementCompany
 
@@ -27,6 +28,9 @@ class SurfaceListView(ListView):
             qs = Surface.objects.all()
         elif self.request.user.type == 2:
             qs = Surface.objects.filter(city__moderator=user_id)
+        elif self.request.user.type == 5:
+            manager = Manager.objects.get(user=user_id)
+            qs = Surface.objects.filter(city__moderator=manager.moderator)
         else:
             qs = None
         # фильтрация поверхностей по городам, районам, улицам
@@ -59,6 +63,10 @@ class SurfaceListView(ListView):
         elif self.request.user.type == 2:
             qs = City.objects.filter(moderator=user_id)
             management_qs = ManagementCompany.objects.filter(city__moderator=user_id)
+        elif self.request.user.type == 5:
+            manager = Manager.objects.get(user=user_id)
+            qs = City.objects.filter(moderator=manager.moderator)
+            management_qs = ManagementCompany.objects.filter(city__moderator=manager.moderator)
         else:
             qs = None
             management_qs = None
@@ -95,7 +103,6 @@ class SurfaceListView(ListView):
             context.update({
                 'release_date': self.request.GET.get('release_date')
             })
-
         return context
 
 

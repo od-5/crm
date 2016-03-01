@@ -3,7 +3,7 @@ from annoying.decorators import ajax_request
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect
 from django.views.generic import UpdateView
 from apps.adjuster.models import Adjuster
@@ -18,37 +18,22 @@ __author__ = 'alexy'
 @login_required()
 def cabinet_view(request):
     context = {}
-    # user = User.objects.get(id=request.user.id)
-    # if user.type == 1:
-    #     city_qs = City.objects.all()[:10]
-    #     client_qs = Client.objects.all()[:10]
-    #     adjuster_qs = None
-    # elif user.type == 2:
-    #     city_qs = City.objects.filter(moderator=user)
-    #     client_qs = Client.objects.filter(city__moderator=user)[:10]
-    #     adjuster_qs = Adjuster.objects.filter(city__moderator=user)[:10]
-    # else:
-    #     city_qs = None
-    #     client_qs = None
-    #     adjuster_qs = None
-    # if city_qs:
-    #     context.update({
-    #         'city_list': city_qs
-    #     })
-    # if client_qs:
-    #     context.update({
-    #         'client_list': client_qs
-    #     })
-    # if adjuster_qs:
-    #     context.update({
-    #         'adjuster_list': adjuster_qs
-    #     })
+    user = request.user
+    if user.type == 1:
+        template_name = 'cabinet/dash_admin.html'
+    elif user.type == 2:
+        template_name = 'cabinet/dash_moderator.html'
+    elif user.type == 3:
+        template_name = 'cabinet/dash_client.html'
+    elif user.type == 4:
+        template_name = 'cabinet/dash_adjuster.html'
+    elif user.type == 5:
+        template_name = 'cabinet/dash_manager.html'
+    else:
+        raise Http404
+    return render(request, template_name, context)
 
 
-    return render(request, 'cabinet_index.html', context)
-
-
-# @ajax_request
 def cabinet_login(request):
     username = request.POST.get('username')
     password = request.POST.get('password')

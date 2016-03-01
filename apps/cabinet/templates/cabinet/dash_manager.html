@@ -1,0 +1,84 @@
+{% extends 'cabinet_index.html' %}
+{% block content %}
+<div class="container">
+  <div class="col-lg-8">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <p class="lead text-center remove-bottom">CRM - система управления клиентами</p>
+      </div>
+      <div class="panel-body">
+        <div class="col-lg-3">
+          <a href="{% url 'incoming:list' %}" class="dashboard__link">
+            <img src="{{ STATIC_URL }}icon/incoming_list.png" alt="Список клиентов" class="dashboard__link_icon">
+            <span class="dashboard__link_text">Список клиентов</span>
+          </a>
+        </div>
+        <div class="col-lg-3">
+          <a href="{% url 'incoming:add' %}" class="dashboard__link">
+            <img src="{{ STATIC_URL }}icon/incoming_add.png" alt="Добавить нового клиента" class="dashboard__link_icon">
+            <span class="dashboard__link_text">Добавить нового клиента</span>
+          </a>
+        </div>
+        <div class="col-lg-3">
+          <a href="{% url 'incoming:task-list' %}" class="dashboard__link">
+            <img src="{{ STATIC_URL }}icon/incoming_task_list.png" alt="Журнал задач по клиентам" class="dashboard__link_icon">
+            <span class="dashboard__link_text">Журнал задач по клиентам</span>
+          </a>
+        </div>
+        <div class="col-lg-3">
+          <a href="{% url 'incoming:task-list' %}" class="dashboard__link">
+            <img src="{{ STATIC_URL }}icon/incoming_task_add.png" alt="Добавить новую задачу по клиенту" class="dashboard__link_icon">
+            <span class="dashboard__link_text">Добавить новую задачу по клиенту</span>
+          </a>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <p class="lead text-center remove-bottom">Рекламные поверхности</p>
+      </div>
+      <div class="panel-body">
+        <div class="col-lg-6">
+          <a href="{% url 'surface:list' %}" class="dashboard__link">
+            <img src="{{ STATIC_URL }}icon/surface_list.png" alt="Список поверхностей" class="dashboard__link_icon">
+            <span class="dashboard__link_text">Список поверхностей</span>
+          </a>
+        </div>
+        <div class="col-lg-6">
+          <a href="{% url 'surface:list' %}" class="dashboard__link">
+            <img src="{{ STATIC_URL }}icon/surface_add.png" alt="Фотографии поверхностей" class="dashboard__link_icon">
+            <span class="dashboard__link_text">Фотографии поверхностей</span>
+          </a>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <p class="lead text-center remove-bottom">Продажи</p>
+      </div>
+      <div class="panel-body">
+        <div class="col-lg-4">
+          <a href="{% url 'client:list' %}" class="dashboard__link">
+            <img src="{{ STATIC_URL }}icon/client_list.png" alt="Список продаж" class="dashboard__link_icon">
+            <span class="dashboard__link_text">Список продаж</span>
+          </a>
+        </div>
+        <div class="col-lg-4">
+          <a href="{% url 'journal:list' %}" class="dashboard__link">
+            <img src="{{ STATIC_URL }}icon/journal_list.png" alt="Журнал продаж" class="dashboard__link_icon">
+            <span class="dashboard__link_text">Журнал продаж</span>
+          </a>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

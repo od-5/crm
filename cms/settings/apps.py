@@ -27,5 +27,6 @@ INSTALLED_APPS = (
     'apps.journal',
     'apps.manager',
     'apps.incoming',
+    'apps.sign',
     'django_cleanup',
 )

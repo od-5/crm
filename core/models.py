@@ -99,7 +99,12 @@ class User(AbstractBaseUser, PermissionsMixin):
         super(User, self).save()
 
     def get_absolute_url(self):
-        return '/cabinet/'
+        if self.type == 1:
+            return reverse('administrator:change', args=(self.pk, ))
+        if self.type == 2:
+            return reverse('moderator:change', args=(self.pk, ))
+        else:
+            return reverse('cabinet:cabinet')
 
     def get_change_url(self):
         return reverse('cabinet:user-change', args=(self.pk, ))
