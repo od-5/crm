@@ -20,8 +20,8 @@ urlpatterns = patterns(
     url(r'^order/(?P<pk>\d+)/$', 'client_order_update', name='order-update'),
     url(r'^order/(?P<pk>\d+)/export/$', 'client_order_export', name='order-export'),
 
-    # url(r'^(?P<pk>\d+)/journal/$', 'client_journal', name='journal'),
-    # url(r'^journal/(?P<pk>\d+)/export/$', 'client_journal_export', name='journal-export'),
+    url(r'^(?P<pk>\d+)/journal/$', 'client_journal', name='journal'),
+    url(r'^journal/(?P<pk>\d+)/export/$', 'client_journal_export', name='journal-export'),
     url(r'^add-surface/$', 'add_client_surface', name='add-client-surface'),
 
     url(r'^get_order_list/$', get_client_order_list, name='get_order_list'),

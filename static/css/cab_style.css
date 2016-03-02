@@ -6381,6 +6381,10 @@ label.error {
 .errorlist {
   color: #FF4646;
 }
+#js-client-journal-add-form #id_clientorder {
+  padding-left: 0;
+  list-style: none;
+}
 .modal_ticket {
   display: none;
 }

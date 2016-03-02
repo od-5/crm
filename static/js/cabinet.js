@@ -550,6 +550,7 @@ $(function() {
       }
     }
   });
+  $('#js-client-journal-add-form').find('input[type=checkbox]').removeClass('form-control');
   // логика работы формы добавления задачи по клиенту
   var act_form = $('#js-adjuster-client_task-add-form');
   // валидация формы добавления задачи по клиенту

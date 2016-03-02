@@ -98,10 +98,10 @@ class ClientOrderForm(forms.ModelForm):
 class ClientJournalForm(forms.ModelForm):
     class Meta:
         model = ClientJournal
-        fields = ('client', 'cost', 'add_cost', 'discount')
+        fields = ('client', 'clientorder', 'cost', 'add_cost', 'discount')
         widgets = {
             'client': forms.HiddenInput(attrs={'class': 'form-control'}),
-            # 'clientorder': forms.Select(attrs={'class': 'form-control'}),
+            'clientorder': forms.CheckboxSelectMultiple(),
             'cost': forms.TextInput(attrs={'class': 'form-control'}),
             'add_cost': forms.TextInput(attrs={'class': 'form-control'}),
             'discount': forms.TextInput(attrs={'class': 'form-control'}),

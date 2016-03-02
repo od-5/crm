@@ -55,11 +55,16 @@
             <tbody class="js-list">
               {% for item in journal_list %}
               <tr data-id="{{ item.id }}" data-name="{{ item }}" data-model="ClientJournal" id="id_ClientJournal_{{ item.id }}">
-                <td>{{ item.clientorder|default:'Не указано' }}</td>
+                <td>
+                  {% for order in item.clientorder.all %}
+                    {{ order }}
+                    {% if not forloop.last %}, {% endif %}
+                  {% endfor %}
+                </td>
                 <td>{{ item.cost|default:'Не указано' }}</td>
                 <td>{{ item.add_cost|default:'Не указано' }}</td>
                 <td>{{ item.discount|default:'Не указано' }}</td>
-                <td>{{ item.clientorder.stand_count|default:'Не указано' }}</td>
+                <td>{{ item.stand_count|default:'Не указано' }}</td>
                 <td>{{ item.total_cost|default:'Не указано' }}</td>
                 <td>
                   <a href="{% url 'client:journal-export' item.id %}" class="btn btn-success">
