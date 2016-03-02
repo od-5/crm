@@ -84,6 +84,7 @@ class ClientOrder(models.Model):
     client = models.ForeignKey(to=Client, verbose_name=u'Клиент')
     date_start = models.DateField(verbose_name=u'Дата начала размещения')
     date_end = models.DateField(verbose_name=u'Дата окончания размещения')
+    is_closed = models.BooleanField(verbose_name=u'Заказ закрыт', default=False)
 #     todo: продумать флаг "Заказ закрыт"
 
 
@@ -118,24 +119,24 @@ class ClientJournal(models.Model):
         verbose_name_plural = u'Покупки'
         app_label = 'client'
 
-    def __unicode__(self):
-        return u'Покупка по заказу %s' % self.clientorder
-
-    def total_cost(self):
-        cost = self.cost
-        if self.add_cost:
-            add_cost = self.add_cost
-        else:
-            add_cost = 0
-        if self.discount:
-            discount = self.discount
-        else:
-            discount = 0
-        sum = ((cost*(1+add_cost*0.01))*(1+discount*0.01)) * self.clientorder.stand_count()
-        return round(sum, 2)
+    # def __unicode__(self):
+    #     return u'Покупка по заказу %s' % self.clientorder
+    #
+    # def total_cost(self):
+    #     cost = self.cost
+    #     if self.add_cost:
+    #         add_cost = self.add_cost
+    #     else:
+    #         add_cost = 0
+    #     if self.discount:
+    #         discount = self.discount
+    #     else:
+    #         discount = 0
+    #     sum = ((cost*(1+add_cost*0.01))*(1+discount*0.01)) * self.clientorder.stand_count()
+    #     return round(sum, 2)
 
     client = models.ForeignKey(to=Client, verbose_name=u'клиент')
-    clientorder = models.ForeignKey(to=ClientOrder, verbose_name=u'заказ клиента')
+    # clientorder = models.ForeignKey(to=ClientOrder, verbose_name=u'заказ клиента')
     cost = models.PositiveIntegerField(verbose_name=u'Цена за стенд, руб')
     add_cost = models.PositiveIntegerField(verbose_name=u'Наценка, %', blank=True, null=True)
     discount = models.PositiveIntegerField(verbose_name=u'Скидка, %', blank=True, null=True)

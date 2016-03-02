@@ -6304,6 +6304,41 @@ body {
 .btn-right {
   float: right;
 }
+.sign {
+  width: 400px;
+  height: 427px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  border-radius: 10px;
+  background-color: #aaaaaa;
+  padding: 10px;
+}
+.sign label.error {
+  display: none !important;
+}
+.sign-error {
+  position: absolute;
+  width: 100%;
+}
+.sign-container {
+  background-color: #fff;
+  padding: 20px;
+}
+.sign-container_text {
+  font-weight: bold;
+}
+.sign-container_title {
+  font-weight: bold;
+  font-size: 1.8em;
+}
+.sign-container_slogan {
+  font-style: italic;
+  color: #d9534f;
+}
 .login {
   width: 300px;
   height: 220px;

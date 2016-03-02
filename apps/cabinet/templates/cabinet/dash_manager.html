@@ -2,83 +2,148 @@
 {% block content %}
 <div class="container">
   <div class="col-lg-8">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <p class="lead text-center remove-bottom">CRM - система управления клиентами</p>
+    <div class="col-lg-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="text-center remove-bottom">CRM - система управления клиентами</p>
+        </div>
+        <div class="panel-body">
+          <div class="col-lg-3">
+            <a href="{% url 'incoming:list' %}" class="dashboard__link">
+              <img src="{{ STATIC_URL }}icon/incoming_list.png" alt="Список клиентов" class="dashboard__link_icon">
+              <span class="dashboard__link_text">Список клиентов</span>
+            </a>
+          </div>
+          <div class="col-lg-3">
+            <a href="{% url 'incoming:add' %}" class="dashboard__link">
+              <img src="{{ STATIC_URL }}icon/incoming_add.png" alt="Добавить нового клиента" class="dashboard__link_icon">
+              <span class="dashboard__link_text">Добавить нового клиента</span>
+            </a>
+          </div>
+          <div class="col-lg-3">
+            <a href="{% url 'incoming:task-list' %}" class="dashboard__link">
+              <img src="{{ STATIC_URL }}icon/incoming_task_list.png" alt="Журнал задач по клиентам" class="dashboard__link_icon">
+              <span class="dashboard__link_text">Журнал задач по клиентам</span>
+            </a>
+          </div>
+          <div class="col-lg-3">
+            <a href="{% url 'incoming:task-list' %}" class="dashboard__link">
+              <img src="{{ STATIC_URL }}icon/incoming_task_add.png" alt="Добавить новую задачу по клиенту" class="dashboard__link_icon">
+              <span class="dashboard__link_text">Добавить новую задачу по клиенту</span>
+            </a>
+          </div>
+          <div class="clearfix"></div>
+        </div>
       </div>
-      <div class="panel-body">
-        <div class="col-lg-3">
-          <a href="{% url 'incoming:list' %}" class="dashboard__link">
-            <img src="{{ STATIC_URL }}icon/incoming_list.png" alt="Список клиентов" class="dashboard__link_icon">
-            <span class="dashboard__link_text">Список клиентов</span>
-          </a>
+    </div>
+    <div class="col-lg-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="text-center remove-bottom">Рекламные поверхности</p>
         </div>
-        <div class="col-lg-3">
-          <a href="{% url 'incoming:add' %}" class="dashboard__link">
-            <img src="{{ STATIC_URL }}icon/incoming_add.png" alt="Добавить нового клиента" class="dashboard__link_icon">
-            <span class="dashboard__link_text">Добавить нового клиента</span>
-          </a>
+        <div class="panel-body">
+          <div class="col-lg-6">
+            <a href="{% url 'surface:list' %}" class="dashboard__link">
+              <img src="{{ STATIC_URL }}icon/surface_list.png" alt="Список поверхностей" class="dashboard__link_icon">
+              <span class="dashboard__link_text">Список поверхностей</span>
+            </a>
+          </div>
+          <div class="col-lg-6">
+            <a href="{% url 'surface:list' %}" class="dashboard__link">
+              <img src="{{ STATIC_URL }}icon/surface_add.png" alt="Фотографии поверхностей" class="dashboard__link_icon">
+              <span class="dashboard__link_text">Фотографии поверхностей</span>
+            </a>
+          </div>
+          <div class="clearfix"></div>
         </div>
-        <div class="col-lg-3">
-          <a href="{% url 'incoming:task-list' %}" class="dashboard__link">
-            <img src="{{ STATIC_URL }}icon/incoming_task_list.png" alt="Журнал задач по клиентам" class="dashboard__link_icon">
-            <span class="dashboard__link_text">Журнал задач по клиентам</span>
-          </a>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="text-center remove-bottom">Продажи</p>
         </div>
-        <div class="col-lg-3">
-          <a href="{% url 'incoming:task-list' %}" class="dashboard__link">
-            <img src="{{ STATIC_URL }}icon/incoming_task_add.png" alt="Добавить новую задачу по клиенту" class="dashboard__link_icon">
-            <span class="dashboard__link_text">Добавить новую задачу по клиенту</span>
-          </a>
+        <div class="panel-body">
+          <div class="col-lg-6">
+            <a href="{% url 'client:list' %}" class="dashboard__link">
+              <img src="{{ STATIC_URL }}icon/client_list.png" alt="Список продаж" class="dashboard__link_icon">
+              <span class="dashboard__link_text">Список продаж</span>
+            </a>
+          </div>
+          <div class="col-lg-6">
+            <a href="{% url 'journal:list' %}" class="dashboard__link">
+              <img src="{{ STATIC_URL }}icon/journal_list.png" alt="Журнал продаж" class="dashboard__link_icon">
+              <span class="dashboard__link_text">Журнал продаж</span>
+            </a>
+          </div>
+          <div class="clearfix"></div>
         </div>
-        <div class="clearfix"></div>
       </div>
     </div>
   </div>
   <div class="col-lg-4">
-    <div class="panel panel-default">
+    <div class="panel panel-info">
       <div class="panel-heading">
-        <p class="lead text-center remove-bottom">Рекламные поверхности</p>
+        <p class="text-center remove-bottom">Информация о менеджере</p>
       </div>
       <div class="panel-body">
-        <div class="col-lg-6">
-          <a href="{% url 'surface:list' %}" class="dashboard__link">
-            <img src="{{ STATIC_URL }}icon/surface_list.png" alt="Список поверхностей" class="dashboard__link_icon">
-            <span class="dashboard__link_text">Список поверхностей</span>
-          </a>
-        </div>
-        <div class="col-lg-6">
-          <a href="{% url 'surface:list' %}" class="dashboard__link">
-            <img src="{{ STATIC_URL }}icon/surface_add.png" alt="Фотографии поверхностей" class="dashboard__link_icon">
-            <span class="dashboard__link_text">Фотографии поверхностей</span>
-          </a>
-        </div>
-        <div class="clearfix"></div>
-      </div>
-    </div>
-  </div>
-  <div class="col-lg-6">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <p class="lead text-center remove-bottom">Продажи</p>
-      </div>
-      <div class="panel-body">
-        <div class="col-lg-4">
-          <a href="{% url 'client:list' %}" class="dashboard__link">
-            <img src="{{ STATIC_URL }}icon/client_list.png" alt="Список продаж" class="dashboard__link_icon">
-            <span class="dashboard__link_text">Список продаж</span>
-          </a>
-        </div>
-        <div class="col-lg-4">
-          <a href="{% url 'journal:list' %}" class="dashboard__link">
-            <img src="{{ STATIC_URL }}icon/journal_list.png" alt="Журнал продаж" class="dashboard__link_icon">
-            <span class="dashboard__link_text">Журнал продаж</span>
-          </a>
-        </div>
-        <div class="clearfix"></div>
-      </div>
-    </div>
-  </div>
+        <table class="table table-bordered">
+          <tr>
+            <td>Фамилия:</td>
+            <td>{{ user.last_name|default:'не указано' }}</td>
+          </tr>
+          <tr>
+            <td>Имя:</td>
+            <td>{{ user.first_name|default:'не указано' }}</td>
+          </tr>
+          <tr>
+            <td>Отчество:</td>
+            <td>{{ user.patronymic|default:'не указано' }}</td>
+          </tr>
+          <tr>
+            <td>Телефон:</td>
+            <td>{{ user.phone|default:'не указано' }}</td>
+          </tr>
+          <tr>
+            <td>e-mail:</td>
+            <td>{{ user.email|default:'не указано' }}</td>
+          </tr>
+          <tr>
+            <td>Кол-во клиентов:</td>
+            <td>
+              <a href="{% url 'incoming:list' %}">
+                <span class="badge"> {{ manager.incomingclient_set.count|default:'0' }} </span>
+              </a>
+            </td>
 
+          </tr>
+          <tr>
+            <td>Задач на сегодня:</td>
+            <td>
+              <a href="{% url 'incoming:task-list' %}">
+                <span class="badge"> {{ actual_task_count|default:'0' }} </span>
+              </a>
+            </td>
+          </tr>
+          <tr>
+            <td>Всего задач:</td>
+            <td>
+              <a href="{% url 'incoming:task-list' %}?status=0">
+                <span class="badge"> {{ manager.incomingtask_set.count|default:'0' }} </span>
+              </a>
+            </td>
+          </tr>
+          <tr>
+            <td>Продажи:</td>
+            <td>
+              <a href="{% url 'client:list' %}">
+                <span class="badge"> {{ manager.client_set.count|default:'0' }} </span>
+              </a>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}

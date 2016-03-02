@@ -10,9 +10,18 @@ from apps.adjuster.models import Adjuster
 from apps.cabinet.forms import UserProfileForm
 from apps.city.models import City
 from apps.client.models import Client
+import datetime
+from django.utils.timezone import utc
+from apps.manager.models import Manager
 from core.models import User
 
 __author__ = 'alexy'
+
+
+def manager_dashboard(user):
+    print user
+    manager = Manager.objects.get(user=user)
+    return manager
 
 
 @login_required()
@@ -29,25 +38,35 @@ def cabinet_view(request):
         template_name = 'cabinet/dash_adjuster.html'
     elif user.type == 5:
         template_name = 'cabinet/dash_manager.html'
+        manager = manager_dashboard(user)
+        today = datetime.datetime.utcnow().replace(tzinfo=utc).date()
+        actual_task_count = manager.incomingtask_set.filter(date=today).count()
+        context.update({
+            'manager': manager,
+            'actual_task_count': actual_task_count
+        })
+        # print 'manager = %s' % manager
     else:
         raise Http404
     return render(request, template_name, context)
 
 
 def cabinet_login(request):
-    username = request.POST.get('username')
-    password = request.POST.get('password')
-    user = authenticate(username=username, password=password)
-    if user is not None:
-        if user.is_active:
-            login(request, user)
-            return HttpResponseRedirect(reverse('cabinet:cabinet'))
+    error = None
+    if request.method == "POST":
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                return HttpResponseRedirect(reverse('cabinet:cabinet'))
+            else:
+                error = u'Пользователь заблокирован'
         else:
-            error = u'Пользователь заблокирован'
-    else:
-        error = u'Вы ввели неверный e-mail или пароль'
+            error = u'Вы ввели неверный e-mail или пароль'
     context = {'error': error}
-    return render(request, 'cabinet/login.html', context)
+    return render(request, 'sign/login.html', context)
 
 
 class UserUpdateView(UpdateView):

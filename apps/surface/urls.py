@@ -10,6 +10,7 @@ urlpatterns = patterns(
 
     url(r'^$', SurfaceListView.as_view(), name='list'),
     url(r'^add/$', SurfaceCreateView.as_view(), name='add'),
+    url(r'^photo/$', 'surface_photo_list', name='photo-list'),
     url(r'^(?P<pk>\d+)/$', SurfaceUpdateView.as_view(), name='update'),
 
     url(r'^(?P<pk>\d+)/porch/$', 'surface_porch', name='porch'),

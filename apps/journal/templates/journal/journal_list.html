@@ -15,9 +15,9 @@
               <option value="{{ city.id }}" {% if city.id == r_city %}selected="selected"{% endif %}>{{ city.name }}</option>
               {% endfor %}
             </select>
-            <input type="text" name="date_s" value="" id="js-journal-filter-date_s" class="form-control input-sm" placeholder="Дата от">
-            <input type="text" name="date_e" value="" id="js-journal-filter-date_e" class="form-control input-sm" placeholder="Дата до">
-            <input type="text" name="legal_name" value="" class="form-control input-sm" placeholder="Юридическое название">
+            <input type="text" name="date_s" value="{{ r_date_s|default:'' }}" id="js-journal-filter-date_s" class="form-control input-sm" placeholder="Дата от">
+            <input type="text" name="date_e" value="{{ r_date_e|default:'' }}" id="js-journal-filter-date_e" class="form-control input-sm" placeholder="Дата до">
+            <input type="text" name="legal_name" value="{{ r_legal_name|default:'' }}" class="form-control input-sm" placeholder="Юридическое название">
             <select name="manager" id="" class="form-control input-sm">
               <option value="">Менеджер</option>
               {% for manager in manager_list %}

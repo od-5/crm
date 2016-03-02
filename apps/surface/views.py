@@ -251,3 +251,105 @@ def surface_photo_update(request, pk):
         'surface': photo.porch.surface
     })
     return render(request, 'surface/surface_photo_update.html', context)
+
+
+def surface_photo_list(request):
+    """
+    Фотографии рекламных поверхностей для менеджера
+    """
+    context = {}
+    user = request.user
+    manager = Manager.objects.get(user=user)
+    city_qs = City.objects.filter(moderator=manager.moderator)
+    a_qs = SurfacePhoto.objects.filter(porch__surface__city__moderator=manager.moderator)
+    # установка флага отображения - таблица, плитка
+    try:
+        request.session['grid']
+    except:
+        request.session['grid'] = False
+    if request.GET.get('grid'):
+        if int(request.GET.get('grid')) == 1:
+            request.session['grid'] = True
+        else:
+            request.session['grid'] = False
+    # установка флага фильтрации - порвеждённые, целые
+    try:
+        request.session['show_broken']
+    except:
+        request.session['show_broken'] = False
+    if request.GET.get('broken'):
+        if int(request.GET.get('broken')) == 1:
+            request.session['show_broken'] = True
+        else:
+            request.session['show_broken'] = False
+    context.update({
+        'show_broken': request.session['show_broken'],
+        'grid': request.session['grid']
+    })
+    # установка флага города для фильтрации
+    try:
+        a_city = int(request.GET.get('a_city'))
+        area_list = Area.objects.filter(city=a_city)
+    except:
+        a_city = None
+        area_list = None
+    # установка флага района для фильтрации
+    try:
+        a_area = int(request.GET.get('a_area'))
+        street_list = Street.objects.filter(area=a_area)
+    except:
+        a_area = None
+        street_list = None
+    # установка флага улицы для фильтрации
+    try:
+        a_street = int(request.GET.get('a_street'))
+    except:
+        a_street = None
+    # установка флага начальной даты для фильтрации
+    try:
+        a_date_s = request.GET.get('a_date_s')
+    except:
+        a_date_s = None
+    # установка флага начальной даты для фильтрации
+    try:
+        a_date_e = request.GET.get('a_date_e')
+    except:
+        a_date_e = None
+    context.update({
+        'a_city': a_city,
+        'a_area': a_area,
+        'a_street': a_street,
+        'area_list': area_list,
+        'street_list': street_list,
+        'a_date_s': a_date_s,
+        'a_date_e': a_date_e
+    })
+    a_qs = a_qs.filter(is_broken=request.session['show_broken'])
+    if a_city:
+        a_qs = a_qs.filter(porch__surface__city=int(a_city))
+        if a_area:
+            a_qs = a_qs.filter(porch__surface__street__area=int(a_area))
+            if a_street:
+                a_qs = a_qs.filter(porch__surface__street=int(a_street))
+    if a_date_s:
+        rs_date = datetime.strptime(a_date_s, '%d.%m.%Y')
+        s_date = datetime.date(rs_date)
+        a_qs = a_qs.filter(date__gte=s_date)
+        if a_date_e:
+            re_date = datetime.strptime(a_date_e, '%d.%m.%Y')
+            e_date = datetime.date(re_date)
+            a_qs = a_qs.filter(date__lte=e_date)
+
+    paginator = Paginator(a_qs, 20)  # Show 25 contacts per page
+    page = request.GET.get('page')
+    try:
+        address_list = paginator.page(page)
+    except PageNotAnInteger:
+        address_list = paginator.page(1)
+    except EmptyPage:
+        address_list = paginator.page(paginator.num_pages)
+    context.update({
+        'address_list': address_list,
+        'city_list': city_qs
+    })
+    return render(request, 'surface/surface_photo_list.html', context)

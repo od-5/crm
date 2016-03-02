@@ -10,6 +10,18 @@ $(function() {
 
   $.validator.messages.required = "* поле обязательно для заполнения";
 
+  // валидация формы авторизации
+  $( '#js-sign-form' ).validate({
+    rules: {
+      username: {
+        required: true
+      },
+      password: {
+        required: true
+      }
+    }
+  });
+
   // валидация формы добавления города
   $( '#js-city-form' ).validate({
     rules: {

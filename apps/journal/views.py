@@ -14,20 +14,21 @@ class JournalListView(ListView):
     paginate_by = 50
 
     def get_queryset(self):
+        user = self.request.user
         if self.request.user.type == 1:
             qs = ClientJournal.objects.all()
         elif self.request.user.type == 2:
-            qs = ClientJournal.objects.filter(client__city__moderator=self.request.user)
+            qs = ClientJournal.objects.filter(client__city__moderator=user)
         elif self.request.user.type == 5:
-            qs = ClientJournal.objects.filter(client__manager=self.request.user)
+            qs = ClientJournal.objects.filter(client__manager=user)
         else:
             qs = None
         if self.request.GET.get('city'):
             qs = qs.filter(client__city=int(self.request.GET.get('city')))
         if self.request.GET.get('legal_name'):
-            qs = qs.filter(client__legal_name__iexact=int(self.request.GET.get('legal_name')))
+            qs = qs.filter(client__legal_name__iexact=self.request.GET.get('legal_name'))
         if self.request.GET.get('manager'):
-            qs = qs.filter(client__manager=self.request.GET.get('legal_name'))
+            qs = qs.filter(client__manager=self.request.GET.get('manager'))
         if self.request.GET.get('date_s'):
             qs = qs.filter(created__gte=datetime.strptime(self.request.GET.get('date_s'), '%d.%m.%Y'))
         if self.request.GET.get('date_e'):
@@ -36,14 +37,15 @@ class JournalListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(JournalListView, self).get_context_data(**kwargs)
+        user = self.request.user
         if self.request.user.type == 1:
             city_qs = City.objects.all()
             manager_qs = Manager.objects.all()
         elif self.request.user.type == 2:
-            city_qs = City.objects.filter(moderator=self.request.user)
-            manager_qs = Manager.objects.filter(moderator=self.request.user)
+            city_qs = City.objects.filter(moderator=user)
+            manager_qs = Manager.objects.filter(moderator=user)
         elif self.request.user.type == 5:
-            current_manager = Manager.objects.get(pk=int(self.request.user.id))
+            current_manager = Manager.objects.get(user=user)
             city_qs = City.objects.filter(moderator=current_manager.moderator)
             manager_qs = Manager.objects.filter(moderator=current_manager.moderator)
         else:
@@ -51,6 +53,22 @@ class JournalListView(ListView):
             manager_qs = None
         r_city = self.request.GET.get('city')
         r_manager = self.request.GET.get('manager')
+        if self.request.GET.get('date_s'):
+            context.update({
+                'r_date_s': self.request.GET.get('date_s')
+            })
+        if self.request.GET.get('date_e'):
+            context.update({
+                'r_date_e': self.request.GET.get('date_e')
+            })
+        if self.request.GET.get('legal_name'):
+            context.update({
+                'r_legal_name': self.request.GET.get('legal_name')
+            })
+        if r_manager:
+            context.update({
+                'r_manager': int(r_manager)
+            })
         total_cost = 0
         for i in self.object_list:
             total_cost += i.total_cost()
