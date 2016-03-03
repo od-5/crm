@@ -26,6 +26,8 @@ def adjustertask_list(request):
         qs = AdjusterTask.objects.filter(is_closed=False)
     elif user.type == 2:
         qs = AdjusterTask.objects.filter(is_closed=False, adjuster__city__moderator=user)
+    elif user.type == 4:
+        qs = AdjusterTask.objects.filter(is_closed=False, adjuster__user=user)
     else:
         qs = None
     if request.GET.get('city'):
@@ -159,11 +161,13 @@ class TaskArchiveListView(ListView):
     paginate_by = 25
 
     def get_queryset(self):
-        user_id = self.request.user.id
-        if self.request.user.type == 1:
+        user = self.request.user
+        if user.type == 1:
             qs = AdjusterTask.objects.filter(is_closed=True)
-        elif self.request.user.type == 2:
-            qs = AdjusterTask.objects.filter(is_closed=True, adjuster__city__moderator=user_id)
+        elif user.type == 2:
+            qs = AdjusterTask.objects.filter(is_closed=True, adjuster__city__moderator=user)
+        elif user.type == 4:
+            qs = AdjusterTask.objects.filter(is_closed=True, adjuster__user=user)
         else:
             qs = None
         if self.request.GET.get('city'):
@@ -203,9 +207,10 @@ class TaskArchiveListView(ListView):
                 'date_e': self.request.GET.get('date_e')
             })
         filter_form = AdjusterTaskFilterForm(initial=initial_args)
-        if self.request.user.type == 2:
-            filter_form.fields['city'].queryset = City.objects.filter(moderator=self.request.user)
-            filter_form.fields['adjuster'].queryset = Adjuster.objects.filter(city__moderator=self.request.user)
+        user = self.request.user
+        if user.type == 2:
+            filter_form.fields['city'].queryset = City.objects.filter(moderator=user)
+            filter_form.fields['adjuster'].queryset = Adjuster.objects.filter(city__moderator=user)
         context.update({
             'filter_form': filter_form
         })

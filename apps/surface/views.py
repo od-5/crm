@@ -6,6 +6,7 @@ from django.shortcuts import render
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from apps.adjuster.models import SurfacePhoto
+from apps.client.models import Client
 from apps.manager.models import Manager
 from .forms import SurfaceAddForm, PorchAddForm, SurfacePhotoForm
 from apps.city.models import City, Area, Surface, Street, Porch, ManagementCompany
@@ -255,13 +256,22 @@ def surface_photo_update(request, pk):
 
 def surface_photo_list(request):
     """
-    Фотографии рекламных поверхностей для менеджера
+    Фотографии рекламных поверхностей для менеджера и клиента
     """
     context = {}
     user = request.user
-    manager = Manager.objects.get(user=user)
-    city_qs = City.objects.filter(moderator=manager.moderator)
-    a_qs = SurfacePhoto.objects.filter(porch__surface__city__moderator=manager.moderator)
+    if user.type == 5:
+        manager = Manager.objects.get(user=user)
+        city_qs = City.objects.filter(moderator=manager.moderator)
+        a_qs = SurfacePhoto.objects.filter(porch__surface__city__moderator=manager.moderator)
+    elif user.type == 3:
+        client = Client.objects.get(user=user)
+        city_qs = None
+        a_qs = SurfacePhoto.objects.all()
+    else:
+        city_qs = None
+        a_qs = None
+
     # установка флага отображения - таблица, плитка
     try:
         request.session['grid']

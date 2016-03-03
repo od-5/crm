@@ -16,9 +16,11 @@
           <p class="lead remove-bottom text-center">Список задач</p>
         </div>
         <div class="panel-body">
+          {% if user.type != 4 %}
           <a href="{% url 'adjustertask:client-add' %}" class="btn btn-success add-bottom">
             <span class="glyphicon glyphicon-plus-sign"></span> Добавить задачу
           </a>
+          {% endif %}
           <a href="{% url 'adjustertask:archive' %}" class="btn btn-success add-bottom">
             <span class="glyphicon glyphicon-folder-close"></span> Архив задач
           </a>
@@ -42,13 +44,22 @@
           </div>
           <div>
             <form action="" method="get" class="inline-form add-bottom" id="js-adjuster-task-filter-form" role="form">
+              {% load widget_tweaks %}
               <div class="col-lg-2">
                 {{ filter_form.city.label_tag }}
+                {% if user.type == 4 %}
+                {{ filter_form.city|attr:'disabled:disabled' }}
+                {% else %}
                 {{ filter_form.city }}
+                {% endif %}
               </div>
               <div class="col-lg-2">
                 {{ filter_form.adjuster.label_tag }}
+                {% if user.type == 4 %}
+                {{ filter_form.adjuster|attr:'disabled:disabled' }}
+                {% else %}
                 {{ filter_form.adjuster }}
+                {% endif %}
               </div>
               <div class="col-lg-2">
                 {{ filter_form.type.label_tag }}
@@ -87,7 +98,13 @@
               {% for object in object_list %}
               <tr data-id="{{ object.id }}" data-name="{{ object }}" data-model="AdjusterTask" id="id_AdjusterTask_{{ object.id }}">
                 <td><a href="{% url 'adjustertask:update' object.id %}" >{{ object }}</a></td>
-                <td><a href="{% url 'adjuster:change' object.adjuster.id %}" >{{ object.adjuster.user.get_full_name|default:'--' }}</a></td>
+                <td>
+                {% if user.type == 4 %}
+                  {{ object.adjuster.user.get_full_name|default:'--' }}
+                {% else %}
+                  <a href="{% url 'adjuster:change' object.adjuster.id %}" >{{ object.adjuster.user.get_full_name|default:'--' }}</a>
+                {% endif %}
+                </td>
                 <td>{{ object.adjuster.city.name|default:'--' }}</td>
                 <td>{{ object.get_type_display|default:'--' }}</td>
                 <td>{{ object.date|default:'--' }}</td>
@@ -96,9 +113,13 @@
                 <td><div class="progressbar"></div></td>
                 <td>{{ object.get_actual_cost }}</td>
                 <td>
+                  {% if user.type != 4 %}
                   <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-AdjusterTask-{{ object.id }}" class="btn btn-danger js-ajax-remove-btn">
                     Удалить
                   </a>
+                  {% else %}
+                  &nbsp;
+                  {% endif %}
                 </td>
               </tr>
               {% empty %}

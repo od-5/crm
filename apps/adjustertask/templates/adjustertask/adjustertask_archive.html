@@ -12,13 +12,22 @@
           </a>
           <div>
             <form action="" method="get" class="inline-form add-bottom" id="js-adjuster-task-filter-form" role="form">
+              {% load widget_tweaks %}
               <div class="col-lg-2">
                 {{ filter_form.city.label_tag }}
+                {% if user.type == 4 %}
+                {{ filter_form.city|attr:'disabled:disabled' }}
+                {% else %}
                 {{ filter_form.city }}
+                {% endif %}
               </div>
               <div class="col-lg-2">
                 {{ filter_form.adjuster.label_tag }}
+                {% if user.type == 4 %}
+                {{ filter_form.adjuster|attr:'disabled:disabled' }}
+                {% else %}
                 {{ filter_form.adjuster }}
+                {% endif %}
               </div>
               <div class="col-lg-2">
                 {{ filter_form.type.label_tag }}

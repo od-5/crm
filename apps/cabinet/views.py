@@ -34,8 +34,9 @@ def cabinet_view(request):
         template_name = 'cabinet/dash_moderator.html'
     elif user.type == 3:
         template_name = 'cabinet/dash_client.html'
+        return HttpResponseRedirect(reverse('surface:photo-list'))
     elif user.type == 4:
-        template_name = 'cabinet/dash_adjuster.html'
+        return HttpResponseRedirect(reverse('adjustertask:list'))
     elif user.type == 5:
         template_name = 'cabinet/dash_manager.html'
         manager = manager_dashboard(user)
