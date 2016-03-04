@@ -5,11 +5,13 @@
     <div class="address-list">
       <div class="row">
         <div class="col-lg-12 add-bottom">
+        {% if user.type != 3 %}
           {% if show_broken %}
           <a href="{{ request.path }}?broken=0" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Показать целые</a>
           {% else %}
           <a href="{{ request.path }}?broken=1" class="btn btn-warning"><span class="glyphicon glyphicon-wrench"></span> Показать повреждённые</a>
           {% endif %}
+        {% endif %}
           {% if grid %}
             <a href="{{ request.path }}?grid=0" class="btn btn-info" title="Показать таблицей"><span class="glyphicon glyphicon-th-list"></span> Показать таблицей</a>
           {% else %}

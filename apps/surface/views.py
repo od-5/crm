@@ -266,8 +266,9 @@ def surface_photo_list(request):
         a_qs = SurfacePhoto.objects.filter(porch__surface__city__moderator=manager.moderator)
     elif user.type == 3:
         client = Client.objects.get(user=user)
+        clientorder_list = [int(i.id) for i in client.clientorder_set.filter(is_closed=False)]
         city_qs = None
-        a_qs = SurfacePhoto.objects.all()
+        a_qs = SurfacePhoto.objects.filter(porch__surface__clientordersurface__clientorder__in=clientorder_list).distinct()
     else:
         city_qs = None
         a_qs = None
