@@ -16,10 +16,12 @@ __author__ = 'alexy'
 def ymap(request):
     request.encoding = 'utf-8'
     if request.is_ajax():
-        if request.user.type == 1:
-            query = City.objects.all()
-        else:
-            query = City.objects.filter(moderator=request.user)
+        query = City.objects.all()
+        try:
+            if request.user.type == 2:
+                query = query.filter(moderator=request.user)
+        except:
+            pass
         result = []
         for item in query:
             result_json = {}
