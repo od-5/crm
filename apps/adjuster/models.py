@@ -74,6 +74,9 @@ class AdjusterTask(models.Model):
         return reverse('adjustertask:update', args=(self.id, ))
 
     def get_porch_count(self):
+        """
+        Метод, возвращающий количество подъездов/стендов, входящих в задачу
+        """
         porch_count = 0
         if self.adjustertasksurface_set.all() > 0:
             for i in self.adjustertasksurface_set.all():
@@ -81,6 +84,10 @@ class AdjusterTask(models.Model):
         return porch_count
 
     def get_actual_cost(self):
+        """
+        Метод, возвращающий цену за фактичечески выполненную на данный момент работу.
+        Кол-во выполненных стендов * цена работы по подному стенду
+        """
         porch_count = 0
         for asurface in self.adjustertasksurface_set.all():
             porch_count += asurface.get_closed_porch_count()
@@ -97,6 +104,10 @@ class AdjusterTask(models.Model):
         return cost * porch_count
 
     def get_total_cost(self):
+        """
+        Метод, возвращающий полную стоимость работы.
+        Кол-во стендов в задаче * цена работы по одному стенду
+        """
         if self.type == 0 and self.adjuster.cost_mounting:
             cost = self.adjuster.cost_mounting
         elif self.type == 1 and self.adjuster.cost_change:
@@ -108,6 +119,20 @@ class AdjusterTask(models.Model):
         else:
             cost = 0
         return cost * self.get_porch_count()
+
+    def get_process(self):
+        """
+        Метод, возвращающий % выполнения задачи.
+        Кол-во выполненных стендов * 100 / кол-во стендов в задаче
+        """
+        porch_count = self.get_porch_count()
+        closed_proch_count = 0
+        for i in self.adjustertasksurface_set.all():
+            closed_proch_count += i.get_closed_porch_count()
+        if porch_count == 0:
+            return 0
+        else:
+            return closed_proch_count * 100 / porch_count
 
     TYPE_CHOICES = (
         (0, u'Монтаж новой конструкции'),

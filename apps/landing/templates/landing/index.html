@@ -6,13 +6,14 @@
   <meta name="description" content="{% block meta_desc %}{% endblock %}">
   <meta name="format-detection" content="telephone=no">
   <link href="favicon.ico" rel="shortcut icon" type="image/x-icon" />
-  <title>{% block title %}Рекламное агентство Дружба{% endblock %}</title>
+  <title>{{ setup.meta_title|default:'Рекламное агентство Дружба' }}</title>
   {% load staticfiles %}
   <link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/all.css' %}" />
   <link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/jquery-ui.css' %}" />
   <link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/jquery.bxslider.css' %}" />
   <link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/jquery.fancybox.css' %}" />
   <script src="{% static 'landing/js/jquery-1.9.1.min.js' %}"></script>
+  <script src="http://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
   <script src="{% static 'landing/js/jquery-ui.min.js' %}"></script>
   <script src="{% static 'landing/js/jquery.bxslider.min.js' %}"></script>
   <script src="{% static 'landing/js/jquery.validate.js' %}"></script>
@@ -21,6 +22,10 @@
   <!--[if lt IE 9]><script type="text/javascript" src="{% static 'landing/js/html5.js' %}"></script><![endif]-->
   <!--[if lt IE 9]><script type="text/javascript" src="{% static 'landing/js/placeholder.js' %}"></script><![endif]-->
   <script src="{% static 'landing/js/all.js' %}"></script>
+  <script src="{{ STATIC_URL }}js/map.js"></script>
+{% if setup %}
+  {{ setup.top_js|safe }}
+{% endif %}
 </head>
 <body>
   <div id="wrapper">
@@ -33,11 +38,17 @@
             <span class="logo-text-min">В городах России и СНГ</span>
           </div>
           <div class="header-phone">
-            <div class="header-number">{{ phone|default:"8 800 250-34-50" }}</div>
+            <div class="header-number">{{ setup.phone|default:"8 800 250-34-50" }}</div>
             <div class="header-callback"><a href="#dialog2" class="modal">Заказать обратный звонок</a></div>
           </div>
           <div class="header-right">
-            <div class="header-right-text">Выбран город: Ростов-на-Дону</div>
+            <div class="header-right-text">
+            {% if current_city %}
+              Выбран город: {{ current_city }}
+            {% else %}
+              &nbsp;
+            {% endif %}
+            </div>
             <div class="select-item">
               <div class="select-top">Выберите ваш город</div>
               <ul class="select-hidden">
@@ -174,38 +185,45 @@
       <div class="holder">
         <h2>Карта возможностей размещения вашей
         <span>рекламы в городах России</span></h2>
-        <div class="map-block">
-          <div class="city city1">
-            <b>Ростов-на-Дону</b> / 2500
-            <i>конструкций</i>
-            <img src="{{ STATIC_URL }}landing/images/map/1.png" alt="" class="city-line">
-          </div>
-          <div class="city city2">
-            <b>Киров</b> / 2500
-            <i>конструкций</i>
-            <img src="{{ STATIC_URL }}landing/images/map/2.png" alt="" class="city-line">
-          </div>
-          <div class="city city3">
-            <b>Волгоград</b> / 2500
-            <i>конструкций</i>
-            <img src="{{ STATIC_URL }}landing/images/map/3.png" alt="" class="city-line">
-          </div>
-          <div class="city city4">
-            <b>Волжский</b> / 2500
-            <i>конструкций</i>
-            <img src="{{ STATIC_URL }}landing/images/map/4.png" alt="" class="city-line">
-          </div>
-        </div>
+        <div id="YMapsID" style="height: 500px;" class="add-bottom"></div>
+{#        <div class="map-block">#}
+{#          <div class="city city1">#}
+{#            <b>Ростов-на-Дону</b> / 2500#}
+{#            <i>конструкций</i>#}
+{#            <img src="{{ STATIC_URL }}landing/images/map/1.png" alt="" class="city-line">#}
+{#          </div>#}
+{#          <div class="city city2">#}
+{#            <b>Киров</b> / 2500#}
+{#            <i>конструкций</i>#}
+{#            <img src="{{ STATIC_URL }}landing/images/map/2.png" alt="" class="city-line">#}
+{#          </div>#}
+{#          <div class="city city3">#}
+{#            <b>Волгоград</b> / 2500#}
+{#            <i>конструкций</i>#}
+{#            <img src="{{ STATIC_URL }}landing/images/map/3.png" alt="" class="city-line">#}
+{#          </div>#}
+{#          <div class="city city4">#}
+{#            <b>Волжский</b> / 2500#}
+{#            <i>конструкций</i>#}
+{#            <img src="{{ STATIC_URL }}landing/images/map/4.png" alt="" class="city-line">#}
+{#          </div>#}
+{#        </div>#}
         <div class="city-button-holder">
           <a href="" class="city-button">Посмотреть возможности по вашему городу</a>
           <div class="city-hidden">
             <ul class="city-list">
-              <li><a href="">Ростов-на-Дону</a></li>
-              <li><a href="">Киров</a></li>
+            {% if city_list_1 %}
+              {% for city in city_list_1 %}
+              <li><a href="">{{ city.name }}</a></li>
+              {% endfor %}
+            {% endif %}
             </ul>
             <ul class="city-list">
-              <li><a href="">Волгоград</a></li>
-              <li><a href="">Волжский</a></li>
+            {% if city_list_2 %}
+              {% for city in city_list_2 %}
+              <li><a href="">{{ city.name }}</a></li>
+              {% endfor %}
+            {% endif %}
             </ul>
           </div>
         </div>
@@ -378,7 +396,7 @@
           <img src="{{ STATIC_URL }}landing/images/studio.png" alt="">
         </a>
         <div class="header-phone">
-          <div class="header-number">{{ phone|default:'8 800 250-34-50' }}</div>
+          <div class="header-number">{{ setup.phone|default:'8 800 250-34-50' }}</div>
           <div class="header-callback"><a href="#dialog2" class="modal">Заказать обратный звонок</a></div>
         </div>
         <div id="hidden-block">
@@ -396,7 +414,14 @@
       <div id="dialog" class="window">
         <div class="tablet-popup">
           <div class="tablet-video">
-            <iframe width="695" height="522" src="https://www.youtube.com/embed/Y1wWqG4UiTY" frameborder="0" allowfullscreen></iframe>
+            <style>
+              .tablet-video iframe {
+                width: 695px !important;
+                height: 522px !important;
+              }
+
+            </style>
+            {{ setup.video|safe|default:'<iframe width="695" height="522" src="https://www.youtube.com/embed/Y1wWqG4UiTY" frameborder="0" allowfullscreen></iframe>' }}
           </div>
         </div>
         <a href="" class="close">X</a>
@@ -449,5 +474,8 @@
     </div>
     <!--   Всплывающие окна end  -->
   </div>
+{% if setup %}
+  {{ setup.bottom_js|safe }}
+{% endif %}
 </body>
 </html>

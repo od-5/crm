@@ -2,7 +2,11 @@
 {% block extra_js %}
 <script>
   $(document).ready(function() {
-   $(".progressbar").progressbar({value:35});
+    $('.progressbar').each(function(){
+      $(this).progressbar({
+        value: parseInt($(this).attr("rel"))
+      })
+    });
   });
 </script>
 {% endblock %}
@@ -48,7 +52,7 @@
                   <td>{{ task.adjustertasksurface_set.all.count|default:'0' }}</td>
                   <td>{{ task.get_porch_count|default:'0' }}</td>
                   <td>{{ task.get_total_cost|default:'0' }}</td>
-                  <td><div class="progressbar"></div></td>
+                  <td><div class="progressbar" rel="{{ task.get_process|default:'0' }}"></div></td>
                   <td>
                     <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-AdjusterTask-{{ task.id }}" title="Удалить задачу" class="btn btn-danger btn-sm js-ajax-remove-btn">
                       <span class="glyphicon glyphicon-remove"></span> Удалить

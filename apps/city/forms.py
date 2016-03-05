@@ -9,12 +9,13 @@ __author__ = 'alexy'
 class CityAddForm(ModelForm):
     class Meta:
         model = City
-        fields = ('name', 'moderator', 'contract_number', 'contract_date')
+        fields = ('name', 'moderator', 'contract_number', 'contract_date', 'slug')
         widgets = {
             'name': TextInput(attrs={'class': 'form-control'}),
             'moderator': Select(attrs={'class': 'form-control'}),
             'contract_number': TextInput(attrs={'class': 'form-control'}),
             'contract_date': DateInput(attrs={'class': 'form-control'}),
+            'slug': TextInput(attrs={'class': 'form-control'}),
         }
 
     def __init__(self, *args, **kwargs):

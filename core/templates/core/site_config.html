@@ -1,0 +1,76 @@
+{% extends 'cabinet_index.html' %}
+{% block title %}
+  Настройки сайта
+{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="col-lg-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <p class="lead text-center remove-bottom">Настройки сайта</p>
+      </div>
+      <div class="panel-body">
+        <form action="" role="form" method="post">
+          {% csrf_token %}
+          <div class="form-group">
+            <div class="col-lg-3">{{ form.meta_title.label_tag }}</div>
+            <div class="col-lg-9">{{ form.meta_title }}</div>
+            {{ form.meta_title.errors }}
+            <div class="clearfix"></div>
+          </div>
+          <div class="form-group">
+            <div class="col-lg-3">{{ form.meta_keys.label_tag }}</div>
+            <div class="col-lg-9">{{ form.meta_keys }}</div>
+            {{ form.meta_keys.errors }}
+            <div class="clearfix"></div>
+          </div>
+          <div class="form-group">
+            <div class="col-lg-3">{{ form.meta_desc.label_tag }}</div>
+            <div class="col-lg-9">{{ form.meta_desc }}</div>
+            {{ form.meta_desc.errors }}
+            <div class="clearfix"></div>
+          </div>
+          <div class="form-group">
+            <div class="col-lg-3">{{ form.email.label_tag }}</div>
+            <div class="col-lg-9">{{ form.email }}</div>
+            {{ form.email.errors }}
+            <div class="clearfix"></div>
+          </div>
+          <div class="form-group">
+            <div class="col-lg-3">{{ form.phone.label_tag }}</div>
+            <div class="col-lg-9">{{ form.phone }}</div>
+            {{ form.phone.errors }}
+            <div class="clearfix"></div>
+          </div>
+          <div class="form-group">
+            <div class="col-lg-3">{{ form.top_js.label_tag }}</div>
+            <div class="col-lg-9">{{ form.top_js }}</div>
+            {{ form.top_js.errors }}
+            <div class="clearfix"></div>
+          </div>
+          <div class="form-group">
+            <div class="col-lg-3">{{ form.bottom_js.label_tag }}</div>
+            <div class="col-lg-9">{{ form.bottom_js }}</div>
+            {{ form.bottom_js.errors }}
+            <div class="clearfix"></div>
+          </div>
+          <div class="form-group">
+            <div class="col-lg-3">{{ form.robots_txt.label_tag }}</div>
+            <div class="col-lg-9">{{ form.robots_txt }}</div>
+            {{ form.robots_txt.errors }}
+            <div class="clearfix"></div>
+          </div>
+          <div class="form-group">
+            <div class="col-lg-3">{{ form.video.label_tag }}</div>
+            <div class="col-lg-9">{{ form.video }}</div>
+            {{ form.video.errors }}
+            <div class="clearfix"></div>
+          </div>
+
+          <input type="submit" value="Сохранить изменения" class="btn btn-default">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

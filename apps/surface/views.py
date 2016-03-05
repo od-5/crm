@@ -267,8 +267,22 @@ def surface_photo_list(request):
     elif user.type == 3:
         client = Client.objects.get(user=user)
         clientorder_list = [int(i.id) for i in client.clientorder_set.filter(is_closed=False)]
+        qs_list = []
+        for corder in client.clientorder_set.all():
+            qs = SurfacePhoto.objects.filter(porch__surface__clientordersurface__clientorder=corder).filter(date__gte=corder.date_start).filter(date__lte=corder.date_end)
+            if qs:
+                qs_list.append(qs)
+        if qs_list:
+            query_string_item = []
+            for i in range(len(qs_list)):
+                query_string_item.append('qs_list[%d]' % i)
+            query_string = ' | '.join(query_string_item)
+            a_qs = eval(query_string)
+        else:
+            a_qs = None
+        print a_qs
+        # a_qs = SurfacePhoto.objects.filter(porch__surface__clientordersurface__clientorder__in=clientorder_list).distinct()
         city_qs = None
-        a_qs = SurfacePhoto.objects.filter(porch__surface__clientordersurface__clientorder__in=clientorder_list).distinct()
     else:
         city_qs = None
         a_qs = None
@@ -335,30 +349,32 @@ def surface_photo_list(request):
         'a_date_s': a_date_s,
         'a_date_e': a_date_e
     })
-    a_qs = a_qs.filter(is_broken=request.session['show_broken'])
-    if a_city:
-        a_qs = a_qs.filter(porch__surface__city=int(a_city))
-        if a_area:
-            a_qs = a_qs.filter(porch__surface__street__area=int(a_area))
-            if a_street:
-                a_qs = a_qs.filter(porch__surface__street=int(a_street))
-    if a_date_s:
-        rs_date = datetime.strptime(a_date_s, '%d.%m.%Y')
-        s_date = datetime.date(rs_date)
-        a_qs = a_qs.filter(date__gte=s_date)
-        if a_date_e:
-            re_date = datetime.strptime(a_date_e, '%d.%m.%Y')
-            e_date = datetime.date(re_date)
-            a_qs = a_qs.filter(date__lte=e_date)
-
-    paginator = Paginator(a_qs, 20)  # Show 25 contacts per page
-    page = request.GET.get('page')
-    try:
-        address_list = paginator.page(page)
-    except PageNotAnInteger:
-        address_list = paginator.page(1)
-    except EmptyPage:
-        address_list = paginator.page(paginator.num_pages)
+    if a_qs:
+        a_qs = a_qs.filter(is_broken=request.session['show_broken'])
+        if a_city:
+            a_qs = a_qs.filter(porch__surface__city=int(a_city))
+            if a_area:
+                a_qs = a_qs.filter(porch__surface__street__area=int(a_area))
+                if a_street:
+                    a_qs = a_qs.filter(porch__surface__street=int(a_street))
+        if a_date_s:
+            rs_date = datetime.strptime(a_date_s, '%d.%m.%Y')
+            s_date = datetime.date(rs_date)
+            a_qs = a_qs.filter(date__gte=s_date)
+            if a_date_e:
+                re_date = datetime.strptime(a_date_e, '%d.%m.%Y')
+                e_date = datetime.date(re_date)
+                a_qs = a_qs.filter(date__lte=e_date)
+        paginator = Paginator(a_qs, 20)  # Show 25 contacts per page
+        page = request.GET.get('page')
+        try:
+            address_list = paginator.page(page)
+        except PageNotAnInteger:
+            address_list = paginator.page(1)
+        except EmptyPage:
+            address_list = paginator.page(paginator.num_pages)
+    else:
+        address_list = None
     context.update({
         'address_list': address_list,
         'city_list': city_qs

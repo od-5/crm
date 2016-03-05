@@ -15,6 +15,7 @@
               <p class="text-info lead">Город</p>
               <form action="" role="form" class="form-profile" id="js-city-form" method="post">
                 {% csrf_token %}
+                {% load widget_tweaks %}
                 <div class="form-group">
                   <div class="col-lg-5">{{ form.name.label_tag }}</div>
                   <div class="col-lg-7">{{ form.name }}</div>
@@ -37,6 +38,18 @@
                   <div class="col-lg-5">{{ form.contract_date.label_tag }}</div>
                   <div class="col-lg-7">{{ form.contract_date }}</div>
                   {{ form.contract_date.errors }}
+                  <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-5">{{ form.slug.label_tag }}</div>
+                  <div class="col-lg-7">
+                  {% if user.type == 1 %}
+                    {{ form.slug }}
+                  {% else %}
+                    {{ form.slug|attr:'disabled:disabled' }}
+                  {% endif %}
+                  </div>
+                  {{ form.slug.errors }}
                   <div class="clearfix"></div>
                 </div>
                 <button type="submit" class="btn btn-default">Сохранить</button>

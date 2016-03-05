@@ -4,7 +4,11 @@
   <script src="{{ STATIC_URL }}js/map.js"></script>
   <script>
   $(document).ready(function() {
-   $(".progressbar").progressbar({value:35});
+    $('.progressbar').each(function(){
+      $(this).progressbar({
+        value: parseInt($(this).attr("rel"))
+      })
+    });
   });
   </script>
 {% endblock %}
@@ -16,6 +20,7 @@
           <p class="lead remove-bottom text-center">Список задач</p>
         </div>
         <div class="panel-body">
+          <p class="lead">Общая сумма выплат монтажнику составляет: <strong>{{ total_sum|default:'0' }} руб.</strong> </p>
           {% if user.type != 4 %}
           <a href="{% url 'adjustertask:client-add' %}" class="btn btn-success add-bottom">
             <span class="glyphicon glyphicon-plus-sign"></span> Добавить задачу
@@ -110,7 +115,7 @@
                 <td>{{ object.date|default:'--' }}</td>
                 <td>{{ object.adjustertasksurface_set.all.count|default:'0' }}</td>
                 <td>{{ object.get_porch_count }}</td>
-                <td><div class="progressbar"></div></td>
+                <td><div class="progressbar" rel="{{ object.get_process|default:'0' }}"></div></td>
                 <td>{{ object.get_actual_cost }}</td>
                 <td>
                   {% if user.type != 4 %}

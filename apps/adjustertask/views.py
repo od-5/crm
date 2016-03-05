@@ -67,6 +67,9 @@ def adjustertask_list(request):
     context.update({
         'filter_form': filter_form
     })
+    total_sum = 0
+    for i in qs:
+        total_sum += i.get_total_cost()
     paginator = Paginator(qs, 25)
     page = request.GET.get('page')
     try:
@@ -76,6 +79,7 @@ def adjustertask_list(request):
     except EmptyPage:
         object_list = paginator.page(paginator.num_pages)
     context.update({
+        'total_sum': total_sum,
         'object_list': object_list
     })
     return render(request, 'adjustertask/adjustertask_list.html', context)

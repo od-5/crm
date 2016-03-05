@@ -8,6 +8,7 @@ __author__ = 'alexy'
 urlpatterns = patterns(
     'core.views',
     url(r'^robots\.txt', 'get_robots_txt', name='robots'),
+    url(r'^configure/$', 'site_config_view', name='site_configure'),
     url(r'^city-map/$', ymap, name='map'),
     url(r'^surface-map/$', ymap_surface, name='map-surface'),
     url(r'^ajax_remove/$', ajax_remove_item, name='ajax-remove'),

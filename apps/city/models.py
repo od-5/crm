@@ -3,6 +3,7 @@ import datetime
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
+from pytils.translit import slugify
 import core.geotagging as api
 from core.models import User
 
@@ -38,6 +39,8 @@ class City(models.Model):
         pos = api.geocode(api_key, self)
         self.coord_x = float(pos[0])
         self.coord_y = float(pos[1])
+        if not self.slug:
+            self.slug = slugify(self.name)
         super(City, self).save()
 
     name = models.CharField(max_length=100, verbose_name=u'Город')
@@ -46,6 +49,7 @@ class City(models.Model):
     contract_date = models.DateField(blank=True, null=True, verbose_name=u'Договор от')
     coord_x = models.DecimalField(max_digits=8, decimal_places=6, blank=True, null=True, verbose_name=u'Ширина')
     coord_y = models.DecimalField(max_digits=8, decimal_places=6, blank=True, null=True, verbose_name=u'Долгота')
+    slug = models.SlugField(verbose_name=u'url имя поддомена', blank=True, null=True, max_length=50)
 
 
 class Area(models.Model):
