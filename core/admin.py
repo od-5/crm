@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.utils.translation import ugettext_lazy as _
-from .models import User, Setup
+from .models import User
 
 __author__ = 'alexy'
 
@@ -75,9 +75,9 @@ class MyUserAdmin(UserAdmin):
     ordering = ('email',)
 
 
-class SetupAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 'email')
+# class SetupAdmin(admin.ModelAdmin):
+#     list_display = ('__unicode__', 'email')
 
 
 admin.site.register(User, MyUserAdmin)
-admin.site.register(Setup, SetupAdmin)
+# admin.site.register(Setup, SetupAdmin)

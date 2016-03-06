@@ -1,0 +1,49 @@
+{% extends 'cabinet_index.html' %}
+{% block title %}
+  Блок сайта
+{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="col-lg-12">
+    <ol class="breadcrumb">
+      <li><a href="{% url 'cabinet:cabinet' %}">Рабочий стол</a></li>
+      <li class="active">Редактируемые блоки</li>
+    </ol>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <p class="lead text-center remove-bottom">Блоки сайта</p>
+      </div>
+      <div class="panel-body">
+        <table class="table">
+          <tbody>
+          <tr>
+            <td><a href="{% url 'blockeffective-list' %}">Почему реклама на подъездах так эфективна</a></td>
+            <td class="text-right">
+              <a href="{% url 'blockeffective-add' %}" class="btn btn-success">
+                <span class="glyphicon glyphicon-plus-sign"></span> Добавить
+              </a>
+            </td>
+          </tr>
+          <tr>
+            <td><a href="{% url 'blockexample-list' %}">Примеры размещений</a></td>
+            <td class="text-right">
+              <a href="{% url 'blockexample-add' %}" class="btn btn-success">
+                <span class="glyphicon glyphicon-plus-sign"></span> Добавить
+              </a>
+            </td>
+          </tr>
+          <tr>
+            <td><a href="{% url 'blockreview-list' %}">Отзывы</a></td>
+            <td class="text-right">
+              <a href="{% url 'blockreview-add' %}" class="btn btn-success">
+                <span class="glyphicon glyphicon-plus-sign"></span> Добавить
+              </a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

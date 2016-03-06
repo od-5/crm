@@ -10,7 +10,7 @@ from django.views.generic import TemplateView
 
 urlpatterns = patterns('',
     # Examples:
-    url(r'^$', 'apps.landing.views.home_view', name='home'),
+
     url(r'^sign/', include('apps.sign.urls', namespace='sign'),),
     url(r'^cabinet/', include('apps.cabinet.urls', namespace='cabinet'),),
     url(r'^administrator/', include('apps.administrator.urls', namespace='administrator'),),
@@ -25,6 +25,7 @@ urlpatterns = patterns('',
     url(r'^manager/', include('apps.manager.urls', namespace='manager'),),
     url(r'^incoming/', include('apps.incoming.urls', namespace='incoming'),),
     url(r'', include('core.urls')),
+    url(r'', include('apps.landing.urls')),
 
     url(r'^ckeditor/', include('ckeditor.urls')),
     url(r'^admin/', include(admin.site.urls)),

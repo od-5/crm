@@ -6,7 +6,8 @@
 <div class="container">
   <div class="col-lg-12">
     <ol class="breadcrumb">
-      <li><a href="#">Блоки сайта</a></li>
+      <li><a href="{% url 'cabinet:cabinet' %}">Рабочий стол</a></li>
+      <li><a href="{% url 'block-list' %}">Блоки сайта</a></li>
       <li class="active">Примеры размещений</li>
     </ol>
     <div class="panel panel-default">
@@ -14,24 +15,24 @@
         <p class="lead text-center remove-bottom">Блок "Примеры размещений"</p>
       </div>
       <div class="panel-body">
-        <a href="{% url 'block_example-add' %}" class="btn btn-success">
+        <a href="{% url 'blockexample-add' %}" class="btn btn-success">
           <span class="glyphicon glyphicon-plus-sign"></span> Добавить
         </a>
         <table class="table">
           <thead>
             <tr>
-              <th>id</th>
               <th>Название</th>
               <th>Изображение</th>
+              <th>Город</th>
               <th>&nbsp;</th>
             </tr>
           </thead>
           <tbody  class="js-list">
           {% for object in object_list %}
             <tr  data-id="{{ object.id }}" data-name="элемент блока" data-model="BlockExample" id="id_BlockExample_{{ object.id }}">
-              <td><a href="{% url 'block_example-update' object.id %}" title="Редактировать">{{ object.id}}</a></td>
-              <td>{{ object.name|safe }}</td>
+              <td><a href="{% url 'blockexample-update' object.id %}" title="Редактировать">{{ object.name|default:'не указано' }}</a></td>
               <td><img src="{{ object.image_resize.url }}"></td>
+              <td>{{ object.city.name|default:'' }}</td>
               <td>
                 <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-BlockExample-{{ object.id }}" class="btn btn-danger js-ajax-remove-btn">
                   <span class="glyphicon glyphicon-remove"></span> Удалить

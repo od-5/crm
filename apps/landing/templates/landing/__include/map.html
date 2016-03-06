@@ -3,7 +3,14 @@ ymaps.ready(init);
 var myMap;
 
 function init(){
-  city = 'Волгоград';
+  var city = '';
+  var zoom = 3;
+{% if current_city %}
+  city = '{{ current_city.name }}';
+  zoom = 9;
+{% else %}
+  city = '{{ city_list.first.name }}';
+{% endif %}
   var coord = '';
   var myGeocoder = ymaps.geocode(city);
     myGeocoder.then(
@@ -11,16 +18,28 @@ function init(){
         coord = res.geoObjects.get(0).geometry.getCoordinates();
         myMap = new ymaps.Map("YMapsID", {
             center: coord,
-            zoom: 3
+            zoom: zoom
         });
-      {% if city_list %}{% for city in city_list %}
+      {% if current_city %}
+        {% for surface in current_city.surface_set.all %}
         myMap.geoObjects.add(
-            new ymaps.Placemark([{{ city.coord_y|safe }}, {{ city.coord_x|safe }}], {
-            balloonContent: '{{ city.name }} ({{ city.surface_count }})',
-            hintContent: '{{ city.name }} ({{ city.surface_count }})'
+            new ymaps.Placemark([{{ surface.coord_y|safe }}, {{ surface.coord_x|safe }}], {
+            balloonContent: '{{ surface }} (кол-во стендов: {{ surface.porch_count }})',
+            hintContent: '{{ surface }} (кол-во стендов: {{ surface.porch_count }})'
             })
         );
-      {% endfor %}{% endif %}
+        {% endfor %}
+      {% else %}
+        {% for city in city_list %}
+        myMap.geoObjects.add(
+            new ymaps.Placemark([{{ city.coord_y|safe }}, {{ city.coord_x|safe }}], {
+            balloonContent: '{{ city.name }} (кол-во поверхностей: {{ city.surface_count }})',
+            hintContent: '{{ city.name }} (кол-во поверхностей: {{ city.surface_count }})'
+            })
+        );
+        {% endfor %}
+      {% endif %}
+
       }
     );
 

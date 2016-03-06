@@ -1,22 +1,17 @@
 import datetime
-from .models import Setup
+from apps.landing.models import Setup
 
 __author__ = 'alexy'
 
 
 def site_setup(request):
-    try:
-        qss = Setup.objects.all().first()
-    except:
-        qss = None
-    if request.path == '/':
-        home = True
+    if not request.subdomain:
+        main_page = True
     else:
-        home = False
+        main_page = False
     return {
-        'SETUP': qss,
         'CURRENT_YEAR': datetime.datetime.now(),
-        'HOME_PAGE': home,
+        'MAIN_PAGE': main_page,
     }
 
 

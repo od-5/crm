@@ -45,7 +45,7 @@
           <div class="header-right">
             <div class="header-right-text">
             {% if current_city %}
-              Выбран город: {{ current_city }}
+              Выбран город: {{ current_city.name }}
             {% else %}
               &nbsp;
             {% endif %}
@@ -55,7 +55,7 @@
               <ul class="select-hidden">
               {% if city_list %}
                 {% for city in city_list %}
-                <li><a href="">{{ city.name|default:'не указано' }}</a></li>
+                <li><a href="http://{{ city.slug }}.{{ request.domain }}">{{ city.name|default:'не указано' }}</a></li>
                 {% endfor %}
               {% endif %}
               </ul>
@@ -90,7 +90,7 @@
                         <option value="">Выберите ваш город</option>
                         {% if city_list %}
                         {% for city in city_list %}
-                        <option value="{{ city.id }}">{{ city.name|default:'не указано' }}</option>
+                        <option value="{{ city.id }}" {% if city.id == current_city.id %}selected='selected'{% endif %}>{{ city.name|default:'не указано' }}</option>
                         {% endfor %}
                         {% endif %}
                       </select>
@@ -136,30 +136,14 @@
       <div class="holder">
         <h2>Почему реклама на подъездах <span>настолько эффективна</span></h2>
         <div class="about-holder">
-          <div class="about-item clear">
-            <div class="about-icon"><img src="{{ STATIC_URL }}landing/images/icon1.png" alt=""></div>
-            <div class="about-text">100% охват аудитории. Все жители дома увидят вашу рекламу.</div>
+        {% if blockeffective_list %}
+          {% for object in blockeffective_list %}
+          <div class="about-item{% if forloop.first %} clear{% endif %}">
+            <div class="about-icon"><img src="{{ object.image.url }}" alt=""></div>
+            <div class="about-text">{{ object.text|safe|default:'' }}</div>
           </div>
-          <div class="about-item">
-            <div class="about-icon"><img src="{{ STATIC_URL }}landing/images/icon2.png" alt=""></div>
-            <div class="about-text">Эксклюзивное размещение одного рекламодателя.</div>
-          </div>
-          <div class="about-item">
-            <div class="about-icon"><img src="{{ STATIC_URL }}landing/images/icon3.png" alt=""></div>
-            <div class="about-text">Гарантированный срок размещения. Защита от вандалов</div>
-          </div>
-          <div class="about-item clear">
-            <div class="about-icon"><img src="{{ STATIC_URL }}landing/images/icon4.png" alt=""></div>
-            <div class="about-text">Возможность выбора индивидуальной адресной программы для размещения</div>
-          </div>
-          <div class="about-item">
-            <div class="about-icon"><img src="{{ STATIC_URL }}landing/images/icon5.png" alt=""></div>
-            <div class="about-text">Содержит информацию по дому (адрес, номер подъезда, аварийные телефоны)</div>
-          </div>
-          <div class="about-item">
-            <div class="about-icon"><img src="{{ STATIC_URL }}landing/images/icon6.png" alt=""></div>
-            <div class="about-text">Программа онлайн-мониторинга размещения для клиентов.</div>
-          </div>
+          {% endfor %}
+        {% endif %}
         </div>
         <article class="article">
           <p>Адресная программа формируется в зависимости от пожеланий каждого конкретного рекламодателя. Вы выбираете только те
@@ -215,14 +199,14 @@
             <ul class="city-list">
             {% if city_list_1 %}
               {% for city in city_list_1 %}
-              <li><a href="">{{ city.name }}</a></li>
+              <li><a href="http://{{ city.slug }}.{{ request.domain }}">{{ city.name }}</a></li>
               {% endfor %}
             {% endif %}
             </ul>
             <ul class="city-list">
             {% if city_list_2 %}
               {% for city in city_list_2 %}
-              <li><a href="">{{ city.name }}</a></li>
+              <li><a href="http://{{ city.slug }}.{{ request.domain }}">{{ city.name }}</a></li>
               {% endfor %}
             {% endif %}
             </ul>
@@ -235,70 +219,94 @@
         <h2>Наши работы / Примеры <span>размещения рекламы</span></h2>
         <div class="gallery-holder">
           <div class="gallery-block">
-            <div class="gallery-item g1">
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/1.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/1.jpg" alt=""></a>
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/2.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/2.jpg" alt=""></a>
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/3.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/3.jpg" alt=""></a>
-            </div>
-            <div class="gallery-item g2">
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/4.jpg" class="g-big fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/4.jpg" alt=""></a>
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/5.jpg" class="g-big fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/5.jpg" alt=""></a>
-            </div>
-            <div class="gallery-item g3">
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/6.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/6.jpg" alt=""></a>
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/7.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/7.jpg" alt=""></a>
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/8.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/8.jpg" alt=""></a>
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/9.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/9.jpg" alt=""></a>
-            </div>
-            <div class="gallery-item g4">
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/10.jpg" class="g-big fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/10.jpg" alt=""></a>
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/11.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/11.jpg" alt=""></a>
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/12.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/12.jpg" alt=""></a>
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/13.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/13.jpg" alt=""></a>
-            </div>
-            <div class="gallery-item g5">
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/14.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/14.jpg" alt=""></a>
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/15.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/15.jpg" alt=""></a>
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/16.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/16.jpg" alt=""></a>
-            </div>
-            <div class="gallery-item g6">
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/17.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/17.jpg" alt=""></a>
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/18.jpg" class="g-mid fancybox last" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/18.jpg" alt=""></a>
+          {% if blockexample_list_1 %}
+            <div class="gallery-item">
+            {% for i in '11111111111111111' %}
+            {% for object in blockexample_list_1 %}
+              <a href="{{ object.image.url }}" class="g-mid fancybox" data-fancybox-group="gal">
+                <img src="{{ object.image_resize.url }}" alt="">
+              </a>
+            {% endfor %}
+            {% endfor %}
+            {% if blockexample_list_2 %}
               <a href="" class="gallery-more">Больше<br> проектов</a>
+            {% endif %}
             </div>
+          {% endif %}
           </div>
+{#            <div class="gallery-item g1">#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/1.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/1.jpg" alt=""></a>#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/2.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/2.jpg" alt=""></a>#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/3.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/3.jpg" alt=""></a>#}
+{#            </div>#}
+{#            <div class="gallery-item g2">#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/4.jpg" class="g-big fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/4.jpg" alt=""></a>#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/5.jpg" class="g-big fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/5.jpg" alt=""></a>#}
+{#            </div>#}
+{#            <div class="gallery-item g3">#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/6.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/6.jpg" alt=""></a>#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/7.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/7.jpg" alt=""></a>#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/8.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/8.jpg" alt=""></a>#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/9.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/9.jpg" alt=""></a>#}
+{#            </div>#}
+{#            <div class="gallery-item g4">#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/10.jpg" class="g-big fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/10.jpg" alt=""></a>#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/11.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/11.jpg" alt=""></a>#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/12.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/12.jpg" alt=""></a>#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/13.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/13.jpg" alt=""></a>#}
+{#            </div>#}
+{#            <div class="gallery-item g5">#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/14.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/14.jpg" alt=""></a>#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/15.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/15.jpg" alt=""></a>#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/16.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/16.jpg" alt=""></a>#}
+{#            </div>#}
+{#            <div class="gallery-item g6">#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/17.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/17.jpg" alt=""></a>#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/18.jpg" class="g-mid fancybox last" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/18.jpg" alt=""></a>#}
+{#              <a href="" class="gallery-more">Больше<br> проектов</a>#}
+{#            </div>#}
+{#          </div>#}
+        {% if blockexample_list_2 %}
           <div class="gallery-block gallery-hidden">
-            <div class="gallery-item g1">
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/1.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/1.jpg" alt=""></a>
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/2.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/2.jpg" alt=""></a>
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/3.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/3.jpg" alt=""></a>
+          {% for object in blockexample_list_2 %}
+            <div class="gallery-item">
+              <a href="{{ object.image.url }}" class="g-mid fancybox" data-fancybox-group="gal">
+                <img src="{{ object.image_resize.url }}" alt="">
+              </a>
             </div>
-            <div class="gallery-item g2">
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/4.jpg" class="g-big fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/4.jpg" alt=""></a>
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/5.jpg" class="g-big fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/5.jpg" alt=""></a>
-            </div>
-            <div class="gallery-item g3">
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/6.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/6.jpg" alt=""></a>
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/7.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/7.jpg" alt=""></a>
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/8.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/8.jpg" alt=""></a>
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/9.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/9.jpg" alt=""></a>
-            </div>
-            <div class="gallery-item g4">
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/10.jpg" class="g-big fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/10.jpg" alt=""></a>
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/11.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/11.jpg" alt=""></a>
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/12.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/12.jpg" alt=""></a>
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/13.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/13.jpg" alt=""></a>
-            </div>
-            <div class="gallery-item g5">
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/14.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/14.jpg" alt=""></a>
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/15.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/15.jpg" alt=""></a>
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/16.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/16.jpg" alt=""></a>
-            </div>
-            <div class="gallery-item g6">
-              <a href="{{ STATIC_URL }}landing/images/gallery-big/17.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/17.jpg" alt=""></a>
-              <a href="" class="gallery-hide">Свернуть<br> проекты</a>
-            </div>
+          {% endfor %}
+{#            <div class="gallery-item g1">#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/1.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/1.jpg" alt=""></a>#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/2.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/2.jpg" alt=""></a>#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/3.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/3.jpg" alt=""></a>#}
+{#            </div>#}
+{#            <div class="gallery-item g2">#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/4.jpg" class="g-big fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/4.jpg" alt=""></a>#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/5.jpg" class="g-big fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/5.jpg" alt=""></a>#}
+{#            </div>#}
+{#            <div class="gallery-item g3">#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/6.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/6.jpg" alt=""></a>#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/7.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/7.jpg" alt=""></a>#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/8.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/8.jpg" alt=""></a>#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/9.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/9.jpg" alt=""></a>#}
+{#            </div>#}
+{#            <div class="gallery-item g4">#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/10.jpg" class="g-big fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/10.jpg" alt=""></a>#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/11.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/11.jpg" alt=""></a>#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/12.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/12.jpg" alt=""></a>#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/13.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/13.jpg" alt=""></a>#}
+{#            </div>#}
+{#            <div class="gallery-item g5">#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/14.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/14.jpg" alt=""></a>#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/15.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/15.jpg" alt=""></a>#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/16.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/16.jpg" alt=""></a>#}
+{#            </div>#}
+{#            <div class="gallery-item g6">#}
+{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/17.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/17.jpg" alt=""></a>#}
+{#              <a href="" class="gallery-hide">Свернуть<br> проекты</a>#}
+{#            </div>#}
           </div>
+        {% endif %}
         </div>
         <div class="button-holder">
           <a href="#dialog3" class="button modal">Заказать рекламу</a>
@@ -311,40 +319,39 @@
         <div class="review-holder">
           <ul class="slider">
 <!--   Отзыв 1  -->
+          {% if blockreview_list %}
+            {% for object in blockreview_list %}
             <li>
               <div class="review-item">
                 <div class="review-top">
                   <div class="review-img">
-                    <img src="{{ STATIC_URL }}landing/images/review.jpg" alt="">
+                    <img src="{{ object.image_resize.url }}" alt="">
                   </div>
-                  <div class="review-name"><span>Неткач</span> Максим </div>
-                  <div class="review-status"><a href="">Vk.com/id186111122</a> / Директор сети магазинов спортивного питания "Мастер Спорта"</div>
+                  <div class="review-name">{{ object.name|default:'не указано' }}</div>
+                  <div class="review-status">
+                    {% if object.link %}<a href="http://{{ object.link }}" target="_blank">{{ object.link }}</a>{% endif %} / Директор сети магазинов спортивного питания "Мастер Спорта"</div>
                 </div>
-                <div class="review-text">На рынке мы уже более 6 лет, занимаемся розничной торговлей спортивным питанием. Первые
-                годы работы, к рекламе практически не прибегали, потому как не чувствовали в этом надобности. Но когда встал вопрос
-                о расширении бизнеса и открытия новых магазинов, мы решили воспользоваться данным инструментом продаж. Результат
-                не заставил себя долго ждать. С помощью большого охвата аудитории, который мы смогли получить благодаря размещению
-                рекламных продуктов на домофонных стендах нашего региона, мы, действительно, увидели много новых клиентов, о нас
-                узнало большее количество потенциальных покупателей. Будем надеется, что наше сотрудничество продолжится, и мы
-                не раз с большим удовольствием  будем работать в тандеме.</div>
+                <div class="review-text">{{ object.text|safe|default:'Не указано' }}</div>
               </div>
             </li>
+            {% endfor %}
+          {% endif %}
 <!--   Отзыв 2  -->
-            <li>
-              <div class="review-item">
-                <div class="review-top">
-                  <div class="review-img">
-                    <img src="{{ STATIC_URL }}landing/images/review.jpg" alt="">
-                  </div>
-                  <div class="review-name"><span>Неткач</span> Максим </div>
-                  <div class="review-status"><a href="">Vk.com/id186111122</a> / Директор сети магазинов спортивного питания "Мастер Спорта"</div>
-                </div>
-                <div class="review-text">На рынке мы уже более 6 лет, занимаемся розничной торговлей спортивным питанием. Первые
-                годы работы, к рекламе практически не прибегали, потому как не чувствовали в этом надобности. Но когда встал вопрос
-                о расширении бизнеса и открытия новых магазинов, мы решили воспользоваться данным инструментом продаж. Результат
-                не заставил себя долго ждать. </div>
-              </div>
-            </li>
+{#            <li>#}
+{#              <div class="review-item">#}
+{#                <div class="review-top">#}
+{#                  <div class="review-img">#}
+{#                    <img src="{{ STATIC_URL }}landing/images/review.jpg" alt="">#}
+{#                  </div>#}
+{#                  <div class="review-name"><span>Неткач</span> Максим </div>#}
+{#                  <div class="review-status"><a href="">Vk.com/id186111122</a> / Директор сети магазинов спортивного питания "Мастер Спорта"</div>#}
+{#                </div>#}
+{#                <div class="review-text">На рынке мы уже более 6 лет, занимаемся розничной торговлей спортивным питанием. Первые#}
+{#                годы работы, к рекламе практически не прибегали, потому как не чувствовали в этом надобности. Но когда встал вопрос#}
+{#                о расширении бизнеса и открытия новых магазинов, мы решили воспользоваться данным инструментом продаж. Результат#}
+{#                не заставил себя долго ждать. </div>#}
+{#              </div>#}
+{#            </li>#}
 
           </ul>
         </div>
@@ -458,7 +465,7 @@
                     <option value="">Выберите ваш город</option>
                     {% if city_list %}
                     {% for city in city_list %}
-                    <option value="{{ city.id }}">{{ city.name }}</option>
+                    <option value="{{ city.id }}" {% if city.id == current_city.id %}selected='selected'{% endif %}>{{ city.name }}</option>
                     {% endfor %}
                     {% endif %}
                   </select>

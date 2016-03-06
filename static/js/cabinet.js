@@ -10,10 +10,18 @@ $(function() {
 
   $.validator.messages.required = "* поле обязательно для заполнения";
 
-  // валидация формы блоке "почемы реклама так эффективна"
-  $( '#js-block-effective-form' ).validate({
+  // валидация админстраторской формы блока "почему реклама так эффективна"
+  $('#js-block-effective-form').validate({
     rules: {
-      image: {
+      text: {
+        required: true
+      }
+    }
+  });
+  // валидация модераторской формы блока "почему реклама так эффективна"
+  $( '#js-block-effective-form-moderator' ).validate({
+    rules: {
+      city: {
         required: true
       },
       text: {
@@ -21,10 +29,18 @@ $(function() {
       }
     }
   });
-  // валидация формы блоке "Примеры размещений"
+  // валидация адмнистраторской формы блока "Примеры размещений"
   $( '#js-block-example-form' ).validate({
     rules: {
-      image: {
+      name: {
+        required: true
+      }
+    }
+  });
+  // валидация модераторской формы блока "Примеры размещений"
+  $( '#js-block-example-form-moderator' ).validate({
+    rules: {
+      city: {
         required: true
       },
       name: {
@@ -32,13 +48,27 @@ $(function() {
       }
     }
   });
-  // валидация формы блоке "Примеры размещений"
+  // валидация администраторской формы блока "Отзывы"
   $( '#js-block-review-form' ).validate({
     rules: {
       name: {
         required: true
       },
-      image: {
+      description: {
+        required: true
+      },
+      text: {
+        required: true
+      }
+    }
+  });
+  // валидация модераторской формы блока "Отзывы"
+  $( '#js-block-review-form-moderator' ).validate({
+    rules: {
+      city: {
+        required: true
+      },
+      name: {
         required: true
       },
       description: {

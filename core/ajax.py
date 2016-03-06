@@ -2,11 +2,12 @@
 from annoying.decorators import ajax_request
 from django.shortcuts import get_object_or_404
 from apps.city.models import City, Surface, Porch, Area, Street, ManagementCompany
-from core.models import User, BlockEffective, BlockReview, BlockExample
+from core.models import User
 from apps.client.models import Client, ClientMaket, ClientOrder, ClientOrderSurface, ClientJournal
 from apps.adjuster.models import Adjuster, AdjusterTask, AdjusterTaskSurface
 from apps.manager.models import Manager
 from apps.incoming.models import IncomingClient, IncomingTask, IncomingClientContact
+from apps.landing.models import Setup, BlockEffective, BlockReview, BlockExample
 
 
 __author__ = 'alexy'

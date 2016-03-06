@@ -167,13 +167,13 @@
       </div>
       <div class="panel-body">
         <div class="col-lg-4">
-          <a  class="dashboard__link">
+          <a href="{% url 'setup-list' %}" class="dashboard__link">
             <img src="{{ STATIC_URL }}icon/site_settings.png" alt="Настройки сайта" class="dashboard__link_icon">
             <span class="dashboard__link_text">Настройки сайта</span>
           </a>
         </div>
         <div class="col-lg-4">
-          <a  class="dashboard__link">
+          <a href="{% url 'block-list' %}" class="dashboard__link">
             <img src="{{ STATIC_URL }}icon/site_blocks.png" alt="Блоки сайта" class="dashboard__link_icon">
             <span class="dashboard__link_text">Блоки сайта</span>
           </a>
