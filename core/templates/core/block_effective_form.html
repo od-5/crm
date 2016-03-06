@@ -1,0 +1,49 @@
+{% extends 'cabinet_index.html' %}
+{% block title %}
+  Настройки сайта
+{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="col-lg-12">
+    <ol class="breadcrumb">
+      <li><a href="#">Блоки сайта</a></li>
+      <li><a href="{% url 'block_effective' %}">Почему реклама на подъездах так эффективна</a></li>
+      <li class="active">Редактирование элемента</li>
+    </ol>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <p class="lead text-center remove-bottom">
+          {% if object %}
+            Редактирование елемента блока "Почему реклама так эффективна"
+          {% else %}
+            Добавление елемента в блок "Почему реклама так эффективна"
+          {% endif %}
+        </p>
+      </div>
+      <div class="panel-body">
+        {% if error %}
+          <p class="alert alert-warning">
+          {{ error }}
+          </p>
+        {% endif %}
+        <form action="" role="form" method="post" id="js-block-effective-form" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="form-group">
+            <div class="col-lg-3">{{ form.image.label_tag }}</div>
+            <div class="col-lg-9">{{ form.image }}</div>
+            {{ form.image.errors }}
+            <div class="clearfix"></div>
+          </div>
+          <div class="form-group">
+            <div class="col-lg-3">{{ form.text.label_tag }}</div>
+            <div class="col-lg-9">{{ form.text }}</div>
+            {{ form.text.errors }}
+            <div class="clearfix"></div>
+          </div>
+          <input type="submit" value="Сохранить" class="btn btn-default">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

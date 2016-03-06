@@ -1,0 +1,49 @@
+{% extends 'cabinet_index.html' %}
+{% block title %}
+  Блок "Почему реклама на подъездах так эффективна"
+{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="col-lg-12">
+    <ol class="breadcrumb">
+      <li><a href="#">Блоки сайта</a></li>
+      <li class="active">Почему реклама на подъездах так эффективна</li>
+    </ol>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <p class="lead text-center remove-bottom">Блок "Почему реклама на подъездах так эффективна"</p>
+      </div>
+      <div class="panel-body">
+        <a href="{% url 'block_effective-add' %}" class="btn btn-success">
+          <span class="glyphicon glyphicon-plus-sign"></span> Добавить
+        </a>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>id</th>
+              <th>Текст</th>
+              <th>Иконка</th>
+              <th>&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody  class="js-list">
+          {% for object in object_list %}
+            <tr  data-id="{{ object.id }}" data-name="элемент блока" data-model="BlockEffective" id="id_BlockEffective_{{ object.id }}">
+              <td><a href="{% url 'block_effective-update' object.id %}" title="Редактировать">{{ object.id}}</a></td>
+              <td>{{ object.text|safe }}</td>
+              <td><img src="{{ object.image.url }}"></td>
+              <td>
+                <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-BlockEffective-{{ object.id }}" class="btn btn-danger js-ajax-remove-btn">
+                  <span class="glyphicon glyphicon-remove"></span> Удалить
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% include '__modal/js_ajax_remove_form.html' %}
+{% endblock %}

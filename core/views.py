@@ -1,8 +1,9 @@
 # coding=utf-8
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
-from core.forms import SetupForm
-from core.models import Setup
+from core.forms import SetupForm, BlockEffectiveForm, BlockExampleForm, BlockReviewForm
+from core.models import Setup, BlockEffective, BlockExample, BlockReview
 
 __author__ = 'alexy'
 
@@ -56,3 +57,152 @@ def site_config_view(request):
         'form': form
     })
     return render(request, 'core/site_config.html', context)
+
+
+def block_effective_add_view(request):
+    context = {}
+    if request.method == 'POST':
+        form = BlockEffectiveForm(request.POST, request.FILES)
+        print form
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('block_effective'))
+        else:
+            context.update({
+                'error': u'Ошибка! Проверьте правильность ввода данных.'
+            })
+    else:
+        form = BlockEffectiveForm()
+    context.update({
+        'form': form
+    })
+    return render(request, 'core/block_effective_form.html', context)
+
+
+def block_effective_update_view(request, pk):
+    context = {}
+    instance = BlockEffective.objects.get(pk=int(pk))
+    if request.method == 'POST':
+        form = BlockEffectiveForm(request.POST, instance=instance)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('block_effective'))
+        else:
+            context.update({
+                'error': u'Ошибка! Проверьте правильность ввода данных.'
+            })
+    else:
+        form = BlockEffectiveForm(instance=instance)
+    context.update({
+        'object': instance,
+        'form': form
+    })
+    return render(request, 'core/block_effective_form.html', context)
+
+
+def block_effective_view(request):
+    context = {
+        'object_list': BlockEffective.objects.all()
+    }
+    return render(request, 'core/block_effective_list.html', context)
+
+
+def block_example_add_view(request):
+    context = {}
+    if request.method == 'POST':
+        form = BlockExampleForm(request.POST, request.FILES)
+        print form
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('block_example'))
+        else:
+            context.update({
+                'error': u'Ошибка! Проверьте правильность ввода данных.'
+            })
+    else:
+        form = BlockExampleForm()
+    context.update({
+        'form': form
+    })
+    return render(request, 'core/block_example_form.html', context)
+
+
+def block_example_update_view(request, pk):
+    context = {}
+    instance = BlockExample.objects.get(pk=int(pk))
+    if request.method == 'POST':
+        form = BlockExampleForm(request.POST, instance=instance)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('block_example'))
+        else:
+            context.update({
+                'error': u'Ошибка! Проверьте правильность ввода данных.'
+            })
+    else:
+        form = BlockEffectiveForm(instance=instance)
+    context.update({
+        'object': instance,
+        'form': form
+    })
+    return render(request, 'core/block_example_form.html', context)
+
+
+def block_example_view(request):
+    context = {
+        'object_list': BlockExample.objects.all()
+    }
+    return render(request, 'core/block_example_list.html', context)
+
+
+def block_review_add_view(request):
+    context = {}
+    if request.method == 'POST':
+        form = BlockReviewForm(request.POST, request.FILES)
+        print form
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('block_review'))
+        else:
+            context.update({
+                'error': u'Ошибка! Проверьте правильность ввода данных.'
+            })
+    else:
+        form = BlockReviewForm()
+    context.update({
+        'form': form
+    })
+    return render(request, 'core/block_review_form.html', context)
+
+
+def block_review_update_view(request, pk):
+    context = {}
+    instance = BlockReview.objects.get(pk=int(pk))
+    if request.method == 'POST':
+        form = BlockReviewForm(request.POST, instance=instance)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('block_review'))
+        else:
+            context.update({
+                'error': u'Ошибка! Проверьте правильность ввода данных.'
+            })
+    else:
+        form = BlockReviewForm(instance=instance)
+    context.update({
+        'object': instance,
+        'form': form
+    })
+    return render(request, 'core/block_review_form.html', context)
+
+
+def block_review_view(request):
+    context = {
+        'object_list': BlockReview.objects.all()
+    }
+    return render(request, 'core/block_review_list.html', context)
+
+
+def block_list(request):
+    context = {}
+    return render(request, 'core/block_list.html', context)

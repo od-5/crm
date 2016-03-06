@@ -1,0 +1,28 @@
+<script>
+ymaps.ready(init);
+var myMap;
+
+function init(){
+  city = 'Волгоград';
+  var coord = '';
+  var myGeocoder = ymaps.geocode(city);
+    myGeocoder.then(
+      function (res) {
+        coord = res.geoObjects.get(0).geometry.getCoordinates();
+        myMap = new ymaps.Map("YMapsID", {
+            center: coord,
+            zoom: 3
+        });
+      {% if city_list %}{% for city in city_list %}
+        myMap.geoObjects.add(
+            new ymaps.Placemark([{{ city.coord_y|safe }}, {{ city.coord_x|safe }}], {
+            balloonContent: '{{ city.name }} ({{ city.surface_count }})',
+            hintContent: '{{ city.name }} ({{ city.surface_count }})'
+            })
+        );
+      {% endfor %}{% endif %}
+      }
+    );
+
+}
+</script>

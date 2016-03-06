@@ -22,12 +22,16 @@
   <!--[if lt IE 9]><script type="text/javascript" src="{% static 'landing/js/html5.js' %}"></script><![endif]-->
   <!--[if lt IE 9]><script type="text/javascript" src="{% static 'landing/js/placeholder.js' %}"></script><![endif]-->
   <script src="{% static 'landing/js/all.js' %}"></script>
-  <script src="{{ STATIC_URL }}js/map.js"></script>
+{#  <script src="{{ STATIC_URL }}js/map.js"></script>#}
+{% include 'landing/__include/map.html' %}
 {% if setup %}
   {{ setup.top_js|safe }}
 {% endif %}
 </head>
 <body>
+{% if request.subdomain %}
+  <h1>request.subdomain</h1>
+{% endif %}
   <div id="wrapper">
     <header class="header">
       <div class="header-top">

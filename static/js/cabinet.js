@@ -10,6 +10,47 @@ $(function() {
 
   $.validator.messages.required = "* поле обязательно для заполнения";
 
+  // валидация формы блоке "почемы реклама так эффективна"
+  $( '#js-block-effective-form' ).validate({
+    rules: {
+      image: {
+        required: true
+      },
+      text: {
+        required: true
+      }
+    }
+  });
+  // валидация формы блоке "Примеры размещений"
+  $( '#js-block-example-form' ).validate({
+    rules: {
+      image: {
+        required: true
+      },
+      name: {
+        required: true
+      }
+    }
+  });
+  // валидация формы блоке "Примеры размещений"
+  $( '#js-block-review-form' ).validate({
+    rules: {
+      name: {
+        required: true
+      },
+      image: {
+        required: true
+      },
+      description: {
+        required: true
+      },
+      text: {
+        required: true
+      }
+    }
+  });
+
+
   // валидация формы авторизации
   $( '#js-sign-form' ).validate({
     rules: {
