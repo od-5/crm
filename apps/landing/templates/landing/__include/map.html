@@ -6,8 +6,8 @@ function init(){
   var city = '';
   var zoom = 3;
 {% if current_city %}
-  city = '{{ current_city.name }}';
-  zoom = 6;
+  city = 'город {{ current_city.name }}';
+  zoom = 9;
 {% else %}
   city = '{{ city_list.first.name }}';
 {% endif %}
