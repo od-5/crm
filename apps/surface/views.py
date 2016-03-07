@@ -1,5 +1,6 @@
 # coding=utf-8
 from datetime import datetime
+from annoying.functions import get_object_or_None
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -265,7 +266,7 @@ def surface_photo_list(request):
         city_qs = City.objects.filter(moderator=manager.moderator)
         a_qs = SurfacePhoto.objects.filter(porch__surface__city__moderator=manager.moderator)
     elif user.type == 3:
-        client = Client.objects.get(user=user)
+        client = get_object_or_None(Client, user=user)
         clientorder_list = [int(i.id) for i in client.clientorder_set.filter(is_closed=False)]
         qs_list = []
         for corder in client.clientorder_set.all():
