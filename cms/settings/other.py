@@ -15,6 +15,18 @@ if socket.gethostname() == 'r420':
              'PORT': '',
          }
     }
+elif socket.gethostname() == 'lanius':
+    DATABASES = {
+        'default': {
+             'ENGINE': 'django.db.backends.mysql',
+             'NAME': 'enjoyafrru_crm',
+             'USER': 'enjoyafrru',
+             'PASSWORD': 'alena2010',
+             'HOST': 'localhost',
+             'PORT': '',
+         }
+    }
+
 else:
     DATABASES = {
          'default': {
