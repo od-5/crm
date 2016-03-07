@@ -138,7 +138,7 @@
         <div class="about-holder">
         {% if blockeffective_list %}
           {% for object in blockeffective_list %}
-          <div class="about-item{% if forloop.first %} clear{% endif %}">
+          <div class="about-item{% if forloop.first %} clear{% endif %}{% if forloop.counter == 4 %} clear{% endif %}">
             <div class="about-icon"><img src="{{ object.image.url }}" alt=""></div>
             <div class="about-text">{{ object.text|safe|default:'' }}</div>
           </div>
