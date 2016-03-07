@@ -24,7 +24,13 @@
                 </div>
                 <div class="form-group">
                   <div class="col-lg-5">{{ form.moderator.label_tag }}</div>
-                  <div class="col-lg-7">{{ form.moderator }}</div>
+                  <div class="col-lg-7">
+                  {% if user.type == 1 %}
+                    {{ form.moderator }}
+                  {% else %}
+                    {{ form.moderator|attr:'disabled:disabled' }}
+                  {% endif %}
+                  </div>
                   {{ form.moderator.errors }}
                   <div class="clearfix"></div>
                 </div>
