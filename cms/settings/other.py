@@ -20,7 +20,7 @@ elif socket.gethostname() == 'lanius':
         'default': {
              'ENGINE': 'django.db.backends.mysql',
              'NAME': 'enjoyafrru_crm',
-             'USER': 'enjoyafrru',
+             'USER': 'enjoyafrru_crm',
              'PASSWORD': 'alena2010',
              'HOST': 'localhost',
              'PORT': '',
