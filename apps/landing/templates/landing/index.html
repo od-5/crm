@@ -221,12 +221,10 @@
           <div class="gallery-block">
           {% if blockexample_list_1 %}
             <div class="gallery-item">
-            {% for i in '11111111111111111' %}
             {% for object in blockexample_list_1 %}
               <a href="{{ object.image.url }}" class="g-mid fancybox" data-fancybox-group="gal">
                 <img src="{{ object.image_resize.url }}" alt="">
               </a>
-            {% endfor %}
             {% endfor %}
             {% if blockexample_list_2 %}
               <a href="" class="gallery-more">Больше<br> проектов</a>
