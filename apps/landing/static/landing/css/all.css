@@ -55,6 +55,7 @@ ul li {list-style: none;}
 	content: '';
 	clear: both;
 }
+
 h2 {
 	margin: 0 0 78px;
 	font-size: 40px;
@@ -87,7 +88,7 @@ h4 {
 }
 /************************* header__top *************************/
 .header-top {
-	height: 148px;
+	/*height: 148px;*/
 	background: #fff;
 }
 .logo {
@@ -97,6 +98,13 @@ h4 {
 	width: 312px;
 	/*height: 100px;*/
 }
+.video-find {
+	color: #1374c0;
+	font-size: 14px;
+	display: block;
+	padding: 10px 0;
+}
+
 .logo img {
 	max-height: 100px !important;
 	max-width: 100% !important;
