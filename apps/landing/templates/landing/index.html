@@ -23,7 +23,11 @@
   <!--[if lt IE 9]><script type="text/javascript" src="{% static 'landing/js/placeholder.js' %}"></script><![endif]-->
   <script src="{% static 'landing/js/all.js' %}"></script>
 {#  <script src="{{ STATIC_URL }}js/map.js"></script>#}
-{% include 'landing/__include/map.html' %}
+{% if MAIN_PAGE %}
+  {% include 'landing/__include/map.html' %}
+{% else %}
+  {% include 'landing/__include/surface-map.html' with surface_list=current_city.surface_set.all %}
+{% endif %}
 {% if setup %}
   {{ setup.top_js|safe }}
 {% endif %}
