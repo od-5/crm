@@ -13,12 +13,33 @@
       </div>
     </div>
     <div class="col-lg-4 text-right">
-      <ul class="nav navbar-nav navbar-right">
-        <li><a href="{% url 'cabinet:profile' %}"><span class="glyphicon glyphicon-user"></span> {{ user }} </a></li>
-        <li><a href="{% url 'cabinet:logout' %}?next={% url 'cabinet:cabinet' %}"><span class="glyphicon glyphicon-log-out"></span> Выход</a></li>
-      </ul>
+      <div>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="{% url 'cabinet:profile' %}"><span class="glyphicon glyphicon-user"></span> {{ user }} </a></li>
+          <li><a href="{% url 'cabinet:logout' %}?next={% url 'cabinet:cabinet' %}"><span class="glyphicon glyphicon-log-out"></span> Выход</a></li>
+        </ul>
+        <div class="clearfix"></div>
+      </div>
       <div class="text-center">
-        <img src="{{ STATIC_URL }}img/button_.gif" alt="" style="height: 60px;">
+      {% if user.type == 2 %}
+        <a href="#" target="_blank">
+          <img src="{{ STATIC_URL }}img/btn_moderator.gif" alt="" style="height: 60px;">
+        </a>
+      {% elif user.type == 3 %}
+        <div class="add-bottom">
+          <a href="#" target="_blank">
+            <img src="{{ STATIC_URL }}img/btn_client.gif" alt="" style="height: 60px;">
+          </a>
+        </div>
+      {% elif user.type == 4 %}
+        <a href="#" target="_blank">
+          <img src="{{ STATIC_URL }}img/btn_adjuster.gif" alt="" style="height: 60px;">
+        </a>
+      {% elif user.type == 5 %}
+        <a href="#" target="_blank">
+          <img src="{{ STATIC_URL }}img/btn_manager.gif" alt="" style="height: 60px;">
+        </a>
+      {% endif %}
       </div>
     </div>
     <div class="clearfix"></div>

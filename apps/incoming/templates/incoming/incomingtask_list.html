@@ -67,7 +67,7 @@
                   {{ object.incomingclientcontact.email }}
                 </td>
                 <td><a href="{% url 'incoming:task-update' object.id %}"> {{ object.get_type_display|default:'' }}</a></td>
-                <td>{{ object.comment|default:'Не указано' }}</td>
+                <td class="incomingtask-comment">{{ object.comment|linebreaksbr|default:'Не указано' }}</td>
                 <td>{{ object.get_status_display|default:'Не указано' }}</td>
                 <td>
                   <a href="#js-change-incomingtask-modal" id="change-incomingtask-btn-{{ object.id }}" data-url="{% url 'incoming:get_incomingtask_info' %}" class="btn btn-info btn-sm js-change-incomingtask-btn">

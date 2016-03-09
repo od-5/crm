@@ -1,7 +1,8 @@
 {% extends 'cabinet_index.html' %}
 {% block extra_js %}
   <script src="http://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
-  <script src="{{ STATIC_URL }}js/map-surface.js"></script>
+{#  <script src="{{ STATIC_URL }}js/map-surface.js"></script>#}
+{% include 'surface/__include/surface-map.html' %}
 {% endblock %}
 {% block content %}
   <div class="container">
@@ -26,7 +27,10 @@
 {#          <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 6</li>#}
 {#          <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 7</li>#}
 {#        </ul>#}
-
+          <div>
+            <p><strong>Кол-во адресов: {{ surface_count|default:'0' }}</strong></p>
+            <p><strong>Кол-во подъездов: {{ porch_count|default:'0' }}</strong></p>
+          </div>
           <a href="{% url 'surface:add' %}" class="btn btn-success add-bottom">
             <span class="glyphicon glyphicon-plus-sign"></span> Добавить новую поверхность
           </a>
@@ -44,13 +48,13 @@
 {#              <input type="text" name="street" class="search-form__street" {% if street_id %}value="{{ street_id }}"{% endif %}>#}
 
               <select name="city" id="city_filter" class="form-control input-sm" data-ajax-url="{% url 'city:get_area_list' %}">
-                <option value="0">Город</option>
+                <option value="0">--- Город--- </option>
               {% for city in city_list %}
                 <option value="{{ city.id }}" {% if city.id == city_id %}selected="selected"{% endif %}>{{ city }}</option>
               {% endfor %}
               </select>
               <select name="area" id="area_filter" class="form-control input-sm" data-ajax-url="{% url 'city:simple_get_area_streets' %}">
-                <option value="0">Район</option>
+                <option value="0">--- Район ---</option>
                 {% if area_list %}
                   {% for area in area_list %}
                   <option value="{{ area.id }}" {% if area.id == area_id %}selected="selected"{% endif %}>{{ area }}</option>
@@ -58,7 +62,7 @@
                 {% endif %}
               </select>
               <select name="street" id="street_filter" class="form-control input-sm" >
-                <option value="0">Улица</option>
+                <option value="0">--- Улица ---</option>
                 {% if area_list %}
                   {% for street in street_list %}
                   <option value="{{ street.id }}" {% if street.id == street_id %}selected="selected"{% endif %}>{{ street }}</option>
@@ -66,7 +70,8 @@
               {% endif %}
               </select>
               <select name="management" id="management_filter" class="form-control input-sm" >
-                <option value="0">Управляющая компания</option>
+                <option value="0">--- Управляющая компания ---</option>
+                <option value="-1" {% if management_id == -1 %}selected="selected"{% endif %}>УК не указана</option>
                 {% if management_list %}
                   {% for management in management_list %}
                   <option value="{{ management.id }}" {% if management.id == management_id %}selected="selected"{% endif %}>{{ management.name }}</option>
@@ -74,7 +79,7 @@
               {% endif %}
               </select>
               <select name="free"  class="form-control input-sm">
-                <option value="0" {% if free == 0%}selected="selected"{% endif %}>Занятость</option>
+                <option value="0" {% if free == 0%}selected="selected"{% endif %}>--- Занятость ---</option>
                 <option value="1" {% if free == 1%}selected="selected"{% endif %}>Свободна</option>
                 <option value="2" {% if free == 2%}selected="selected"{% endif %}>Занята</option>
               </select>
@@ -88,7 +93,7 @@
                 <th>Район</th>
                 <th>Улица</th>
                 <th>Номер дома</th>
-                <th>Количество подездов</th>
+                <th>Количество подъездов</th>
                 <th>Управляющая компания</th>
                 <th>Свободна</th>
                 <th></th>
@@ -99,11 +104,13 @@
               <tr {% if object.damaged %}class="danger"{% endif %} data-id="{{ object.id }}" data-name="{{ object.street }}" data-model="Surface" id="id_Surface_{{ object.id }}">
                 <td>{{ object.city|default:'Не указано' }}</td>
                 <td>{{ object.street.area|default:'Не указано' }}</td>
+                <td>
                 {% if user.type == 5 %}
-                <td>{{ object.street|default:'Не указано' }}</td>
+                  {{ object.street|default:'Не указано' }}
                 {% else %}
-                <td><a href="{% url 'surface:update' object.id %}">{{ object.street|default:'Не указано' }}</a></td>
+                  <a href="{% url 'surface:update' object.id %}">{{ object.street|default:'Не указано' }}</a>
                 {% endif %}
+                </td>
                 <td>{{ object.house_number|default:'Не указано' }}</td>
                 <td>{{ object.porch_count|default:'Не указано' }}</td>
                 <td>{{ object.management.name|default:'Не указано' }}</td>
@@ -127,7 +134,7 @@
               </tr>
             {% empty %}
               <tr>
-                <td colspan="6">
+                <td colspan="8">
                   <p class="alert alert-info">Поверхностей не найдено</p>
                 </td>
               </tr>

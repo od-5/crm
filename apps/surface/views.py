@@ -36,8 +36,13 @@ class SurfaceListView(ListView):
         else:
             qs = None
         # фильтрация поверхностей по городам, районам, улицам
-        if self.request.GET.get('management') and int(self.request.GET.get('management')) != 0:
-            qs = qs.filter(management=int(self.request.GET.get('management')))
+        if self.request.GET.get('management'):
+            if int(self.request.GET.get('management')) == 0:
+                qs = qs
+            elif int(self.request.GET.get('management')) == -1:
+                qs = qs.filter(management__isnull=True)
+            else:
+                qs = qs.filter(management=int(self.request.GET.get('management')))
         if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
             qs = qs.filter(city=int(self.request.GET.get('city')))
         if self.request.GET.get('area') and int(self.request.GET.get('area')) != 0:
@@ -59,6 +64,16 @@ class SurfaceListView(ListView):
         Администратор может выбирать любой город системы.
         Модератор - только те города, которыми он управляет.
         """
+        surface_qs = self.get_queryset()
+        porch_count = 0
+        print surface_qs.count()
+        surface_count = surface_qs.count()
+        for surface in surface_qs:
+            porch_count += surface.porch_count()
+        context.update({
+            'porch_count': porch_count,
+            'surface_count': surface_count
+        })
         if self.request.user.type == 1:
             qs = City.objects.all()
             management_qs = ManagementCompany.objects.all()

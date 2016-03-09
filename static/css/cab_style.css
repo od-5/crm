@@ -6104,6 +6104,9 @@ img {
   -o-transition: opacity 0.5s ease;
   transition: opacity 0.5s ease;
 }
+td.incomingtask-comment {
+  word-break: break-all;
+}
 .btn,
 p,
 h2 {
@@ -6239,6 +6242,9 @@ img {
 }
 a.lead {
   display: inline-block;
+}
+.remove-padding {
+  padding: 0;
 }
 body {
   background-color: #f1f1f1;
@@ -6399,6 +6405,9 @@ label.error {
 #js-modal-street-remove,
 #js-modal-street-update {
   display: none;
+}
+.dashboard .panel-body {
+  min-height: 130px;
 }
 .dashboard__link {
   display: block;

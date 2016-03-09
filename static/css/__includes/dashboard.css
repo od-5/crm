@@ -1,3 +1,6 @@
+.dashboard .panel-body {
+  min-height: 130px;
+}
 .dashboard__link {
   display: block;
   text-align: center;

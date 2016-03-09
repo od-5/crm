@@ -15,6 +15,11 @@ img {
   -o-transition: opacity 0.5s ease;
   transition: opacity 0.5s ease;
 }
+td {
+  &.incomingtask-comment {
+    word-break: break-all;
+  }
+}
 .btn, p, h2 {
   -webkit-transition: background-color 0.5s ease;
   -moz-transition: background-color 0.5s ease;
@@ -161,4 +166,10 @@ img {
 }
 a.lead {
   display: inline-block;
+}
+
+.remove {
+  &-padding {
+    padding: 0;
+  }
 }
