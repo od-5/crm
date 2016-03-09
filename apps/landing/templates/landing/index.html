@@ -399,9 +399,13 @@
       </div>
       <div class="holder">
         <div class="logo">
+          {% if setup.logotype %}
+            <img src="{{ setup.logotype.url|default:'' }}" alt="{{ setup.meta_title|default:'' }}">
+          {% else %}
           <span class="logo-text-black">Рекламные конструкции </span>
           <span class="logo-text-big">на входных дверях</span>
           <span class="logo-text-min">В городах России и СНГ</span>
+          {% endif %}
         </div>
         <div class="copy"><a href="#hidden-block" class="fancybox">Политика конфиденциальности</a><br>
         Все права защищены &copy; 2015</div>
