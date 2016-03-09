@@ -24,6 +24,15 @@ class City(models.Model):
     def get_absolute_url(self):
         return reverse('city:update', args=(self.pk,))
 
+    def porch_count(self):
+        """
+        Метод возвращает количество подъездов города
+        """
+        count = 0
+        for surface in self.surface_set.all():
+            count += surface.porch_count()
+        return count
+
     def surface_count(self):
         """
         Метод возвращает колиечество стендов, размещённых в городе.
@@ -36,7 +45,8 @@ class City(models.Model):
         return count
 
     def save(self, *args, **kwargs):
-        pos = api.geocode(api_key, self)
+        address = u'город %s' % self.name
+        pos = api.geocode(api_key, address)
         self.coord_x = float(pos[0])
         self.coord_y = float(pos[1])
         if not self.slug:
@@ -130,7 +140,7 @@ class Surface(models.Model):
     def save(self, *args, **kwargs):
         if not self.release_date:
             self.release_date = datetime.date.today() - datetime.timedelta(days=1)
-        address = u'%s %s %s' % (self.city.name, self.street.name, self.house_number)
+        address = u'город %s %s %s' % (self.city.name, self.street.name, self.house_number)
         pos = api.geocode(api_key, address)
         self.coord_x = float(pos[0])
         self.coord_y = float(pos[1])

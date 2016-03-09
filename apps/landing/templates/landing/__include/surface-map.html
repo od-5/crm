@@ -1,5 +1,6 @@
 <script>
 ymaps.ready(function () {
+  {% if surface_list %}
     var surface_points = [
         {% for surface in surface_list %}
           [{{ surface.coord_y|safe }}, {{ surface.coord_x|safe }}],
@@ -7,9 +8,18 @@ ymaps.ready(function () {
     ];
     var surface_baloons = [
         {% for surface in surface_list %}
-          ['{{ surface|safe }}', '{{ surface.porch_count|default:"" }}'],
+          ['{{ surface|safe }}', '{{ surface.porch_count|default:"0" }}'],
         {% endfor %}
     ];
+  {% else %}
+    var surface_points = [
+          [{{ current_city.coord_y|safe }}, {{ current_city.coord_x|safe }}],
+    ];
+    var surface_baloons = [
+          ['{{ current_city.name|safe }}', '{{ current_city.porch_count|default:"0" }}'],
+    ];
+  {% endif %}
+
     var myMap = new ymaps.Map('YMapsID', {
             center: surface_points[0],
             zoom: 9,
@@ -52,8 +62,8 @@ ymaps.ready(function () {
          */
             getPointData = function (index) {
             return {
-                balloonContentBody: '<span>Адрес: ' + surface_baloons[index][0] + 'Кол-во подъездов' + surface_baloons[index][1] + '</span>',
-                clusterCaption: '<span>Адрес: ' + surface_baloons[index][0] + 'Кол-во подъездов' + surface_baloons[index][1] + '</span>'
+                balloonContentBody: '<span>Адрес: ' + surface_baloons[index][0] + ' Кол-во подъездов ' + surface_baloons[index][1] + '</span>',
+                clusterCaption: '<span>Адрес: ' + surface_baloons[index][0] + ' Кол-во подъездов ' + surface_baloons[index][1] + '</span>'
             };
         },
         /**
