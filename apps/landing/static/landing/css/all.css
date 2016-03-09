@@ -108,6 +108,7 @@ h4 {
 .logo img {
 	max-height: 100px !important;
 	max-width: 100% !important;
+	margin-bottom: 10px;
 }
 
 .logo-text-black {
