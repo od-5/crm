@@ -1,12 +1,12 @@
 <script>
 ymaps.ready(function () {
     var surface_points = [
-        {% for surface in object_list %}
+        {% for surface in surface_list %}
           [{{ surface.coord_y|safe }}, {{ surface.coord_x|safe }}],
         {% endfor %}
     ];
     var surface_baloons = [
-        {% for surface in object_list %}
+        {% for surface in surface_list %}
           ['{{ surface|safe }}', '{{ surface.porch_count|default:"" }}'],
         {% endfor %}
     ];

@@ -71,6 +71,7 @@ class SurfaceListView(ListView):
         for surface in surface_qs:
             porch_count += surface.porch_count()
         context.update({
+            'surface_list': surface_qs,
             'porch_count': porch_count,
             'surface_count': surface_count
         })
