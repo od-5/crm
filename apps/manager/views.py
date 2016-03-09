@@ -23,13 +23,13 @@ class ManagerListView(ListView):
     paginate_by = 25
 
     def get_queryset(self):
-        user_id = self.request.user.id
+        user = self.request.user
         qs = Manager.objects.all()
         # if self.request.user.type == 1:
         #     qs = User.objects.filter(type=5)
         #
-        # elif self.request.user.type == 2:
-        #     qs = User.objects.filter(type=5, moderator=user_id)
+        if self.request.user.type == 2:
+            qs = qs.filter(moderator=user)
         # else:
         #     qs = None
         if self.request.GET.get('email'):
