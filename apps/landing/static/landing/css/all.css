@@ -94,7 +94,7 @@ h4 {
 	float: left;
 	margin: 39px 50px 0 0;
 	color: #e35f13;
-	width: 312px;
+	width: 315px;
 	/*height: 100px;*/
 }
 .video-find {
@@ -102,6 +102,7 @@ h4 {
 	font-size: 14px;
 	display: block;
 	padding-bottom: 20px;
+	margin-top: -10px;
 }
 
 .logo img {
@@ -128,6 +129,7 @@ h4 {
 .logo-text-min {
 	display: block;
 	font-size: 14px;
+	margin-bottom: 30px;
 }
 .header-phone {
 	float: left;
