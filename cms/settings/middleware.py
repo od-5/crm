@@ -20,4 +20,5 @@ if settings.DEBUG:
 TEMPLATE_CONTEXT_PROCESSORS = TCP + (
     'django.core.context_processors.request',
     'core.context.site_setup',
+    'core.context.paginator_link',
 )

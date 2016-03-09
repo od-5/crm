@@ -127,14 +127,14 @@ def adjuster_update(request, pk):
 def adjuster_task(request, pk):
     context = {}
     # todo: перенести в middleware
-    get_data = request.GET.copy()
-    filtered_url = '?'
-    for i in get_data:
-        if i != 'page':
-            filtered_url += u'%s=%s&' % (i, get_data[i])
-    context.update({
-        'filtered_url': filtered_url
-    })
+    # get_data = request.GET.copy()
+    # filtered_url = '?'
+    # for i in get_data:
+    #     if i != 'page':
+    #         filtered_url += u'%s=%s&' % (i, get_data[i])
+    # context.update({
+    #     'filtered_url': filtered_url
+    # })
     r_date_s = request.GET.get('date_s')
     r_date_e = request.GET.get('date_e')
     context.update({

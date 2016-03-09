@@ -46,7 +46,13 @@
               <tr data-id="{{ item.id }}" data-name="{{ item }}" data-model="ClientJournal" id="id_ClientJournal_{{ item.id }}">
                 <td>{{ item.client.legal_name|default:'Не указано' }}</td>
                 <td>{{ item.client.manager|default:'Не указано' }}</td>
-                <td>{{ item.clientorder|default:'Не указано' }}</td>
+                <td>
+                  {% if item.clientorder.all %}
+                  {% for order in item.clientorder.all %}
+                  {{ order|default:'Не указано' }}{% if not forloop.last %}<br>{% endif %}
+                  {% endfor %}
+                  {% endif %}
+                </td>
                 <td>{{ item.cost|default:'Не указано' }}</td>
                 <td>{{ item.add_cost|default:'Не указано' }}</td>
                 <td>{{ item.discount|default:'Не указано' }}</td>
