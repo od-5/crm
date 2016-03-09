@@ -11,6 +11,7 @@ class SetupForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'city': forms.Select(attrs={'class': 'form-control'}),
+            'logotype': forms.ClearableFileInput(attrs={'class': 'form-control'}),
             'meta_title': forms.TextInput(attrs={'class': 'form-control'}),
             'meta_keys': forms.Textarea(attrs={'class': 'form-control'}),
             'meta_desc': forms.Textarea(attrs={'class': 'form-control'}),

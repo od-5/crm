@@ -1,4 +1,5 @@
 # coding=utf-8
+from PIL import Image
 from django.conf import settings
 from django.db import models
 from imagekit.models import ImageSpecField
@@ -22,7 +23,22 @@ class Setup(models.Model):
         else:
             return u'Настройки основного сайта'
 
+    def save(self, *args, **kwargs):
+        super(Setup, self).save()
+        if self.logotype:
+            print self.logotype.file
+            image = Image.open(self.logotype)
+            (width, height) = image.size
+            print width
+            size = (350, 350)
+            "Max width and height 350"
+            if width > 350:
+                print 'width'
+                image.thumbnail(size, Image.ANTIALIAS)
+                image.save(self.logotype.path, "PNG")
+
     city = models.OneToOneField(to=City, verbose_name=u'Город', null=True, blank=True)
+    logotype = models.ImageField(verbose_name=u'Логотип', blank=True, null=True, upload_to=upload_to)
     meta_title = models.TextField(verbose_name=u'Заголовок сайта', blank=True, null=True)
     meta_keys = models.TextField(verbose_name=u'Ключевые слова', blank=True, null=True)
     meta_desc = models.TextField(verbose_name=u'Мета описание', blank=True, null=True)

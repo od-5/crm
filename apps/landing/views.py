@@ -71,7 +71,7 @@ def setup_add(request):
     context = {}
     user = request.user
     if request.method == 'POST':
-        form = SetupForm(request.POST)
+        form = SetupForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('setup-list'))
@@ -97,7 +97,7 @@ def setup_update(request, pk):
     instance = Setup.objects.get(pk=int(pk))
     user = request.user
     if request.method == 'POST':
-        form = SetupForm(request.POST, instance=instance)
+        form = SetupForm(request.POST, request.FILES, instance=instance)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('setup-list'))

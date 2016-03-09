@@ -22,7 +22,7 @@
           {{ error }}
           </p>
         {% endif %}
-        <form action="" role="form" method="post" id="js-setup-form">
+        <form action="" role="form" method="post" id="js-setup-form" enctype="multipart/form-data">
         {% csrf_token %}
         {% for field in form %}
           <div class="form-group">

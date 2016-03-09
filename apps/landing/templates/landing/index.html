@@ -38,9 +38,13 @@
       <div class="header-top">
         <div class="holder">
           <div class="logo">
+            {% if setup.logotype %}
+              <img src="{{ setup.logotype.url|default:'' }}" alt="{{ setup.meta_title|default:'' }}">
+            {% else %}
             <span class="logo-text-black">Рекламные конструкции </span>
             <span class="logo-text-big">на входных дверях</span>
             <span class="logo-text-min">В городах России и СНГ</span>
+            {% endif %}
           </div>
           <div class="header-phone">
             <div class="header-number">{{ setup.phone|default:"8 800 250-34-50" }}</div>

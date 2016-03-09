@@ -94,7 +94,14 @@ h4 {
 	float: left;
 	margin: 39px 50px 0 0;
 	color: #e35f13;
+	width: 312px;
+	/*height: 100px;*/
 }
+.logo img {
+	max-height: 100px !important;
+	max-width: 100% !important;
+}
+
 .logo-text-black {
 	display: block;
 	margin: 0 0 2px;
