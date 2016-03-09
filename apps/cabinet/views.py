@@ -88,6 +88,7 @@ def password_change(request):
         user = User.objects.get(pk=int(user_id))
         if password1 and password2 and password1 == password2:
             user.set_password(password1)
+            user.save()
             return {
                 'success': u'Ваш пароль был успешно изменён'
             }
