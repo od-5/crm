@@ -47,11 +47,9 @@ class IncomingClientListView(ListView):
             })
         queryset = self.get_queryset()
         manager_client_count = queryset.count()
-        print u'Кол-во клиентов %s' % manager_client_count
         manager_task_count = 0
         for client in queryset:
             manager_task_count += client.incomingtask_set.count()
-        print u'кол-во задач %s' % manager_task_count
         context.update({
             'manager_client_count': manager_client_count,
             'manager_task_count': manager_task_count
