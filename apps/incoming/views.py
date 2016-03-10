@@ -36,7 +36,7 @@ class IncomingClientListView(ListView):
         else:
             qs = None
         if self.request.GET.get('name'):
-            qs = qs.filter(name__icontains=self.request.GET.get('name'))
+            qs = qs.filter(name=self.request.GET.get('name'))
         return qs
 
     def get_context_data(self, **kwargs):
@@ -45,6 +45,17 @@ class IncomingClientListView(ListView):
             context.update({
                 'r_name': self.request.GET.get('name')
             })
+        queryset = self.get_queryset()
+        manager_client_count = queryset.count()
+        print u'Кол-во клиентов %s' % manager_client_count
+        manager_task_count = 0
+        for client in queryset:
+            manager_task_count += client.incomingtask_set.count()
+        print u'кол-во задач %s' % manager_task_count
+        context.update({
+            'manager_client_count': manager_client_count,
+            'manager_task_count': manager_task_count
+        })
         user = self.request.user
         if user.type == 1:
             manager_qs = Manager.objects.all()
@@ -384,13 +395,13 @@ def incomingtask_add(request):
         manager_qs = Manager.objects.filter(moderator=current_manager.moderator)
         incomingclient_qs = IncomingClient.objects.filter(manager=current_manager)
         initial = {
-            'manager': user
+            'manager': current_manager
         }
     else:
         manager_qs = None
         incomingclient_qs = None
     if request.method == "POST":
-        form = IncomingTaskForm(request.POST)
+        form = IncomingTaskForm(request.POST, initial=initial)
         if form.is_valid():
             instance = form.save(commit=False)
             instance.save()
@@ -400,7 +411,7 @@ def incomingtask_add(request):
                 'error': u'Проверьте правильность ввода полей'
             })
     else:
-        form = IncomingTaskForm()
+        form = IncomingTaskForm(initial=initial)
     form.fields['manager'].queryset = manager_qs
     form.fields['incomingclient'].queryset = incomingclient_qs
     context.update({
@@ -417,19 +428,13 @@ def incomingtask_update(request, pk):
     user = request.user
     if user.type == 1:
         manager_qs = Manager.objects.all()
-        incomingclient_qs = IncomingClient.objects.all()
-        incomingclientcontact_qs = IncomingClientContact.objects.all()
     elif user.type == 2:
         manager_qs = Manager.objects.filter(moderator=user)
-        incomingclient_qs = IncomingClient.objects.filter(manager__moderator=user)
-        incomingclientcontact_qs = IncomingClientContact.objects.filter(incomingclient__city__moderator=user)
     elif user.type == 5:
-        manager_qs = Manager.objects.filter(moderator=user.moderator)
-        incomingclient_qs = IncomingClient.objects.filter(manager=user)
-        incomingclientcontact_qs = IncomingClientContact.objects.filter(incomingclient__city__moderator=user.moderator)
+        current_manager = Manager.objects.get(user=user)
+        manager_qs = Manager.objects.filter(moderator=current_manager.moderator)
     else:
         manager_qs = None
-        incomingclient_qs = None
     if request.method == 'POST':
         form = IncomingTaskForm(request.POST, instance=object)
         if form.is_valid():
@@ -441,8 +446,7 @@ def incomingtask_update(request, pk):
         form = IncomingTaskForm(instance=object)
 
     form.fields['manager'].queryset = manager_qs
-    form.fields['incomingclient'].queryset = incomingclient_qs
-    form.fields['incomingclientcontact'].queryset = incomingclientcontact_qs
+    form.fields['incomingclientcontact'].queryset = object.incomingclient.incomingclientcontact_set.all()
 
     context.update({
         'success': success_msg,

@@ -86,7 +86,7 @@ class IncomingTask(models.Model):
     )
 
     manager = models.ForeignKey(to=Manager, verbose_name=u'Менеджер')
-    incomingclient = models.ForeignKey(to=IncomingClient, verbose_name=u'Входящий клиент')
+    incomingclient = models.ForeignKey(to=IncomingClient, verbose_name=u'Клиент')
     incomingclientcontact = models.ForeignKey(to=IncomingClientContact, verbose_name=u'Контактное лицо', null=True, blank=True)
     type = models.PositiveIntegerField(choices=TASK_TYPE_CHOICES, verbose_name=u'Тип задачи')
     date = models.DateField(verbose_name=u'Дата')

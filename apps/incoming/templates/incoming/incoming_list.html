@@ -7,6 +7,10 @@
           <p class="lead remove-bottom text-center">Журнал клиентов</p>
         </div>
         <div class="panel-body">
+          <div>
+            <p><strong>Колчество клентов: {{ manager_client_count|default:'0' }}</strong></p>
+            <p><strong>Колчество задач: {{ manager_task_count|default:'0' }}</strong></p>
+          </div>
           <a href="{% url 'incoming:add' %}" class="btn btn-success add-bottom">
             <span class="glyphicon glyphicon-plus-sign"></span> Добавить нового клиента
           </a>

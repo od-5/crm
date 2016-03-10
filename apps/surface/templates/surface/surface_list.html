@@ -28,8 +28,8 @@
 {#          <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 7</li>#}
 {#        </ul>#}
           <div>
-            <p><strong>Кол-во адресов: {{ surface_count|default:'0' }}</strong></p>
-            <p><strong>Кол-во подъездов: {{ porch_count|default:'0' }}</strong></p>
+            <p><strong>Колчество адресов: {{ surface_count|default:'0' }}</strong></p>
+            <p><strong>Колчество подъездов: {{ porch_count|default:'0' }}</strong></p>
           </div>
         {% if user.type == 1 or user.type == 2 %}
           <a href="{% url 'surface:add' %}" class="btn btn-success add-bottom">

@@ -64,6 +64,7 @@ def get_contact_list(request):
     incomingclient = IncomingClient.objects.get(pk=int(request.GET.get('incomingclient')))
     for contact in incomingclient.incomingclientcontact_set.all():
         contact_list.append({
+            'id': contact.id,
             'name': contact.name,
             'function': contact.function,
             'phone': contact.phone,

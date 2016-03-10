@@ -1150,15 +1150,15 @@ $(function() {
         form.find('#id_incomingclient_name').text(data.name);
         form.find('#id_incomingclient_id').val(data.id);
         var contact_list = data.contact_list;
-          var contact_list_selector = form.find('#id_incomingclient_contact');
-          contact_list_selector.find('option').remove();
-          contact_list_selector.append($("<option value selected='selected'>---------</option>"));
-          for (var i = 0; i < contact_list.length; i++) {
-            contact_list_selector.append($("<option/>", {
-              value: contact_list[i]['id'],
-              text: contact_list[i]['name']
-            }));
-          }
+        var contact_list_selector = form.find('#id_incomingclient_contact');
+        contact_list_selector.find('option').remove();
+        contact_list_selector.append($("<option value selected='selected'>---------</option>"));
+        for (var i = 0; i < contact_list.length; i++) {
+          contact_list_selector.append($("<option/>", {
+            value: contact_list[i]['id'],
+            text: contact_list[i]['name']
+          }));
+        }
       });
     }
   });
@@ -1324,7 +1324,42 @@ $(function() {
   //    }
   //  }
   //});
+  var ia_form = $('#js-form-incomingtask-add');
+  ia_form.find('#id_incomingclient').change(function(){
+    var client = $(this).val();
+    var url = $(this).parents('.form-group').data('url');
+    console.log(url);
+    var clientcontact_selector = ia_form.find('#id_incomingclientcontact');
+    if (client) {
+      console.log(client);
+      clientcontact_selector.parents('.form-group').removeClass('hide');
+      $.ajax({
+        type: "GET",
+        url: url,
+        data: {
+          incomingclient: client
+        }
+      }).done(function (data) {
+        if (data.contact_list) {
+          var contact_list = data.contact_list;
+          console.log(contact_list);
+          clientcontact_selector.find('option').remove();
+          clientcontact_selector.append($("<option value selected='selected'>---------</option>"));
+          for (var i = 0; i < contact_list.length; i++) {
+            clientcontact_selector.append($("<option/>", {
+              value: contact_list[i]['id'],
+              text: contact_list[i]['name']
+            }));
+          }
 
-
-
+        } else {
+          clientcontact_selector.find('option').remove();
+        }
+      });
+    } else {
+      console.log('empty');
+      clientcontact_selector.find('option').remove();
+      clientcontact_selector.parents('.form-group').addClass('hide');
+    }
+  })
 });
