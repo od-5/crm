@@ -71,13 +71,15 @@
                 <td>{{ object.get_status_display|default:'Не указано' }}</td>
                 <td>
                   <a href="#js-change-incomingtask-modal" id="change-incomingtask-btn-{{ object.id }}" data-url="{% url 'incoming:get_incomingtask_info' %}" class="btn btn-info btn-sm js-change-incomingtask-btn">
-                    <span class="glyphicon glyphicon-edit"></span> Редактировать
+                    <span class="glyphicon glyphicon-edit"></span> назначить новую задачу
                   </a>
                 </td>
                 <td>
+                  {% if user.type != 5 %}
                   <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-IncomingTask-{{ object.id }}" class="btn btn-danger btn-sm js-ajax-remove-btn">
                     <span class="glyphicon glyphicon-remove"></span> Удалить
                   </a>
+                  {% endif %}
                 </td>
               </tr>
             {% empty %}

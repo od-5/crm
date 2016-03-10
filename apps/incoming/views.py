@@ -52,6 +52,9 @@ class IncomingClientListView(ListView):
             manager_qs = Manager.objects.filter(moderator=user)
         elif user.type == 5:
             current_manager = Manager.objects.get(user=user)
+            context.update({
+                'current_manager': current_manager
+            })
             manager_qs = Manager.objects.filter(moderator=current_manager.moderator)
         else:
             manager_qs = None

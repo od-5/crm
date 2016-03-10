@@ -31,29 +31,42 @@
                 <td>
                   <a href="{% url 'incoming:update' object.id %}"> {{ object.name|default:'' }}</a>
                   <br>
+                  {% if user.type != 5 %}
                   <a href="#js-new-incomingtask-modal" data-url="{% url 'incoming:get_incomingclient_info' %}" id="add-incomingtask-btn-{{ object.id }}" class="btn btn-success btn-sm js-new-incomingtask-btn">
                     <span class="glyphicon glyphicon-plus-sign"></span> Назначить задачу
                   </a>
+                  {% endif %}
                 </td>
                 <td>{{ object.kind_of_activity|default:'Не указано' }}</td>
                 <td data-manager-id="{{ object.manager.id }}" data-manager-name="{{ object.manager }}" data-url="{% url 'incoming:get_available_manager_list' %}">
                   <span class="js-manager-name">{{ object.manager|default:'Не указано' }}</span>
+                {% if user.type != 5 %}
                   <br>
                   <a href="#reassign-manager" id="js-reassign-manager-{{ object.id }}" class="js-reassign-manager btn btn-warning btn-sm">
-                    <span class="glyphicon glyphicon-refresh"></span> переназначить</a>
+                    <span class="glyphicon glyphicon-refresh"></span> переназначить
+                  </a>
+                {% endif %}
                 </td>
                 <td>{{ object.city|default:'Не указано' }}</td>
                 <td>
+                  {% if user.type != 5 %}
                   <br>
+                  {% endif %}
                   <a href="#incomingclient-contact" data-url="{% url 'incoming:get_contact_list' %}" data-incomingclient="{{ object.id }}" id="js-incomingclient-{{ object.id }}-button" class="btn btn-info btn-sm js-show-incomingclient-contact">
                     <span class="glyphicon glyphicon-search"></span> Контактные лица
                   </a>
                 </td>
                 <td>
+                  {% if user.type == 5 %}
+                  <a href="#js-new-incomingtask-modal" data-url="{% url 'incoming:get_incomingclient_info' %}" id="add-incomingtask-btn-{{ object.id }}" class="btn btn-success btn-sm js-new-incomingtask-btn">
+                    <span class="glyphicon glyphicon-plus-sign"></span> Назначить задачу
+                  </a>
+                  {% else %}
                   <br>
                   <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-IncomingClient-{{ object.id }}" class="btn btn-danger btn-sm js-ajax-remove-btn">
                     <span class="glyphicon glyphicon-remove"></span> Удалить
                   </a>
+                  {% endif %}
                 </td>
               </tr>
             {% empty %}
@@ -104,6 +117,9 @@
           <p class="form-control-static" id="id_incomingclient_type"></p>
         </div>
       </div>
+      {% if current_manager %}
+        <input type="hidden" name="manager" value="{{ current_manager.id|default:'' }}">
+      {% else %}
       <div class="form-group">
         <div class="col-lg-4">
           <label for="id_manager" class="control-label">Менеджер</label>
@@ -117,6 +133,7 @@
           </select>
         </div>
       </div>
+      {% endif %}
       <div class="form-group">
         <div class="col-lg-4">
           <label class="control-label">Название</label>
