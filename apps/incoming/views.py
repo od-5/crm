@@ -37,6 +37,17 @@ class IncomingClientListView(ListView):
             qs = None
         if self.request.GET.get('name'):
             qs = qs.filter(name=self.request.GET.get('name'))
+        if self.request.GET.get('phone') or self.request.GET.get('contact'):
+            client_id_list = [int(i.id) for i in qs]
+            c_qs = IncomingClientContact.objects.filter(incomingclient__in=client_id_list)
+            if self.request.GET.get('phone'):
+                c_qs = c_qs.filter(phone=self.request.GET.get('phone'))
+            if self.request.GET.get('contact'):
+                c_qs = c_qs.filter(name__icontains=self.request.GET.get('contact'))
+                # qs = qs.filter(name=self.request.GET.get('name'))
+            client_id_list = [int(i.incomingclient.id) for i in c_qs]
+            qs = qs.filter(id__in=client_id_list)
+
         return qs
 
     def get_context_data(self, **kwargs):
@@ -44,6 +55,14 @@ class IncomingClientListView(ListView):
         if self.request.GET.get('name'):
             context.update({
                 'r_name': self.request.GET.get('name')
+            })
+        if self.request.GET.get('phone'):
+            context.update({
+                'r_phone': self.request.GET.get('phone')
+            })
+        if self.request.GET.get('contact'):
+            context.update({
+                'r_contact': self.request.GET.get('contact')
             })
         queryset = self.get_queryset()
         manager_client_count = queryset.count()
