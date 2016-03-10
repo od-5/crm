@@ -1111,14 +1111,14 @@ $(function() {
               $('#js-incomingclient-contact-list').append(
                 '<tr>' +
                 '<td>' + contact_list[i]['name'] +
-                '</td><td>' + contact_list[i]['name'] +
+                '</td><td>' + contact_list[i]['function'] +
                 '</td><td>' + contact_list[i]['phone'] +
                 '</td><td>' + contact_list[i]['email'] +
                 '</td>' +
                 '</tr>'
               );
               console.log(contact_list[i]['name']);
-              console.log(contact_list[i]['name']);
+              console.log(contact_list[i]['function']);
               console.log(contact_list[i]['phone']);
               console.log(contact_list[i]['email']);
             }
