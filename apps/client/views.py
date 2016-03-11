@@ -436,7 +436,7 @@ def client_journal_export(request, pk):
 
     style0 = xlwt.XFStyle()
     style0.font = font0
-    style0.alignment = alignment_right
+    style0.alignment = alignment_center
 
     style1 = xlwt.XFStyle()
     style1.font = font1
@@ -462,6 +462,9 @@ def client_journal_export(request, pk):
     style6.font = font1
     style6.alignment = alignment_middle
     style6.borders = borders
+
+    style7 = xlwt.XFStyle()
+    style7.font = font1
 
     wb = xlwt.Workbook()
     ws = wb.add_sheet(u'Лист 1')
