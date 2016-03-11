@@ -533,10 +533,10 @@ def client_journal_export(request, pk):
         #     total_count += count
     ws.write(i, 0, u'Итого', style2)
     ws.write(i, 7, u"%s, руб." % total_count, style2)
-    ws.write_merge(i+2, i+2, 0, 1, u'Ответственный менеджер', style4)
+    ws.write_merge(i+2, i+2, 0, 1, u'Ответственный менеджер', style7)
     ws.write_merge(i+2, i+2, 3, 4, u'', style5)
     ws.write_merge(i+2, i+2, 6, 8, manager, style5)
-    ws.write_merge(i+5, i+5, 0, 1, u'Руководитель отдела', style4)
+    ws.write_merge(i+5, i+5, 0, 1, u'Руководитель отдела', style7)
     ws.write_merge(i+5, i+5, 3, 4, u'', style5)
     ws.write_merge(i+5, i+5, 6, 8, u'', style5)
 
