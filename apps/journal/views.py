@@ -20,7 +20,7 @@ class JournalListView(ListView):
         elif self.request.user.type == 2:
             qs = ClientJournal.objects.filter(client__city__moderator=user)
         elif self.request.user.type == 5:
-            qs = ClientJournal.objects.filter(client__manager=user)
+            qs = ClientJournal.objects.filter(client__manager__user=user)
         else:
             qs = None
         if self.request.GET.get('city'):

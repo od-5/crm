@@ -140,7 +140,7 @@ class ClientJournal(models.Model):
             discount = self.discount
         else:
             discount = 0
-        sum = ((cost*(1+add_cost*0.01))*(1+discount*0.01)) * self.stand_count()
+        sum = ((cost*(1+add_cost*0.01))*(1-discount*0.01)) * self.stand_count()
         return round(sum, 2)
 
     client = models.ForeignKey(to=Client, verbose_name=u'клиент')
