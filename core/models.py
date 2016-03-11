@@ -76,7 +76,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     company = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'Название организации')
     leader = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'Руководитель')
     leader_function = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'Должность руководителя')
-    work_basis = models.CharField(max_length=256, blank=True, null=True, verbose_name=u'Договора франшизы')
+    work_basis = models.CharField(max_length=256, blank=True, null=True, verbose_name=u'дейстует на основании')
 
     is_staff = models.BooleanField(_('staff status'), default=False,
                                    help_text=_('Designates whether the user can log into this admin site.'))
