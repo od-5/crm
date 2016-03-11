@@ -100,6 +100,8 @@ class ClientOrderSurface(models.Model):
     def porch_count(self):
         if self.surface.porch_set.all():
             return self.surface.porch_set.all().count()
+        else:
+            return 0
 
     def delete(self, *args, **kwargs):
         release_date = datetime.datetime.utcnow().replace(tzinfo=utc) - datetime.timedelta(days=1)
