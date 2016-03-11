@@ -304,7 +304,7 @@ def client_order_export(request, pk):
     ws.write(5, 1, u'Район', style1)
     ws.write(5, 2, u'Улица', style1)
     ws.write(5, 3, u'Номер дома', style1)
-    ws.write(5, 4, u'Количество стендов', style1)
+    ws.write(5, 4, u'Кол-во стендов', style1)
 
     i = 6
     porch_total = 0
@@ -319,11 +319,11 @@ def client_order_export(request, pk):
     ws.write(i + 1, 0, u'Кол-во домов: %d' % order.clientordersurface_set.all().count(), style0)
     ws.write(i + 2, 0, u'Кол-во стендов: %d' % porch_total, style0)
 
-    ws.col(0).width = 10000
-    ws.col(1).width = 10000
+    ws.col(0).width = 6000
+    ws.col(1).width = 6000
     ws.col(2).width = 10000
     ws.col(3).width = 4500
-    ws.col(4).width = 10000
+    ws.col(4).width = 5000
     for count in range(i):
         ws.row(count).height = 300
 
