@@ -553,7 +553,7 @@ def client_journal_export(request, pk):
     for count in range(i+8):
         ws.row(count).height = 300
     for count in range(12, i+1):
-        ws.row(count).height = 600
+        ws.row(count).height = 1000
     ws.row(4).height = 400
     ws.row(5).height = 400
     ws.row(6).height = 600
