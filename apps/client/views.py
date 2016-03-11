@@ -374,6 +374,7 @@ def client_journal(request, pk):
 def client_journal_export(request, pk):
     journal = ClientJournal.objects.get(pk=int(pk))
     client = journal.client
+    manager = client.manager.user.get_full_name()
     order_list = journal.clientorder.all()
     moderator = client.city.moderator
     current_year = date.today().year
@@ -393,23 +394,23 @@ def client_journal_export(request, pk):
     else:
         company_leader_function = u'Не указано'
     if moderator.work_basis:
-        company_basis = moderator.work_basis
+        work_basis = moderator.work_basis
     else:
-        company_basis = u'Не указано'
-    first_msg = u"%s, в лице %s %s, действующего на основании %s,\n именуемое в дальнейшем Рекламораспространитель." % (company_name, company_leader_function, company_leader, company_basis)
-    second_msg = u', именуемое в дальнейшем Рекламодатель, пришли в соглашение о нижеследующем:\nРекламораспространитель обязуется разместить рекламные публикации Рекламодателя\n на следующих условиях:'
+        work_basis = u'Не указано'
+    first_msg = u"%s, в лице %s %s, действующего на основании %s,\n именуемое в дальнейшем Рекламораспространитель." % (company_name, company_leader_function, company_leader, work_basis)
+    second_msg = u', именуемое в дальнейшем Рекламодатель, пришли в соглашение о нижеследующем:\nРекламораспространитель обязуется разместить рекламные публикации Рекламодателя на следующих условиях:'
 
     font0 = xlwt.Font()
-    font0.name = 'Calibri'
+    font0.name = 'Times New Roman'
     font0.height = 160
 
     font1 = xlwt.Font()
-    font1.name = 'Calibri'
+    font1.name = 'Times New Roman'
     font1.height = 160
     font1.bold = True
 
     font2 = xlwt.Font()
-    font2.name = 'Calibri'
+    font2.name = 'Times New Roman'
     font2.height = 240
     font2.bold = True
 
@@ -419,6 +420,10 @@ def client_journal_export(request, pk):
     alignment_center = xlwt.Alignment()
     alignment_center.horz = xlwt.Alignment.HORZ_CENTER
     alignment_center.vert = xlwt.Alignment.VERT_TOP
+
+    alignment_middle = xlwt.Alignment()
+    alignment_middle.horz = xlwt.Alignment.HORZ_CENTER
+    alignment_middle.vert = xlwt.Alignment.VERT_CENTER
 
     borders = xlwt.Borders()
     borders.left = xlwt.Borders.THIN
@@ -453,51 +458,86 @@ def client_journal_export(request, pk):
     style5.font = font1
     style5.borders = borders_bottom
 
+    style6 = xlwt.XFStyle()
+    style6.font = font1
+    style6.alignment = alignment_middle
+    style6.borders = borders
+
     wb = xlwt.Workbook()
     ws = wb.add_sheet(u'Лист 1')
     ws.write_merge(0, 0, 0, 8,
                    u'К договору на изготовление и размещение рекламы № _____ от "___" _____%sг.' % str(current_year),
                    style0)
-    ws.write_merge(2, 2, 0, 8, u'Заказ на размещение рекламы', style1)
+    ws.write_merge(2, 2, 0, 8, u'Заявка на размещение рекламы', style1)
     ws.write_merge(4, 4, 0, 8, first_msg, style2)
     ws.write_merge(5, 5, 0, 8, client.legal_name, style3)
     ws.write_merge(6, 6, 0, 8, second_msg, style2)
     ws.write_merge(8, 8, 0, 8, u'1. Издания, выходящие под брендом: %s' % company_name, style2)
     ws.write_merge(10, 10, 0, 8, u'2. Медиа план:', style2)
 
-    ws.write(11, 0, u'Город', style4)
-    ws.write(11, 1, u'Район', style4)
-    ws.write(11, 2, u'Улица', style4)
-    ws.write(11, 3, u'Номер дома', style4)
-    ws.write(11, 4, u'Кол-во стендов', style4)
-    ws.write(11, 5, u'Цена за стенд, руб', style4)
-    ws.write(11, 6, u'Наценка, %', style4)
-    ws.write(11, 7, u'Скидка, %', style4)
-    ws.write(11, 8, u'Итого, руб', style4)
+    # ws.write(11, 0, u'Город', style4)
+    # ws.write(11, 1, u'Район', style4)
+    # ws.write(11, 2, u'Улица', style4)
+    # ws.write(11, 3, u'Номер дома', style4)
+    # ws.write(11, 4, u'Кол-во стендов', style4)
+    # ws.write(11, 5, u'Цена за стенд, руб', style4)
+    # ws.write(11, 6, u'Наценка, %', style4)
+    # ws.write(11, 7, u'Скидка, %', style4)
+    # ws.write(11, 8, u'Итого, руб', style4)
+    ws.write(11, 0, u'Период размещения', style6)
+    ws.write(11, 1, u'Район', style6)
+    ws.write(11, 2, u'Формат, в мм', style6)
+    ws.write(11, 3, u'Кол-во стендов', style6)
+    ws.write(11, 4, u'Повышающий\n коэффициент\n при наличии', style6)
+    ws.write(11, 5, u'Цена за стенд,\n (за ед.)', style6)
+    ws.write(11, 6, u'Скидка, %', style6)
+    ws.write(11, 7, u'Стоимость\n размещения с\n учётом скидки,\n руб.', style6)
+    ws.write(11, 8, u'Примечание', style6)
 
     i = 12
     porch_total = 0
     total_count = 0
     for order in order_list:
-        for item in order.clientordersurface_set.all():
-            count = ((cost*(1+add_cost*0.01))*(1+discount*0.01)) * item.surface.porch_count()
-            ws.write(i, 0, item.surface.city.name, style4)
-            ws.write(i, 1, item.surface.street.area.name, style4)
-            ws.write(i, 2, item.surface.street.name, style4)
-            ws.write(i, 3, item.surface.house_number, style4)
-            ws.write(i, 4, item.surface.porch_count(), style4)
-            ws.write(i, 5, cost, style4)
-            ws.write(i, 6, add_cost, style4)
-            ws.write(i, 7, discount, style4)
-            ws.write(i, 8, count, style4)
-            i += 1
-            porch_total += item.surface.porch_count()
-            total_count += count
+        area_list = None
+        # for c_surface in order.clientordersurface_set.all():
+        area_list = [c_surface.surface.street.area.name for c_surface in order.clientordersurface_set.all()]
+        if area_list:
+            print ','.join(area_list)
+        count = ((cost*(1+add_cost*0.01))*(1-discount*0.01)) * order.stand_count()
+        ws.write(i, 0, u'%s - %s' % (order.date_start, order.date_end), style4)
+        ws.write(i, 1, ','.join(set(area_list)), style4)
+        ws.write(i, 2, u'А5', style4)
+        ws.write(i, 3, order.stand_count(), style4)
+        ws.write(i, 4, add_cost, style4)
+        ws.write(i, 5, cost, style4)
+        ws.write(i, 6, discount, style4)
+        ws.write(i, 7, count, style4)
+        ws.write(i, 8, u'', style4)
+        i += 1
+        porch_total += order.stand_count()
+        total_count += count
+        # for item in order.clientordersurface_set.all():
+        #     count = ((cost*(1+add_cost*0.01))*(1-discount*0.01)) * item.surface.porch_count()
+        #     ws.write(i, 0, item.surface.city.name, style4)
+        #     ws.write(i, 1, item.surface.street.area.name, style4)
+        #     ws.write(i, 2, item.surface.street.name, style4)
+        #     ws.write(i, 3, item.surface.house_number, style4)
+        #     ws.write(i, 4, item.surface.porch_count(), style4)
+        #     ws.write(i, 5, cost, style4)
+        #     ws.write(i, 6, add_cost, style4)
+        #     ws.write(i, 7, discount, style4)
+        #     ws.write(i, 8, count, style4)
+        #     i += 1
+        #     porch_total += item.surface.porch_count()
+        #     total_count += count
     ws.write(i, 0, u'Итого', style2)
-    ws.write(i, 8, u"%s, руб." % total_count, style2)
-    ws.write_merge(i+2, i+2, 0, 1, u'Ответственный менеджер', style5)
-    ws.write_merge(i+5, i+5, 0, 1, u'Руководитель отдела', style5)
-    ws.write_merge(i+8, i+8, 0, 1, u'Бухгалтерия', style5)
+    ws.write(i, 7, u"%s, руб." % total_count, style2)
+    ws.write_merge(i+2, i+2, 0, 1, u'Ответственный менеджер', style4)
+    ws.write_merge(i+2, i+2, 3, 4, u'', style5)
+    ws.write_merge(i+2, i+2, 6, 8, manager, style5)
+    ws.write_merge(i+5, i+5, 0, 1, u'Руководитель отдела', style4)
+    ws.write_merge(i+5, i+5, 3, 4, u'', style5)
+    ws.write_merge(i+5, i+5, 6, 8, u'', style5)
 
     ws.col(0).width = 6000
     ws.col(1).width = 6000
@@ -510,9 +550,10 @@ def client_journal_export(request, pk):
     ws.col(8).width = 4000
     for count in range(i+8):
         ws.row(count).height = 300
-    ws.row(4).height = 1000
+    ws.row(4).height = 400
     ws.row(5).height = 400
-    ws.row(6).height = 1000
+    ws.row(6).height = 600
+    ws.row(11).height = 1000
 
     fname = 'journal_#%d_client_#%d_order_#%d.xls' % (journal.id, client.id, order.id)
     response = HttpResponse(content_type="application/ms-excel")
