@@ -56,7 +56,7 @@
                 <td>{{ item.cost|default:'Не указано' }}</td>
                 <td>{{ item.add_cost|default:'Не указано' }}</td>
                 <td>{{ item.discount|default:'Не указано' }}</td>
-                <td>{{ item.clientorder.stand_count|default:'Не указано' }}</td>
+                <td>{{ item.stand_count|default:'Не указано' }}</td>
                 <td>{{ item.total_cost|default:'Не указано' }}</td>
                 <td>
                   <a href="{% url 'client:journal-export' item.id %}" class="btn btn-success">
