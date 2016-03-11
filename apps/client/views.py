@@ -506,7 +506,7 @@ def client_journal_export(request, pk):
         area_list = [c_surface.surface.street.area.name for c_surface in order.clientordersurface_set.all()]
         count = ((cost*(1+add_cost*0.01))*(1-discount*0.01)) * order.stand_count()
         ws.write(i, 0, u'%s - %s' % (order.date_start, order.date_end), style4)
-        ws.write(i, 1, '\n'.join(set(area_list)), style4)
+        ws.write(i, 1, '\\n'.join(set(area_list)), style4)
         ws.write(i, 2, u'А5', style4)
         ws.write(i, 3, order.stand_count(), style4)
         ws.write(i, 4, add_cost, style4)
