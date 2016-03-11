@@ -201,6 +201,7 @@ def ajax_client_add(request):
         User.objects.get(email=r_email)
     except User.DoesNotExist:
         user = User(email=r_email, password=r_password, type=3)
+        user.set_password(r_password)
         user.save()
         client = Client(
             user=user,
@@ -213,8 +214,6 @@ def ajax_client_add(request):
         client.save()
         incomingtask.status = 1
         incomingtask.save()
-        print '1'*10
         return HttpResponseRedirect(reverse('client:change', args=(client.id, )))
-    print '2'*10
     return_url = reverse('incoming:task-list') + '?error=1'
     return HttpResponseRedirect(return_url)
