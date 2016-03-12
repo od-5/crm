@@ -88,20 +88,23 @@ class AdjusterTask(models.Model):
         Метод, возвращающий цену за фактичечески выполненную на данный момент работу.
         Кол-во выполненных стендов * цена работы по подному стенду
         """
-        porch_count = 0
-        for asurface in self.adjustertasksurface_set.all():
-            porch_count += asurface.get_closed_porch_count()
-        if self.type == 0 and self.adjuster.cost_mounting:
-            cost = self.adjuster.cost_mounting
-        elif self.type == 1 and self.adjuster.cost_change:
-            cost = self.adjuster.cost_change
-        elif self.type == 2 and self.adjuster.cost_repair:
-            cost = self.adjuster.cost_repair
-        elif self.type == 3 and self.adjuster.cost_dismantling:
-            cost = self.adjuster.cost_dismantling
-        else:
-            cost = 0
-        return cost * porch_count
+        # porch_count = 0
+        # for asurface in self.adjustertasksurface_set.all():
+        #     porch_count += asurface.get_closed_porch_count()
+        # if self.type == 0 and self.adjuster.cost_mounting:
+        #     cost = self.adjuster.cost_mounting
+        # elif self.type == 1 and self.adjuster.cost_change:
+        #     cost = self.adjuster.cost_change
+        # elif self.type == 2 and self.adjuster.cost_repair:
+        #     cost = self.adjuster.cost_repair
+        # elif self.type == 3 and self.adjuster.cost_dismantling:
+        #     cost = self.adjuster.cost_dismantling
+        # else:
+        #     cost = 0
+        # return cost * porch_count
+        percent = self.get_process() / float(100)
+        total_cost = self.get_total_cost()
+        return total_cost * percent
 
     def get_total_cost(self):
         """
@@ -132,7 +135,9 @@ class AdjusterTask(models.Model):
         if porch_count == 0:
             return 0
         else:
-            return closed_proch_count * 100 / porch_count
+            # return closed_proch_count * 100 / porch_count
+            from random import randint
+            return randint(1, porch_count) * 100 / (porch_count*3)
 
     TYPE_CHOICES = (
         (0, u'Монтаж новой конструкции'),
