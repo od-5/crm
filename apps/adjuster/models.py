@@ -135,9 +135,9 @@ class AdjusterTask(models.Model):
         if porch_count == 0:
             return 0
         else:
-            # return closed_proch_count * 100 / porch_count
-            from random import randint
-            return randint(1, porch_count) * 100 / (porch_count*3)
+            return closed_proch_count * 100 / porch_count
+            # from random import randint
+            # return randint(1, porch_count) * 100 / (porch_count*3)
 
     TYPE_CHOICES = (
         (0, u'Монтаж новой конструкции'),

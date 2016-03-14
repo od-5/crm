@@ -20,7 +20,7 @@
           <p class="lead remove-bottom text-center">Список задач</p>
         </div>
         <div class="panel-body">
-          <p class="lead">Общая сумма выплат монтажнику составляет: <strong>{{ total_sum|default:'0' }} руб.</strong> </p>
+          <p class="lead">Предварительная сумма выплат составляет: <strong>{{ total_sum|default:'0' }} руб.</strong> </p>
           {% if user.type != 4 %}
           <a href="{% url 'adjustertask:client-add' %}" class="btn btn-success add-bottom">
             <span class="glyphicon glyphicon-plus-sign"></span> Добавить задачу
@@ -39,7 +39,7 @@
                 <div class="panel-body js-calendar-body">
               {% for date in months %}
                   <div class="calendar col-lg-3 add-bottom">
-                  {% calendar date.year date.month %}
+                  {% calendar user date.year date.month %}
                   </div>
               {% endfor %}
                   <div class="clearfix"></div>

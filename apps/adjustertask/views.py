@@ -69,10 +69,8 @@ def adjustertask_list(request):
     })
     total_sum = 0
     for i in qs:
+        total_sum += i.get_total_cost()
 
-        # total_sum += i.get_total_cost()  # todo: раскомменитровать
-
-        total_sum += i.get_actual_cost()   # todo: удалить
     paginator = Paginator(qs, 25)
     page = request.GET.get('page')
     try:
@@ -86,77 +84,6 @@ def adjustertask_list(request):
         'object_list': object_list
     })
     return render(request, 'adjustertask/adjustertask_list.html', context)
-
-
-class AdjusterTaskListView(ListView):
-    """
-    Список задач
-    """
-    model = AdjusterTask
-    template_name = 'adjustertask/adjustertask_list.html'
-    paginate_by = 2
-
-    def get_queryset(self):
-        user_id = self.request.user.id
-        if self.request.user.type == 1:
-            qs = AdjusterTask.objects.filter(is_closed=False)
-        elif self.request.user.type == 2:
-            qs = AdjusterTask.objects.filter(is_closed=False, adjuster__city__moderator=user_id)
-        else:
-            qs = None
-        if self.request.GET.get('city'):
-            qs = qs.filter(adjuster__city=int(self.request.GET.get('city')))
-        if self.request.GET.get('adjuster'):
-            qs = qs.filter(adjuster=int(self.request.GET.get('adjuster')))
-        if self.request.GET.get('type'):
-            qs = qs.filter(type=int(self.request.GET.get('type')))
-        if self.request.GET.get('date_s'):
-            qs = qs.filter(date__gte=datetime.strptime(self.request.GET.get('date_s'), '%d.%m.%Y'))
-        if self.request.GET.get('date_e'):
-            qs = qs.filter(date__lte=datetime.strptime(self.request.GET.get('date_e'), '%d.%m.%Y'))
-
-        if self.request.GET.get('date__day') and self.request.GET.get('date__month') and self.request.GET.get('date__year'):
-            day = self.request.GET.get('date__day')
-            month = self.request.GET.get('date__month')
-            year = self.request.GET.get('date__year')
-            qs = qs.filter(date__day=day, date__month=month, date__year=year)
-        queryset = qs
-        return queryset
-
-    def get_context_data(self, **kwargs):
-        context = super(AdjusterTaskListView, self).get_context_data()
-        context.update(
-            get_months(),
-        )
-        initial_args = {}
-        if self.request.GET.get('city'):
-            initial_args.update({
-                'city': int(self.request.GET.get('city'))
-            })
-        if self.request.GET.get('adjuster'):
-            initial_args.update({
-                'adjuster': int(self.request.GET.get('adjuster'))
-            })
-        if self.request.GET.get('type'):
-            initial_args.update({
-                'type': int(self.request.GET.get('type'))
-            })
-        if self.request.GET.get('date_s'):
-            initial_args.update({
-                'date_s': self.request.GET.get('date_s')
-            })
-        if self.request.GET.get('date_e'):
-            initial_args.update({
-                'date_e': self.request.GET.get('date_e')
-            })
-        filter_form = AdjusterTaskFilterForm(initial=initial_args)
-        if self.request.user.type == 2:
-            filter_form.fields['city'].queryset = City.objects.filter(moderator=self.request.user)
-            filter_form.fields['adjuster'].queryset = Adjuster.objects.filter(city__moderator=self.request.user)
-        context.update({
-            'filter_form': filter_form
-        })
-        return context
 
 
 class TaskArchiveListView(ListView):

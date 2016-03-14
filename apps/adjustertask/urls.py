@@ -1,14 +1,13 @@
 # coding=utf-8
 from django.conf.urls import patterns, url
 from apps.adjustertask.ajax import adjuster_task_client, adjuster_get_area_streets, ajax_order_adjuster_list
-from .views import AdjusterTaskListView, TaskArchiveListView
+from .views import TaskArchiveListView
 
 __author__ = 'alexy'
 
 urlpatterns = patterns(
     'apps.adjustertask.views',
     url(r'^$', 'adjustertask_list', name='list'),
-    # url(r'^$', AdjusterTaskListView.as_view(), name='list'),
     url(r'^archive/$', TaskArchiveListView.as_view(), name='archive'),
     url(r'^c_add/$', 'adjuster_c_task', name='add'),  # todo: удалить с хвостами
     url(r'^client/add/$', 'adjustertask_client', name='client-add'),
