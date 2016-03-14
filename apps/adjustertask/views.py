@@ -69,7 +69,7 @@ def adjustertask_list(request):
     })
     total_sum = 0
     for i in qs:
-        total_sum += i.get_total_cost()
+        total_sum += i.get_actual_cost()
 
     paginator = Paginator(qs, 25)
     page = request.GET.get('page')
