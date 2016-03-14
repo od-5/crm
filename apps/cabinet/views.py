@@ -19,7 +19,6 @@ __author__ = 'alexy'
 
 
 def manager_dashboard(user):
-    print user
     manager = Manager.objects.get(user=user)
     return manager
 

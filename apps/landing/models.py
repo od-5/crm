@@ -26,14 +26,11 @@ class Setup(models.Model):
     def save(self, *args, **kwargs):
         super(Setup, self).save()
         if self.logotype:
-            print self.logotype.file
             image = Image.open(self.logotype)
             (width, height) = image.size
-            print width
             size = (350, 350)
             "Max width and height 350"
             if width > 350:
-                print 'width'
                 image.thumbnail(size, Image.ANTIALIAS)
                 image.save(self.logotype.path, "PNG")
 

@@ -549,7 +549,6 @@ def client_journal_export(request, pk):
     ws.col(6).width = 4000
     ws.col(7).width = 4000
     ws.col(8).width = 4000
-    print i
     for count in range(i+8):
         ws.row(count).height = 300
     for count in range(12, i+1):

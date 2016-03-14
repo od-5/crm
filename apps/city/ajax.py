@@ -1,6 +1,7 @@
 # coding=utf-8
 from annoying.decorators import ajax_request
-from apps.adjuster.models import Adjuster
+from datetime import datetime
+from apps.adjuster.models import Adjuster, AdjusterTaskSurface
 from apps.city.forms import AreaAddForm, StreetForm
 from apps.city.models import Area, City, Street, Surface, Porch
 from apps.client.models import Client, ClientOrder
@@ -144,31 +145,40 @@ def get_city_adjusters(request):
 def get_area_surface_list(request):
     """
     Функция отображает список поверхностей для постановки задачи.
-    Если задача по адресам - показываются только целые и не полностью повреждённые поверхности (флаг damaged=0).
-    Если зада на ремонт - показываются только поверхности имеющие повреждения (флаг damaged=1).
+    Воказываются только целые и не полностью повреждённые поверхности.
     """
     if request.GET.get('area'):
         surface_list = []
         r_area = request.GET.get('area')
+        r_date = request.GET.get('date')
+        at_surface_list_id = []
+        if r_date:
+            date = datetime.strptime(r_date, '%d.%m.%Y')
+            at_surface = AdjusterTaskSurface.objects.filter(
+                surface__street__area=int(r_area),
+                adjustertask__date=date
+            )
+            at_surface_list_id = [int(i.surface.id) for i in at_surface]
         surface_qs = Surface.objects.filter(street__area=int(r_area), full_broken=False)
         for surface in surface_qs:
             broken_porch = []
             intact_porch = []
-            for porch in surface.porch_set.all():
-                if porch.is_broken:
-                    broken_porch.append(porch.number)
-                else:
-                    intact_porch.append(porch.number)
-            surface_list.append({
-                'id': surface.id,
-                'city': surface.city.name,
-                'area': surface.street.area.name,
-                'street': surface.street.name,
-                'number': surface.house_number,
-                'porch': int(surface.porch_count()),
-                'intact_porch': intact_porch,
-                'broken_porch': broken_porch
-            })
+            if int(surface.id) not in at_surface_list_id:
+                for porch in surface.porch_set.all():
+                    if porch.is_broken:
+                        broken_porch.append(porch.number)
+                    else:
+                        intact_porch.append(porch.number)
+                surface_list.append({
+                    'id': surface.id,
+                    'city': surface.city.name,
+                    'area': surface.street.area.name,
+                    'street': surface.street.name,
+                    'number': surface.house_number,
+                    'porch': int(surface.porch_count()),
+                    'intact_porch': intact_porch,
+                    'broken_porch': broken_porch
+                })
         return {
             'surface_list': surface_list
         }
@@ -186,33 +196,43 @@ def get_area_surface_list_with_damage(request):
     if request.GET.get('area'):
         porch_list = []
         r_area = request.GET.get('area')
+        r_date = request.GET.get('date')
+        at_surface_list_id = []
+        if r_date:
+            date = datetime.strptime(r_date, '%d.%m.%Y')
+            at_surface = AdjusterTaskSurface.objects.filter(
+                surface__street__area=int(r_area),
+                adjustertask__date=date
+            )
+            at_surface_list_id = [int(i.surface.id) for i in at_surface]
         surface_qs = Surface.objects.filter(street__area=int(r_area), has_broken=True)
         for surface in surface_qs:
-            porch_qs = surface.porch_set.filter(is_broken=True)
-            for porch in porch_qs:
-                type_list = []
-                if porch.broken_shield:
-                    type_list.append(u'сломан щит')
-                if porch.broken_gib:
-                    type_list.append(u'сломана прижимная планка')
-                if porch.no_glass:
-                    type_list.append(u'отсутствует защитное стекло')
-                if porch.replace_glass:
-                    type_list.append(u'заменить защитное стекло')
-                if porch.against_tenants:
-                    type_list.append(u'жильцы против')
-                if porch.no_social_info:
-                    type_list.append(u'отсутствует социальная информация')
-                damage_type = ', '.join(type_list)
-                porch_list.append({
-                    'id': porch.id,
-                    'city': porch.surface.city.name,
-                    'area': porch.surface.street.area.name,
-                    'street': porch.surface.street.name,
-                    'house_number': porch.surface.house_number,
-                    'number': porch.number,
-                    'type': damage_type,
-                })
+            if int(surface.id) not in at_surface_list_id:
+                porch_qs = surface.porch_set.filter(is_broken=True)
+                for porch in porch_qs:
+                    type_list = []
+                    if porch.broken_shield:
+                        type_list.append(u'сломан щит')
+                    if porch.broken_gib:
+                        type_list.append(u'сломана прижимная планка')
+                    if porch.no_glass:
+                        type_list.append(u'отсутствует защитное стекло')
+                    if porch.replace_glass:
+                        type_list.append(u'заменить защитное стекло')
+                    if porch.against_tenants:
+                        type_list.append(u'жильцы против')
+                    if porch.no_social_info:
+                        type_list.append(u'отсутствует социальная информация')
+                    damage_type = ', '.join(type_list)
+                    porch_list.append({
+                        'id': porch.id,
+                        'city': porch.surface.city.name,
+                        'area': porch.surface.street.area.name,
+                        'street': porch.surface.street.name,
+                        'house_number': porch.surface.house_number,
+                        'number': porch.number,
+                        'type': damage_type,
+                    })
         return {
             'porch_list': porch_list
         }

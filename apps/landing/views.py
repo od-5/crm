@@ -144,7 +144,6 @@ def blockeffective_add(request):
     context = {}
     if request.method == 'POST':
         form = BlockEffectiveForm(request.POST, request.FILES)
-        print form
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('blockeffective-list'))
@@ -208,7 +207,6 @@ def blockreview_add(request):
     context = {}
     if request.method == 'POST':
         form = BlockReviewForm(request.POST, request.FILES)
-        print form
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('blockreview-list'))
@@ -273,7 +271,6 @@ def blockexample_add(request):
     user = request.user
     if request.method == 'POST':
         form = BlockExampleForm(request.POST, request.FILES)
-        print form
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('blockexample-list'))

@@ -25,7 +25,6 @@ def sign_in(request, usertype=None):
             username = request.POST.get('username')
             password = request.POST.get('password')
             try:
-                print User.objects.get(email=username, type=usertype)
                 user = authenticate(username=username, password=password)
                 if user is not None:
                     if user.is_active:

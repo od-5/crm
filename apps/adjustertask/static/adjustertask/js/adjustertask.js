@@ -68,14 +68,13 @@ $(function() {
     }
   });
 //  получение списка поверхностей по заказу клиента
-  atc_form.find('#id_clientorder').change(function(){
-    $('.js-task-surface-list tr.result').remove();
-    console.log($(this).val());
+  var get_order_client_surface_list = function() {
     $.ajax({
       type: "GET",
-      url: $(this).parents('.form-group').data('url'),
+      url: atc_form.find('#id_clientorder').parents('.form-group').data('url'),
       data: {
-        clientorder: $(this).val()
+        date: atc_form.find('#id_date').val(),
+        clientorder: atc_form.find('#id_clientorder').val()
       }
     }).done(function( data ) {
       if (data.surface_list) {
@@ -104,6 +103,16 @@ $(function() {
         })
       }
     });
+  };
+  atc_form.find('#id_clientorder').change(function(){
+    $('.js-task-surface-list tr.result').remove();
+    console.log($(this).val());
+    get_order_client_surface_list();
+  });
+  atc_form.find('#id_date').change(function(){
+    $('.js-task-surface-list tr.result').remove();
+    console.log($(this).val());
+    get_order_client_surface_list();
   });
 
 
@@ -174,14 +183,13 @@ $(function() {
     }
   });
 //  получение списка поверхностей района города
-  ata_form.find('#id_area').change(function(){
-    $('.js-task-surface-list tr.result').remove();
-    console.log($(this).val());
+  var get_area_surface_list = function() {
     $.ajax({
       type: "GET",
-      url: $(this).parents('.form-group').data('surface-url'),
+      url: ata_form.find('#id_area').parents('.form-group').data('surface-url'),
       data: {
-        area: $(this).val(),
+        date: ata_form.find('#id_date').val(),
+        area: ata_form.find('#id_area').val()
       }
     }).done(function( data ) {
       if (data.surface_list) {
@@ -210,6 +218,19 @@ $(function() {
         })
       }
     });
+  };
+
+  ata_form.find('#id_area').change(function(){
+    $('.js-task-surface-list tr.result').remove();
+    console.log(ata_form.find('#id_area').val());
+    console.log(ata_form.find('#id_date').val());
+    get_area_surface_list();
+  });
+  ata_form.find('#id_date').change(function(){
+    $('.js-task-surface-list tr.result').remove();
+    console.log(ata_form.find('#id_area').val());
+    console.log(ata_form.find('#id_date').val());
+    get_area_surface_list();
   });
 
   // валидация формы добавления задачи на ремонт
@@ -276,14 +297,13 @@ $(function() {
     }
   });
 //  получение списка поверхностей (с поломками) района города
-  atr_form.find('#id_area').change(function(){
-    $('.js-task-porch-list tr.result').remove();
-    console.log($(this).val());
+  var get_area_damaged_surface = function(){
     $.ajax({
       type: "GET",
-      url: $(this).parents('.form-group').data('ajax-url'),
+      url: atr_form.find('#id_area').parents('.form-group').data('ajax-url'),
       data: {
-        area: $(this).val(),
+        area: atr_form.find('#id_area').val(),
+        date: atr_form.find('#id_date').val()
       }
     }).done(function( data ) {
       if (data.porch_list) {
@@ -311,9 +331,16 @@ $(function() {
         })
       }
     });
+  };
+
+  atr_form.find('#id_area').change(function(){
+    $('.js-task-porch-list tr.result').remove();
+    console.log($(this).val());
+    get_area_damaged_surface()
   });
-
-
-
-
+  atr_form.find('#id_date').change(function(){
+    $('.js-task-porch-list tr.result').remove();
+    console.log($(this).val());
+    get_area_damaged_surface()
+  });
 });

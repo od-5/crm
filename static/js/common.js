@@ -151,7 +151,7 @@ $(function() {
     }
   });
 
-//  Валидация формы регитрации
+//  Валидация формы регистрации
   $( "#js-registration-form" ).validate({
     rules: {
       username: {

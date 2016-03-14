@@ -66,7 +66,6 @@ class SurfaceListView(ListView):
         """
         surface_qs = self.get_queryset()
         porch_count = 0
-        print surface_qs.count()
         surface_count = surface_qs.count()
         for surface in surface_qs:
             porch_count += surface.porch_count()
@@ -301,7 +300,6 @@ def surface_photo_list(request):
             a_qs = eval(query_string)
         else:
             a_qs = None
-        print a_qs
         # a_qs = SurfacePhoto.objects.filter(porch__surface__clientordersurface__clientorder__in=clientorder_list).distinct()
         city_qs = None
     else:
