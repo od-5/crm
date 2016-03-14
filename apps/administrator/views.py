@@ -54,6 +54,9 @@ def administrator_add(request):
         if form.is_valid():
             user = form.save(commit=False)
             user.type = 1
+            user.is_superuser = True
+            user.is_staff = True
+            user.is_active = True
             user.save()
             return HttpResponseRedirect(reverse('administrator:change', args=(user.id,)))
         else:
