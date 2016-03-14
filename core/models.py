@@ -91,13 +91,13 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'email'
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
-        if self.type == 1 and not self.is_superuser:
-            self.is_superuser = True
-        else:
-            self.is_superuser = False
-        super(User, self).save()
+    # def save(self, force_insert=False, force_update=False, using=None,
+    #          update_fields=None):
+    #     if self.type == 1 and not self.is_superuser:
+    #         self.is_superuser = True
+    #     else:
+    #         self.is_superuser = False
+    #     super(User, self).save()
 
     def get_absolute_url(self):
         if self.type == 1:
