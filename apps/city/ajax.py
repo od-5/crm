@@ -110,7 +110,7 @@ def surface_ajax(request):
             street_list.append(
                 {
                     'id': i.id,
-                    'name': i.name
+                    'name': i
                 }
             )
         return {
