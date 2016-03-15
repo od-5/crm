@@ -34,13 +34,7 @@ def moderatorinfo_update(request):
     moderatorinfo = ModeratorInfo.objects.get(moderator=user)
     if request.method == 'POST':
         form = ModeratorInfoForm(request.POST, instance=moderatorinfo)
-        print form
         if form.is_valid():
             form.save()
             print 'ok'
-
-        else:
-            print 'error'
-    else:
-        print 'method not post'
     return HttpResponseRedirect(reverse('moderator:change', args=(user.id,)))
