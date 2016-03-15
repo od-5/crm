@@ -110,7 +110,7 @@
                 {% if user.type == 5 %}
                   {{ object.street.name|default:'Не указано' }}
                 {% else %}
-                  <a href="{% url 'surface:update' object.id %}">{{ object.street|default:'Не указано' }}</a>
+                  <a href="{% url 'surface:update' object.id %}">{{ object.street.name|default:'Не указано' }}</a>
                 {% endif %}
                 </td>
                 <td>{{ object.house_number|default:'Не указано' }}</td>
