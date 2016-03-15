@@ -30,10 +30,8 @@ def ticket(request):
             email = Setup.objects.filter(city__isnull=True).first().email
     else:
         email = Setup.objects.filter(city__isnull=True).first().email
-    print 'step 1'
     if request.method == "POST":
         form = TicketForm(data=request.POST)
-        print form
         if form.is_valid():
             ticket = form.save(commit=False)
             ticket.type = 0
@@ -64,7 +62,6 @@ def ticket(request):
             return {
                 'error': 'Error!! Not send'
             }
-        print 'step 2'
     else:
         return {
             'error': 'request.method not post'
