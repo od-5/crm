@@ -62,6 +62,7 @@ class UserUpdateForm(forms.ModelForm):
         }
 
 
+# todo: перенести в apps.moderator.forms
 class ModeratorAddForm(forms.ModelForm):
     class Meta:
         model = User
