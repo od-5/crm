@@ -1,5 +1,9 @@
 # coding=utf-8
 from annoying.decorators import ajax_request
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
+from apps.moderator.forms import ModeratorInfoForm
+from apps.moderator.models import ModeratorInfo
 from core.models import User
 
 __author__ = 'alexy'
@@ -22,3 +26,21 @@ def moderator_remove(request):
         return {
             'error': True
         }
+
+
+def moderatorinfo_update(request):
+    r_moderator = request.POST.get('moderator')
+    user = User.objects.get(id=int(r_moderator))
+    moderatorinfo = ModeratorInfo.objects.get(moderator=user)
+    if request.method == 'POST':
+        form = ModeratorInfoForm(request.POST, instance=moderatorinfo)
+        print form
+        if form.is_valid():
+            form.save()
+            print 'ok'
+
+        else:
+            print 'error'
+    else:
+        print 'method not post'
+    return HttpResponseRedirect(reverse('moderator:change', args=(user.id,)))

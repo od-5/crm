@@ -144,5 +144,10 @@ $(function() {
     dateFormat: "dd.mm.yy"
   });
 
+  $("#js-form-moderatorinfo-update").find('#id_date').datepicker({
+    defaultDate: 1,
+    dateFormat: "dd.mm.yy"
+  });
+
 
 });

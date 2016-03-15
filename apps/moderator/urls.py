@@ -3,7 +3,7 @@ from django.conf.urls import patterns, url
 from django.contrib.auth.views import logout
 from django.views.generic import ListView, UpdateView, CreateView
 from django.contrib.admin.views.decorators import staff_member_required
-from .ajax import moderator_remove
+from .ajax import moderator_remove, moderatorinfo_update
 from apps.cabinet.forms import UserChangeForm, UserAddForm
 from apps.cabinet.views import UserUpdateView
 from apps.moderator.views import ModeratorListView
@@ -16,6 +16,7 @@ urlpatterns = patterns(
     url(r'^$', ModeratorListView.as_view(), name='list'),
     url(r'^add/$', 'moderator_add', name='add'),
     url(r'^remove/$', moderator_remove, name='remove'),
+    url(r'^info/update/$', moderatorinfo_update, name='moderatorinfo'),
     url(r'^(?P<pk>\d+)/$', 'moderator_change', name='change'),
     # url(r'^user/$', staff_member_required(ListView.as_view(
     #     model=User,

@@ -1,10 +1,13 @@
 # coding=utf-8
+from annoying.functions import get_object_or_None
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import ListView
 from core.forms import ModeratorAddForm, ModeratorUpdateForm
 from core.models import User
+from .models import ModeratorInfo
+from .forms import ModeratorInfoForm
 
 __author__ = 'alexy'
 
@@ -64,6 +67,13 @@ def moderator_add(request):
 def moderator_change(request, pk):
     context = {}
     user = User.objects.get(pk=int(pk))
+    try:
+        moderatorinfo = ModeratorInfo.objects.get(moderator=user)
+    except:
+        moderatorinfo = ModeratorInfo(
+            moderator=user
+        )
+        moderatorinfo.save()
     success_msg = u''
     error_msg = u''
     if request.method == 'POST':
@@ -76,6 +86,7 @@ def moderator_change(request, pk):
             else:
                 error_msg = u'Пароль и подтверждение пароля не совпадают!'
         form = ModeratorUpdateForm(request.POST, instance=user)
+        info_form = ModeratorInfoForm(request.POST, instance=moderatorinfo)
         if form.is_valid():
             form.save()
             success_msg += u' Изменения успешно сохранены'
@@ -83,11 +94,12 @@ def moderator_change(request, pk):
             error_msg = u'Проверьте правильность ввода полей!'
     else:
         form = ModeratorUpdateForm(instance=user)
+        info_form = ModeratorInfoForm(instance=moderatorinfo)
     context.update({
         'success': success_msg,
         'error': error_msg,
         'form': form,
+        'info_form': info_form,
         'object': user
     })
     return render(request, 'moderator/moderator_change.html', context)
-
