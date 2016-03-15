@@ -82,6 +82,8 @@ class Street(models.Model):
         app_label = 'city'
 
     def __unicode__(self):
+        if Street.objects.filter(city=self.city, name=self.name).count() > 1:
+            return u'%s (%s)' % (self.name, self.area.name)
         return self.name
 
     city = models.ForeignKey(to=City, verbose_name=u'Город')

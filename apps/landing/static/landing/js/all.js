@@ -26,7 +26,7 @@ $(document).ready(function () {
   $(".input[name='phone']").mask("+7 (999) 999-99-99");
   $('form').each(function(){
     $(this).validate({
-         rules: {
+      rules: {
         name: {
           required: true
         },
@@ -42,7 +42,22 @@ $(document).ready(function () {
           minlength: 6
         }
       }
-      });
+    });
+  });
+  $('form').ajaxForm({
+    success: function(data){
+      var error = data.error;
+      if (error) {
+        $('form').resetForm();
+        $.notify('Сообщение не было отправлено. Проверьте правильность ввода данных!', 'error');
+        console.log(error);
+      } else {
+        $('form').resetForm();
+        $('#mask, .window').hide();
+        $.notify('Ваше сообщение успешно отправлено!', 'success');
+        console.log('not error');
+      }
+    }
   });
 
   // slider
