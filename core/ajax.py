@@ -8,6 +8,7 @@ from apps.adjuster.models import Adjuster, AdjusterTask, AdjusterTaskSurface
 from apps.manager.models import Manager
 from apps.incoming.models import IncomingClient, IncomingTask, IncomingClientContact
 from apps.landing.models import Setup, BlockEffective, BlockReview, BlockExample
+from apps.ticket.models import Ticket
 
 
 __author__ = 'alexy'

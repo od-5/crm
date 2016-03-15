@@ -84,6 +84,16 @@
                 {{ u_form.phone.errors }}
               </div>
               <div class="form-group">
+                <div class="col-lg-5">
+                  {{ m_form.leader.label_tag }}
+                </div>
+                <div class="col-lg-7">
+                  {{ m_form.leader }}
+                </div>
+                <div class="clearfix"></div>
+                {{ m_form.leader.errors }}
+              </div>
+              <div class="form-group">
                 <p class="text-info lead">Смена пароля</p>
                 <div class="col-lg-5"><label for="password1">Новый пароль</label></div>
                 <div class="col-lg-7"><input type="password" name="password1" class="form-control"></div>

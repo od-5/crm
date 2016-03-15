@@ -13,7 +13,7 @@ class Ticket(Common):
         app_label = 'ticket'
 
     def __unicode__(self):
-        return self.name
+        return u'Заявка на имя: %s, телефон: %s' % (self.name, self.phone)
 
     def performed_at(self):
         pass

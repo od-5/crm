@@ -1,0 +1,74 @@
+{% extends 'cabinet_index.html' %}
+{% block content %}
+  <div class="container">
+    <div class="col-lg-12">
+      <ol class="breadcrumb">
+        <li><a href="{% url 'cabinet:cabinet' %}">Рабочий стол</a></li>
+        <li class="active">Заявки с сайта</li>
+      </ol>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="lead remove-bottom text-center">Заявки с сайта</p>
+        </div>
+        <div class="panel-body">
+          <form action="" class="client-search-form" method="GET">
+            <select name="city" class="form-control">
+              <option value="0">Город</option>
+              {% for city in city_list %}
+                <option value="{{ city.id }}" {% if city.id == r_city %}selected="selected"{% endif %}>{{ city.name }}</option>
+              {% endfor %}
+            </select>
+            <select name="type" class="form-control">
+              <option>---- Статус ----</option>
+              <option value="0" {% if r_type == 0 %}selected="selected"{% endif %}>Новая заявка</option>
+              <option value="1" {% if r_type == 1 %}selected="selected"{% endif %}>В обработке</option>
+              <option value="2" {% if r_type == 2 %}selected="selected"{% endif %}>Отклонена</option>
+            </select>
+            <input type="text" name="name" class="form-control" placeholder="Имя" value="{{ r_name|default:'' }}">
+            <input type="text" name="phone" class="form-control" placeholder="Телефон" value="{{ r_phone|default:'' }}">
+            <input type="submit" value="Искать" class="btn btn-info">
+          </form>
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Имя</th>
+                <th>Телефон</th>
+                <th>Город</th>
+                <th>Текст</th>
+                <th>Дата</th>
+                <th>Статус</th>
+                <th>&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody class="js-list">
+            {% if object_list %}
+              {% for object in object_list %}
+              <tr data-id="{{ object.id }}" data-name="{{ object }}" data-model="Ticket" id="id_Ticket_{{ object.id }}"
+                   class="{% if object.type == 1 %}info{% elif object.type == 2 %}danger{% else %}success{% endif %}">
+                <td><a href="{% url 'ticket:detail' object.id %}">{{ object.name|default:'Не указано' }}</a></td>
+                <td>{{ object.phone|default:'Не указано' }}</td>
+                <td>{{ object.city|default:'Не указано' }}</td>
+                <td>{{ object.text|default:'Не указано' }}</td>
+                <td>{{ object.created|default:'Не указано' }}</td>
+                <td>{{ object.get_type_display|default:'Не указано' }}</td>
+                <td>
+                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ object.id }}" class="btn btn-danger js-ajax-remove-btn">
+                    <span class="glyphicon glyphicon-remove"></span> Удалить
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="6"><p class="alert alert-info">Заявок нет</p></td>
+              </tr>
+            {% endif %}
+            </tbody>
+          </table>
+          {% include '__includes/pagination.html' %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% include '__modal/js_ajax_remove_form.html' %}
+{% endblock %}

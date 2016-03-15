@@ -20,3 +20,4 @@ class Manager(models.Model):
 
     user = models.OneToOneField(to=User, verbose_name=u'Пользователь')
     moderator = models.ForeignKey(to=User, verbose_name=u'Модератор', related_name='moderator')
+    leader = models.BooleanField(verbose_name=u'Руководитель группы', default=False)
