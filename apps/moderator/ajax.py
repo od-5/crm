@@ -36,5 +36,4 @@ def moderatorinfo_update(request):
         form = ModeratorInfoForm(request.POST, instance=moderatorinfo)
         if form.is_valid():
             form.save()
-            print 'ok'
     return HttpResponseRedirect(reverse('moderator:change', args=(user.id,)))
