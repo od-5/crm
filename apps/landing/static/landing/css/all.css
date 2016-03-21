@@ -416,14 +416,15 @@ h4 {
 }
 .tablet-play {
     position: absolute;
-    top: 183px;
-    left: 475px;
+    top: 180px;
+    left: 431px;
     display: block;
+    width: 250px;
 }
 .tablet-text {
     position: absolute;
-    top: 273px;
-    left: 311px;
+    top: 290px;
+    left: 353px;
     display: block;
 }
 /*
@@ -434,8 +435,8 @@ pulse
 .pulsing{
     animation-name: pulsing;
     -webkit-animation-name: pulsing;
-    animation-duration: 1.5s;
-    -webkit-animation-duration: 1.5s;
+    animation-duration: 1s;
+    -webkit-animation-duration: 1s;
     animation-iteration-count: infinite;
     -webkit-animation-iteration-count: infinite;
     visibility: visible !important;
