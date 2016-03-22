@@ -16,6 +16,7 @@ def task_list(request):
     """
     Получение списка задач авторизованного монтажника
     """
+    user = request.user
     if request.method == 'GET':
         tasks = AdjusterTask.objects.filter(adjuster__user=user, is_closed=False)
         serializer = TaskSerializer(tasks, many=True)
