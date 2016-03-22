@@ -16,8 +16,6 @@ def task_list(request):
     """
     Получение списка задач авторизованного монтажника
     """
-    print '********** REQUEST.USER *************'
-    user = request.user
     if request.method == 'GET':
         tasks = AdjusterTask.objects.filter(adjuster__user=user, is_closed=False)
         serializer = TaskSerializer(tasks, many=True)
@@ -31,8 +29,6 @@ def adjustertask_detail(request, pk):
     """
     Получение списка адресов задачи
     """
-    print '********** REQUEST.USER *************'
-    print request.user
     try:
         tasksurface_list = AdjusterTaskSurface.objects.filter(adjustertask__id=pk)
     except AdjusterTaskSurface.DoesNotExist:
@@ -62,8 +58,6 @@ def adjustertasksurface_detail(request, pk):
     """
     Получение списка подъездов дома в задаче
     """
-    print '********** REQUEST.USER *************'
-    print request.user
     try:
         porch_list = AdjusterTaskSurfacePorch.objects.filter(adjustertasksurface__id=pk)
     except AdjusterTaskSurfacePorch.DoesNotExist:
