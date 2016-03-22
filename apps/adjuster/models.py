@@ -195,6 +195,27 @@ class AdjusterTaskSurfacePorch(models.Model):
     def __unicode__(self):
         return u'№ %s' % self.porch.number
 
+    def porch_number(self):
+        return self.porch.number
+
+    def broken_shield(self):
+        return self.porch.broken_shield
+
+    def broken_gib(self):
+        return self.porch.broken_gib
+
+    def no_glass(self):
+        return self.porch.no_glass
+
+    def replace_glass(self):
+        return self.porch.replace_glass
+
+    def against_tenants(self):
+        return self.porch.against_tenants
+
+    def no_social_info(self):
+        return self.porch.no_social_info
+
     adjustertasksurface = models.ForeignKey(to=AdjusterTaskSurface, verbose_name=u'Поверхность для задачи')
     porch = models.ForeignKey(to=Porch, verbose_name=u'Подъезд поверхности для задачи')
     is_closed = models.BooleanField(verbose_name=u'Выполнено', default=False)

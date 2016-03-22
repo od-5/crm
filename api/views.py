@@ -26,7 +26,7 @@ def task_list(request):
 @api_view(['GET'])
 @authentication_classes((SessionAuthentication, BasicAuthentication))
 @permission_classes((IsAuthenticated,))
-def adjustertask_detail(request, pk):
+def task_detail(request, pk):
     """
     Получение списка адресов задачи
     """
@@ -55,7 +55,7 @@ def adjustertask_detail(request, pk):
 @api_view(['GET'])
 @authentication_classes((SessionAuthentication, BasicAuthentication))
 @permission_classes((IsAuthenticated,))
-def adjustertasksurface_detail(request, pk):
+def tasksurface_detail(request, pk):
     """
     Получение списка подъездов дома в задаче
     """
@@ -66,3 +66,27 @@ def adjustertasksurface_detail(request, pk):
     if request.method == 'GET':
         serializer = TaskSurfacePorchSerializer(porch_list, many=True)
         return Response(serializer.data)
+
+
+@api_view(['GET', 'PATCH'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def tasksurfaceporch_detail(request, pk):
+    """
+    Получение детализации состояня подъезда
+    """
+    try:
+        print u'Пробуем получить подъезд'
+        porch = AdjusterTaskSurfacePorch.objects.get(pk=pk)
+        print u'Законичили получение'
+    except AdjusterTaskSurfacePorch.DoesNotExist:
+        print u'Нет такого подъезда'
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.method == 'GET':
+        print u'Метод = GET'
+        serializer = TaskSurfacePorchSerializer(porch)
+        return Response(serializer.data)
+    if request.method == 'PATCH':
+        print request.query_params['broken_shield']
+        return Response(status=status.HTTP_200_OK)
+

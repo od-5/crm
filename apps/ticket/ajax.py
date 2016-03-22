@@ -45,9 +45,9 @@ def ticket(request):
                     message = u'Имя: %s\nТелефон: %s\nСообщение: %s\n' % (ticket.name, ticket.phone, ticket.text)
             else:
                 if ticket.city:
-                    message = u'Имя: %s\nТелефон: %s\nГород: %s' % (ticket.name, ticket.text, ticket.city)
+                    message = u'Имя: %s\nТелефон: %s\nГород: %s' % (ticket.name, ticket.phone, ticket.city)
                 else:
-                    message = u'Имя: %s\nТелефон: %s\n' % (ticket.name, ticket.text)
+                    message = u'Имя: %s\nТелефон: %s\n' % (ticket.name, ticket.phone)
             if email:
                 send_mail(
                     mail_title_msg,
