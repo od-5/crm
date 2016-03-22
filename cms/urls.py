@@ -4,13 +4,12 @@ from django.conf.urls.static import static
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-
 import debug_toolbar
-from django.views.generic import TemplateView
 
-urlpatterns = patterns('',
-    # Examples:
 
+urlpatterns = patterns(
+    '',
+    url(r'^api_v1/', include('api.urls', namespace='api')),
     url(r'^sign/', include('apps.sign.urls', namespace='sign'),),
     url(r'^cabinet/', include('apps.cabinet.urls', namespace='cabinet'),),
     url(r'^administrator/', include('apps.administrator.urls', namespace='administrator'),),
@@ -29,6 +28,7 @@ urlpatterns = patterns('',
 
     url(r'^ckeditor/', include('ckeditor.urls')),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 )
 
 if settings.DEBUG:

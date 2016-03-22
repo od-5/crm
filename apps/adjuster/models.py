@@ -73,6 +73,12 @@ class AdjusterTask(models.Model):
     def get_absolute_url(self):
         return reverse('adjustertask:update', args=(self.id, ))
 
+    def get_city_name(self):
+        return self.adjuster.city.name
+
+    def get_surface_count(self):
+        return self.adjustertasksurface_set.count()
+
     def get_porch_count(self):
         """
         Метод, возвращающий количество подъездов/стендов, входящих в задачу
@@ -161,6 +167,12 @@ class AdjusterTaskSurface(models.Model):
 
     def __unicode__(self):
         return u'#%d Задача для монтажника %s. Дата: %s' % (self.id, self.adjustertask.adjuster.user.get_full_name, self.adjustertask.date)
+
+    def get_address(self):
+        return u'%s, %s, д. %s' % (self.surface.street.area.name, self.surface.street.name, self.surface.house_number)
+
+    def get_porch_count(self):
+        return self.adjustertasksurfaceporch_set.count()
 
     def get_closed_porch_count(self):
         porch_count = 0
