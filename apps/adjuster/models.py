@@ -70,6 +70,9 @@ class AdjusterTask(models.Model):
     def __unicode__(self):
         return u'Задача ID №:%d' % self.id
 
+    def get_api_url(self):
+        return reverse('api:task_detail', args=(self.id, ))
+
     def get_absolute_url(self):
         return reverse('adjustertask:update', args=(self.id, ))
 
@@ -168,10 +171,20 @@ class AdjusterTaskSurface(models.Model):
     def __unicode__(self):
         return u'#%d Задача для монтажника %s. Дата: %s' % (self.id, self.adjustertask.adjuster.user.get_full_name, self.adjustertask.date)
 
+    def get_api_url(self):
+        return reverse('api:tasksurface_detail', args=(self.id, ))
+
+    def get_coord(self):
+        return [self.surface.coord_y, self.surface.coord_x]
+
     def get_address(self):
         return u'%s, %s, д. %s' % (self.surface.street.area.name, self.surface.street.name, self.surface.house_number)
 
     def get_porch_count(self):
+        """
+        Метод возвращает количество выполненных подъездов по данному адресу
+        :return:
+        """
         return self.adjustertasksurfaceporch_set.count()
 
     def get_closed_porch_count(self):
