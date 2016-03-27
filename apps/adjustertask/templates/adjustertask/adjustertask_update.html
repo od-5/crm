@@ -107,7 +107,7 @@
                   </thead>
                   <tbody class="js-task-surface-list">
                   {% for ats in task_surface_list %}
-                    <tr {% if ats.is_closed %}class="alert alert-success{% endif %}">
+                    <tr {% if ats.is_closed %}class="success"{% endif %}>
                       <td>{{ ats.surface.street.city }}</td>
                       <td>{{ ats.surface.street.area }}</td>
                       <td>{{ ats.surface.street.name }}</td>

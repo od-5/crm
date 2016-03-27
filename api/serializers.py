@@ -7,6 +7,19 @@ from core.models import User
 __author__ = 'alexy'
 
 
+class SurfacePhotoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SurfacePhoto
+        field = {
+            'id',
+            'porch',
+            'adjuster',
+            'date',
+            'image',
+            'is_broken'
+        }
+
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -70,13 +83,5 @@ class TaskSurfacePorchSerializer(serializers.ModelSerializer):
         model = AdjusterTaskSurfacePorch
         fields = (
             'id',
-            'adjustertasksurface',
-            'porch',
-            'porch_number',
-            'broken_shield',
-            'broken_gib',
-            'no_glass',
-            'replace_glass',
-            'against_tenants',
-            'no_social_info'
+            'is_closed',
         )

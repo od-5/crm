@@ -208,6 +208,14 @@ class AdjusterTaskSurfacePorch(models.Model):
     def __unicode__(self):
         return u'№ %s' % self.porch.number
 
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        super(AdjusterTaskSurfacePorch, self).save()
+        if self.adjustertasksurface.get_closed_porch_count() == self.adjustertasksurface.get_porch_count():
+            ats = AdjusterTaskSurface.objects.get(id=self.adjustertasksurface.id)
+            ats.is_closed = True
+            ats.save()
+
     def porch_number(self):
         return self.porch.number
 
