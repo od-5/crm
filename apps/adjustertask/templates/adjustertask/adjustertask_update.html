@@ -6,6 +6,11 @@
 {% block content %}
   <div class="container">
     <div class="col-lg-12">
+      <ol class="breadcrumb">
+        <li><a href="{% url 'cabinet:cabinet' %}">Рабочий стол</a></li>
+        <li><a href="{% url 'adjustertask:list' %}">Список задач монтажников</a></li>
+        <li class="active">Редактирование задачи монтажника</li>
+      </ol>
       <div class="panel panel-default">
         <div class="panel-heading">
           <p class="lead text-center remove-bottom">Задача для монтажника на {{ object.date }}</p>

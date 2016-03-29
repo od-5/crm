@@ -32,7 +32,6 @@ def cabinet_view(request):
     elif user.type == 2:
         template_name = 'cabinet/dash_moderator.html'
     elif user.type == 3:
-        template_name = 'cabinet/dash_client.html'
         return HttpResponseRedirect(reverse('surface:photo-list'))
     elif user.type == 4:
         return HttpResponseRedirect(reverse('adjustertask:list'))

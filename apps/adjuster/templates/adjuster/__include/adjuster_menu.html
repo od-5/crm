@@ -1,3 +1,8 @@
+<ol class="breadcrumb">
+  <li><a href="{% url 'cabinet:cabinet' %}">Рабочий стол</a></li>
+  <li><a href="{% url 'adjuster:list' %}">Список монтажников</a></li>
+  <li class="active">Редактирование монтажника</li>
+</ol>
 <div class="div add-bottom">
   <a href="{% url 'adjuster:change' adjuster.id %}" class="btn btn-default">
     <span class="glyphicon glyphicon-edit"></span> Редактирование монтажника

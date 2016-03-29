@@ -1,6 +1,9 @@
 # coding=utf-8
 import datetime
 from django.conf import settings
+from django.core.mail import send_mail
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.core.urlresolvers import reverse
 from django.db import models
 from pytils.translit import slugify
@@ -60,6 +63,23 @@ class City(models.Model):
     coord_x = models.DecimalField(max_digits=8, decimal_places=6, blank=True, null=True, verbose_name=u'Ширина')
     coord_y = models.DecimalField(max_digits=8, decimal_places=6, blank=True, null=True, verbose_name=u'Долгота')
     slug = models.SlugField(verbose_name=u'url имя поддомена', blank=True, null=True, max_length=50)
+
+
+@receiver(post_save, sender=City)
+def send_notify_to_admin(sender, created, **kwargs):
+    if created:
+        try:
+            subject = u'Добавлен новый город %s, на сайте nadomofone.ru' % kwargs['instance'].name
+            message = subject + u'\n URL для поддомена: %s' % kwargs['instance'].slug
+            recepients = [admin[1] for admin in settings.ADMINS]
+            send_mail(
+                subject,
+                message,
+                settings.DEFAULT_FROM_EMAIL,
+                recepients
+            )
+        except:
+            pass
 
 
 class Area(models.Model):

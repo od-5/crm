@@ -1,5 +1,7 @@
 # coding=utf-8
 from datetime import datetime
+from django.conf import settings
+from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -168,6 +170,22 @@ class CityCreateView(CreateView):
     model = City
     form_class = CityAddForm
     template_name = 'city/city_add.html'
+
+    # def form_valid(self, form):
+    #     try:
+    #         print form.instance.name.slug
+    #         subject = u'Добавлен новый город %s, на сайте nadomofone.ru' % form.instance.name
+    #         message = subject
+    #         recepients = [admin[1] for admin in settings.ADMINS]
+    #         send_mail(
+    #             subject,
+    #             message,
+    #             settings.DEFAULT_FROM_EMAIL,
+    #             recepients
+    #         )
+    #     except:
+    #         pass
+    #     return super(CityCreateView, self).form_valid(form)
 
 
 def city_update(request, pk):

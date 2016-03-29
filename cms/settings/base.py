@@ -24,6 +24,8 @@ EMAIL_HOST = 'smtp.fullspace.ru'
 EMAIL_HOST_USER = 'info@nadomofone.ru'
 EMAIL_HOST_PASSWORD = 'alena2010'
 
+ADMINS = (('Alexey', 'od-5@yandex.ru'),)
+
 ROOT_URLCONF = 'cms.urls'
 
 WSGI_APPLICATION = 'cms.wsgi.application'
