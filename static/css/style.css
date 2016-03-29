@@ -6107,6 +6107,9 @@ img {
 td.incomingtask-comment {
   word-break: break-all;
 }
+td.incomingtask-contact {
+  word-break: break-all;
+}
 .btn,
 p,
 h2 {
