@@ -38,9 +38,11 @@
                 <td>{{ object.user.patronymic|default:'Не указано' }}</td>
                 <td>{{ object.user.phone|default:'Не указано' }}</td>
                 <td>
-                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-Manager-{{ object.id }}" class="btn btn-danger js-ajax-remove-btn">
+                  {% if user.type != 5 %}
+                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-Manager-{{ object.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
                     <span class="glyphicon glyphicon-remove"></span> Удалить
                   </a>
+                  {% endif %}
                 </td>
               </tr>
             {% empty %}

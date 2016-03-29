@@ -2,6 +2,7 @@
 from django import forms
 from apps.adjuster.models import SurfacePhoto
 from apps.city.models import Surface, City, Street, Porch, ManagementCompany
+from apps.manager.models import Manager
 
 __author__ = 'alexy'
 
@@ -21,7 +22,7 @@ class SurfaceAddForm(forms.ModelForm):
         """
         Ограничение выбора города в зависимости от уровня доступа пользователя.
         Администратор может создавать поверхности для всех городов.
-        Модератор - только для своих городов
+        Модератор - только для своих городов, руководитель группы - только для городов модератора
         """
         super(SurfaceAddForm, self).__init__(*args, **kwargs)
         initial = kwargs.pop('initial')
@@ -30,6 +31,11 @@ class SurfaceAddForm(forms.ModelForm):
             self.fields['city'].queryset = City.objects.filter(moderator=user)
             self.fields['street'].queryset = Street.objects.filter(city__moderator=user)
             self.fields['management'].queryset = ManagementCompany.objects.filter(city__moderator=user)
+        elif user.type == 5:
+            manager = Manager.objects.get(user=user)
+            self.fields['city'].queryset = City.objects.filter(moderator=manager.moderator)
+            self.fields['street'].queryset = Street.objects.filter(city__moderator=manager.moderator)
+            self.fields['management'].queryset = ManagementCompany.objects.filter(city__moderator=manager.moderator)
 
 
 class SurfacePhotoForm(forms.ModelForm):

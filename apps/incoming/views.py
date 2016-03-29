@@ -106,11 +106,11 @@ def incomingclient_add(request):
         manager_qs = Manager.objects.filter(moderator=user)
         city_qs = City.objects.filter(moderator=user)
     elif user.type == 5:
-        current_manager = Manager.objects.get(user=user)
-        manager_qs = Manager.objects.filter(moderator=current_manager.moderator)
-        city_qs = City.objects.filter(moderator=current_manager.moderator)
+        manager = Manager.objects.get(user=user)
+        manager_qs = Manager.objects.filter(moderator=manager.moderator)
+        city_qs = City.objects.filter(moderator=manager.moderator)
         initial = {
-            'manager': current_manager
+            'manager': manager
         }
     else:
         manager_qs = None
@@ -151,9 +151,9 @@ def incomingclient_update(request, pk):
         manager_qs = Manager.objects.filter(moderator=user)
         city_qs = City.objects.filter(moderator=user)
     elif user.type == 5:
-        current_manager = Manager.objects.get(user=user)
-        manager_qs = Manager.objects.filter(moderator=current_manager.moderator)
-        city_qs = City.objects.filter(moderator=current_manager.moderator)
+        manager = Manager.objects.get(user=user)
+        manager_qs = Manager.objects.filter(moderator=manager.moderator)
+        city_qs = City.objects.filter(moderator=manager.moderator)
     else:
         manager_qs = None
         city_qs = None
@@ -451,8 +451,8 @@ def incomingtask_update(request, pk):
     elif user.type == 2:
         manager_qs = Manager.objects.filter(moderator=user)
     elif user.type == 5:
-        current_manager = Manager.objects.get(user=user)
-        manager_qs = Manager.objects.filter(moderator=current_manager.moderator)
+        manager = Manager.objects.get(user=user)
+        manager_qs = Manager.objects.filter(moderator=manager.moderator)
     else:
         manager_qs = None
     if request.method == 'POST':

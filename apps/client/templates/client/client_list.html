@@ -7,7 +7,7 @@
           <p class="lead remove-bottom text-center">Список продаж</p>
         </div>
         <div class="panel-body">
-          {% if user.type == 1 or user.type == 2 %}
+          {% if user.is_leader_manager %}
           <a href="{% url 'client:add' %}" class="btn btn-success">
             <span class="glyphicon glyphicon-plus-sign"></span> Добавить новую продажу
           </a>
@@ -19,7 +19,7 @@
                 <option value="{{ city.id }}" {% if city.id == city_id %}selected="selected"{% endif %}>{{ city }}</option>
               {% endfor %}
             </select>
-            <select name="manager" class="form-control" {% if user.type == 5 %}disabled="disabled"{% endif %}>
+            <select name="manager" class="form-control" {% if not user.is_leader_manager %}disabled="disabled"{% endif %}>
               <option value="0">Менеджер</option>
               {% for manager in manager_list %}
                 <option value="{{ manager.id }}" {% if manager.id == manager_id %}selected="selected"{% endif %}>{{ manager }}</option>
@@ -56,8 +56,8 @@
                 <td>{{ object.leader|default:'Не указано' }}</td>
                 <td>{{ object.leader_function|default:'Не указано' }}</td>
                 <td>
-                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ object.id }}" class="btn btn-danger js-ajax-remove-btn">
-                    Удалить
+                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ object.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
+                    <span class="glyphicon glyphicon-remove"></span> Удалить
                   </a>
                 </td>
               </tr>

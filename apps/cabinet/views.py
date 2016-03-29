@@ -37,8 +37,12 @@ def cabinet_view(request):
     elif user.type == 4:
         return HttpResponseRedirect(reverse('adjustertask:list'))
     elif user.type == 5:
-        template_name = 'cabinet/dash_manager.html'
+        print user.is_leader_manager()
         manager = manager_dashboard(user)
+        if manager.leader:
+            template_name = 'cabinet/dash_moderator.html'
+        else:
+            template_name = 'cabinet/dash_manager.html'
         today = datetime.datetime.utcnow().replace(tzinfo=utc).date()
         actual_task_count = manager.incomingtask_set.filter(date=today).count()
         context.update({

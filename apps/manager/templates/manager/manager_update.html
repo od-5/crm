@@ -22,7 +22,7 @@
           <div class="col-lg-6">
             <form action="" role="form" id="js-form-manager-update" method="post">
               {% csrf_token %}
-              <div class="form-group {% if user.type == 2 %}hide{% endif %}">
+              <div class="form-group {% if user.type == 2 or user.type == 5  %}hide{% endif %}">
                 <div class="col-lg-5">
                   {{ m_form.moderator.label_tag }}
                 </div>

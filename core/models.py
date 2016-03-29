@@ -99,6 +99,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     #         self.is_superuser = False
     #     super(User, self).save()
 
+    def is_leader_manager(self):
+        if self.type == 1 or self.type == 2:
+            return True
+        if self.type == 5:
+            if self.manager.leader:
+                return True
+        return False
+
     def get_absolute_url(self):
         if self.type == 1:
             return reverse('administrator:change', args=(self.pk, ))

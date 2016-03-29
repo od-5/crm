@@ -30,6 +30,9 @@ class ManagerListView(ListView):
         #
         if self.request.user.type == 2:
             qs = qs.filter(moderator=user)
+        if self.request.user.type == 5:
+            manager = Manager.objects.get(user=self.request.user)
+            qs = qs.filter(moderator=manager.moderator)
         # else:
         #     qs = None
         if self.request.GET.get('email'):
@@ -68,12 +71,21 @@ def manager_add(request):
             m_form_initial.update({
                 'moderator': request.user
             })
+        elif request.user.type == 5:
+            manager = Manager.objects.get(user=request.user)
+            m_form_initial.update({
+                'moderator': manager.moderator
+            })
         u_form = UserAddForm()
         m_form = ManagerForm(initial=m_form_initial)
         if request.user.type == 1:
             m_form.fields['moderator'].queryset = User.objects.filter(type=2)
-        if request.user.type == 2:
+        elif request.user.type == 2:
             m_form.fields['moderator'].queryset = User.objects.filter(pk=request.user.id)
+        elif request.user.type == 5:
+            manager = Manager.objects.get(user=request.user)
+            m_form.fields['moderator'].queryset = User.objects.filter(pk=manager.moderator.id)
+
     context.update({
         'u_form': u_form,
         'm_form': m_form
@@ -109,8 +121,11 @@ def manager_update(request, pk):
         m_form = ManagerForm(instance=manager)
         if request.user.type == 1:
             m_form.fields['moderator'].queryset = User.objects.filter(type=2)
-        if request.user.type == 2:
+        elif request.user.type == 2:
             m_form.fields['moderator'].queryset = User.objects.filter(pk=request.user.id)
+        elif request.user.type == 5:
+            manager = Manager.objects.get(user=request.user)
+            m_form.fields['moderator'].queryset = User.objects.filter(pk=manager.moderator.id)
 
     context.update({
         'success': success_msg,

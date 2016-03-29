@@ -31,7 +31,7 @@
             <p><strong>Количество адресов: {{ surface_count|default:'0' }}</strong></p>
             <p><strong>Количество подъездов: {{ porch_count|default:'0' }}</strong></p>
           </div>
-        {% if user.type == 1 or user.type == 2 %}
+        {% if user.type == 1 or user.type == 2 or user.is_leader_manager %}
           <a href="{% url 'surface:add' %}" class="btn btn-success add-bottom">
             <span class="glyphicon glyphicon-plus-sign"></span> Добавить новую поверхность
           </a>
@@ -107,7 +107,7 @@
                 <td>{{ object.city|default:'Не указано' }}</td>
                 <td>{{ object.street.area|default:'Не указано' }}</td>
                 <td>
-                {% if user.type == 5 %}
+                {% if not user.is_leader_manager %}
                   {{ object.street.name|default:'Не указано' }}
                 {% else %}
                   <a href="{% url 'surface:update' object.id %}">{{ object.street.name|default:'Не указано' }}</a>
@@ -125,11 +125,9 @@
                   {% endif %}
                 </td>
                 <td>
-                  {% if user.type == 5 %}
-                    &nbsp;
-                  {% else %}
-                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-Surface-{{ object.id }}" class="btn btn-danger js-ajax-remove-btn">
-                    Удалить
+                  {% if user.is_leader_manager %}
+                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-Surface-{{ object.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
+                    <span class="glyphicon glyphicon-remove"></span> Удалить
                   </a>
                   {% endif %}
                 </td>

@@ -9,12 +9,14 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from apps.adjuster.models import SurfacePhoto
 from apps.city.forms import CityAddForm, StreetForm, AreaAddForm, ManagementCompanyForm
 from apps.city.models import City, Area, Street, ManagementCompany
+from apps.manager.models import Manager
 
 __author__ = 'alexy'
 
 
 class CityListView(ListView):
     model = City
+    template_name = 'city/city_list.html'
 
     def get_queryset(self):
         user_id = self.request.user.id
@@ -22,6 +24,9 @@ class CityListView(ListView):
             qs = City.objects.all()
         elif self.request.user.type == 2:
             qs = City.objects.filter(moderator=user_id)
+        elif self.request.user.is_leader_manager():
+            manager = Manager.objects.get(user=self.request.user)
+            qs = City.objects.filter(moderator=manager.moderator)
         else:
             qs = None
         if self.request.GET.get('moderator'):
@@ -37,6 +42,9 @@ class CityListView(ListView):
             qs = City.objects.all()
         elif self.request.user.type == 2:
             qs = City.objects.filter(moderator=self.request.user.id)
+        elif self.request.user.is_leader_manager():
+            manager = Manager.objects.get(user=self.request.user)
+            qs = City.objects.filter(moderator=manager.moderator)
         else:
             qs = None
         context.update({
@@ -46,6 +54,9 @@ class CityListView(ListView):
             a_qs = SurfacePhoto.objects.all()
         elif self.request.user.type == 2:
             a_qs = SurfacePhoto.objects.filter(porch__surface__city__moderator=int(self.request.user.id))
+        elif self.request.user.is_leader_manager():
+            manager = Manager.objects.get(user=self.request.user)
+            a_qs = SurfacePhoto.objects.filter(porch__surface__city__moderator=manager.moderator)
         else:
             a_qs = None
         # установка флага отображения - таблица, плитка

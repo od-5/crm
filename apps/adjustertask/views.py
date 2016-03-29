@@ -6,6 +6,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import ListView
 from apps.adjuster.models import AdjusterTask, AdjusterTaskSurface, Adjuster, AdjusterTaskSurfacePorch
+from apps.manager.models import Manager
 from .forms import AdjusterTaskClientAddForm, AdjusterTaskAddForm, AdjusterTaskUpdateForm, \
     AdjusterTaskFilterForm, AdjusterTaskRepairAddForm, AdjusterTaskClientForm, AdjusterTaskAreaAddForm
 from .task_calendar import get_months
@@ -28,6 +29,9 @@ def adjustertask_list(request):
         qs = AdjusterTask.objects.filter(is_closed=False, adjuster__city__moderator=user)
     elif user.type == 4:
         qs = AdjusterTask.objects.filter(is_closed=False, adjuster__user=user)
+    elif user.type == 5:
+        manager = Manager.objects.get(user=request.user)
+        qs = AdjusterTask.objects.filter(is_closed=False, adjuster__city__moderator=manager.moderator)
     else:
         qs = None
     if request.GET.get('city'):
@@ -64,6 +68,10 @@ def adjustertask_list(request):
     if user.type == 2:
         filter_form.fields['city'].queryset = City.objects.filter(moderator=user)
         filter_form.fields['adjuster'].queryset = Adjuster.objects.filter(city__moderator=user)
+    elif user.type == 2:
+        manager = Manager.objects.get(user=user)
+        filter_form.fields['city'].queryset = City.objects.filter(moderator=manager.moderator)
+        filter_form.fields['adjuster'].queryset = Adjuster.objects.filter(city__moderator=manager.moderator)
     context.update({
         'filter_form': filter_form
     })
@@ -102,6 +110,9 @@ class TaskArchiveListView(ListView):
             qs = AdjusterTask.objects.filter(is_closed=True, adjuster__city__moderator=user)
         elif user.type == 4:
             qs = AdjusterTask.objects.filter(is_closed=True, adjuster__user=user)
+        elif user.type == 5:
+            manager = Manager.objects.get(user=user)
+            qs = AdjusterTask.objects.filter(is_closed=True, adjuster__city__moderator=manager.moderator)
         else:
             qs = None
         if self.request.GET.get('city'):
@@ -145,6 +156,10 @@ class TaskArchiveListView(ListView):
         if user.type == 2:
             filter_form.fields['city'].queryset = City.objects.filter(moderator=user)
             filter_form.fields['adjuster'].queryset = Adjuster.objects.filter(city__moderator=user)
+        elif user.type == 2:
+            manager = Manager.objects.get(user=user)
+            filter_form.fields['city'].queryset = City.objects.filter(moderator=manager.moderator)
+            filter_form.fields['adjuster'].queryset = Adjuster.objects.filter(city__moderator=manager.moderator)
         context.update({
             'filter_form': filter_form
         })
@@ -192,6 +207,9 @@ def adjustertask_client(request):
             client_qs = Client.objects.all()
         elif user.type == 2:
             client_qs = Client.objects.filter(city__moderator=user)
+        elif user.type == 5:
+            manager = Manager.objects.get(user=user)
+            client_qs = Client.objects.filter(city__moderator=manager.moderator)
         else:
             client_qs = None
         form.fields['client'].queryset = client_qs
@@ -284,6 +302,9 @@ def adjustertask_area(request):
             city_qs = City.objects.all()
         elif user.type == 2:
             city_qs = City.objects.filter(moderator=user)
+        elif user.type == 5:
+            manager = Manager.objects.get(user=user)
+            city_qs = City.objects.filter(moderator=manager.moderator)
         else:
             city_qs = None
         form.fields['city'].queryset = city_qs
@@ -365,6 +386,9 @@ def adjustertask_repair(request):
         city_qs = City.objects.all()
     elif user.type == 2:
         city_qs = City.objects.filter(moderator=user)
+    elif user.type == 5:
+        manager = Manager.objects.get(user=user)
+        city_qs = City.objects.filter(moderator=manager.moderator)
     else:
         city_qs = None
     form.fields['city'].queryset = city_qs

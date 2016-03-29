@@ -46,6 +46,9 @@ def client_add(request):
         client_form = ClientAddForm(request=request, initial={'legal_name': legal_name})
     if user.type == 2:
         client_form.fields['manager'].queryset = Manager.objects.filter(moderator=user)
+    elif user.type == 5 and user.is_leader_manager():
+        manager = Manager.objects.get(user=user)
+        client_form.fields['manager'].queryset = Manager.objects.filter(moderator=manager.moderator)
     context.update({
         'user_form': user_form,
         'client_form': client_form

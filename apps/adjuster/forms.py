@@ -2,6 +2,7 @@
 from django import forms
 from apps.adjuster.models import Adjuster
 from apps.city.models import City
+from apps.manager.models import Manager
 
 __author__ = 'alexy'
 
@@ -19,6 +20,9 @@ class AdjusterAddForm(forms.ModelForm):
         super(AdjusterAddForm, self).__init__(*args, **kwargs)
         if self.request.user and self.request.user.type == 2:
             self.fields['city'].queryset = City.objects.filter(moderator=self.request.user)
+        elif self.request.user and self.request.user.type == 5:
+            manager = Manager.objects.get(user=self.request.user)
+            self.fields['city'].queryset = City.objects.filter(moderator=manager.moderator)
 
 
 class AdjusterUpdateForm(forms.ModelForm):
@@ -35,6 +39,9 @@ class AdjusterUpdateForm(forms.ModelForm):
         super(AdjusterUpdateForm, self).__init__(*args, **kwargs)
         if self.request.user and self.request.user.type == 2:
             self.fields['city'].queryset = City.objects.filter(moderator=self.request.user)
+        elif self.request.user and self.request.user.type == 5:
+            manager = Manager.objects.get(user=self.request.user)
+            self.fields['city'].queryset = City.objects.filter(moderator=manager.moderator)
 
 
 class AdjusterPaymentForm(forms.ModelForm):

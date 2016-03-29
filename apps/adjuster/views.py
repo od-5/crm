@@ -7,6 +7,7 @@ from django.shortcuts import render
 from django.views.generic import ListView
 from apps.adjuster.forms import AdjusterAddForm, AdjusterUpdateForm, AdjusterPaymentForm
 from apps.city.models import City
+from apps.manager.models import Manager
 from core.forms import UserAddForm, UserUpdateForm
 from .models import Adjuster
 
@@ -18,11 +19,13 @@ class AdjusterListView(ListView):
     paginate_by = 25
 
     def get_queryset(self):
-        user_id = self.request.user.id
         if self.request.user.type == 1:
             qs = Adjuster.objects.all()
         elif self.request.user.type == 2:
-            qs = Adjuster.objects.filter(city__moderator=user_id)
+            qs = Adjuster.objects.filter(city__moderator=self.request.user)
+        elif self.request.user.type == 5:
+            manager = Manager.objects.get(user=self.request.user)
+            qs = Adjuster.objects.filter(city__moderator=manager.moderator)
         else:
             qs = None
         if self.request.GET.get('email'):
@@ -35,11 +38,13 @@ class AdjusterListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(AdjusterListView, self).get_context_data()
-        user_id = self.request.user.id
         if self.request.user.type == 1:
             city_qs = City.objects.all()
         elif self.request.user.type == 2:
-            city_qs = City.objects.filter(moderator=user_id)
+            city_qs = City.objects.filter(moderator=self.request.user)
+        elif self.request.user.type == 5:
+            manager = Manager.objects.get(user=self.request.user)
+            city_qs = City.objects.filter(moderator=manager.moderator)
         else:
             city_qs = None
         context.update({
@@ -126,15 +131,6 @@ def adjuster_update(request, pk):
 
 def adjuster_task(request, pk):
     context = {}
-    # todo: перенести в middleware
-    # get_data = request.GET.copy()
-    # filtered_url = '?'
-    # for i in get_data:
-    #     if i != 'page':
-    #         filtered_url += u'%s=%s&' % (i, get_data[i])
-    # context.update({
-    #     'filtered_url': filtered_url
-    # })
     r_date_s = request.GET.get('date_s')
     r_date_e = request.GET.get('date_e')
     context.update({

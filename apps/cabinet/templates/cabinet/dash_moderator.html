@@ -7,16 +7,18 @@
         <p class="lead text-center remove-bottom">Города, адреса и рекламные поверхности</p>
       </div>
       <div class="panel-body">
+        {% if user.type != 5 %}
         <div class="col-lg-2">
           <a href="{{ user.get_absolute_url|default:'' }}" class="dashboard__link">
             <img src="{{ STATIC_URL }}icon/moderator_list.png" alt="Данные модератора" class="dashboard__link_icon">
             <span class="dashboard__link_text">Данные модератора</span>
           </a>
         </div>
+        {% endif %}
         <div class="col-lg-2">
-          <a href="{% url 'city:add' %}" class="dashboard__link">
-            <img src="{{ STATIC_URL }}icon/city_add.png" alt="Добавить новый город" class="dashboard__link_icon">
-            <span class="dashboard__link_text">Добавить новый город</span>
+          <a href="{% url 'city:list' %}" class="dashboard__link">
+            <img src="{{ STATIC_URL }}icon/city_list.png" alt="Список городов" class="dashboard__link_icon">
+            <span class="dashboard__link_text">Список городов</span>
           </a>
         </div>
         <div class="col-lg-2">
@@ -166,12 +168,14 @@
         <p class="lead text-center remove-bottom">Сайт</p>
       </div>
       <div class="panel-body">
+        {% if user.type != 5 %}
         <div class="col-lg-4">
           <a href="{% url 'setup-list' %}" class="dashboard__link">
             <img src="{{ STATIC_URL }}icon/site_settings.png" alt="Настройки сайта" class="dashboard__link_icon">
             <span class="dashboard__link_text">Настройки сайта</span>
           </a>
         </div>
+        {% endif %}
         <div class="col-lg-4">
           <a href="{% url 'block-list' %}" class="dashboard__link">
             <img src="{{ STATIC_URL }}icon/site_blocks.png" alt="Блоки сайта" class="dashboard__link_icon">
