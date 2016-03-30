@@ -1,5 +1,7 @@
 # coding=utf-8
 from annoying.functions import get_object_or_None
+from django.conf import settings
+from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -51,6 +53,18 @@ def moderator_add(request):
             user = form.save()
             user.type = 2
             user.save()
+            try:
+                subject = u'Создана учётная запись nadomofone.ru'
+                message = u'Для вас создана учётная запись на сайте http://nadomofone.ru\n email: %s, \n пароль: %s' % (request.POST.get('email'), request.POST.get('password1'))
+                email = request.POST.get('email')
+                send_mail(
+                    subject,
+                    message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    [email, ]
+                )
+            except:
+                pass
             return HttpResponseRedirect(reverse('moderator:change', args=(user.id, )))
         else:
             context.update({

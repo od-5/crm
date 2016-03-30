@@ -1,5 +1,7 @@
 # coding=utf-8
 import datetime
+from django.conf import settings
+from django.core.mail import send_mail
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 import xlwt
@@ -33,6 +35,18 @@ def client_add(request):
             client = client_form.save(commit=False)
             client.user = user
             client.save()
+            try:
+                subject = u'Создана учётная запись nadomofone.ru'
+                message = u'Для вас создана учётная запись на сайте http://nadomofone.ru\n email: %s, \n пароль: %s' % (request.POST.get('email'), request.POST.get('password1'))
+                email = request.POST.get('email')
+                send_mail(
+                    subject,
+                    message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    [email, ]
+                )
+            except:
+                pass
             return HttpResponseRedirect(reverse('client:change', args=(client.id,)))
         else:
             context.update({
