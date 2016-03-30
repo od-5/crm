@@ -75,7 +75,7 @@ def task_list(request, format=None):
     return Response(context)
 
 
-@api_view(['GET'])
+@api_view(['GET', 'PUT'])
 @authentication_classes((SessionAuthentication, BasicAuthentication))
 @permission_classes((IsAuthenticated,))
 def api_root(request, format=None):
@@ -83,14 +83,34 @@ def api_root(request, format=None):
     Точка входа в Api.
     Получение данных авторизованного пользователя
     """
+    print 'point 1'
     user = request.user
     if request.method == 'GET':
+        print 'point GET'
         try:
             Adjuster.objects.get(user=user)
+            print 'point TRY'
         except Adjuster.DoesNotExist:
+            print 'point EXCEPT'
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = UserSerializer(user)
+        print 'point serializer'
         return Response(serializer.data)
+    if request.method == 'PUT':
+        try:
+            adjuster = Adjuster.objects.get(user=user)
+            coord_x = request.query_params.get('coord_x')
+            if ',' in coord_x:
+                coord_x = coord_x.replace(',', '.')
+            coord_y = request.query_params.get('coord_y')
+            if ',' in coord_y:
+                coord_y = coord_y.replace(',', '.')
+            adjuster.coord_x = float(coord_x)
+            adjuster.coord_y = float(coord_y)
+            adjuster.save()
+            return Response(status=status.HTTP_200_OK)
+        except Adjuster.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
 
 # @api_view(['GET'])
