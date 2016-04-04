@@ -21,13 +21,13 @@ class CityListView(ListView):
     template_name = 'city/city_list.html'
 
     def get_queryset(self):
-        user_id = self.request.user.id
-        if self.request.user.type == 1:
+        user = self.request.user
+        if user.type == 1:
             qs = City.objects.all()
-        elif self.request.user.type == 2:
-            qs = City.objects.filter(moderator=user_id)
-        elif self.request.user.is_leader_manager():
-            manager = Manager.objects.get(user=self.request.user)
+        elif user.type == 2:
+            qs = City.objects.filter(moderator=user)
+        elif user.type == 5 and user.is_leader_manager():
+            manager = Manager.objects.get(user=user)
             qs = City.objects.filter(moderator=manager.moderator)
         else:
             qs = None
@@ -40,27 +40,23 @@ class CityListView(ListView):
     @csrf_exempt
     def get_context_data(self, **kwargs):
         context = super(CityListView, self).get_context_data()
-        if self.request.user.type == 1:
+        user = self.request.user
+        if user.type == 1:
             qs = City.objects.all()
-        elif self.request.user.type == 2:
-            qs = City.objects.filter(moderator=self.request.user.id)
-        elif self.request.user.is_leader_manager():
-            manager = Manager.objects.get(user=self.request.user)
+            a_qs = SurfacePhoto.objects.all()
+        elif user.type == 2:
+            qs = City.objects.filter(moderator=user)
+            a_qs = SurfacePhoto.objects.filter(porch__surface__city__moderator=user)
+        elif user.type == 5 and user.is_leader_manager():
+            manager = Manager.objects.get(user=user)
             qs = City.objects.filter(moderator=manager.moderator)
+            a_qs = SurfacePhoto.objects.filter(porch__surface__city__moderator=manager.moderator)
         else:
             qs = None
+            a_qs = None
         context.update({
             'user_city_list': qs
         })
-        if self.request.user.type == 1:
-            a_qs = SurfacePhoto.objects.all()
-        elif self.request.user.type == 2:
-            a_qs = SurfacePhoto.objects.filter(porch__surface__city__moderator=int(self.request.user.id))
-        elif self.request.user.is_leader_manager():
-            manager = Manager.objects.get(user=self.request.user)
-            a_qs = SurfacePhoto.objects.filter(porch__surface__city__moderator=manager.moderator)
-        else:
-            a_qs = None
         # установка флага отображения - таблица, плитка
         try:
             self.request.session['grid']
@@ -196,7 +192,10 @@ def city_update(request, pk):
         # перенаправить его на страницу со списком своих городов
         pass
     else:
-        return HttpResponseRedirect(reverse('city:list'))
+        if user.type == 5 and user.is_leader_manager():
+            pass
+        else:
+            return HttpResponseRedirect(reverse('city:list'))
 
     if request.method == 'POST':
         form = CityAddForm(request.POST, instance=city)
@@ -206,6 +205,9 @@ def city_update(request, pk):
     else:
         form = CityAddForm(instance=city)
         if user.type == 2:
+            form.fields['name'].widget.attrs['readonly'] = True
+            form.fields['moderator'].widget.attrs['readonly'] = True
+        elif user.type == 5 and user.is_leader_manager():
             form.fields['name'].widget.attrs['readonly'] = True
             form.fields['moderator'].widget.attrs['readonly'] = True
     context = {
