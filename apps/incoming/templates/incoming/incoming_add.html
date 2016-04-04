@@ -19,7 +19,7 @@
           <div class="col-lg-6">
             <form action="" role="form" class="js-form-incomingclient-add" method="post">
               {% csrf_token %}
-              <div class="form-group {% if user.type == 5 %}hide{% endif %}">
+              <div class="form-group {% if not user.is_leader_manager %}hide{% endif %}">
                 <div class="col-lg-5"> {{ form.manager.label_tag }} </div>
                 <div class="col-lg-7"> {{ form.manager }} </div>
                 {{ form.manager.errors }}

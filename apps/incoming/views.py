@@ -35,7 +35,11 @@ class IncomingClientListView(ListView):
         elif user.type == 2:
             qs = IncomingClient.objects.filter(city__moderator=user)
         elif user.type == 5:
-            qs = IncomingClient.objects.filter(manager__user=user)
+            if user.is_leader_manager():
+                manager = Manager.objects.get(user=user)
+                qs = IncomingClient.objects.filter(city__moderator=manager)
+            else:
+                qs = IncomingClient.objects.filter(manager__user=user)
         else:
             qs = None
         if name:
@@ -109,9 +113,10 @@ def incomingclient_add(request):
         manager = Manager.objects.get(user=user)
         manager_qs = Manager.objects.filter(moderator=manager.moderator)
         city_qs = City.objects.filter(moderator=manager.moderator)
-        initial = {
-            'manager': manager
-        }
+        if not user.is_leader_manager():
+            initial = {
+                'manager': manager
+            }
     else:
         manager_qs = None
         city_qs = None
