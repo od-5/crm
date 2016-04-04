@@ -276,8 +276,9 @@ def incomingtask_list(request):
     elif user.type == 5:
         if user.is_leader_manager():
             manager = Manager.objects.get(user=user)
-            qs = qs = IncomingTask.objects.filter(manager__moderator=manager.moderator)
-        qs = IncomingTask.objects.filter(manager__user=user)
+            qs = IncomingTask.objects.filter(manager__moderator=manager.moderator)
+        else:
+            qs = IncomingTask.objects.filter(manager__user=user)
     else:
         qs = None
 
