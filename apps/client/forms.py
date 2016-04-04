@@ -41,7 +41,7 @@ class ClientUpdateForm(forms.ModelForm):
             if self.request.user.type == 2:
                 self.fields['city'].queryset = City.objects.filter(moderator=self.request.user)
             elif self.request.user.type == 5 and self.request.user.is_leader_manager():
-                manager = Manager.object.get(user=self.request.user)
+                manager = Manager.objects.get(user=self.request.user)
                 self.fields['city'].queryset = City.objects.filter(moderator=manager.moderator)
 
 
@@ -77,7 +77,7 @@ class ClientAddForm(forms.ModelForm):
             if self.request.user.type == 2:
                 self.fields['city'].queryset = City.objects.filter(moderator=self.request.user)
             elif self.request.user.type == 5 and self.request.user.is_leader_manager():
-                manager = Manager.object.get(user=self.request.user)
+                manager = Manager.objects.get(user=self.request.user)
                 self.fields['city'].queryset = City.objects.filter(moderator=manager.moderator)
 
 
