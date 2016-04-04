@@ -164,11 +164,11 @@ def client_update(request, pk):
     else:
         user_form = UserUpdateForm(instance=user)
         client_form = ClientUpdateForm(request=request, instance=client)
-    if user.type == 2:
-        client_form.fields['manager'].queryset = Manager.objects.filter(moderator=user)
-    elif user.type == 5 and user.is_leader_manager():
-        manager = Manager.objects.get(user=user)
-        client_form.fields['manager'].queryset = Manager.objects.filter(moderator=manager.moderator)
+    # if user.type == 2:
+    #     client_form.fields['manager'].queryset = Manager.objects.filter(moderator=user)
+    # elif user.type == 5 and user.is_leader_manager():
+    #     manager = Manager.objects.get(user=user)
+    #     client_form.fields['manager'].queryset = Manager.objects.filter(moderator=manager.moderator)
     context.update({
         'success': success_msg,
         'error': error_msg,
