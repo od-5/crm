@@ -420,12 +420,14 @@ def incomingtask_add(request):
         manager_qs = Manager.objects.filter(moderator=user)
         incomingclient_qs = IncomingClient.objects.filter(manager__moderator=user)
     elif user.type == 5:
-        current_manager = Manager.objects.get(user=user)
-        manager_qs = Manager.objects.filter(moderator=current_manager.moderator)
-        incomingclient_qs = IncomingClient.objects.filter(manager=current_manager)
-        if not user.is_leader_manager():
+        manager = Manager.objects.get(user=user)
+        manager_qs = Manager.objects.filter(moderator=manager.moderator)
+        if user.is_leader_manager():
+            incomingclient_qs = IncomingClient.objects.filter(manager__moderator=manager.moderator)
+        else:
+            incomingclient_qs = IncomingClient.objects.filter(manager=manager)
             initial = {
-                'manager': current_manager
+                'manager': manager
             }
     else:
         manager_qs = None
