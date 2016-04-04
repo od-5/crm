@@ -2,6 +2,7 @@
 from django import forms
 from apps.city.models import City
 from apps.client.models import Client, ClientMaket, ClientOrder, ClientJournal
+from apps.manager.models import Manager
 from core.models import User
 
 __author__ = 'alexy'
@@ -36,8 +37,12 @@ class ClientUpdateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
         super(ClientUpdateForm, self).__init__(*args, **kwargs)
-        if self.request.user and self.request.user.type == 2:
-            self.fields['city'].queryset = City.objects.filter(moderator=self.request.user)
+        if self.request.user:
+            if self.request.user.type == 2:
+                self.fields['city'].queryset = City.objects.filter(moderator=self.request.user)
+            elif self.request.user.type == 5 and self.request.user.is_leader_manager():
+                manager = Manager.object.get(user=self.request.user)
+                self.fields['city'].queryset = City.objects.filter(moderator=manager.moderator)
 
 
 class ClientAddForm(forms.ModelForm):
@@ -68,8 +73,12 @@ class ClientAddForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
         super(ClientAddForm, self).__init__(*args, **kwargs)
-        if self.request.user and self.request.user.type == 2:
-            self.fields['city'].queryset = City.objects.filter(moderator=self.request.user)
+        if self.request.user:
+            if self.request.user.type == 2:
+                self.fields['city'].queryset = City.objects.filter(moderator=self.request.user)
+            elif self.request.user.type == 5 and self.request.user.is_leader_manager():
+                manager = Manager.object.get(user=self.request.user)
+                self.fields['city'].queryset = City.objects.filter(moderator=manager.moderator)
 
 
 class ClientMaketForm(forms.ModelForm):
