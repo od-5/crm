@@ -15,12 +15,16 @@ class JournalListView(ListView):
 
     def get_queryset(self):
         user = self.request.user
-        if self.request.user.type == 1:
+        if user.type == 1:
             qs = ClientJournal.objects.all()
-        elif self.request.user.type == 2:
+        elif user.type == 2:
             qs = ClientJournal.objects.filter(client__city__moderator=user)
-        elif self.request.user.type == 5:
-            qs = ClientJournal.objects.filter(client__manager__user=user)
+        elif user.type == 5:
+            manager = Manager.objects.get(user=user)
+            if user.is_leader_manager():
+                qs = ClientJournal.objects.filter(client__city__moderator=manager.moderator)
+            else:
+                qs = ClientJournal.objects.filter(client__manager=manager)
         else:
             qs = None
         if self.request.GET.get('city'):
@@ -45,9 +49,9 @@ class JournalListView(ListView):
             city_qs = City.objects.filter(moderator=user)
             manager_qs = Manager.objects.filter(moderator=user)
         elif self.request.user.type == 5:
-            current_manager = Manager.objects.get(user=user)
-            city_qs = City.objects.filter(moderator=current_manager.moderator)
-            manager_qs = Manager.objects.filter(moderator=current_manager.moderator)
+            manager = Manager.objects.get(user=user)
+            city_qs = City.objects.filter(moderator=manager.moderator)
+            manager_qs = Manager.objects.filter(moderator=manager.moderator)
         else:
             city_qs = None
             manager_qs = None
