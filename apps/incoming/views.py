@@ -423,9 +423,10 @@ def incomingtask_add(request):
         current_manager = Manager.objects.get(user=user)
         manager_qs = Manager.objects.filter(moderator=current_manager.moderator)
         incomingclient_qs = IncomingClient.objects.filter(manager=current_manager)
-        initial = {
-            'manager': current_manager
-        }
+        if not user.is_leader_manager():
+            initial = {
+                'manager': current_manager
+            }
     else:
         manager_qs = None
         incomingclient_qs = None
