@@ -37,7 +37,7 @@ class IncomingClientListView(ListView):
         elif user.type == 5:
             if user.is_leader_manager():
                 manager = Manager.objects.get(user=user)
-                qs = IncomingClient.objects.filter(city__moderator=manager)
+                qs = IncomingClient.objects.filter(city__moderator=manager.moderator)
             else:
                 qs = IncomingClient.objects.filter(manager__user=user)
         else:
