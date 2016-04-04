@@ -82,7 +82,11 @@ class ClientListView(ListView):
         elif user.type == 2:
             qs = Client.objects.filter(city__moderator=user)
         elif user.type == 5:
-            qs = Client.objects.filter(manager__user=user)
+            manager = Manager.objects.get(user=user)
+            if user.is_leader_manager():
+                qs = Client.objects.filter(city__moderator=manager.moderator)
+            else:
+                qs = Client.objects.filter(manager=manager)
         else:
             qs = None
         if self.request.GET.get('email'):
@@ -105,9 +109,9 @@ class ClientListView(ListView):
             city_qs = City.objects.filter(moderator=user)
             manager_qs = Manager.objects.filter(moderator=user)
         elif user.type == 5:
-            current_manager = Manager.objects.get(user=user)
-            city_qs = City.objects.filter(moderator=current_manager.moderator)
-            manager_qs = Manager.objects.filter(moderator=current_manager.moderator)
+            manager = Manager.objects.get(user=user)
+            city_qs = City.objects.filter(moderator=manager.moderator)
+            manager_qs = Manager.objects.filter(moderator=manager.moderator)
         else:
             city_qs = None
             manager_qs = None
@@ -162,6 +166,9 @@ def client_update(request, pk):
         client_form = ClientUpdateForm(request=request, instance=client)
     if user.type == 2:
         client_form.fields['manager'].queryset = Manager.objects.filter(moderator=user)
+    elif user.type == 5 and user.is_leader_manager():
+        manager = Manager.objects.get(user=user)
+        client_form.fields['manager'].queryset = Manager.objects.filter(moderator=manager.moderator)
     context.update({
         'success': success_msg,
         'error': error_msg,
