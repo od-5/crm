@@ -4,7 +4,9 @@
     <div class="col-lg-12">
     <ol class="breadcrumb">
         <li><a href="{% url 'cabinet:cabinet' %}">Рабочий стол</a></li>
+        {% if user.type == 1 %}
         <li><a href="{% url 'moderator:list' %}">Список модераторов</a></li>
+        {% endif %}
         <li class="active">Редактирование модератора</li>
       </ol>
       <div class="panel panel-default">
