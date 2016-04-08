@@ -18,7 +18,7 @@ __author__ = 'alexy'
 class SurfaceListView(ListView):
     model = Surface
     template_name = 'surface/surface_list.html'
-    paginate_by = 50
+    paginate_by = 25
 
     def get_queryset(self):
         """
