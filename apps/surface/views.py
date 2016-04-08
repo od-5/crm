@@ -27,12 +27,12 @@ class SurfaceListView(ListView):
         """
         user_id = self.request.user.id
         if self.request.user.type == 1:
-            qs = Surface.objects.all()
+            qs = Surface.objects.select_related().all()
         elif self.request.user.type == 2:
-            qs = Surface.objects.filter(city__moderator=user_id)
+            qs = Surface.objects.select_related().filter(city__moderator=user_id)
         elif self.request.user.type == 5:
             manager = Manager.objects.get(user=user_id)
-            qs = Surface.objects.filter(city__moderator=manager.moderator)
+            qs = Surface.objects.select_related().filter(city__moderator=manager.moderator)
         else:
             qs = None
         # фильтрация поверхностей по городам, районам, улицам
