@@ -23,12 +23,12 @@ class CityListView(ListView):
     def get_queryset(self):
         user = self.request.user
         if user.type == 1:
-            qs = City.objects.all()
+            qs = City.objects.select_related().all()
         elif user.type == 2:
-            qs = City.objects.filter(moderator=user)
+            qs = City.objects.select_related().filter(moderator=user)
         elif user.type == 5 and user.is_leader_manager():
             manager = Manager.objects.get(user=user)
-            qs = City.objects.filter(moderator=manager.moderator)
+            qs = City.objects.select_related().filter(moderator=manager.moderator)
         else:
             qs = None
         if self.request.GET.get('moderator'):
@@ -42,15 +42,15 @@ class CityListView(ListView):
         context = super(CityListView, self).get_context_data()
         user = self.request.user
         if user.type == 1:
-            qs = City.objects.all()
-            a_qs = SurfacePhoto.objects.all()
+            qs = City.objects.select_related().all()
+            a_qs = SurfacePhoto.objects.select_related().all()
         elif user.type == 2:
-            qs = City.objects.filter(moderator=user)
-            a_qs = SurfacePhoto.objects.filter(porch__surface__city__moderator=user)
+            qs = City.objects.select_related().filter(moderator=user)
+            a_qs = SurfacePhoto.objects.select_related().filter(porch__surface__city__moderator=user)
         elif user.type == 5 and user.is_leader_manager():
             manager = Manager.objects.get(user=user)
-            qs = City.objects.filter(moderator=manager.moderator)
-            a_qs = SurfacePhoto.objects.filter(porch__surface__city__moderator=manager.moderator)
+            qs = City.objects.select_related().filter(moderator=manager.moderator)
+            a_qs = SurfacePhoto.objects.select_related().filter(porch__surface__city__moderator=manager.moderator)
         else:
             qs = None
             a_qs = None
