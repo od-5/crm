@@ -163,9 +163,12 @@ class Surface(models.Model):
         if not self.release_date:
             self.release_date = datetime.date.today() - datetime.timedelta(days=1)
         address = u'город %s %s %s' % (self.city.name, self.street.name, self.house_number)
-        pos = api.geocode(api_key, address)
-        self.coord_x = float(pos[0])
-        self.coord_y = float(pos[1])
+        try:
+            pos = api.geocode(api_key, address)
+            self.coord_x = float(pos[0])
+            self.coord_y = float(pos[1])
+        except:
+            pass
         super(Surface, self).save()
 
     city = models.ForeignKey(to=City, verbose_name=u'Город')
