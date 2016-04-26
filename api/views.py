@@ -71,7 +71,6 @@ def task_list(request, format=None):
                 'address_list': address_list
             })
         context.append(t_context)
-    print context
     return Response(context)
 
 
@@ -83,18 +82,13 @@ def api_root(request, format=None):
     Точка входа в Api.
     Получение данных авторизованного пользователя
     """
-    print 'point 1'
     user = request.user
     if request.method == 'GET':
-        print 'point GET'
         try:
             Adjuster.objects.get(user=user)
-            print 'point TRY'
         except Adjuster.DoesNotExist:
-            print 'point EXCEPT'
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = UserSerializer(user)
-        print 'point serializer'
         return Response(serializer.data)
     if request.method == 'PUT':
         try:
@@ -184,19 +178,13 @@ def tasksurfaceporch_detail(request, pk):
     Выполнение работы по поверхности
     """
     try:
-        print u'Пробуем получить подъезд'
         porch = AdjusterTaskSurfacePorch.objects.get(pk=pk)
-        print u'Законичили получение'
     except AdjusterTaskSurfacePorch.DoesNotExist:
-        print u'Нет такого подъезда'
         return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
-        print u'Метод = GET'
         serializer = TaskSurfacePorchSerializer(porch)
         return Response(serializer.data)
     if request.method == 'PUT':
-        print 'method=put'
-        print porch
         try:
             is_closed = str_to_bool(request.query_params.get('is_closed'))
         except:
@@ -204,8 +192,6 @@ def tasksurfaceporch_detail(request, pk):
         porch.is_closed = is_closed
         porch.save()
         serializer = TaskSurfacePorchSerializer(porch)
-        print serializer
-        print 'end serializer'
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -214,56 +200,38 @@ def tasksurfaceporch_detail(request, pk):
 @permission_classes((IsAuthenticated,))
 def porch_update(request, pk):
     try:
-        print u'Пробуем получить подъезд'
         porch = Porch.objects.get(pk=pk)
-        print u'Законичили получение'
     except Porch.DoesNotExist:
-        print u'Нет такого подъезда'
         return Response(status=status.HTTP_404_NOT_FOUND)
-    print request.method
     if request.method == 'GET':
-        print u'Метод = GET'
         serializer = PorchSerializer(porch)
         return Response(serializer.data)
     if request.method == 'PUT':
-        print 'method = PUT'
         # print request.query_params['broken_shield']
         try:
             broken_shield = str_to_bool(request.query_params['broken_shield'])
-            print 'broken_shield first step %s' % broken_shield
         except:
             broken_shield = porch.broken_shield
-            print 'broken_shield second_step %s' % broken_shield
         try:
             broken_gib = str_to_bool(request.query_params['broken_gib'])
-            print 'broken_gib first step %s' % broken_gib
         except:
             broken_gib = porch.broken_gib
-            print 'broken_gib second step %s' % broken_gib
         try:
             no_glass = str_to_bool(request.query_params['no_glass'])
-            print 'no_glass first step %s' % no_glass
         except:
             no_glass = porch.no_glass
-            print 'no_glass second step %s' % no_glass
         try:
             replace_glass = str_to_bool(request.query_params['replace_glass'])
-            print 'replace_glass first step %s' % replace_glass
         except:
             replace_glass = porch.replace_glass
-            print 'replace_glass second step %s' % replace_glass
         try:
             against_tenants = str_to_bool(request.query_params['against_tenants'])
-            print 'against_tenants first step %s' % against_tenants
         except:
             against_tenants = porch.against_tenants
-            print 'against_tenants second step %s' % against_tenants
         try:
             no_social_info = str_to_bool(request.query_params['no_social_info'])
-            print 'no_social_info first step %s' % no_social_info
         except:
             no_social_info = porch.no_social_info
-            print 'no_social_info second step %s' % no_social_info
         porch.broken_shield = broken_shield
         porch.broken_gib = broken_gib
         porch.no_glass = no_glass
@@ -281,20 +249,12 @@ def porch_update(request, pk):
 @permission_classes((IsAuthenticated,))
 def photo_add(request):
     if request.method == 'POST':
-        print 'request.method = POST'
         try:
-            print request.data
             porch = request.data.get('porch')
-            print porch
             adjuster = request.data.get('adjuster')
-            print adjuster
             date = datetime.date.today()
-            print date
             image = request.data.get('image')
-            print 'serializer'
             serializer = SurfacePhotoSerializer(data=request.data)
-            print serializer
-            print 'end serializer'
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -315,7 +275,6 @@ def photo_add(request):
             #     print form
                 # print form
         except:
-            print 'except'
             return Response(status=status.HTTP_400_BAD_REQUEST)
     else:
         return Response(status=status.HTTP_400_BAD_REQUEST)
