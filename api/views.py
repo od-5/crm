@@ -50,7 +50,7 @@ def task_list(request, format=None):
                 'coord': atsurface.get_coord(),
             }
             porch_list = []
-            for atsporch in atsurface.adjustertasksurfaceporch_set.all():
+            for atsporch in atsurface.adjustertasksurfaceporch_set.filter(is_closed=False):
                 atsp_context = {
                     'id': atsporch.id,
                     'porch_id': atsporch.porch.id,
