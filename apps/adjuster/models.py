@@ -84,6 +84,9 @@ class AdjusterTask(models.Model):
     def get_surface_count(self):
         return self.adjustertasksurface_set.count()
 
+    def get_closed_surface_count(self):
+        return self.adjustertasksurface_set.filter(is_closed=True).count()
+
     def get_porch_count(self):
         """
         Метод, возвращающий количество подъездов/стендов, входящих в задачу
@@ -172,6 +175,14 @@ class AdjusterTaskSurface(models.Model):
 
     def __unicode__(self):
         return u'#%d Задача для монтажника %s. Дата: %s' % (self.id, self.adjustertask.adjuster.user.get_full_name, self.adjustertask.date)
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        super(AdjusterTaskSurface, self).save()
+        if self.adjustertask.get_closed_surface_count() == self.adjustertask.get_surface_count():
+            at = AdjusterTask.objects.get(id=self.adjustertask.id)
+            at.is_closed = True
+            at.save()
 
     def get_api_url(self):
         return reverse('api:tasksurface_detail', args=(self.id, ))

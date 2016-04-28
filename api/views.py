@@ -27,7 +27,7 @@ def task_list(request, format=None):
         adjuster = user.adjuster
     except Adjuster.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-    qs = AdjusterTask.objects.filter(adjuster=adjuster)
+    qs = AdjusterTask.objects.filter(adjuster=adjuster, is_closed=False)
     if not qs:
         return Response(status=status.HTTP_204_NO_CONTENT)
     context = []
@@ -42,7 +42,7 @@ def task_list(request, format=None):
             'comment': task.comment
         }
         address_list = []
-        for atsurface in task.adjustertasksurface_set.all():
+        for atsurface in task.adjustertasksurface_set.filter(is_closed=False):
             ats_context = {
                 'id': atsurface.id,
                 'address': atsurface.get_address(),
