@@ -55,19 +55,7 @@ ul li {list-style: none;}
     content: '';
     clear: both;
 }
-.google-play {
-    height: 50px;
-    line-height: 50px;
-    text-align: right;
-}
-.google-play-link {
-    line-height: 50px;
-    display: inline-block;
-}
-.google-play-link__img {
-    width: 100px;
-    vertical-align: middle;
-}
+
 h2 {
     margin: 0 0 78px;
     font-size: 40px;
@@ -829,7 +817,7 @@ label.error {
     width: 225px;
 }
 /************************* footer *************************/
-.footer {height: 206px;}
+.footer {height: 230px;}
 .footer-line {
     height: 62px;
     padding: 19px 0 0;
@@ -852,24 +840,43 @@ label.error {
 .footer-line li:first-child:before {display: none;}
 .footer-line li a {color: #848484;}
 .footer .logo {margin: 39px 34px 0 0;}
-.copy {
+.google-play {
+    text-align: right;
     float: left;
-    margin: 57px 40px 0 0;
+    margin-top: 39px;
+    margin-right: 80px
+}
+.google-play-link {
+    display: inline-block;
+    font-size: 12px;
+    color: #000;
+    text-decoration: none;
+    text-align: center;
+}
+.google-play-link__img {
+    width: 100px;
+    vertical-align: middle;
+}
+.copy {
+    /*float: right;*/
+    text-align: center;
     font-size: 14px;
     line-height: 18px;
 }
 .copy a {color: #000;}
 .studio {
     float: left;
-    margin: 54px 0 0;
     color: #000;
     font-size: 12px;
     line-height: 20px;
     text-decoration: none;
+    margin-top: 39px;
+    margin-bottom: 20px;
+
 }
 .footer .header-phone {
     float: right;
-    padding: 53px 0 0;
+    padding: 39px 0 0;
 }
 .footer .header-number {
     margin: 0 0 2px;

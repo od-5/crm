@@ -387,13 +387,6 @@
       </div>
 
       <div class="holder">
-        <div class="google-play">
-          <span>Скачайте приложение</span>
-          <a href="https://play.google.com/store/apps/details?id=com.gw.porches" class="google-play-link">
-            <img src="{% static 'landing/images/googleplay.png' %}" alt="Скачайте приложение" class="google-play-link__img">
-          </a>
-        </div>
-
         <div class="logo">
           {% if setup.logotype %}
             <img src="{{ setup.logotype.url|default:'' }}" alt="{{ setup.meta_title|default:'' }}">
@@ -403,8 +396,13 @@
           <span class="logo-text-min">В городах России и СНГ</span>
           {% endif %}
         </div>
-        <div class="copy"><a href="#hidden-block" class="fancybox">Политика конфиденциальности</a><br>
-        Все права защищены &copy; 2015</div>
+        <div class="google-play">
+          <a href="https://play.google.com/store/apps/details?id=com.gw.porches" class="google-play-link">
+            Скачайте приложение
+            <br>
+            <img src="{% static 'landing/images/googleplay.png' %}" alt="Скачайте приложение" class="google-play-link__img">
+          </a>
+        </div>
         <a href="http://5lands.ru/" target="_blank" class="studio">
           Дизайн сайта<br>
           <img src="{{ STATIC_URL }}landing/images/studio.png" alt="">
@@ -412,6 +410,11 @@
         <div class="header-phone">
           <div class="header-number">{{ setup.phone|default:'8 800 250-34-50' }}</div>
           <div class="header-callback"><a href="#dialog2" class="modal">Заказать обратный звонок</a></div>
+        </div>
+        <div style="clear: both;"></div>
+        <div>
+          <div class="copy"><a href="#hidden-block" class="fancybox">Политика конфиденциальности</a>
+           Все права защищены &copy; 2015</div>
         </div>
         <div id="hidden-block">
           <h2>Политика конфиденциальности</h2>
