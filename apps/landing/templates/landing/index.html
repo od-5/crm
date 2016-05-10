@@ -185,28 +185,6 @@
         <h2>Карта возможностей размещения вашей
         <span>рекламы в городах России</span></h2>
         <div id="YMapsID" style="height: 500px; margin-bottom: 40px;" class="add-bottom"></div>
-{#        <div class="map-block">#}
-{#          <div class="city city1">#}
-{#            <b>Ростов-на-Дону</b> / 2500#}
-{#            <i>конструкций</i>#}
-{#            <img src="{{ STATIC_URL }}landing/images/map/1.png" alt="" class="city-line">#}
-{#          </div>#}
-{#          <div class="city city2">#}
-{#            <b>Киров</b> / 2500#}
-{#            <i>конструкций</i>#}
-{#            <img src="{{ STATIC_URL }}landing/images/map/2.png" alt="" class="city-line">#}
-{#          </div>#}
-{#          <div class="city city3">#}
-{#            <b>Волгоград</b> / 2500#}
-{#            <i>конструкций</i>#}
-{#            <img src="{{ STATIC_URL }}landing/images/map/3.png" alt="" class="city-line">#}
-{#          </div>#}
-{#          <div class="city city4">#}
-{#            <b>Волжский</b> / 2500#}
-{#            <i>конструкций</i>#}
-{#            <img src="{{ STATIC_URL }}landing/images/map/4.png" alt="" class="city-line">#}
-{#          </div>#}
-{#        </div>#}
         <div class="city-button-holder">
           <a href="" class="city-button">Посмотреть возможности по вашему городу</a>
           <div class="city-hidden">
@@ -407,7 +385,15 @@
           </ul>
         </div>
       </div>
+
       <div class="holder">
+        <div class="google-play">
+          <span>Скачайте приложение</span>
+          <a href="https://play.google.com/store/apps/details?id=com.gw.porches" class="google-play-link">
+            <img src="{% static 'landing/images/googleplay.png' %}" alt="Скачайте приложение" class="google-play-link__img">
+          </a>
+        </div>
+
         <div class="logo">
           {% if setup.logotype %}
             <img src="{{ setup.logotype.url|default:'' }}" alt="{{ setup.meta_title|default:'' }}">

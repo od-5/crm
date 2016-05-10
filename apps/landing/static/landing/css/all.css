@@ -55,7 +55,19 @@ ul li {list-style: none;}
     content: '';
     clear: both;
 }
-
+.google-play {
+    height: 50px;
+    line-height: 50px;
+    text-align: right;
+}
+.google-play-link {
+    line-height: 50px;
+    display: inline-block;
+}
+.google-play-link__img {
+    width: 100px;
+    vertical-align: middle;
+}
 h2 {
     margin: 0 0 78px;
     font-size: 40px;
