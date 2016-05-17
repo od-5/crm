@@ -473,6 +473,7 @@ $(function() {
               '<td><input type="checkbox" name="chk_group[]" value="' +surface_list[i]['id'] +'"></td>'+
               '<td>'+surface_list[i]['street']+'</td>'+
               '<td>'+surface_list[i]['number']+'</td>'+
+              '<td>'+surface_list[i]['porch_count']+'</td>'+
               '</tr>'
             )
           }
