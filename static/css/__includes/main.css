@@ -20,11 +20,8 @@ img {
 .break-all {
   word-break: break-all;
 }
-td.incomingtask-comment {
-  word-break: break-all;
-}
 td.incomingtask-contact {
-  word-break: break-all;
+  min-width: 110px;
 }
 .btn,
 p,
