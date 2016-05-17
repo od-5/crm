@@ -75,7 +75,7 @@ class ClientOrder(models.Model):
     def stand_count(self):
         if self.clientordersurface_set.select_related().all():
             total = 0
-            for i in self.clientordersurface_set.all():
+            for i in self.clientordersurface_set.select_related().all():
                 total += i.porch_count()
             return total
         else:
@@ -98,7 +98,7 @@ class ClientOrderSurface(models.Model):
         return u'%s %s ' % (self.surface.street.name, self.surface.house_number)
 
     def porch_count(self):
-        if self.surface.porch_set.all():
+        if self.surface.porch_set.select_related().all():
             return self.surface.porch_set.all().count()
         else:
             return 0
