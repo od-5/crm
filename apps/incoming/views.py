@@ -43,7 +43,7 @@ class IncomingClientListView(ListView):
         else:
             qs = None
         if name:
-            qs = qs.filter(name=name)
+            qs = qs.filter(name__icontains=name)
         if phone or name:
             client_id_list = [int(i.id) for i in qs]
             c_qs = IncomingClientContact.objects.filter(incomingclient__in=client_id_list)

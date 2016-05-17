@@ -20,7 +20,7 @@
             <input type="text" name="contact" value="{{ r_contact|default:'' }}" class="form-control input-sm" placeholder="фамилия контактного лица">
             <button type="submit" class="btn btn-info btn-sm"> <span class="glyphicon glyphicon-search"></span> Искать</button>
           </form>
-          <table class="table table-hover" id="js-incomingclient-list">
+          <table class="table table-hover" id="js-incomingclient-list" style="font-size: 12px;">
             <thead>
               <tr>
                 <th>Название</th>
@@ -43,7 +43,7 @@
                   </a>
                   {% endif %}
                 </td>
-                <td>{{ object.kind_of_activity|default:'Не указано' }}</td>
+                <td class="break-all">{{ object.kind_of_activity|default:'Не указано' }}</td>
                 <td data-manager-id="{{ object.manager.id }}" data-manager-name="{{ object.manager }}" data-url="{% url 'incoming:get_available_manager_list' %}">
                   <span class="js-manager-name">{{ object.manager|default:'Не указано' }}</span>
                 {% if user.type != 5 %}
