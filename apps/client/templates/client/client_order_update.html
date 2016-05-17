@@ -31,7 +31,9 @@
             </div>
             <div class="clearfix"></div>
           </form>
-          <p class="lead">Добавление адресов к заказу</p>
+          <div class="col-lg-12">
+            <p class="lead">Добавление адресов к заказу</p>
+          </div>
 
           <form action="{% url 'client:add-client-surface' %}" id="js-order-surface-add-form" method="post" role="form">
           {% csrf_token %}
@@ -64,45 +66,53 @@
                     </thead>
                     <tbody></tbody>
                   </table>
+                  <p class="lead">
+                    Количество стендов: <span id="js-selected-surface-porch-count">0</span>
+                  </p>
                 </div>
                 <div class="clearfix"></div>
               </div>
             </div>
             <div class="clearfix"></div>
-            <input type="submit" class="btn btn-default" value="Добавить адреса к заказу">
+            <div class="col-lg-12">
+              <input type="submit" class="btn btn-default add-bottom" value="Добавить адреса к заказу">
+            </div>
           </form>
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <th>Адрес</th>
-                <th>Район</th>
-                <th>Количество подъездов</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody class="js-list">
-              {% for item in object.clientordersurface_set.all %}
-              <tr data-id="{{ item.id }}" data-name="{{ item }}" data-model="ClientOrderSurface" id="id_ClientOrderSurface_{{ item.id }}">
-                <td>{{ item|default:'Не указано' }}</td>
-                <td>{{ item.surface.street.area.name|default:'Не указано' }}</td>
-                <td>{{ item.surface.porch_set.all.count|default:'0' }}</td>
-                <td>
-                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-ClientOrderSurface-{{ item.id }}" class="btn btn-danger js-ajax-remove-btn">
-                    <span class="glyphicon glyphicon-remove"></span> Удалить
-                  </a>
-                </td>
-              </tr>
-              {% empty %}
-              <tr>
-                <td colspan="4">
-                  <p class="alert alert-info">Адресов не найдено</p>
-                </td>
-              </tr>
-              {% endfor %}
-              <tr></tr>
-            </tbody>
-          </table>
-
+          <div class="col-lg-12">
+            <table class="table table-hover" style="font-size: 12px;">
+              <thead>
+                <tr>
+                  <th>Район</th>
+                  <th>Улица</th>
+                  <th>Номер дома</th>
+                  <th>Количество подъездов</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody class="js-list">
+                {% for item in object.clientordersurface_set.all %}
+                <tr data-id="{{ item.id }}" data-name="{{ item }}" data-model="ClientOrderSurface" id="id_ClientOrderSurface_{{ item.id }}">
+                  <td>{{ item.surface.street.area.name|default:'Не указано' }}</td>
+                  <td>{{ item.surface.street.name|default:'Не указано' }}</td>
+                  <td>{{ item.surface.house_number|default:'Не указано' }}</td>
+                  <td>{{ item.surface.porch_set.all.count|default:'0' }}</td>
+                  <td>
+                    <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-ClientOrderSurface-{{ item.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
+                      <span class="glyphicon glyphicon-remove"></span> Удалить
+                    </a>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="4">
+                    <p class="alert alert-info">Адресов не найдено</p>
+                  </td>
+                </tr>
+                {% endfor %}
+                <tr></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

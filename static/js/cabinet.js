@@ -453,6 +453,7 @@ $(function() {
     }
   });
 
+  // Редактирование заказа. Выбор поверхностей по району
   $('#id_cos_area').change(function(){
     if ($(this).val() != 0){
       $.ajax({
@@ -477,15 +478,23 @@ $(function() {
               '</tr>'
             )
           }
+
+
           $('#js-select-all').prop('checked', false);
           $('#js-select-all').on('click', function(){
             $('.js-surface-list tr.result input').prop('checked', $(this).prop('checked'));
-          })
+          });
+          // Редактирование заказа. Вывод количества стендов по выбранным поверхностям
+          var porch_count = 0;
+          $('.js-surface-list input[type="checkbox"]').on('click', function(){
+            porch_count = $('.js-surface-list tbody input[type="checkbox"]:checked').length;
+            $('#js-selected-surface-porch-count').text(porch_count);
+          });
         }
       });
     }
-
   });
+
 
 
 

@@ -265,7 +265,7 @@ def client_order(request, pk):
 
 def client_order_update(request, pk):
     context = {}
-    order = ClientOrder.objects.get(pk=int(pk))
+    order = ClientOrder.objects.select_related().get(pk=int(pk))
     client = order.client
     area_list = client.city.area_set.all()
     success_msg = u''

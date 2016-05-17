@@ -6317,6 +6317,7 @@ body {
   max-height: 500px;
   overflow-y: scroll;
   margin-top: 20px;
+  font-size: 12px;
 }
 .sign {
   width: 400px;
