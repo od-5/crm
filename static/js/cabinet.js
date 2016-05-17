@@ -471,7 +471,7 @@ $(function() {
           for (var i = 0; i < surface_list.length; i++){
             surface_table.append(
               '<tr class="result">'+
-              '<td><input type="checkbox" name="chk_group[]" value="' +surface_list[i]['id'] +'"></td>'+
+              '<td><input type="checkbox" data-porch-count="'+surface_list[i]['porch_count']+'" name="chk_group[]" value="' +surface_list[i]['id'] +'"></td>'+
               '<td>'+surface_list[i]['street']+'</td>'+
               '<td>'+surface_list[i]['number']+'</td>'+
               '<td>'+surface_list[i]['porch_count']+'</td>'+
@@ -485,9 +485,13 @@ $(function() {
             $('.js-surface-list tr.result input').prop('checked', $(this).prop('checked'));
           });
           // Редактирование заказа. Вывод количества стендов по выбранным поверхностям
-          var porch_count = 0;
+
           $('.js-surface-list input[type="checkbox"]').on('click', function(){
-            porch_count = $('.js-surface-list tbody input[type="checkbox"]:checked').length;
+            var porch_count = 0;
+            $('.js-surface-list tbody input[type="checkbox"]:checked').each(function(){
+              porch_count += $(this).data('porch-count');
+            });
+            //porch_count = $('.js-surface-list tbody input[type="checkbox"]:checked').length;
             $('#js-selected-surface-porch-count').text(porch_count);
           });
         }
