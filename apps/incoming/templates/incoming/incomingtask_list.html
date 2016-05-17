@@ -57,17 +57,17 @@
             {% for object in object_list %}
               <tr data-id="{{ object.id }}" data-name="{{ object.get_type_display }}" data-model="IncomingTask" id="id_IncomingTask_{{ object.id }}">
 {#                <td><a href="{% url 'incoming:task_update' object.id %}"> {{ object.name|default:'' }}</a></td>#}
-                <td>{{ object.date|default:'Не указано' }}</td>
+                <td>{{ object.date|date:"d.m.Y"|default:'Не указано' }}</td>
                 <td>{{ object.manager|default:'Не указано' }}</td>
                 <td>{{ object.incomingclient.name|default:'Не указано' }}</td>
-                <td>{{ object.incomingclient.kind_of_activity|default:'Не указано' }}</td>
-                <td class="incomingtask-contact">
+                <td class="break-all">{{ object.incomingclient.kind_of_activity|default:'Не указано' }}</td>
+                <td class="break-all">
                   {{ object.incomingclientcontact.name|default:'Не указано' }}<br>
                   {{ object.incomingclientcontact.phone }}<br>
                   {{ object.incomingclientcontact.email }}
                 </td>
                 <td><a href="{% url 'incoming:task-update' object.id %}"> {{ object.get_type_display|default:'' }}</a></td>
-                <td class="incomingtask-comment">{{ object.comment|linebreaksbr|default:'Не указано' }}</td>
+                <td class="break-all">{{ object.comment|linebreaksbr|default:'Не указано' }}</td>
                 <td>{{ object.get_status_display|default:'Не указано' }}</td>
                 <td>
                   <a href="#js-change-incomingtask-modal" id="change-incomingtask-btn-{{ object.id }}" data-url="{% url 'incoming:get_incomingtask_info' %}" class="btn btn-info btn-sm js-change-incomingtask-btn">
