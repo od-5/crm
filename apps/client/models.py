@@ -73,7 +73,7 @@ class ClientOrder(models.Model):
         super(ClientOrder, self).delete()
 
     def stand_count(self):
-        if self.clientordersurface_set.all():
+        if self.clientordersurface_set.select_related().all():
             total = 0
             for i in self.clientordersurface_set.all():
                 total += i.porch_count()
