@@ -1,19 +1,13 @@
 # coding=utf-8
-import datetime
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-import xlwt
-from datetime import date, datetime
-from annoying.decorators import ajax_request
+from datetime import datetime
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView
 from django.utils import timezone
 from apps.city.models import City
 from apps.manager.models import Manager
-from core.forms import UserAddForm, UserUpdateForm
-from core.models import User
 from .models import IncomingClient, IncomingTask, IncomingClientContact, IncomingClientManager
 from .forms import IncomingClientAddForm, IncomingClientUpdateForm, IncomingTaskForm, IncomingClientContactForm
 
@@ -51,10 +45,8 @@ class IncomingClientListView(ListView):
                 c_qs = c_qs.filter(phone=phone)
             if contact:
                 c_qs = c_qs.filter(name__icontains=contact)
-                # qs = qs.filter(name=self.request.GET.get('name'))
             client_id_list = [int(i.incomingclient.id) for i in c_qs]
             qs = qs.filter(id__in=client_id_list)
-
         return qs
 
     def get_context_data(self, **kwargs):
@@ -209,7 +201,6 @@ def incomingclientcontact_list(request, pk):
 
 
 def incomingclientcontact_add(request, pk):
-    context = {}
     success_msg = None
     error_msg = None
     incomingclient = IncomingClient.objects.get(pk=int(pk))
@@ -217,7 +208,6 @@ def incomingclientcontact_add(request, pk):
         form = IncomingClientContactForm(request.POST)
         if form.is_valid():
             form.save()
-            success_msg = u'Контактное лицо успешно добавлено'
             return HttpResponseRedirect(reverse('incoming:contact-list', args=(incomingclient.id,)))
         else:
             error_msg = u'Проверьте правильность ввода полей!'
@@ -237,7 +227,6 @@ def incomingclientcontact_add(request, pk):
 
 
 def incomingclientcontact_update(request, pk):
-    context = {}
     success_msg = None
     error_msg = None
     contact = IncomingClientContact.objects.get(pk=int(pk))
@@ -245,7 +234,6 @@ def incomingclientcontact_update(request, pk):
         form = IncomingClientContactForm(request.POST, instance=contact)
         if form.is_valid():
             form.save()
-            success_msg = u'Изменения сохранены'
             return HttpResponseRedirect(reverse('incoming:contact-list', args=(contact.incomingclient.id,)))
         else:
             error_msg = u'Проверьте правильность ввода полей!'
@@ -267,7 +255,6 @@ def incomingtask_list(request):
         context.update({
             'error': True
         })
-
     user = request.user
     if user.type == 1:
         qs = IncomingTask.objects.all()
@@ -281,7 +268,6 @@ def incomingtask_list(request):
             qs = IncomingTask.objects.filter(manager__user=user)
     else:
         qs = None
-
     r_name = request.GET.get('name')
     r_date_s = request.GET.get('date_s')
     r_date_e = request.GET.get('date_e')
@@ -296,7 +282,6 @@ def incomingtask_list(request):
         show_all = request.session['show_all_incomingtask']
     except:
         show_all = False
-
     if not r_name and not r_date_s and not r_date_e and not show_all:
         qs = qs.filter(date=timezone.localtime(timezone.now()))
     else:
@@ -306,7 +291,6 @@ def incomingtask_list(request):
             qs = qs.filter(date__gte=datetime.strptime(r_date_s, '%d.%m.%Y'))
         if r_date_e:
             qs = qs.filter(date__lte=datetime.strptime(r_date_e, '%d.%m.%Y'))
-
     if r_type:
         qs = qs.filter(type=int(r_type))
         context.update({
@@ -321,7 +305,6 @@ def incomingtask_list(request):
         context.update({
             'r_name': r_name
         })
-
     if r_date_s:
         context.update({
             'r_date_s': r_date_s
@@ -347,67 +330,6 @@ def incomingtask_list(request):
     })
     return render(request, 'incoming/incomingtask_list.html', context)
 
-
-# class IncomingTaskListView(ListView):
-#     model = IncomingTask
-#     template_name = 'incoming/incomingtask_list.html'
-#     paginate_by = 5
-#
-#     def get_queryset(self):
-#         qs = super(IncomingTaskListView, self).get_queryset()
-#         print qs
-#         user = self.request.user
-#
-#         if user.type == 1:
-#             qs = qs
-#         elif user.type == 2:
-#             qs = qs.filter(manager__moderator=user)
-#         elif user.type == 5:
-#             qs = qs.filter(manager__user=user)
-#         else:
-#             qs = None
-#         r_name = self.request.GET.get('name')
-#         r_date_s = self.request.GET.get('date_s')
-#         r_date_e = self.request.GET.get('date_e')
-#         r_all = self.request.GET.get('all')
-#         r_type = self.request.GET.get('type')
-#         if not r_name and not r_date_s and not r_date_e and not r_all:
-#             qs = qs.filter(date=timezone.localtime(timezone.now()))
-#         else:
-#             if r_name:
-#                 qs = qs.filter(incomingclient__name__icontains=r_name)
-#             if r_date_s:
-#                 qs = qs.filter(date__gte=datetime.strptime(r_date_s, '%d.%m.%Y'))
-#             if r_date_e:
-#                 qs = qs.filter(date__lte=datetime.strptime(r_date_e, '%d.%m.%Y'))
-#         if r_type:
-#             qs = qs.filter(type=int(r_type))
-#         return qs
-#
-#     def get_context_data(self, **kwargs):
-#         context = super(IncomingTaskListView, self).get_context_data(**kwargs)
-#         if self.request.GET.get('name'):
-#             context.update({
-#                 'r_name': self.request.GET.get('name')
-#             })
-#         if self.request.GET.get('date_s'):
-#             context.update({
-#                 'r_date_s': self.request.GET.get('date_s')
-#             })
-#         if self.request.GET.get('date_e'):
-#             context.update({
-#                 'r_date_e': self.request.GET.get('date_e')
-#             })
-#         if self.request.GET.get('all'):
-#             context.update({
-#                 'show_all': True
-#             })
-#         if self.request.GET.get('type'):
-#             context.update({
-#                 'r_type': True
-#             })
-#         return context
-#
 
 def incomingtask_add(request):
     context = {}
@@ -476,10 +398,8 @@ def incomingtask_update(request, pk):
             error_msg = u'Проверьте правильность ввода полей!'
     else:
         form = IncomingTaskForm(instance=object)
-
     form.fields['manager'].queryset = manager_qs
     form.fields['incomingclientcontact'].queryset = object.incomingclient.incomingclientcontact_set.all()
-
     context.update({
         'success': success_msg,
         'error': error_msg,

@@ -1,5 +1,6 @@
 <script>
 ymaps.ready(function () {
+{# todo: Переделать получение списка координат и подписей на AJAX request. Не использовать django шаблонизатор #}
     var surface_points = [
         {% for surface in surface_list %}
           [{{ surface.coord_y|safe }}, {{ surface.coord_x|safe }}],
