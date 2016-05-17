@@ -466,7 +466,7 @@ $(function() {
         if (data.surface_list) {
           var surface_list = data.surface_list;
           $('.js-surface-list tr.result').remove();
-          var surface_table = $('.js-surface-list thead');
+          var surface_table = $('.js-surface-list tbody');
           for (var i = 0; i < surface_list.length; i++){
             surface_table.append(
               '<tr class="result">'+
