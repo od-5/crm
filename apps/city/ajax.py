@@ -263,7 +263,7 @@ def get_photo_map(request):
         for corder in client.clientorder_set.all():
             print 'corder'
             print corder
-            s_qs = SurfacePhoto.objects.filter(porch__surface__clientordersurface__clientorder=corder).filter(date__gte=corder.date_start).filter(date__lte=corder.date_end)
+            s_qs = SurfacePhoto.objects.select_related().filter(porch__surface__clientordersurface__clientorder=corder).filter(date__gte=corder.date_start).filter(date__lte=corder.date_end)
             if s_qs:
                 qs_list.append(s_qs)
         print 'qs_list'

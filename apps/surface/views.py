@@ -289,7 +289,7 @@ def surface_photo_list(request):
         qs_list = []
         if client:
             for corder in client.clientorder_set.all():
-                qs = SurfacePhoto.objects.filter(porch__surface__clientordersurface__clientorder=corder).filter(date__gte=corder.date_start).filter(date__lte=corder.date_end)
+                qs = SurfacePhoto.objects.select_related().filter(porch__surface__clientordersurface__clientorder=corder).filter(date__gte=corder.date_start).filter(date__lte=corder.date_end)
                 if qs:
                     qs_list.append(qs)
         if qs_list:
