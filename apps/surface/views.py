@@ -368,6 +368,7 @@ def surface_photo_list(request):
         'a_date_s': a_date_s,
         'a_date_e': a_date_e
     })
+    photo_count = 0
     if a_qs:
         a_qs = a_qs.filter(is_broken=request.session['show_broken'])
         if a_city:
@@ -384,6 +385,7 @@ def surface_photo_list(request):
                 re_date = datetime.strptime(a_date_e, '%d.%m.%Y')
                 e_date = datetime.date(re_date)
                 a_qs = a_qs.filter(date__lte=e_date)
+        photo_count = a_qs.count()
         paginator = Paginator(a_qs, 20)  # Show 25 contacts per page
         page = request.GET.get('page')
         try:
@@ -396,6 +398,7 @@ def surface_photo_list(request):
         address_list = None
     context.update({
         'address_list': address_list,
-        'city_list': city_qs
+        'city_list': city_qs,
+        'photo_count': photo_count
     })
     return render(request, 'surface/surface_photo_list.html', context)
