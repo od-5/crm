@@ -301,7 +301,8 @@ def surface_photo_list(request):
         else:
             a_qs = None
         # a_qs = SurfacePhoto.objects.filter(porch__surface__clientordersurface__clientorder__in=clientorder_list).distinct()
-        city_qs = None
+        city_qs = City.objects.filter(pk=client.city.id)
+
     else:
         city_qs = None
         a_qs = None
