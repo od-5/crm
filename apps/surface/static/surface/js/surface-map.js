@@ -19,7 +19,7 @@ ymaps.ready(function () {
   if (city_count == 1){
     map_zoom = 9;
   }
-  if (city.length) {
+  if (city != '0') {
     map_zoom = 9;
   }
   $.ajax({
