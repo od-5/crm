@@ -254,6 +254,28 @@ def get_photo_map(request):
         qs = SurfacePhoto.objects.select_related().all()
     elif user.type == 2:
         qs = SurfacePhoto.objects.select_related().filter(porch__surface__city__moderator=user)
+    elif user.type == 3:
+        print 'client'
+        client = user.client
+        print client
+        clientorder_list = [int(i.id) for i in client.clientorder_set.filter(is_closed=False)]
+        qs_list = []
+        for corder in client.clientorder_set.all():
+            print 'corder'
+            print corder
+            s_qs = SurfacePhoto.objects.filter(porch__surface__clientordersurface__clientorder=corder).filter(date__gte=corder.date_start).filter(date__lte=corder.date_end)
+            if s_qs:
+                qs_list.append(s_qs)
+        print 'qs_list'
+        print qs_list
+        if qs_list:
+            query_string_item = []
+            for i in range(len(qs_list)):
+                query_string_item.append('qs_list[%d]' % i)
+            query_string = ' | '.join(query_string_item)
+            qs = eval(query_string)
+        else:
+            qs = None
     elif user.type == 5 and user.is_leader_manager():
         qs = SurfacePhoto.objects.select_related().filter(porch__surface__city__moderator=user.manager.moderator)
 

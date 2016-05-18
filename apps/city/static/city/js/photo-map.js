@@ -23,7 +23,11 @@ ymaps.ready(function () {
       photo_list = data.photo_list;
     }
   });
-  center = [photo_list[0]['coord_y'], photo_list[0]['coord_x']];
+  if (photo_list.length){
+    center = [photo_list[0]['coord_y'], photo_list[0]['coord_x']];
+  } else {
+    center = [48.713339, 44.497116]
+  }
   var myMap = new ymaps.Map('photoMap', {
     center: center,
     zoom: 4,
