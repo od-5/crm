@@ -2,7 +2,7 @@
 ymaps.ready(function () {
 {# todo: Переделать получение списка координат и подписей на AJAX request. Не использовать django шаблонизатор #}
     var photo_points = [{% for i in address_list %}[{{ i.porch.surface.coord_y|safe }}, {{ i.porch.surface.coord_x|safe }}],{% endfor %}];
-    var photo_baloons = [{% for i in address_list %}['{{ i.porch.surface }}, {{ i.porch }}', '{{ i.image_resize.url }}'],{% endfor %}];
+    var photo_baloons = [{% for i in address_list %}['{{ i.porch.surface }}, {{ i.porch }}', '{{ i.image.url }}'],{% endfor %}];
     console.log(photo_points);
     console.log(photo_baloons);
     var myMap = new ymaps.Map('photoMap', {

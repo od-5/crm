@@ -48,9 +48,8 @@ class CityListView(ListView):
             qs = City.objects.select_related().filter(moderator=user)
             a_qs = SurfacePhoto.objects.select_related().filter(porch__surface__city__moderator=user)
         elif user.type == 5 and user.is_leader_manager():
-            manager = Manager.objects.get(user=user)
-            qs = City.objects.select_related().filter(moderator=manager.moderator)
-            a_qs = SurfacePhoto.objects.select_related().filter(porch__surface__city__moderator=manager.moderator)
+            qs = City.objects.select_related().filter(moderator=user.manager.moderator)
+            a_qs = SurfacePhoto.objects.select_related().filter(porch__surface__city__moderator=user.manager.moderator)
         else:
             qs = None
             a_qs = None
