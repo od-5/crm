@@ -50,12 +50,12 @@
                 <td>{{ order.date_end|default:'Не указано' }}</td>
                 <td>{{ order.stand_count|default:'0' }}</td>
                 <td>
-                  <a href="{% url 'client:order-export' order.id %}" class="btn btn-success">
+                  <a href="{% url 'client:order-export' order.id %}" class="btn btn-sm btn-success">
                     <span class="glyphicon glyphicon-download-alt"></span> Скачать в EXCEL
                   </a>
                 </td>
                 <td>
-                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-ClientOrder-{{ order.id }}" class="btn btn-danger js-ajax-remove-btn">
+                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-ClientOrder-{{ order.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
                     <span class="glyphicon glyphicon-remove"></span> Удалить
                   </a>
                 </td>

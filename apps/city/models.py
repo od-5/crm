@@ -139,6 +139,13 @@ class Surface(models.Model):
     def __unicode__(self):
         return u'г.%s %s %s' % (self.city.name, self.street.name, self.house_number)
 
+    def get_current_client(self):
+        try:
+            today = datetime.datetime.today()
+            return self.clientordersurface_set.select_related().filter(clientorder__date_start__lte=today, clientorder__date_end__gte=today).first().clientorder.client.legal_name
+        except:
+            return None
+
     def get_absolute_url(self):
         return reverse('surface:update', args=(self.pk,))
         # return '/city/surface/'

@@ -102,6 +102,7 @@
                 <th>Кол-во подъездов</th>
                 <th>Управляющая компания</th>
                 <th>Свободна</th>
+                <th>Клиент</th>
                 <th></th>
               </tr>
             </thead>
@@ -125,7 +126,14 @@
                     <span class="glyphicon glyphicon-ok-sign text-success"></span>
                   {% else %}
                     <span class="glyphicon glyphicon-minus-sign text-danger"></span> 
-                    занята до {{ object.release_date }}
+                    занята до {{ object.release_date|date:'d.m.Yг.' }}
+                  {% endif %}
+                </td>
+                <td>
+                  {% if object.free %}
+                  отсутствует
+                  {% else %}
+                  {{ object.get_current_client }}
                   {% endif %}
                 </td>
                 <td>
