@@ -51,9 +51,13 @@
 
         <div class="clearfix"></div>
       </div>
-      {% include 'city/__include/map-photo.html' %}
       <div class="row" id="js-photo-map-wrapper">
-        <div id="photoMap" style="height: 500px;"></div>
+        <div id="photoMap" data-url="{% url 'city:get_photo_map' %}" style="height: 500px;"></div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <p class="lead">Итого количество фотографий: {{ photo_count|default:'0' }}</p>
+        </div>
       </div>
     {% if grid %}
       <div class="row">
@@ -65,7 +69,7 @@
             </a>
           </div>
           <div>
-            <p>
+            <p class="photo_description">
               Адрес: {{ item.address }} <br>
               Подъезд: {{ item.porch.number }}, <br>
               Дата: {{ item.date }}
@@ -94,7 +98,7 @@
         </thead>
         <tbody>
         {% for item in address_list %}
-        <tr {% if item.porch.damaged %}class="danger"{% endif %}>
+        <tr {% if item.is_broken %}class="danger"{% endif %}>
           <td>{{ item.porch.surface.city.name }}</td>
           <td>{{ item.porch.surface.street.area.name }}</td>
           <td>{{ item.porch.surface.street.name }}</td>

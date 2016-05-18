@@ -40,6 +40,10 @@ class CityListView(ListView):
     @csrf_exempt
     def get_context_data(self, **kwargs):
         context = super(CityListView, self).get_context_data()
+        if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
+            context.update({
+                'city_id': int(self.request.GET.get('city'))
+            })
         user = self.request.user
         if user.type == 1:
             qs = City.objects.select_related().all()
@@ -143,7 +147,7 @@ class CityListView(ListView):
                     re_date = datetime.strptime(a_date_e, '%d.%m.%Y')
                     e_date = datetime.date(re_date)
                     a_qs = a_qs.filter(date__lte=e_date)
-
+        photo_count = a_qs.count()
         paginator = Paginator(a_qs, 20) # Show 25 contacts per page
         page = self.request.GET.get('page')
         try:
@@ -155,7 +159,8 @@ class CityListView(ListView):
             # If page is out of range (e.g. 9999), deliver last page of results.
             address_list = paginator.page(paginator.num_pages)
         context.update({
-            'address_list': address_list
+            'address_list': address_list,
+            'photo_count': photo_count
         })
 
         return context

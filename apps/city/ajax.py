@@ -1,7 +1,8 @@
 # coding=utf-8
 from annoying.decorators import ajax_request
 from datetime import datetime
-from apps.adjuster.models import Adjuster, AdjusterTaskSurface
+from django.views.decorators.csrf import csrf_exempt
+from apps.adjuster.models import Adjuster, AdjusterTaskSurface, SurfacePhoto
 from apps.city.forms import AreaAddForm, StreetForm
 from apps.city.models import Area, City, Street, Surface, Porch
 from apps.client.models import Client, ClientOrder
@@ -242,3 +243,57 @@ def get_area_surface_list_with_damage(request):
             'error': u'Что то пошло не так!'
         }
 
+
+@ajax_request
+@csrf_exempt
+def get_photo_map(request):
+    user = request.user
+    qs = None
+    photo_list = []
+    if user.type == 1:
+        qs = SurfacePhoto.objects.select_related().all()
+    elif user.type == 2:
+        qs = SurfacePhoto.objects.select_related().filter(porch__surface__city__moderator=user)
+    elif user.type == 5 and user.is_leader_manager():
+        qs = SurfacePhoto.objects.select_related().filter(porch__surface__city__moderator=user.manager.moderator)
+
+    city = request.POST.get('city')
+    print city
+    area = request.POST.get('area')
+    print area
+    street = request.POST.get('street')
+    print street
+    date_s = request.POST.get('date_s')
+    print date_s
+    date_e = request.POST.get('date_e')
+    print date_e
+    show_broken = request.session['show_broken']
+    if show_broken:
+        qs = qs.filter(is_broken=show_broken)
+    if city:
+        qs = qs.filter(porch__surface__city=int(city))
+        if area:
+            qs = qs.filter(porch__surface__street__area=int(area))
+            if street:
+                qs = qs.filter(porch__surface__street=int(street))
+    if date_s:
+        # rs_date = datetime.strptime(date_s, '%d.%m.%Y')
+        # s_date = datetime.date(rs_date)
+        qs = qs.filter(date__gte=datetime.strptime(date_s, '%d.%m.%Y'))
+    if date_e:
+        # re_date = datetime.strptime(date_e, '%d.%m.%Y')
+        # e_date = datetime.date(re_date)
+        qs = qs.filter(date__lte=datetime.strptime(date_e, '%d.%m.%Y'))
+    print qs
+    for photo in qs:
+        photo_list.append({
+            'coord_y': str(photo.porch.surface.coord_y),
+            'coord_x': str(photo.porch.surface.coord_x),
+            'surface': photo.porch.surface.__unicode__(),
+            'porch': photo.porch.__unicode__(),
+            'image': photo.image_resize.url
+        })
+    print photo_list
+    return {
+        'photo_list': photo_list
+    }

@@ -68,3 +68,7 @@ body {
   margin-top: 20px;
   font-size: 12px;
 }
+.photo_description {
+  height: 100px;
+  overflow: hidden;
+}

@@ -2,7 +2,7 @@
 from django.conf.urls import patterns, url
 from django.contrib.admin.views.decorators import staff_member_required
 from apps.city.ajax import surface_ajax, get_free_area_surface, get_city_area, get_city_adjusters, \
-    get_area_surface_list, simple_get_area_streets, get_area_surface_list_with_damage
+    get_area_surface_list, simple_get_area_streets, get_area_surface_list_with_damage, get_photo_map
 from .models import City
 from .views import CityCreateView, CityListView
 
@@ -35,4 +35,5 @@ urlpatterns = patterns(
     url(r'^get_area_surface_list_with_damage/$', get_area_surface_list_with_damage,
         name='get_area_surface_list_with_damage'),
 
+    url(r'^get_photo_map/$', get_photo_map, name='get_photo_map'),
 )
