@@ -258,18 +258,12 @@ def get_photo_map(request):
         qs = SurfacePhoto.objects.select_related().filter(porch__surface__city__moderator=user.manager.moderator)
 
     city = request.POST.get('city')
-    print city
     area = request.POST.get('area')
-    print area
     street = request.POST.get('street')
-    print street
     date_s = request.POST.get('date_s')
-    print date_s
     date_e = request.POST.get('date_e')
-    print date_e
     show_broken = request.session['show_broken']
-    if show_broken:
-        qs = qs.filter(is_broken=show_broken)
+    qs = qs.filter(is_broken=show_broken)
     if city:
         qs = qs.filter(porch__surface__city=int(city))
         if area:
@@ -284,7 +278,6 @@ def get_photo_map(request):
         # re_date = datetime.strptime(date_e, '%d.%m.%Y')
         # e_date = datetime.date(re_date)
         qs = qs.filter(date__lte=datetime.strptime(date_e, '%d.%m.%Y'))
-    print qs
     for photo in qs:
         photo_list.append({
             'coord_y': str(photo.porch.surface.coord_y),
@@ -293,7 +286,6 @@ def get_photo_map(request):
             'porch': photo.porch.__unicode__(),
             'image': photo.image_resize.url
         })
-    print photo_list
     return {
         'photo_list': photo_list
     }
