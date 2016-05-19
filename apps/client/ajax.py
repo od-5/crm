@@ -37,16 +37,12 @@ def get_client_order_address_list(request):
     if request.method == 'GET':
         if request.GET.get('clientorder'):
             order = ClientOrder.objects.get(id=int(request.GET.get('clientorder')))
-            r_date = request.GET.get('date')
-            at_surface_list_id = []
-            if r_date:
-                date = datetime.strptime(r_date, '%d.%m.%Y')
-                co_surface_list_id = [int(i.surface.id) for i in order.clientordersurface_set.all()]
-                at_surface = AdjusterTaskSurface.objects.filter(
-                    surface__id__in=co_surface_list_id,
-                    adjustertask__date=date
-                )
-                at_surface_list_id = [int(i.surface.id) for i in at_surface]
+            co_surface_list_id = [int(i.surface.id) for i in order.clientordersurface_set.all()]
+            at_surface = AdjusterTaskSurface.objects.filter(
+                surface__id__in=co_surface_list_id,
+                is_closed=False
+            )
+            at_surface_list_id = [int(i.surface.id) for i in at_surface]
 
             surface_list = []
             for clientordersurface in order.clientordersurface_set.all():

@@ -70,8 +70,6 @@ def ajax_remove_item(request):
         if request.GET.get('item_id') and request.GET.get('item_model'):
             model = request.GET.get('item_model')
             item_id = request.GET.get('item_id')
-            # client = Client.objects.get(id=int(request.GET.get('item_id')))
-            # user = User.objects.get(pk=client.user.id)
             item = get_object_or_404(eval(model), pk=int(item_id))
             if model == 'Client':
                 user = User.objects.get(pk=item.user.id)
@@ -82,6 +80,13 @@ def ajax_remove_item(request):
             if model == 'Adjuster':
                 user = User.objects.get(pk=item.user.id)
                 user.delete()
+            if model == 'AdjusterTask':
+                for ats in item.adjustertasksurface_set.select_related().all():
+                    for atsp in ats.adjustertasksurfaceporch_set.all():
+                        atsp.is_closed = True
+                        atsp.save()
+                    ats.is_closed = True
+                    ats.save()
             if model == 'ClientOrderSurface':
                 surface = Surface.objects.get(pk=item.surface.id)
                 surface.free = True
