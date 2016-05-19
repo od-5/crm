@@ -36,7 +36,6 @@ def cabinet_view(request):
     elif user.type == 4:
         return HttpResponseRedirect(reverse('adjustertask:list'))
     elif user.type == 5:
-        print user.is_leader_manager()
         manager = manager_dashboard(user)
         if manager.leader:
             template_name = 'cabinet/dash_moderator.html'

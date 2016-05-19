@@ -370,6 +370,18 @@ def surface_photo_list(request):
         'a_date_e': a_date_e
     })
     photo_count = 0
+    if request.GET.get('page_count'):
+        if request.GET.get('page_count') == '0':
+            page_count = 0
+        else:
+            page_count = int(request.GET.get('page_count'))
+    else:
+        try:
+            page_count = int(request.session['show_broken'])
+        except:
+            page_count = 20
+    request.session['show_broken'] = page_count
+    print page_count
     if a_qs:
         a_qs = a_qs.filter(is_broken=request.session['show_broken'])
         if a_city:
@@ -387,19 +399,23 @@ def surface_photo_list(request):
                 e_date = datetime.date(re_date)
                 a_qs = a_qs.filter(date__lte=e_date)
         photo_count = a_qs.count()
-        paginator = Paginator(a_qs, 20)  # Show 25 contacts per page
-        page = request.GET.get('page')
-        try:
-            address_list = paginator.page(page)
-        except PageNotAnInteger:
-            address_list = paginator.page(1)
-        except EmptyPage:
-            address_list = paginator.page(paginator.num_pages)
+        if page_count != 0:
+            paginator = Paginator(a_qs, 20)  # Show 25 contacts per page
+            page = request.GET.get('page')
+            try:
+                address_list = paginator.page(page)
+            except PageNotAnInteger:
+                address_list = paginator.page(1)
+            except EmptyPage:
+                address_list = paginator.page(paginator.num_pages)
+        else:
+            address_list = a_qs
     else:
         address_list = None
     context.update({
         'address_list': address_list,
         'city_list': city_qs,
-        'photo_count': photo_count
+        'photo_count': photo_count,
+        'page_count': page_count
     })
     return render(request, 'surface/surface_photo_list.html', context)

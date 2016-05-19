@@ -255,19 +255,13 @@ def get_photo_map(request):
     elif user.type == 2:
         qs = SurfacePhoto.objects.select_related().filter(porch__surface__city__moderator=user)
     elif user.type == 3:
-        print 'client'
         client = user.client
-        print client
         clientorder_list = [int(i.id) for i in client.clientorder_set.filter(is_closed=False)]
         qs_list = []
         for corder in client.clientorder_set.all():
-            print 'corder'
-            print corder
             s_qs = SurfacePhoto.objects.select_related().filter(porch__surface__clientordersurface__clientorder=corder).filter(date__gte=corder.date_start).filter(date__lte=corder.date_end)
             if s_qs:
                 qs_list.append(s_qs)
-        print 'qs_list'
-        print qs_list
         if qs_list:
             query_string_item = []
             for i in range(len(qs_list)):
