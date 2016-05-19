@@ -5,6 +5,7 @@ ymaps.ready(function () {
   var city = $('#id_city').val();
   var email = $('#id_email').val();
   var last_name = $('#id_last_name').val();
+  var map_zoom = 4;
   $.ajax({
     type: "POST",
     async: false,
@@ -24,10 +25,12 @@ ymaps.ready(function () {
   } else {
     center = [48.713339, 44.497116]
   }
-  console.log(center)
+  if (adjuster_list.length == 1) {
+    map_zoom = 9;
+  }
   var myMap = new ymaps.Map('YMapsID', {
     center: center,
-    zoom: 4,
+    zoom: map_zoom,
     behaviors: ['default', 'scrollZoom']
   }, {
     searchControlProvider: 'yandex#search'
