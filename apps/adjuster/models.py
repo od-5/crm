@@ -38,7 +38,7 @@ class SurfacePhoto(models.Model):
         verbose_name = u'Фотография'
         verbose_name_plural = u'Фотографии'
         app_label = 'adjuster'
-        ordering = ['-date',]
+        ordering = ['-id', ]
 
     def __unicode__(self):
         return u'%s %s' % (self.porch.surface, self.porch)
