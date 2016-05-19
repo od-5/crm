@@ -20,12 +20,11 @@ class AdjusterListView(ListView):
 
     def get_queryset(self):
         if self.request.user.type == 1:
-            qs = Adjuster.objects.all()
+            qs = Adjuster.objects.select_related().all()
         elif self.request.user.type == 2:
-            qs = Adjuster.objects.filter(city__moderator=self.request.user)
+            qs = Adjuster.objects.select_related().filter(city__moderator=self.request.user)
         elif self.request.user.type == 5:
-            manager = Manager.objects.get(user=self.request.user)
-            qs = Adjuster.objects.filter(city__moderator=manager.moderator)
+            qs = Adjuster.objects.select_related().filter(city__moderator=user.manager.moderator)
         else:
             qs = None
         if self.request.GET.get('email'):
@@ -38,13 +37,13 @@ class AdjusterListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(AdjusterListView, self).get_context_data()
-        if self.request.user.type == 1:
+        user = self.request.user
+        if user.type == 1:
             city_qs = City.objects.all()
-        elif self.request.user.type == 2:
-            city_qs = City.objects.filter(moderator=self.request.user)
-        elif self.request.user.type == 5:
-            manager = Manager.objects.get(user=self.request.user)
-            city_qs = City.objects.filter(moderator=manager.moderator)
+        elif user.type == 2:
+            city_qs = City.objects.filter(moderator=user)
+        elif user.type == 5:
+            city_qs = City.objects.filter(moderator=user.manager.moderator)
         else:
             city_qs = None
         context.update({

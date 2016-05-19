@@ -24,14 +24,13 @@ def adjustertask_list(request):
     initial_args = {}
     user = request.user
     if user.type == 1:
-        qs = AdjusterTask.objects.filter(is_closed=False)
+        qs = AdjusterTask.objects.select_related().filter(is_closed=False)
     elif user.type == 2:
-        qs = AdjusterTask.objects.filter(is_closed=False, adjuster__city__moderator=user)
+        qs = AdjusterTask.objects.select_related().filter(is_closed=False, adjuster__city__moderator=user)
     elif user.type == 4:
-        qs = AdjusterTask.objects.filter(is_closed=False, adjuster__user=user)
+        qs = AdjusterTask.objects.select_related().filter(is_closed=False, adjuster__user=user)
     elif user.type == 5:
-        manager = Manager.objects.get(user=request.user)
-        qs = AdjusterTask.objects.filter(is_closed=False, adjuster__city__moderator=manager.moderator)
+        qs = AdjusterTask.objects.select_related().filter(is_closed=False, adjuster__city__moderator=user.manager.moderator)
     else:
         qs = None
     if request.GET.get('city'):
