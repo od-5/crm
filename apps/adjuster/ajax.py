@@ -20,11 +20,11 @@ def adjuster_map(request):
     else:
         qs = None
     if request.POST.get('email'):
-        qs = qs.filter(user__email=request.GET.get('email'))
-    if request.GET.get('last_name'):
-        qs = qs.filter(user__last_name=request.GET.get('last_name'))
-    if request.GET.get('city') and int(request.GET.get('city')) != 0:
-        qs = qs.filter(city__id=int(request.GET.get('city')))
+        qs = qs.filter(user__email=request.POST.get('email'))
+    if request.POST.get('last_name'):
+        qs = qs.filter(user__last_name=request.POST.get('last_name'))
+    if request.POST.get('city') and int(request.POST.get('city')) != 0:
+        qs = qs.filter(city__id=int(request.POST.get('city')))
     for i in qs:
         if i.coord_x and i.coord_y:
             adjuster_list.append({
