@@ -281,6 +281,7 @@ def surface_photo_list(request):
         city_qs = City.objects.filter(moderator=manager.moderator)
         a_qs = SurfacePhoto.objects.filter(porch__surface__city__moderator=manager.moderator)
     elif user.type == 3:
+        request.session['show_broken'] = False
         client = get_object_or_None(Client, user=user)
         if client:
             clientorder_list = [int(i.id) for i in client.clientorder_set.filter(is_closed=False)]
