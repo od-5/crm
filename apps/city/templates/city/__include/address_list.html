@@ -55,8 +55,29 @@
         <div id="photoMap" data-url="{% url 'city:get_photo_map' %}" style="height: 500px;"></div>
       </div>
       <div class="row">
-        <div class="col-lg-12">
+        <div class="col-lg-7">
           <p class="lead">Итого количество фотографий: {{ photo_count|default:'0' }}</p>
+        </div>
+        <div class="col-lg-3 text-right" style="line-height: 30px;">
+          <label for="page_count">Показывать на странице</label>
+        </div>
+        <div class="col-lg-2">
+          <form action="" method="get">
+            {% csrf_token %}
+            <select class="form-control" id="js-page-count">
+              <option value="20" {% if page_count == 20 %}selected="selected"{% endif %}>20</option>
+              <option value="50" {% if page_count == 50 %}selected="selected"{% endif %}>50</option>
+              <option value="100" {% if page_count == 100 %}selected="selected"{% endif %}>100</option>
+              <option value="0" {% if page_count == 0 %}selected="selected"{% endif %}>все</option>
+            </select>
+            <input type="hidden" id="id_page_count" name="page_count" value="{{ page_count|default:'' }}">
+            <input type="hidden" name="a_city" value="{{ a_city|default:'' }}">
+            <input type="hidden" name="a_area" value="{{ a_area|default:'' }}">
+            <input type="hidden" name="a_street" value="{{ a_street|default:'' }}">
+            <input type="hidden" name="a_date_s" value="{{ a_date_s|default:'' }}">
+            <input type="hidden" name="a_date_e" value="{{ a_date_e|default:'' }}">
+          </form>
+
         </div>
       </div>
     {% if grid %}

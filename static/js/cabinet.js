@@ -1375,5 +1375,10 @@ $(function() {
       clientcontact_selector.find('option').remove();
       clientcontact_selector.parents('.form-group').addClass('hide');
     }
+  });
+  $('#js-page-count').change(function(){
+    console.log($(this).parents('form'));
+    $('#id_page_count').val($(this).val());
+    $(this).parents('form').submit();
   })
 });

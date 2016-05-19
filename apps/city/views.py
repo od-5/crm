@@ -148,17 +148,29 @@ class CityListView(ListView):
                     e_date = datetime.date(re_date)
                     a_qs = a_qs.filter(date__lte=e_date)
         photo_count = a_qs.count()
-        paginator = Paginator(a_qs, 20) # Show 25 contacts per page
-        page = self.request.GET.get('page')
-        try:
-            address_list = paginator.page(page)
-        except PageNotAnInteger:
-            # If page is not an integer, deliver first page.
-            address_list = paginator.page(1)
-        except EmptyPage:
-            # If page is out of range (e.g. 9999), deliver last page of results.
-            address_list = paginator.page(paginator.num_pages)
+        if self.request.GET.get('page_count'):
+            if self.request.GET.get('page_count') == '0':
+                page_count = 0
+            else:
+                page_count = int(self.request.GET.get('page_count'))
+        else:
+            page_count = 20
+        print page_count
+        if page_count != 0:
+            paginator = Paginator(a_qs, page_count)
+            page = self.request.GET.get('page')
+            try:
+                address_list = paginator.page(page)
+            except PageNotAnInteger:
+                # If page is not an integer, deliver first page.
+                address_list = paginator.page(1)
+            except EmptyPage:
+                # If page is out of range (e.g. 9999), deliver last page of results.
+                address_list = paginator.page(paginator.num_pages)
+        else:
+            address_list = a_qs
         context.update({
+            'page_count': page_count,
             'address_list': address_list,
             'photo_count': photo_count
         })
