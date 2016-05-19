@@ -400,7 +400,7 @@ def surface_photo_list(request):
                 a_qs = a_qs.filter(date__lte=e_date)
         photo_count = a_qs.count()
         if page_count != 0:
-            paginator = Paginator(a_qs, 20)  # Show 25 contacts per page
+            paginator = Paginator(a_qs, page_count)  # Show 25 contacts per page
             page = request.GET.get('page')
             try:
                 address_list = paginator.page(page)
