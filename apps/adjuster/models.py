@@ -93,9 +93,17 @@ class AdjusterTask(models.Model):
         Метод, возвращающий количество подъездов/стендов, входящих в задачу
         """
         porch_count = 0
-        if self.adjustertasksurface_set.all() > 0:
-            for i in self.adjustertasksurface_set.all():
-                porch_count += i.adjustertasksurfaceporch_set.count()
+        for i in self.adjustertasksurface_set.select_related().all():
+            porch_count += i.adjustertasksurfaceporch_set.count()
+        return porch_count
+
+    def get_closed_porch_count(self):
+        """
+        Метод, возвращающий количество выполненных подъездов/стендов, входящих в задачу
+        """
+        porch_count = 0
+        for i in self.adjustertasksurface_set.select_related().all():
+            porch_count += i.adjustertasksurfaceporch_set.filter(is_closed=True).count()
         return porch_count
 
     def get_actual_cost(self):
@@ -103,23 +111,17 @@ class AdjusterTask(models.Model):
         Метод, возвращающий цену за фактичечески выполненную на данный момент работу.
         Кол-во выполненных стендов * цена работы по подному стенду
         """
-        # porch_count = 0
-        # for asurface in self.adjustertasksurface_set.all():
-        #     porch_count += asurface.get_closed_porch_count()
-        # if self.type == 0 and self.adjuster.cost_mounting:
-        #     cost = self.adjuster.cost_mounting
-        # elif self.type == 1 and self.adjuster.cost_change:
-        #     cost = self.adjuster.cost_change
-        # elif self.type == 2 and self.adjuster.cost_repair:
-        #     cost = self.adjuster.cost_repair
-        # elif self.type == 3 and self.adjuster.cost_dismantling:
-        #     cost = self.adjuster.cost_dismantling
-        # else:
-        #     cost = 0
-        # return cost * porch_count
-        percent = self.get_process() / float(100)
-        total_cost = self.get_total_cost()
-        return total_cost * percent
+        if self.type == 0 and self.adjuster.cost_mounting:
+            cost = self.adjuster.cost_mounting
+        elif self.type == 1 and self.adjuster.cost_change:
+            cost = self.adjuster.cost_change
+        elif self.type == 2 and self.adjuster.cost_repair:
+            cost = self.adjuster.cost_repair
+        elif self.type == 3 and self.adjuster.cost_dismantling:
+            cost = self.adjuster.cost_dismantling
+        else:
+            cost = 0
+        return cost * self.get_closed_porch_count()
 
     def get_total_cost(self):
         """
