@@ -380,7 +380,7 @@ def surface_photo_list(request):
             page_count = int(request.session['show_broken'])
         except:
             page_count = 20
-    request.session['show_broken'] = page_count
+    request.session['page_count'] = page_count
     print page_count
     if a_qs:
         a_qs = a_qs.filter(is_broken=request.session['show_broken'])
