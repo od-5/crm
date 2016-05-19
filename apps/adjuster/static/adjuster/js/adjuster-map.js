@@ -34,26 +34,13 @@ ymaps.ready(function () {
     behaviors: ['default', 'scrollZoom']
   }, {
     searchControlProvider: 'yandex#search'
-  }),
-    getPointData = function (index) {
-    return {
-      balloonContent: adjuster_list[index]['name'],
-      hintContent: adjuster_list[index]['name']
-    };
-  },
-    getPointOptions = function () {
-    return {
-      preset: 'islands#violetIcon'
-    };
-  },
-  geoObjects = [];
+  });
   for(var i = 0, len = adjuster_list.length; i < len; i++) {
-    geoObjects[i] = new ymaps.Placemark([adjuster_list[i]['coord_y'], adjuster_list[i]['coord_x']], getPointData(i), getPointOptions());
+    myMap.geoObjects.add(
+      new ymaps.Placemark([adjuster_list[i]['coord_y'], adjuster_list[i]['coord_x']], {
+        balloonContent: adjuster_list[i]['name'],
+        hintContent: adjuster_list[i]['name']
+      })
+    );
   }
-  myMap.geoObjects.add(geoObjects);
-
-
-  //myMap.setBounds(clusterer.getBounds(), {
-  //    checkZoomRange: true
-  //});
 });
