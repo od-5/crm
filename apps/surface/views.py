@@ -378,7 +378,7 @@ def surface_photo_list(request):
             page_count = int(request.GET.get('page_count'))
     else:
         try:
-            page_count = int(request.session['show_broken'])
+            page_count = int(request.session['page_count'])
         except:
             page_count = 20
     request.session['page_count'] = page_count
