@@ -29,4 +29,6 @@ urlpatterns = patterns(
 
 
     url(r'^export/(?P<pk>\d+)/$', 'client_excel_export', name='excel_export'),
+
+    url(r'archive/$', 'get_files', name='download-archive'),
 )

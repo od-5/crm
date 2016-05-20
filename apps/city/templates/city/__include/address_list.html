@@ -9,14 +9,18 @@
           {% if show_broken %}
           <a href="{{ request.path }}?broken=0" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Показать целые</a>
           {% else %}
-          <a href="{{ request.path }}?broken=1" class="btn btn-warning"><span class="glyphicon glyphicon-wrench"></span> Показать повреждённые</a>
+            <a href="{{ request.path }}?broken=1" class="btn btn-warning"><span class="glyphicon glyphicon-wrench"></span> Показать повреждённые</a>
           {% endif %}
+        {% else %}
+          <a href="{% url 'client:download-archive' %}?a_city={{ a_city|default:'' }}&a_area={{ a_area|default:'' }}&a_street={{ a_street|default:'' }}&a_date_s={{ a_date_s|default:'' }}&a_date_e={{ a_date_e|default:'' }}" class="btn btn-success">
+            <span class="glyphicon glyphicon-download-alt"></span>  Скачать архив
+          </a>
         {% endif %}
           {% if grid %}
-            <a href="{{ request.path }}?grid=0" class="btn btn-info" title="Показать таблицей"><span class="glyphicon glyphicon-th-list"></span> Показать таблицей</a>
-          {% else %}
-            <a href="{{ request.path }}?grid=1" class="btn btn-info" title="Показать плиткой"><span class="glyphicon glyphicon-th"></span> Показать плиткой</a>
-          {% endif %}
+          <a href="{{ request.path }}?grid=0" class="btn btn-info" title="Показать таблицей"><span class="glyphicon glyphicon-th-list"></span> Показать таблицей</a>
+        {% else %}
+          <a href="{{ request.path }}?grid=1" class="btn btn-info" title="Показать плиткой"><span class="glyphicon glyphicon-th"></span> Показать плиткой</a>
+        {% endif %}
           <button id="js-photo-map-button" class="btn btn-info"><span class="glyphicon glyphicon-globe"></span> Показать на карте</button>
         </div>
         <div class="col-lg-12">

@@ -1,17 +1,18 @@
 # coding=utf-8
 import datetime
+import os
+import zipfile
+import StringIO
+import xlwt
 from django.conf import settings
 from django.core.mail import send_mail
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-
-import xlwt
 from datetime import date
-from annoying.decorators import ajax_request
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
-from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView
+from apps.adjuster.models import SurfacePhoto
 from apps.city.models import City, Surface
 from apps.client.forms import ClientUpdateForm, ClientAddForm, ClientMaketForm, ClientOrderForm, ClientJournalForm
 from apps.incoming.models import IncomingClient
@@ -37,7 +38,8 @@ def client_add(request):
             client.save()
             try:
                 subject = u'Создана учётная запись nadomofone.ru'
-                message = u'Для вас создана учётная запись на сайте http://nadomofone.ru\n email: %s, \n пароль: %s' % (request.POST.get('email'), request.POST.get('password1'))
+                message = u'Для вас создана учётная запись на сайте http://nadomofone.ru\n email: %s, \n пароль: %s' % (
+                    request.POST.get('email'), request.POST.get('password1'))
                 email = request.POST.get('email')
                 send_mail(
                     subject,
@@ -416,7 +418,8 @@ def client_journal_export(request, pk):
         work_basis = moderator.work_basis
     else:
         work_basis = u'Не указано'
-    first_msg = u"%s, в лице %s %s, действующего на основании %s,\n именуемое в дальнейшем Рекламораспространитель." % (company_name, company_leader_function, company_leader, work_basis)
+    first_msg = u"%s, в лице %s %s, действующего на основании %s,\n именуемое в дальнейшем Рекламораспространитель." % (
+        company_name, company_leader_function, company_leader, work_basis)
     second_msg = u', именуемое в дальнейшем Рекламодатель, пришли в соглашение о нижеследующем:\nРекламораспространитель обязуется разместить рекламные публикации Рекламодателя на следующих условиях:'
 
     font0 = xlwt.Font()
@@ -523,7 +526,7 @@ def client_journal_export(request, pk):
         area_list = None
         # for c_surface in order.clientordersurface_set.all():
         area_list = [c_surface.surface.street.area.name for c_surface in order.clientordersurface_set.all()]
-        count = ((cost*(1+add_cost*0.01))*(1-discount*0.01)) * order.stand_count()
+        count = ((cost * (1 + add_cost * 0.01)) * (1 - discount * 0.01)) * order.stand_count()
         ws.write(i, 0, u'%s - %s' % (order.date_start, order.date_end), style4)
         ws.write(i, 1, '\n'.join(set(area_list)), style4)
         ws.write(i, 2, u'А5', style4)
@@ -552,12 +555,12 @@ def client_journal_export(request, pk):
         #     total_count += count
     ws.write(i, 0, u'Итого', style2)
     ws.write(i, 7, u"%s, руб." % total_count, style2)
-    ws.write_merge(i+2, i+2, 0, 1, u'Ответственный менеджер', style7)
-    ws.write_merge(i+2, i+2, 3, 4, u'', style5)
-    ws.write_merge(i+2, i+2, 6, 8, manager, style5)
-    ws.write_merge(i+5, i+5, 0, 1, u'Руководитель отдела', style7)
-    ws.write_merge(i+5, i+5, 3, 4, u'', style5)
-    ws.write_merge(i+5, i+5, 6, 8, u'', style5)
+    ws.write_merge(i + 2, i + 2, 0, 1, u'Ответственный менеджер', style7)
+    ws.write_merge(i + 2, i + 2, 3, 4, u'', style5)
+    ws.write_merge(i + 2, i + 2, 6, 8, manager, style5)
+    ws.write_merge(i + 5, i + 5, 0, 1, u'Руководитель отдела', style7)
+    ws.write_merge(i + 5, i + 5, 3, 4, u'', style5)
+    ws.write_merge(i + 5, i + 5, 6, 8, u'', style5)
 
     ws.col(0).width = 6000
     ws.col(1).width = 6000
@@ -568,9 +571,9 @@ def client_journal_export(request, pk):
     ws.col(6).width = 4000
     ws.col(7).width = 4000
     ws.col(8).width = 4000
-    for count in range(i+8):
+    for count in range(i + 8):
         ws.row(count).height = 300
-    for count in range(12, i+1):
+    for count in range(12, i + 1):
         ws.row(count).height = 1000
     ws.row(4).height = 400
     ws.row(5).height = 400
@@ -673,3 +676,56 @@ def client_excel_export(request, pk):
     response['Content-Disposition'] = 'attachment; filename=%s' % fname
     wb.save(response)
     return response
+
+
+def get_files(request):
+    client = request.user.client
+    qs_list = []
+    if client:
+        for corder in client.clientorder_set.all():
+            qs = SurfacePhoto.objects.select_related().filter(
+                is_broken=False,
+                porch__surface__clientordersurface__clientorder=corder).filter(
+                date__gte=corder.date_start).filter(date__lte=corder.date_end)
+            if qs:
+                qs_list.append(qs)
+    if qs_list:
+        query_string_item = []
+        for i in range(len(qs_list)):
+            query_string_item.append('qs_list[%d]' % i)
+        query_string = ' | '.join(query_string_item)
+        a_qs = eval(query_string)
+    else:
+        a_qs = None
+    city = request.GET.get('a_city')
+    area = request.GET.get('a_area')
+    street = request.GET.get('a_street')
+    date_s = request.GET.get('a_date_s')
+    date_e = request.GET.get('a_date_e')
+    if a_qs:
+        if city:
+            a_qs = a_qs.filter(porch__surface__city=int(city))
+            if area:
+                a_qs = a_qs.filter(porch__surface__street__area=int(area))
+                if street:
+                    a_qs = a_qs.filter(porch__surface__street=int(street))
+        if date_s:
+            a_qs = a_qs.filter(date__gte=datetime.datetime.strptime(date_s, '%d.%m.%Y'))
+            if date_e:
+                a_qs = a_qs.filter(date__lte=datetime.datetime.strptime(date_e, '%d.%m.%Y'))
+
+    filenames = []
+    for photo in a_qs:
+        filenames.append(photo.image.path)
+    zip_subdir = "photoarchive"
+    zip_filename = "%s.zip" % zip_subdir
+    s = StringIO.StringIO()
+    zf = zipfile.ZipFile(s, "w")
+    for fpath in filenames:
+        fdir, fname = os.path.split(fpath)
+        zip_path = os.path.join(zip_subdir, fname)
+        zf.write(fpath, zip_path)
+    zf.close()
+    resp = HttpResponse(s.getvalue(), content_type="application/x-zip-compressed")
+    resp['Content-Disposition'] = 'attachment; filename=%s' % zip_filename
+    return resp

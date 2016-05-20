@@ -282,17 +282,13 @@ def surface_photo_list(request):
         a_qs = SurfacePhoto.objects.filter(porch__surface__city__moderator=manager.moderator)
     elif user.type == 3:
         request.session['show_broken'] = False
-        client = get_object_or_None(Client, user=user)
-        if client:
-            clientorder_list = [int(i.id) for i in client.clientorder_set.filter(is_closed=False)]
-        else:
-            clientorder_list = []
+        # client = get_object_or_None(Client, user=user)
+        client = user.client
         qs_list = []
-        if client:
-            for corder in client.clientorder_set.all():
-                qs = SurfacePhoto.objects.select_related().filter(porch__surface__clientordersurface__clientorder=corder).filter(date__gte=corder.date_start).filter(date__lte=corder.date_end)
-                if qs:
-                    qs_list.append(qs)
+        for corder in client.clientorder_set.all():
+            qs = SurfacePhoto.objects.select_related().filter(porch__surface__clientordersurface__clientorder=corder).filter(date__gte=corder.date_start).filter(date__lte=corder.date_end)
+            if qs:
+                qs_list.append(qs)
         if qs_list:
             query_string_item = []
             for i in range(len(qs_list)):
@@ -301,7 +297,6 @@ def surface_photo_list(request):
             a_qs = eval(query_string)
         else:
             a_qs = None
-        # a_qs = SurfacePhoto.objects.filter(porch__surface__clientordersurface__clientorder__in=clientorder_list).distinct()
         city_qs = City.objects.filter(pk=client.city.id)
 
     else:
