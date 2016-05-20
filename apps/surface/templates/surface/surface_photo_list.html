@@ -6,6 +6,12 @@
       {% include 'city/__include/address_list.html' %}
     </div>
   </div>
+  <div class="loader">
+    <div class="loader-content">
+      <p class="lead">Подождите, идёт архивированиие данных</p>
+      <img src="{{ STATIC_URL }}img/ajax-loader.gif" alt="">
+    </div>
+  </div>
 {% endblock %}
 {% block bottom_js %}
   <script src="http://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>

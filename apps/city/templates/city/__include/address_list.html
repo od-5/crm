@@ -12,9 +12,12 @@
             <a href="{{ request.path }}?broken=1" class="btn btn-warning"><span class="glyphicon glyphicon-wrench"></span> Показать повреждённые</a>
           {% endif %}
         {% else %}
-          <a href="{% url 'client:download-archive' %}?a_city={{ a_city|default:'' }}&a_area={{ a_area|default:'' }}&a_street={{ a_street|default:'' }}&a_date_s={{ a_date_s|default:'' }}&a_date_e={{ a_date_e|default:'' }}" class="btn btn-success">
+          <a href="{% url 'client:download-archive' %}?a_city={{ a_city|default:'' }}&a_area={{ a_area|default:'' }}&a_street={{ a_street|default:'' }}&a_date_s={{ a_date_s|default:'' }}&a_date_e={{ a_date_e|default:'' }}" id="js-download-archive" class="btn btn-success" target="_blank" onclick="return location.href = '{% url 'surface:photo-list' %}'">
             <span class="glyphicon glyphicon-download-alt"></span>  Скачать архив
           </a>
+{#          <button data-url="{% url 'client:download-archive' %}" id="js-download-archive" class="btn btn-success">#}
+{#            <span class="glyphicon glyphicon-download-alt"></span>  Скачать архив#}
+{#          </button>#}
         {% endif %}
           {% if grid %}
           <a href="{{ request.path }}?grid=0" class="btn btn-info" title="Показать таблицей"><span class="glyphicon glyphicon-th-list"></span> Показать таблицей</a>

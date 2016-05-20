@@ -1380,5 +1380,40 @@ $(function() {
     console.log($(this).parents('form'));
     $('#id_page_count').val($(this).val());
     $(this).parents('form').submit();
-  })
+  });
+  //$('#js-download-archive').click(function(){
+  //  $('.loader').show();
+  //  var url = $(this).data('url');
+  //  var city = $('#id_a_city').val();
+  //  var area = $('#id_a_area').val();
+  //  var street = $('#id_a_street').val();
+  //  var date_s = $('#id_a_date_s').val();
+  //  var date_e = $('#id_a_date_e').val();
+  //  console.log(url);
+  //  console.log(city);
+  //  console.log(area);
+  //  console.log(street);
+  //  console.log(date_s);
+  //  console.log(date_e);
+  //  $.get(
+  //    url,
+  //    {
+  //      a_city: city,
+  //      a_area: area,
+  //      a_street: street,
+  //      a_date_s: date_s,
+  //      a_date_e: date_e
+  //    }
+  //  ).done(function (data) {
+  //    $('.loader').hide();
+  //    console.log(data);
+  //    location.href = data;
+  //    alert('has data');
+  //  }).fail(function(){
+  //    $('.loader').hide();
+  //    alert('fail!');
+  //  });
+  //});
+
+
 });
