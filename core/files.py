@@ -1,7 +1,7 @@
 # coding=utf-8
 from os import path as op
 import uuid
-
+from pytils.translit import slugify
 
 __author__ = 'aser'
 
@@ -44,3 +44,24 @@ def upload_to(instance, filename, prefix=None):
         if prefix:
             basedir = op.join(basedir, prefix)
         return op.join(basedir, filename[:2], filename[2:4], filename)
+
+
+def surfacephoto_upload(instance, filename, prefix=None):
+    """
+    Auto generate name for File and Image fields.
+    :param instance: Instance of Model
+    :param filename: Name of uploaded file
+    :param prefix: Add to path
+    :return:
+    """
+    ext = op.splitext(filename)[-1]
+
+    # if not op.exists(root_dir):
+    #     makedirs(root_dir)
+    # print root_dir
+    name = slugify(instance.__unicode__())
+    filename = "%s%s" % (name, ext)
+    basedir = op.join(instance._meta.model_name, instance.porch.surface.city.slug)
+    if prefix:
+        basedir = op.join(basedir, prefix)
+    return op.join(basedir, filename)

@@ -1,10 +1,12 @@
 # coding=utf-8
+from PIL import Image
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.conf import settings
 from imagekit.models import ImageSpecField
 from pilkit.processors import SmartResize
-from core.files import UploadTo, upload_to
+from pytils.translit import slugify
+from core.files import UploadTo, upload_to, surfacephoto_upload
 from apps.city.models import City, Surface, Porch
 from core.models import User
 
@@ -47,16 +49,25 @@ class SurfacePhoto(models.Model):
         return self.porch.surface
 
     def save(self, *args, **kwargs):
+        # print slugify(self.__unicode__())
         if self.porch.damaged():
             self.is_broken = True
         else:
             self.is_broken = False
         super(SurfacePhoto, self).save()
+        if self.image:
+            image = Image.open(self.image)
+            (width, height) = image.size
+            size = (800, 800)
+            "Max width and height 200"
+            if width > 800:
+                image.thumbnail(size, Image.ANTIALIAS)
+                image.save(self.image.path, "PNG")
 
     porch = models.ForeignKey(to=Porch, verbose_name=u'Подъезд')
     adjuster = models.ForeignKey(to=Adjuster, blank=True, null=True, verbose_name=u'Монтажник')
     date = models.DateField(verbose_name=u'Дата фотографии')
-    image = models.ImageField(verbose_name=u'Изображение', upload_to=upload_to)
+    image = models.ImageField(verbose_name=u'Изображение', upload_to=surfacephoto_upload)
     image_resize = ImageSpecField(
         [SmartResize(*settings.SURFACE_THUMB_SIZE)], source='image', format='JPEG', options={'quality': 94}
     )
