@@ -1395,16 +1395,17 @@ $(function() {
   //  console.log(street);
   //  console.log(date_s);
   //  console.log(date_e);
-  //  $.get(
-  //    url,
-  //    {
+  //  $.ajax({
+  //    url: url,
+  //    type: GET,
+  //    data: {
   //      a_city: city,
   //      a_area: area,
   //      a_street: street,
   //      a_date_s: date_s,
   //      a_date_e: date_e
   //    }
-  //  ).done(function (data) {
+  //  }).done(function (data) {
   //    $('.loader').hide();
   //    console.log(data);
   //    location.href = data;

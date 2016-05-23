@@ -21,6 +21,9 @@
             <span class="glyphicon glyphicon-plus-sign"></span> Добавить новую поверхность
           </a>
         {% endif %}
+          <a href="{% url 'surface:export' %}?city={{ city_id|default:'' }}&area={{ area_id|default:'' }}&street={{ street_id|default:'' }}&management={{ management_id|default:'' }}&releade_date={{ releade_date|default:'' }}" class="btn btn-warning add-bottom">
+            <span class="glyphicon glyphicon-download-alt"></span> Скачать в EXCEL
+          </a>
           <div class="panel panel-success">
             <div class="panel-heading js-show-map">Посмотреть поверхности на карте <span class="caret"></span></div>
             <div class="panel-body js-map" data-url="{% url 'surface:surface-map' %}" data-city="{{ city_list.first }}" data-city-count="{{ city_list.count }}" data-coord-x="{{ center.coord_x }}" data-coord-y="{{ center.coord_y }}">

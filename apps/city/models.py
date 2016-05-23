@@ -153,6 +153,9 @@ class Surface(models.Model):
     def porch_count(self):
         return self.porch_set.all().count()
 
+    def porch_list(self):
+        return ', '.join([str(porch.number) for porch in self.porch_set.all()])
+
     def all_porch_damaged(self):
         count = self.porch_count()
         for porch in self.porch_set.all():

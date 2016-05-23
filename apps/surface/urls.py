@@ -21,4 +21,6 @@ urlpatterns = patterns(
     url(r'^photo/delete/(?P<pk>\d+)/$', SurfacePhotoDeleteView.as_view(), name='photo-delete'),
 
     url(r'^surface-map/$', surface_map, name='surface-map'),
+    url(r'^export/$', 'surface_export', name='export'),
+
 )

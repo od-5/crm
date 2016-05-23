@@ -1,13 +1,12 @@
 # coding=utf-8
+import xlwt
 from datetime import datetime
-from annoying.functions import get_object_or_None
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from apps.adjuster.models import SurfacePhoto
-from apps.client.models import Client
 from apps.manager.models import Manager
 from .forms import SurfaceAddForm, PorchAddForm, SurfacePhotoForm
 from apps.city.models import City, Area, Surface, Street, Porch, ManagementCompany
@@ -25,14 +24,13 @@ class SurfaceListView(ListView):
         Если пользователь администратор - ему доступны всё города.
         Если пользователь модератор - ему доступны только те города, которыми он управляет.
         """
-        user_id = self.request.user.id
-        if self.request.user.type == 1:
+        user = self.request.user
+        if user.type == 1:
             qs = Surface.objects.select_related().all()
-        elif self.request.user.type == 2:
-            qs = Surface.objects.select_related().filter(city__moderator=user_id)
-        elif self.request.user.type == 5:
-            manager = Manager.objects.get(user=user_id)
-            qs = Surface.objects.select_related().filter(city__moderator=manager.moderator)
+        elif user.type == 2:
+            qs = Surface.objects.select_related().filter(city__moderator=user)
+        elif user.type == 5:
+            qs = Surface.objects.select_related().filter(city__moderator=user.manager.moderator)
         else:
             qs = None
         # фильтрация поверхностей по городам, районам, улицам
@@ -377,7 +375,6 @@ def surface_photo_list(request):
         except:
             page_count = 20
     request.session['page_count'] = page_count
-    print page_count
     if a_qs:
         a_qs = a_qs.filter(is_broken=request.session['show_broken'])
         if a_city:
@@ -415,3 +412,111 @@ def surface_photo_list(request):
         'page_count': page_count
     })
     return render(request, 'surface/surface_photo_list.html', context)
+
+
+def surface_export(request):
+    user = request.user
+    if user.type == 1:
+        qs = Surface.objects.select_related().all()
+    elif user.type == 2:
+        qs = Surface.objects.select_related().filter(city__moderator=user)
+    elif user.type == 5:
+        qs = Surface.objects.select_related().filter(city__moderator=user.manager.moderator)
+    else:
+        qs = None
+    # фильтрация поверхностей по городам, районам, улицам
+    management = request.GET.get('management')
+    city = request.GET.get('city')
+    area = request.GET.get('area')
+    street = request.GET.get('street')
+    release_date = request.GET.get('release_date')
+    free = request.GET.get('free')
+    if management:
+        if int(management) == 0:
+            qs = qs
+        elif int(management) == -1:
+            qs = qs.filter(management__isnull=True)
+        else:
+            qs = qs.filter(management=int(management))
+    if city and int(city) != 0:
+        qs = qs.filter(city=int(city))
+    if area and int(area) != 0:
+        qs = qs.filter(street__area=int(area))
+    if street and int(street) != 0:
+        qs = qs.filter(street=int(street))
+    if release_date:
+        qs = qs.filter(release_date__lte=datetime.strptime(release_date, '%d.%m.%Y'))
+    if free:
+        if int(free) == 1:
+            qs = qs.filter(free=True)
+        elif int(free) == 2:
+            qs = qs.filter(free=False)
+        else:
+            qs = qs
+    # выгрузка в excel
+    font0 = xlwt.Font()
+    font0.name = 'Times New Roman'
+    font0.height = 240
+
+    alignment_center = xlwt.Alignment()
+    alignment_center.horz = xlwt.Alignment.HORZ_CENTER
+    alignment_center.vert = xlwt.Alignment.VERT_TOP
+
+    alignment_left = xlwt.Alignment()
+    alignment_left.horz = xlwt.Alignment.HORZ_LEFT
+    alignment_left.vert = xlwt.Alignment.VERT_TOP
+
+    borders = xlwt.Borders()
+    borders.left = xlwt.Borders.THIN
+    borders.right = xlwt.Borders.THIN
+    borders.top = xlwt.Borders.THIN
+    borders.bottom = xlwt.Borders.THIN
+
+    style0 = xlwt.XFStyle()
+    style0.font = font0
+    style0.alignment = alignment_center
+
+    style1 = xlwt.XFStyle()
+    style1.font = font0
+
+    style2 = xlwt.XFStyle()
+    style2.font = font0
+    style2.borders = borders
+    style2.alignment = alignment_left
+
+    wb = xlwt.Workbook()
+    ws = wb.add_sheet(u'Список адресов')
+    ws.write_merge(0, 0, 0, 5, u'Список доступных адресов', style0)
+    ws.write(2, 0, u'Город', style2)
+    ws.write(2, 1, u'Район', style2)
+    ws.write(2, 2, u'Улица', style2)
+    ws.write(2, 3, u'Дом', style2)
+    ws.write(2, 4, u'Кол-во подъездов', style2)
+    ws.write(2, 5, u'Номера подъездов', style2)
+    i = 3
+    stands_count = 0
+    for surface in qs:
+        ws.write(i, 0, surface.city.name, style2)
+        ws.write(i, 1, surface.street.area.name, style2)
+        ws.write(i, 2, surface.street.name, style2)
+        ws.write(i, 3, surface.house_number, style2)
+        ws.write(i, 4, surface.porch_count(), style2)
+        ws.write(i, 5, surface.porch_list(), style2)
+        i += 1
+        if surface.porch_count():
+            stands_count += surface.porch_count()
+    ws.write(i+1, 0, u'Итого стендов: %s' % stands_count,  style1)
+    ws.col(0).width = 8000
+    ws.col(1).width = 8000
+    ws.col(2).width = 10000
+    ws.col(3).width = 5000
+    ws.col(4).width = 5000
+    ws.col(5).width = 5000
+    for count in range(i):
+        ws.row(count).height = 300
+
+    fname = 'address_list.xls'
+    response = HttpResponse(content_type="application/ms-excel")
+    response['Content-Disposition'] = 'attachment; filename=%s' % fname
+    wb.save(response)
+    return response

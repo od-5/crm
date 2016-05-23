@@ -159,7 +159,6 @@ class CityListView(ListView):
             except:
                 page_count = 20
         self.request.session['show_broken'] = page_count
-        print page_count
         if page_count != 0:
             paginator = Paginator(a_qs, page_count)
             page = self.request.GET.get('page')
