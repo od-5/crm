@@ -1,6 +1,7 @@
 # coding=utf-8
 from django.conf.urls import patterns, url
 from django.contrib.admin.views.decorators import staff_member_required
+from apps.surface.data_import import address_list_import
 from .views import SurfaceListView, SurfaceCreateView, SurfaceUpdateView, SurfacePhotoDeleteView
 from .ajax import surface_map
 
@@ -22,5 +23,6 @@ urlpatterns = patterns(
 
     url(r'^surface-map/$', surface_map, name='surface-map'),
     url(r'^export/$', 'surface_export', name='export'),
+    url(r'^import/$', address_list_import, name='import'),
 
 )

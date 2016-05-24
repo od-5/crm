@@ -16,14 +16,23 @@
             <p><strong>Количество адресов: {{ surface_count|default:'0' }}</strong></p>
             <p><strong>Количество подъездов: {{ porch_count|default:'0' }}</strong></p>
           </div>
-        {% if user.type == 1 or user.type == 2 or user.is_leader_manager %}
-          <a href="{% url 'surface:add' %}" class="btn btn-success add-bottom">
-            <span class="glyphicon glyphicon-plus-sign"></span> Добавить новую поверхность
-          </a>
-        {% endif %}
-          <a href="{% url 'surface:export' %}?city={{ city_id|default:'' }}&area={{ area_id|default:'' }}&street={{ street_id|default:'' }}&management={{ management_id|default:'' }}&releade_date={{ releade_date|default:'' }}" class="btn btn-warning add-bottom">
-            <span class="glyphicon glyphicon-download-alt"></span> Скачать в EXCEL
-          </a>
+          <div class="col-lg-6">
+          {% if user.type == 1 or user.type == 2 or user.is_leader_manager %}
+            <a href="{% url 'surface:add' %}" class="btn btn-success add-bottom">
+              <span class="glyphicon glyphicon-plus-sign"></span> Добавить новую поверхность
+            </a>
+          {% endif %}
+            <a href="{% url 'surface:export' %}?city={{ city_id|default:'' }}&area={{ area_id|default:'' }}&street={{ street_id|default:'' }}&management={{ management_id|default:'' }}&releade_date={{ releade_date|default:'' }}" class="btn btn-warning add-bottom">
+              <span class="glyphicon glyphicon-download-alt"></span> Скачать в EXCEL
+            </a>
+          </div>
+          <div class="col-lg-6 text-right">
+            <form action="{% url 'surface:import' %}" method="POST" enctype="multipart/form-data" class="form-inline" role="form">{% csrf_token %}
+              {{ import_form.file }}
+              <input type="submit" value="Загрузить" class="js-show-loader btn btn-info form-control">
+            </form>
+          </div>
+          <div class="clearfix"></div>
           <div class="panel panel-success">
             <div class="panel-heading js-show-map">Посмотреть поверхности на карте <span class="caret"></span></div>
             <div class="panel-body js-map" data-url="{% url 'surface:surface-map' %}" data-city="{{ city_list.first }}" data-city-count="{{ city_list.count }}" data-coord-x="{{ center.coord_x }}" data-coord-y="{{ center.coord_y }}">
@@ -140,6 +149,13 @@
         {% include '__includes/pagination.html' %}
         </div>
       </div>
+    </div>
+  </div>
+  <div class="loader">
+    <div class="loader-content">
+      <p class="lead">Загрузка данных</p>
+      <p class="small">загрузка может занимать достаточно длительное время в зависимости от количества адресов</p>
+      <img src="{{ STATIC_URL }}img/ajax-loader.gif" alt="">
     </div>
   </div>
 {% include '__modal/js_ajax_remove_form.html' %}

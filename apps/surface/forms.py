@@ -7,6 +7,10 @@ from apps.manager.models import Manager
 __author__ = 'alexy'
 
 
+class SurfaceImportForm(forms.Form):
+    file = forms.FileField(label=u'Выберите файл', widget=forms.FileInput(attrs={'class': 'btn btn-default form-control'}))
+
+
 class SurfaceAddForm(forms.ModelForm):
     class Meta:
         model = Surface

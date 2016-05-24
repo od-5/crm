@@ -8,7 +8,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from apps.adjuster.models import SurfacePhoto
 from apps.manager.models import Manager
-from .forms import SurfaceAddForm, PorchAddForm, SurfacePhotoForm
+from .forms import SurfaceAddForm, PorchAddForm, SurfacePhotoForm, SurfaceImportForm
 from apps.city.models import City, Area, Surface, Street, Porch, ManagementCompany
 
 __author__ = 'alexy'
@@ -68,6 +68,7 @@ class SurfaceListView(ListView):
         for surface in surface_qs:
             porch_count += surface.porch_count()
         context.update({
+            'import_form': SurfaceImportForm(),
             'porch_count': porch_count,
             'surface_count': surface_count,
             'center': surface_qs.first()

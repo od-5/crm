@@ -6261,7 +6261,7 @@ a.lead {
 }
 .loader-content {
   position: fixed;
-  top: 40%;
+  top: 30%;
   left: 50%;
   margin-left: -250px;
   padding: 40px;

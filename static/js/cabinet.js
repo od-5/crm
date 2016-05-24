@@ -1381,8 +1381,9 @@ $(function() {
     $('#id_page_count').val($(this).val());
     $(this).parents('form').submit();
   });
-  //$('#js-download-archive').click(function(){
-  //  $('.loader').show();
+  $('.js-show-loader').click(function() {
+    $('.loader').show();
+  });
   //  var url = $(this).data('url');
   //  var city = $('#id_a_city').val();
   //  var area = $('#id_a_area').val();
