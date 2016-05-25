@@ -21,8 +21,9 @@ class Command(BaseCommand):
             if not op.exists(root_dir):
                 makedirs(root_dir)
             ext = op.splitext(i.image.path)[-1]
+            if
             name = slugify(i.__unicode__())
-            filename = "id%s_%s%s" % (i.id, name, ext)
+            filename = "id%s_%s%s" % (i.id, name, ext or '.jpg')
             short_path = op.join(subdir, filename)
             full_path = op.join(root_dir, filename)
             try:
