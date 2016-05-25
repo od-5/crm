@@ -60,7 +60,7 @@ def surfacephoto_upload(instance, filename, prefix=None):
     #     makedirs(root_dir)
     # print root_dir
     name = slugify(instance.__unicode__())
-    filename = "%s%s" % (name, ext)
+    filename = "%s%s" % (name, ext or '.jpg')
     basedir = op.join(instance._meta.model_name, instance.porch.surface.city.slug)
     if prefix:
         basedir = op.join(basedir, prefix)
