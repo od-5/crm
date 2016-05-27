@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import ListView
-from core.forms import ModeratorAddForm, ModeratorUpdateForm
+from .forms import ModeratorAddForm, ModeratorUpdateForm
 from core.models import User
 from .models import ModeratorInfo
 from .forms import ModeratorInfoForm

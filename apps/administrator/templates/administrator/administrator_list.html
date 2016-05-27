@@ -36,7 +36,7 @@
             <tbody class="js-list">
             {% for object in object_list %}
               <tr data-id="{{ object.id }}" data-name="{{ object.get_full_name }}" data-model="User" id="id_User_{{ object.id }}">
-                <td><a href="{% url 'administrator:change' object.pk %}" class="js-administrator-email"> {{ object.email|default:'' }}</a></td>
+                <td><a href="{% url 'administrator:update' object.pk %}" class="js-administrator-email"> {{ object.email|default:'' }}</a></td>
                 <td>{{ object.last_name|default:'Не указано' }}</td>
                 <td>{{ object.first_name|default:'Не указано' }}</td>
                 <td>{{ object.patronymic|default:'Не указано' }}</td>

@@ -58,7 +58,7 @@ def administrator_add(request):
             user.is_staff = True
             user.is_active = True
             user.save()
-            return HttpResponseRedirect(reverse('administrator:change', args=(user.id,)))
+            return HttpResponseRedirect(reverse('administrator:update', args=(user.id,)))
         else:
             context.update({
                 'error': u'Проверьте правильность ввода полей'
@@ -71,7 +71,7 @@ def administrator_add(request):
     return render(request, 'administrator/administrator_add.html', context)
 
 
-def administrator_change(request, pk):
+def administrator_update(request, pk):
     context = {}
     user = User.objects.get(pk=int(pk))
     success_msg = u''
@@ -99,4 +99,4 @@ def administrator_change(request, pk):
         'form': form,
         'object': user
     })
-    return render(request, 'administrator/administrator_change.html', context)
+    return render(request, 'administrator/administrator_update.html', context)

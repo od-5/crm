@@ -15,7 +15,7 @@ if socket.gethostname() == 'r420':
              'PORT': '',
          }
     }
-elif socket.gethostname() == 'lanius':
+else:
     DATABASES = {
         'default': {
              'ENGINE': 'django.db.backends.mysql',
@@ -23,18 +23,6 @@ elif socket.gethostname() == 'lanius':
              'USER': 'enjoyafrru_crm',
              'PASSWORD': 'alena2010',
              'HOST': 'localhost',
-             'PORT': '',
-         }
-    }
-
-else:
-    DATABASES = {
-         'default': {
-             'ENGINE': 'django.db.backends.mysql',
-             'NAME': 'rylcevalex$crm',
-             'USER': 'rylcevalex',
-             'PASSWORD': '1111',
-             'HOST': 'rylcevalex.mysql.pythonanywhere-services.com',
              'PORT': '',
          }
     }
