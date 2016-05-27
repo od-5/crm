@@ -60,8 +60,8 @@ class City(models.Model):
     moderator = models.ForeignKey(to=User, blank=True, null=True, verbose_name=u'Модератор')
     contract_number = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'Номер договора')
     contract_date = models.DateField(blank=True, null=True, verbose_name=u'Договор от')
-    coord_x = models.DecimalField(max_digits=8, decimal_places=6, blank=True, null=True, verbose_name=u'Ширина')
-    coord_y = models.DecimalField(max_digits=8, decimal_places=6, blank=True, null=True, verbose_name=u'Долгота')
+    coord_x = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=u'Ширина')
+    coord_y = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=u'Долгота')
     slug = models.SlugField(verbose_name=u'url имя поддомена', blank=True, null=True, max_length=50)
 
 
@@ -185,8 +185,8 @@ class Surface(models.Model):
     street = models.ForeignKey(to=Street, verbose_name=u'Улица')
     house_number = models.CharField(max_length=50, verbose_name=u'Номер дома')
     management = models.ForeignKey(to=ManagementCompany, verbose_name=u'Управляющая контора', blank=True, null=True)
-    coord_x = models.DecimalField(max_digits=8, decimal_places=6, blank=True, null=True, verbose_name=u'Ширина')
-    coord_y = models.DecimalField(max_digits=8, decimal_places=6, blank=True, null=True, verbose_name=u'Долгота')
+    coord_x = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=u'Ширина')
+    coord_y = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=u'Долгота')
     free = models.BooleanField(default=True)
     has_broken = models.BooleanField(default=False, verbose_name=u'Есть повреждения')
     full_broken = models.BooleanField(default=False, verbose_name=u'Все стенды повреждены')

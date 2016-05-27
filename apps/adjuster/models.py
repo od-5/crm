@@ -31,8 +31,8 @@ class Adjuster(models.Model):
     cost_change = models.PositiveIntegerField(verbose_name=u'Оплата за замену, руб', blank=True, null=True)
     cost_repair = models.PositiveIntegerField(verbose_name=u'Оплата за ремонт, руб', blank=True, null=True)
     cost_dismantling = models.PositiveIntegerField(verbose_name=u'Оплата за демонтаж, руб', blank=True, null=True)
-    coord_x = models.DecimalField(max_digits=8, decimal_places=6, blank=True, null=True, verbose_name=u'Ширина')
-    coord_y = models.DecimalField(max_digits=8, decimal_places=6, blank=True, null=True, verbose_name=u'Долгота')
+    coord_x = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=u'Ширина')
+    coord_y = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=u'Долгота')
 
 
 class SurfacePhoto(models.Model):
