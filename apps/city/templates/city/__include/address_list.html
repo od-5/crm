@@ -20,9 +20,13 @@
 {#          </button>#}
         {% endif %}
           {% if grid %}
-          <a href="{{ request.path }}?grid=0" class="btn btn-info" title="Показать таблицей"><span class="glyphicon glyphicon-th-list"></span> Показать таблицей</a>
+          <a href="{{ request.path }}?grid=0&a_city={{ a_city|default:'' }}&a_area={{ a_area|default:'' }}&a_street={{ a_street|default:'' }}&a_date_s={{ a_date_s|default:'' }}&a_date_e={{ a_date_e|default:'' }}" class="btn btn-info" title="Показать таблицей">
+            <span class="glyphicon glyphicon-th-list"></span> Показать таблицей
+          </a>
         {% else %}
-          <a href="{{ request.path }}?grid=1" class="btn btn-info" title="Показать плиткой"><span class="glyphicon glyphicon-th"></span> Показать плиткой</a>
+          <a href="{{ request.path }}?grid=1&a_city={{ a_city|default:'' }}&a_area={{ a_area|default:'' }}&a_street={{ a_street|default:'' }}&a_date_s={{ a_date_s|default:'' }}&a_date_e={{ a_date_e|default:'' }}" class="btn btn-info" title="Показать плиткой">
+            <span class="glyphicon glyphicon-th"></span> Показать плиткой
+          </a>
         {% endif %}
           <button id="js-photo-map-button" class="btn btn-info"><span class="glyphicon glyphicon-globe"></span> Показать на карте</button>
         </div>
