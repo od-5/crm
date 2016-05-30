@@ -155,7 +155,7 @@ class CityListView(ListView):
                 page_count = int(self.request.GET.get('page_count'))
         else:
             try:
-                page_count = int(self.request.session['show_broken'])
+                page_count = int(self.request.session['page_count'])
             except:
                 page_count = 20
         self.request.session['show_broken'] = page_count
