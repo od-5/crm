@@ -20,7 +20,6 @@ ymaps.ready(function () {
       adjuster_list = data.adjuster_list;
     }
   });
-  console.log(adjuster_list);
   if (adjuster_list.length){
     center = [adjuster_list[0]['coord_y'], adjuster_list[0]['coord_x']];
   } else {
