@@ -19,10 +19,11 @@ class AdjusterListView(ListView):
     paginate_by = 25
 
     def get_queryset(self):
+        user = self.request.user
         if self.request.user.type == 1:
             qs = Adjuster.objects.select_related().all()
         elif self.request.user.type == 2:
-            qs = Adjuster.objects.select_related().filter(city__moderator=self.request.user)
+            qs = Adjuster.objects.select_related().filter(city__moderator=user)
         elif self.request.user.type == 5:
             qs = Adjuster.objects.select_related().filter(city__moderator=user.manager.moderator)
         else:
