@@ -105,7 +105,7 @@
               Адрес: {{ item.address }} <br>
               Подъезд: {{ item.porch.number }}, <br>
               Дата: {{ item.date }}
-              <br> id={{ item.id }}
+              {% if user and user.type == 1 %}<br> id={{ item.id }}{% endif %}
             </p>
           </div>
         </div>
