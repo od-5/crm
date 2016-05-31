@@ -43,7 +43,7 @@ class SurfacePhoto(models.Model):
         ordering = ['-id', ]
 
     def __unicode__(self):
-        return u'%s %s' % (self.porch.surface, self.porch)
+        return u'%s д.%s п.%s' % (self.porch.surface.street.name, self.porch.surface.house_number, self.porch.number)
 
     def address(self):
         return self.porch.surface
@@ -179,6 +179,7 @@ class AdjusterTask(models.Model):
     date = models.DateField(verbose_name=u'Дата задачи')
     comment = models.TextField(verbose_name=u'Комментарий', blank=True, null=True)
     is_closed = models.BooleanField(verbose_name=u'Выполнено', default=False)
+    sent = models.BooleanField(verbose_name=u'Отправлено', default=False)
 
 
 class AdjusterTaskSurface(models.Model):

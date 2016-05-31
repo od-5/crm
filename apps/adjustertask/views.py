@@ -418,12 +418,19 @@ def adjuster_task_update(request, pk):
         'task_surface_list': task_surface_list
     })
     if request.method == "POST":
+        if int(request.POST.get('adjuster')) != adjustertask.adjuster.id:
+            adjustertask.sent = False
+            adjustertask.save()
         adjuster_task_form = AdjusterTaskUpdateForm(request.POST, request=request, instance=adjustertask)
         if adjuster_task_form.is_valid():
             adjuster_task_form.save()
             return HttpResponseRedirect(adjustertask.get_absolute_url())
     else:
         adjuster_task_form = AdjusterTaskUpdateForm(request=request, instance=adjustertask)
+    if adjustertask.sent:
+        adjuster_task_form.fields['type'].widget.attrs['disabled'] = True
+        adjuster_task_form.fields['date'].widget.attrs['disabled'] = True
+        adjuster_task_form.fields['comment'].widget.attrs['disabled'] = True
     context.update({
         'adjuster_task_form': adjuster_task_form
     })

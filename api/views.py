@@ -72,6 +72,8 @@ def task_list(request, format=None):
                 'address_list': address_list
             })
         context.append(t_context)
+        task.sent = True
+        task.save()
     return Response(context)
 
 
@@ -261,7 +263,7 @@ def photo_add(request):
             serializer = SurfacePhotoSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                item = SurfacePhoto.objects.get(pk=serializer.instance.id)
+                # item = SurfacePhoto.objects.get(pk=serializer.instance.id)
                 # if is_broken == u'true':
                 #     item.is_broken = True
                 #     item.save()
