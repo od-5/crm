@@ -50,10 +50,10 @@ class SurfacePhoto(models.Model):
 
     def save(self, *args, **kwargs):
         # print slugify(self.__unicode__())
-        if self.porch.damaged():
-            self.is_broken = True
-        else:
-            self.is_broken = False
+        # if self.porch.damaged():
+        #     self.is_broken = True
+        # else:
+        #     self.is_broken = False
         super(SurfacePhoto, self).save()
         if self.image:
             image = Image.open(self.image)

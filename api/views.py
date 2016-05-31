@@ -1,4 +1,5 @@
 # coding=utf-8
+from copy import copy
 import json
 import datetime
 from django.core.urlresolvers import reverse
@@ -254,9 +255,19 @@ def photo_add(request):
             adjuster = request.data.get('adjuster')
             date = datetime.date.today()
             image = request.data.get('image')
+            is_broken = request.data.get('is_broken')
+            # print is_broken
+            # print type(is_broken)
             serializer = SurfacePhotoSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
+                item = SurfacePhoto.objects.get(pk=serializer.instance.id)
+                # if is_broken == u'true':
+                #     item.is_broken = True
+                #     item.save()
+                #     print 'is_broken'
+                #     n_serializer = SurfacePhotoSerializer(item)
+                #     print n_serializer.instance.is_broken
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.data, status=status.HTTP_205_RESET_CONTENT)
