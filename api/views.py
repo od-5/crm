@@ -18,7 +18,6 @@ from core.models import User
 # import the logging library
 import logging
 # Get an instance of a logger
-logger = logging.getLogger(__name__)
 dbalogger = logging.getLogger('dba')
 
 print __name__
@@ -95,7 +94,6 @@ def api_root(request, format=None):
     Получение данных авторизованного пользователя
     """
     user = request.user
-    logger.info(u'%s' % user.get_full_name())
     dbalogger.error(user)
     dbalogger.info(user)
     if request.method == 'GET':
