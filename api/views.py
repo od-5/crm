@@ -15,6 +15,13 @@ from apps.city.models import Porch
 from apps.surface.forms import SurfacePhotoForm
 from core.common import str_to_bool
 from core.models import User
+# import the logging library
+import logging
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
+dbalogger = logging.getLogger('dba')
+
+print __name__
 
 __author__ = 'alexy'
 
@@ -27,6 +34,7 @@ def task_list(request, format=None):
     try:
         adjuster = user.adjuster
     except Adjuster.DoesNotExist:
+        logger.error(u'Something went wrong!')
         return Response(status=status.HTTP_404_NOT_FOUND)
     qs = AdjusterTask.objects.filter(adjuster=adjuster, is_closed=False)
     if not qs:
@@ -72,8 +80,9 @@ def task_list(request, format=None):
                 'address_list': address_list
             })
         context.append(t_context)
-        # task.sent = True
-        # task.save()
+        task.sent = True
+        task.save()
+    dbalogger.error(user)
     return Response(context)
 
 
@@ -86,6 +95,9 @@ def api_root(request, format=None):
     Получение данных авторизованного пользователя
     """
     user = request.user
+    logger.info(u'%s' % user.get_full_name())
+    dbalogger.error(user)
+    dbalogger.info(user)
     if request.method == 'GET':
         try:
             Adjuster.objects.get(user=user)
