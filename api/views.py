@@ -72,8 +72,8 @@ def task_list(request, format=None):
                 'address_list': address_list
             })
         context.append(t_context)
-        task.sent = True
-        task.save()
+        # task.sent = True
+        # task.save()
     return Response(context)
 
 
