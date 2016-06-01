@@ -18,7 +18,7 @@ from core.models import User
 # import the logging library
 import logging
 # Get an instance of a logger
-dbalogger = logging.getLogger('dba')
+logger = logging.getLogger('django.request')
 
 print __name__
 
@@ -29,11 +29,11 @@ __author__ = 'alexy'
 @authentication_classes((SessionAuthentication, BasicAuthentication))
 @permission_classes((IsAuthenticated,))
 def task_list(request, format=None):
+    logger.error(u'request: %s' % request)
     user = request.user
     try:
         adjuster = user.adjuster
     except Adjuster.DoesNotExist:
-        logger.error(u'Something went wrong!')
         return Response(status=status.HTTP_404_NOT_FOUND)
     qs = AdjusterTask.objects.filter(adjuster=adjuster, is_closed=False)
     if not qs:
@@ -81,7 +81,7 @@ def task_list(request, format=None):
         context.append(t_context)
         task.sent = True
         task.save()
-    dbalogger.error(user)
+    logger.error(context)
     return Response(context)
 
 
@@ -94,8 +94,8 @@ def api_root(request, format=None):
     Получение данных авторизованного пользователя
     """
     user = request.user
-    dbalogger.error(user)
-    dbalogger.info(user)
+    logger.error(user)
+    logger.info(user)
     if request.method == 'GET':
         try:
             Adjuster.objects.get(user=user)
