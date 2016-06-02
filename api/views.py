@@ -95,7 +95,6 @@ def api_root(request, format=None):
     """
     user = request.user
     logger.error(user)
-    logger.info(user)
     if request.method == 'GET':
         try:
             Adjuster.objects.get(user=user)
@@ -192,7 +191,9 @@ def tasksurfaceporch_detail(request, pk):
     """
     try:
         porch = AdjusterTaskSurfacePorch.objects.get(pk=pk)
+        logger.error(u'User=%s, worked with porch %s' % (request.user, porch.id))
     except AdjusterTaskSurfacePorch.DoesNotExist:
+        logger.error(u'User=%s, worked with porch. PORCH NOT FOUND' % request.user)
         return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
         serializer = TaskSurfacePorchSerializer(porch)
@@ -204,6 +205,10 @@ def tasksurfaceporch_detail(request, pk):
             is_closed = porch.is_closed
         porch.is_closed = is_closed
         porch.save()
+        try:
+            logger.error(u'user=%s, porch=%s, params=%s' % (request.user, porch.id, request.query_params))
+        except:
+            logger.error(u'user=%s, porch=%s' % (request.user, porch.id))
         serializer = TaskSurfacePorchSerializer(porch)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -214,7 +219,9 @@ def tasksurfaceporch_detail(request, pk):
 def porch_update(request, pk):
     try:
         porch = Porch.objects.get(pk=pk)
+        logger.error(u'porch update request. Porch=%s' % porch.id)
     except Porch.DoesNotExist:
+        logger.error(u'porch update request. DoesNotExist')
         return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
         serializer = PorchSerializer(porch)
@@ -252,6 +259,10 @@ def porch_update(request, pk):
         porch.against_tenants = against_tenants
         porch.no_social_info = no_social_info
         porch.save()
+        try:
+            logger.error(u'User=%s, porch update request. request=%s' %  (request.user, request.query_params))
+        except:
+            logger.error(u'User=%s, porch update request. NOT QUERY_PARAMS' %  request.user)
         serializer = PorchSerializer(porch)
         return Response(serializer.data)
         # return Response(status=status.HTTP_200_OK)
@@ -270,6 +281,8 @@ def photo_add(request):
             is_broken = request.data.get('is_broken')
             # print is_broken
             # print type(is_broken)
+            logger.error(u'request for upload photo user %s' % request.user)
+            logger.error(u'request.data %s' % request.data)
             serializer = SurfacePhotoSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
@@ -280,8 +293,13 @@ def photo_add(request):
                 #     print 'is_broken'
                 #     n_serializer = SurfacePhotoSerializer(item)
                 #     print n_serializer.instance.is_broken
+                try:
+                    logger.error(u'Photo add Success %s' % serializer.instance.id)
+                except:
+                    logger.error(u'Photo add Success')
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
+                logger.error(u'c user %s - RESET CONTENT. request=%s' % (request.user, request.data))
                 return Response(serializer.data, status=status.HTTP_205_RESET_CONTENT)
             # form = SurfacePhotoForm(
             #     request.data,
