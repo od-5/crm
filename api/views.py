@@ -81,7 +81,8 @@ def task_list(request, format=None):
         context.append(t_context)
         task.sent = True
         task.save()
-    logger.error(context)
+    logger.error(u'user=%s' % request.user)
+    logger.error(u'context=%s' % context)
     return Response(context)
 
 
