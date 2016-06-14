@@ -49,6 +49,8 @@ def ymap_surface(request):
         elif user.type == 5:
             manager = Manager.objects.get(user=user)
             query = Surface.objects.filter(city__moderator=manager.moderator)
+        else:
+            query = None
         result = []
         for item in query:
             result_json = {}
@@ -78,15 +80,19 @@ def ajax_remove_item(request):
                 user = User.objects.get(pk=item.user.id)
                 user.delete()
             if model == 'Adjuster':
+                for at in item.adjustertask_set.all():
+                    for ats in at.adjustertasksurface_set.all():
+                        for atsp in ats.adjustertasksurfaceporch_set.all():
+                            atsp.delete()
+                        ats.delete()
+                    at.delete()
                 user = User.objects.get(pk=item.user.id)
                 user.delete()
             if model == 'AdjusterTask':
                 for ats in item.adjustertasksurface_set.select_related().all():
                     for atsp in ats.adjustertasksurfaceporch_set.all():
-                        atsp.is_closed = True
-                        atsp.save()
-                    ats.is_closed = True
-                    ats.save()
+                        atsp.delete()
+                    ats.delete()
             if model == 'ClientOrderSurface':
                 surface = Surface.objects.get(pk=item.surface.id)
                 surface.free = True

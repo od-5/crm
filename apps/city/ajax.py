@@ -68,7 +68,6 @@ def simple_get_area_streets(request):
         }
 
 
-
 @ajax_request
 def get_free_area_surface(request):
     if request.GET.get('area') and request.GET.get('order'):

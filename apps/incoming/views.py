@@ -9,7 +9,8 @@ from django.utils import timezone
 from apps.city.models import City
 from apps.manager.models import Manager
 from .models import IncomingClient, IncomingTask, IncomingClientContact, IncomingClientManager
-from .forms import IncomingClientAddForm, IncomingClientUpdateForm, IncomingTaskForm, IncomingClientContactForm
+from .forms import IncomingClientAddForm, IncomingClientUpdateForm, IncomingTaskForm, IncomingClientContactForm, \
+    IncomingClientImportForm
 
 __author__ = 'alexy'
 
@@ -66,6 +67,17 @@ class IncomingClientListView(ListView):
         queryset = self.get_queryset()
         manager_client_count = queryset.count()
         manager_task_count = 0
+        search_client_name = self.request.GET.get('client_name')
+        if search_client_name:
+            if self.request.user.type == 5:
+                qs = IncomingClient.objects.filter(city__moderator=self.request.user.manager.moderator)
+            else:
+                qs = queryset
+            search_client_qs = qs.filter(name__icontains=search_client_name)
+            context.update({
+                'search_client_list': search_client_qs,
+                'r_client_name': search_client_name
+            })
         for client in queryset:
             manager_task_count += client.incomingtask_set.count()
         context.update({
@@ -85,7 +97,9 @@ class IncomingClientListView(ListView):
             manager_qs = Manager.objects.filter(moderator=current_manager.moderator)
         else:
             manager_qs = None
+        import_form = IncomingClientImportForm()
         context.update({
+            'import_form': import_form,
             'manager_list': manager_qs
         })
         return context

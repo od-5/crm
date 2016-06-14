@@ -2,6 +2,10 @@
 {% block content %}
   <div class="container">
     <div class="col-lg-12">
+      <ol class="breadcrumb">
+        <li><a href="{% url 'cabinet:cabinet' %}">Рабочий стол</a></li>
+        <li class="active">Журнал клиентов</li>
+      </ol>
       <div class="panel panel-default">
         <div class="panel-heading">
           <p class="lead remove-bottom text-center">Журнал клиентов</p>
@@ -11,9 +15,52 @@
             <p><strong>Количество клиентов: {{ manager_client_count|default:'0' }}</strong></p>
             <p><strong>Количество задач: {{ manager_task_count|default:'0' }}</strong></p>
           </div>
-          <a href="{% url 'incoming:add' %}" class="btn btn-success add-bottom">
-            <span class="glyphicon glyphicon-plus-sign"></span> Добавить нового клиента
-          </a>
+          <div class="row">
+            <div class="col-lg-7">
+              <form action="" method="GET" role="form" class="form-inline add-bottom">
+                <a href="{% url 'incoming:add' %}" class="btn btn-success">
+                  <span class="glyphicon glyphicon-plus-sign"></span> Добавить нового клиента
+                </a>
+                <input type="text" name="client_name" value="{{ r_client_name }}" class="form-control" placeholder="Название клиента">
+                <button type="submit" class="btn btn-info"> <span class="glyphicon glyphicon-search"></span> Проверить наличие</button>
+              </form>
+            </div>
+            {% if user.type == 5 %}
+            <div class="col-lg-5 text-right">
+              <form action="{% url 'incoming:client_list_import' %}" method="POST" enctype="multipart/form-data" class="form-inline" role="form">{% csrf_token %}
+                {{ import_form.file }}
+                <input type="submit" value="Загрузить" class="js-show-loader btn btn-info form-control">
+              </form>
+            </div>
+            {% endif %}
+            <div class="clearfix"></div>
+          </div>
+
+        {% if search_client_list %}
+          <table class="table table-bordered" style="font-size:12px;">
+            <thead>
+              <tr>
+                <th>Название</th>
+                <th>Деятельность</th>
+                <th>Менеджер</th>
+                <th>Город</th>
+              </tr>
+            </thead>
+            {% for object in search_client_list %}
+              <tr>
+                <td>{{ object.name|default:'' }}</td>
+                <td class="break-all">{{ object.kind_of_activity|default:'Не указано' }}</td>
+                <td>{{ object.manager|default:'Не указано' }}</td>
+                <td>{{ object.city|default:'Не указано' }}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          {% if r_client_name %}
+            <p class="alert alert-info">Клиента {{ r_client_name }} в системе нет</p>
+          {% endif %}
+        {% endif %}
           <form action="" method="GET" role="form" class="form-inline add-bottom">
             <input type="text" name="name" value="{{ r_name|default:'' }}" class="form-control input-sm" placeholder="Название">
             <input type="text" name="phone" value="{{ r_phone|default:'' }}" class="form-control input-sm" placeholder="телефон контактного лица">
@@ -189,5 +236,12 @@
       </div>
       <input type="submit" value="Создать" class="btn btn-default">
     </form>
+  </div>
+  <div class="loader">
+    <div class="loader-content">
+      <p class="lead">Загрузка данных</p>
+      <p class="small">загрузка может занимать достаточно длительное время в зависимости от количества адресов</p>
+      <img src="{{ STATIC_URL }}img/ajax-loader.gif" alt="">
+    </div>
   </div>
 {% endblock %}
