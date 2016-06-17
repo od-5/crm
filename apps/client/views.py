@@ -276,11 +276,16 @@ def client_order_update(request, pk):
     area_list = client.city.area_set.all()
     success_msg = u''
     error_msg = u''
-
+    release_date = order.date_end
     if request.method == 'POST':
         form = ClientOrderForm(request.POST, instance=order)
         if form.is_valid():
-            form.save()
+            order_instance = form.save()
+            if order_instance.date_end != release_date:
+                for cos in order_instance.clientordersurface_set.all():
+                    surface = cos.surface
+                    surface.release_date = order_instance.date_end
+                    surface.save()
     else:
         form = ClientOrderForm(instance=order)
     context.update({
