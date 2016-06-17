@@ -91,14 +91,18 @@ class ClientListView(ListView):
                 qs = Client.objects.filter(manager=manager)
         else:
             qs = None
-        if self.request.GET.get('email'):
-            qs = qs.filter(user__email=self.request.GET.get('email'))
-        if self.request.GET.get('legal_name'):
-            qs = qs.filter(legal_name=self.request.GET.get('legal_name'))
-        if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
-            qs = qs.filter(city__id=int(self.request.GET.get('city')))
-        if self.request.GET.get('manager'):
-            qs = qs.filter(manager__id=int(self.request.GET.get('manager')))
+        r_email = self.request.GET.get('email')
+        r_legal_name = self.request.GET.get('legal_name')
+        r_city = self.request.GET.get('city')
+        r_manager = self.request.GET.get('manager')
+        if r_email:
+            qs = qs.filter(user__email=r_email)
+        if r_legal_name:
+            qs = qs.filter(legal_name=r_legal_name)
+        if r_city and int(r_city) != 0:
+            qs = qs.filter(city__id=int(r_city))
+        if r_manager and int(r_manager) != 0:
+            qs = qs.filter(manager__id=int(r_manager))
         return qs
 
     def get_context_data(self, **kwargs):
@@ -526,7 +530,7 @@ def client_journal_export(request, pk):
         area_list = None
         # for c_surface in order.clientordersurface_set.all():
         area_list = [c_surface.surface.street.area.name for c_surface in order.clientordersurface_set.all()]
-        count = ((cost * (1 + add_cost * 0.01)) * (1 - discount * 0.01)) * order.stand_count()
+        count = ((float(cost) * (1 + float(add_cost) * 0.01)) * (1 - float(discount) * 0.01)) * order.stand_count()
         ws.write(i, 0, u'%s - %s' % (order.date_start, order.date_end), style4)
         ws.write(i, 1, '\n'.join(set(area_list)), style4)
         ws.write(i, 2, u'А5', style4)
@@ -534,7 +538,7 @@ def client_journal_export(request, pk):
         ws.write(i, 4, add_cost, style4)
         ws.write(i, 5, cost, style4)
         ws.write(i, 6, discount, style4)
-        ws.write(i, 7, count, style4)
+        ws.write(i, 7, round(count, 2), style4)
         ws.write(i, 8, u'', style4)
         i += 1
         porch_total += order.stand_count()
@@ -554,7 +558,7 @@ def client_journal_export(request, pk):
         #     porch_total += item.surface.porch_count()
         #     total_count += count
     ws.write(i, 0, u'Итого', style2)
-    ws.write(i, 7, u"%s, руб." % total_count, style2)
+    ws.write(i, 7, u"%s, руб." % round(total_count, 2), style2)
     ws.write_merge(i + 2, i + 2, 0, 1, u'Ответственный менеджер', style7)
     ws.write_merge(i + 2, i + 2, 3, 4, u'', style5)
     ws.write_merge(i + 2, i + 2, 6, 8, manager, style5)

@@ -27,10 +27,10 @@ class Adjuster(models.Model):
 
     user = models.OneToOneField(to=User, verbose_name=u'Пользователь')
     city = models.ForeignKey(to=City, verbose_name=u'Город')
-    cost_mounting = models.PositiveIntegerField(verbose_name=u'Оплата за монтаж, руб', blank=True, null=True)
-    cost_change = models.PositiveIntegerField(verbose_name=u'Оплата за замену, руб', blank=True, null=True)
-    cost_repair = models.PositiveIntegerField(verbose_name=u'Оплата за ремонт, руб', blank=True, null=True)
-    cost_dismantling = models.PositiveIntegerField(verbose_name=u'Оплата за демонтаж, руб', blank=True, null=True)
+    cost_mounting = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Оплата за монтаж, руб', blank=True, null=True)
+    cost_change = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Оплата за замену, руб', blank=True, null=True)
+    cost_repair = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Оплата за ремонт, руб', blank=True, null=True)
+    cost_dismantling = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Оплата за демонтаж, руб', blank=True, null=True)
     coord_x = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=u'Ширина')
     coord_y = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=u'Долгота')
 
@@ -132,7 +132,8 @@ class AdjusterTask(models.Model):
             cost = self.adjuster.cost_dismantling
         else:
             cost = 0
-        return cost * self.get_closed_porch_count()
+        sum = float(cost) * self.get_closed_porch_count()
+        return round(sum, 2)
 
     def get_total_cost(self):
         """
@@ -149,7 +150,8 @@ class AdjusterTask(models.Model):
             cost = self.adjuster.cost_dismantling
         else:
             cost = 0
-        return cost * self.get_porch_count()
+        sum = float(cost) * self.get_porch_count()
+        return round(sum, 2)
 
     def get_process(self):
         """

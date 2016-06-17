@@ -113,8 +113,8 @@ class ClientJournalForm(forms.ModelForm):
         widgets = {
             'client': forms.HiddenInput(attrs={'class': 'form-control'}),
             'clientorder': forms.CheckboxSelectMultiple(),
-            'cost': forms.TextInput(attrs={'class': 'form-control'}),
-            'add_cost': forms.TextInput(attrs={'class': 'form-control'}),
-            'discount': forms.TextInput(attrs={'class': 'form-control'}),
+            'cost': forms.NumberInput(attrs={'class': 'form-control'}),
+            'add_cost': forms.NumberInput(attrs={'class': 'form-control'}),
+            'discount': forms.NumberInput(attrs={'class': 'form-control'}),
         }
 

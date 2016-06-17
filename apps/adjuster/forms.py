@@ -49,8 +49,8 @@ class AdjusterPaymentForm(forms.ModelForm):
         model = Adjuster
         fields = ('cost_mounting', 'cost_change', 'cost_repair', 'cost_dismantling')
         widgets = {
-            'cost_mounting': forms.TextInput(attrs={'class': 'form-control'}),
-            'cost_change': forms.TextInput(attrs={'class': 'form-control'}),
-            'cost_repair': forms.TextInput(attrs={'class': 'form-control'}),
-            'cost_dismantling': forms.TextInput(attrs={'class': 'form-control'}),
+            'cost_mounting': forms.NumberInput(attrs={'class': 'form-control'}),
+            'cost_change': forms.NumberInput(attrs={'class': 'form-control'}),
+            'cost_repair': forms.NumberInput(attrs={'class': 'form-control'}),
+            'cost_dismantling': forms.NumberInput(attrs={'class': 'form-control'}),
         }
