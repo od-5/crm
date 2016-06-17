@@ -42,7 +42,7 @@
               <a href="?all=1" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-list-alt"></span> Показать все задачи</a>
             {% endif %}
           </form>
-          <table class="table table-hover" style="font-size: 12px;">
+          <table class="table table-hover table-condensed table-bordered table-list">
             <thead>
               <tr>
                 <th>Дата</th>
@@ -88,8 +88,8 @@
               </tr>
             {% empty %}
               <tr>
-                <td colspan="12">
-                  <p class="alert alert-info">Задач по клиентам не найдено</p>
+                <td colspan="10">
+                  <p class="alert alert-info text-left">Задач по клиентам не найдено</p>
                 </td>
               </tr>
             {% endfor %}

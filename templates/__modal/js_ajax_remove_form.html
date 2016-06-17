@@ -1,7 +1,7 @@
 <div id="js-ajax-item-remove">
   <form action="{% url 'ajax-remove' %}" class="js-ajax-remove-item-form">
     {% csrf_token %}
-    <p class="alert alert-danger">Вы действительно хотети удалить "<strong id="js-ajax-item-remove-name"></strong>"?</p>
+    <p class="alert alert-danger">Вы действительно хотите удалить "<strong id="js-ajax-item-remove-name"></strong>"?</p>
     <input type="hidden" name="item_id" id="js-ajax-item-remove-id">
     <input type="hidden" name="item_model" id="js-ajax-item-remove-model">
     <input type="submit" value="Да" class="btn btn-success">

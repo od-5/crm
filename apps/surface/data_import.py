@@ -10,7 +10,6 @@ __author__ = 'alexy'
 
 
 def address_list_import(request):
-    print request.method
     if request.method == 'POST' and 'file' in request.FILES:
         filename = request.FILES['file'].name
         extension = filename.split(".")[1]

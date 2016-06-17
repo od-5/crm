@@ -28,7 +28,7 @@
                 <span class="glyphicon glyphicon-search"></span> Искать
               </button>
             </form>
-            <table class="table">
+            <table class="table table-condensed table-bordered table-list">
               <thead>
               <tr>
                 <th>Название</th>
@@ -63,8 +63,8 @@
                 </tr>
               {% empty %}
                 <tr>
-                  <td colspan="9">
-                    <p class="alert alert-info">Задач не найдено.</p>
+                  <td colspan="10">
+                    <p class="alert alert-info text-left">Задач не найдено.</p>
                   </td>
                 </tr>
               {% endfor %}

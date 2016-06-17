@@ -93,6 +93,9 @@ def ajax_remove_item(request):
                     for atsp in ats.adjustertasksurfaceporch_set.all():
                         atsp.delete()
                     ats.delete()
+            if model == 'AdjusterTaskSurface':
+                for atsp in item.adjustertasksurfaceporch_set.all():
+                    atsp.delete()
             if model == 'ClientOrderSurface':
                 surface = Surface.objects.get(pk=item.surface.id)
                 surface.free = True

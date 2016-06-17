@@ -10,6 +10,9 @@
           </p>
         </div>
         <div class="panel-body">
+        {% if object.is_closed %}
+          <p class="lead add-bottom text-center">Заказ закрыт</p>
+        {% else %}
           <form action="" id="js-client-update-order-form" method="post" role="form" class="add-bottom">
             {% csrf_token %}
             <div class="col-lg-6">
@@ -78,8 +81,9 @@
               <input type="submit" class="btn btn-default add-bottom" value="Добавить адреса к заказу">
             </div>
           </form>
+        {% endif %}
           <div class="col-lg-12 surface-list">
-            <table class="table table-hover" style="font-size: 12px;">
+            <table class="table table-hover table-condensed table-bordered table-list">
               <thead>
                 <tr>
                   <th>Район</th>
@@ -97,7 +101,7 @@
                   <td>{{ item.surface.house_number|default:'Не указано' }}</td>
                   <td>{{ item.surface.porch_set.all.count|default:'0' }}</td>
                   <td>
-                    <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-ClientOrderSurface-{{ item.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
+                    <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-ClientOrderSurface-{{ item.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn" {% if object.is_closed %}disabled="disabled" {% endif %}>
                       <span class="glyphicon glyphicon-remove"></span> Удалить
                     </a>
                   </td>

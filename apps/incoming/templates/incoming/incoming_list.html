@@ -67,7 +67,7 @@
             <input type="text" name="contact" value="{{ r_contact|default:'' }}" class="form-control input-sm" placeholder="фамилия контактного лица">
             <button type="submit" class="btn btn-info btn-sm"> <span class="glyphicon glyphicon-search"></span> Искать</button>
           </form>
-          <table class="table table-hover" id="js-incomingclient-list" style="font-size: 12px;">
+          <table class="table table-hover table-condensed table-bordered table-list" id="js-incomingclient-list">
             <thead>
               <tr>
                 <th>Название</th>
@@ -125,7 +125,7 @@
             {% empty %}
               <tr>
                 <td colspan="6">
-                  <p class="alert alert-info">Клиентов не найдено</p>
+                  <p class="alert alert-info text-left">Клиентов не найдено</p>
                 </td>
               </tr>
             {% endfor %}

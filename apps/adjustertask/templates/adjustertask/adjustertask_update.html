@@ -97,7 +97,7 @@
                   <div class="clearfix"></div>
                 </div>
               </div>
-              <div class="col-lg-6">
+              <div class="col-lg-6 add-bottom">
                 {{ adjuster_task_form.comment.label_tag }}
                 {% if user.type == 4 %}
                 {{ adjuster_task_form.comment|attr:'disabled:disabled' }}
@@ -107,7 +107,7 @@
                 {{ adjuster_task_form.comment.errors }}
               </div>
               <div class="col-lg-12">
-                <table class="table">
+                <table class="table table-condensed table-bordered table-list">
                   <thead>
                     <tr>
                       <th>Город</th>
@@ -116,11 +116,12 @@
                       <th>Номер дома</th>
                       <th>Кол-во стендов</th>
                       <th>Номера подъездов</th>
+                      <th></th>
                     </tr>
                   </thead>
                   <tbody class="js-task-surface-list">
                   {% for ats in task_surface_list %}
-                    <tr {% if ats.is_closed %}class="success"{% endif %}>
+                    <tr class="js-list{% if ats.is_closed %} success{% endif %}"  data-id="{{ ats.id }}" data-name="{{ ats }} из задачи" data-model="AdjusterTaskSurface" id="id_AdjusterTaskSurface_{{ ats.id }}">
                       <td>{{ ats.surface.street.city }}</td>
                       <td>{{ ats.surface.street.area }}</td>
                       <td>{{ ats.surface.street.name }}</td>
@@ -131,11 +132,16 @@
                           {{ atsp.porch.number }}{% if not forloop.last %}, {% endif %}
                         {% endfor %}
                       </td>
+                      <td>
+                        <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-AdjusterTaskSurface-{{ ats.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
+                          <span class="glyphicon glyphicon-remove"></span> Удалить
+                        </a>
+                      </td>
                     </tr>
                   {% empty %}
                     <tr>
-                      <td colspan="6">
-                        <p class="alert alert-info">Адресов не найдено</p>
+                      <td colspan="7">
+                        <p class="alert alert-info text-left">Адресов не найдено</p>
                       </td>
                     </tr>
                   {% endfor %}
@@ -151,4 +157,5 @@
       </div>
     </div>
   </div>
+{% include '__modal/js_ajax_remove_form.html' %}
 {% endblock %}

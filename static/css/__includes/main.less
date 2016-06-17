@@ -54,6 +54,47 @@ td {
   background-color: #fff;
 }
 
+.table {
+  &-list {
+    font-size: 12px;
+    thead {
+      background-color: #666;
+      color: #fff;
+      vertical-align: top;
+      tr {
+        th {
+          vertical-align: top;
+          font-weight: normal;
+        }
+      }
+    }
+    tr {
+      td:last-child{
+        text-align: right;
+      }
+    }
+  }
+  &-search {
+    font-size: 12px;
+    thead {
+      tr {
+        th {
+          border: none;
+          background: transparent;
+        }
+      }
+    }
+    tbody {
+      tr {
+        td {
+          border: none;
+          background-color: transparent !important;
+        }
+      }
+    }
+  }
+}
+
 #scrollup {
   position: fixed;
   opacity: 0.8;
@@ -84,7 +125,7 @@ td {
 //    display: none;
 //  }
 //}
-.client, .city {
+.city {
   &-search {
     &-form {
       margin: 20px 0;

@@ -6138,6 +6138,32 @@ h2 {
   padding-bottom: 100px;
   background-color: #fff;
 }
+.table-list {
+  font-size: 12px;
+}
+.table-list thead {
+  background-color: #666;
+  color: #fff;
+  vertical-align: top;
+}
+.table-list thead tr th {
+  vertical-align: top;
+  font-weight: normal;
+}
+.table-list tr td:last-child {
+  text-align: right;
+}
+.table-search {
+  font-size: 12px;
+}
+.table-search thead tr th {
+  border: none;
+  background: transparent;
+}
+.table-search tbody tr td {
+  border: none;
+  background-color: transparent !important;
+}
 #scrollup {
   position: fixed;
   opacity: 0.8;
@@ -6160,18 +6186,14 @@ h2 {
 .add-bottom {
   margin-bottom: 20px;
 }
-.client-search-form,
 .city-search-form {
   margin: 20px 0;
 }
-.client-search-form select,
 .city-search-form select,
-.client-search-form input[type=text],
 .city-search-form input[type=text] {
   width: 200px;
   display: inline;
 }
-.client-search-form input,
 .city-search-form input {
   display: inline;
 }

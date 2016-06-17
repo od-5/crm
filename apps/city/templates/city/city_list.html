@@ -28,7 +28,7 @@
           </div>
 
 
-          <form action="{% url 'city:list' %}" method="GET" role="form" class="form-inline">
+          <form action="{% url 'city:list' %}" method="GET" role="form" class="form-inline add-bottom">
             <select name="city" id="city_filter" class="form-control input-sm">
               <option value="0">Город</option>
               {% for city in user_city_list %}
@@ -42,7 +42,7 @@
           </form>
 
           <div class="city-list">
-            <table class="table table-hover scroll">
+            <table class="table table-hover table-condensed table-list scroll">
               <thead>
                 <tr>
                   <th>Название</th>
@@ -69,7 +69,7 @@
                   <td>{{ object.client_set.all.count }}</td>
                   <td>
                   {% if user.type == 1 %}
-                    <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ object.id }}" class="btn btn-danger btn-sm js-ajax-remove-btn">
+                    <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ object.id }}" class="btn btn-sm btn-danger btn-sm js-ajax-remove-btn">
                       <span class="glyphicon glyphicon-remove"></span> Удалить
                     </a>
                   {% else %}

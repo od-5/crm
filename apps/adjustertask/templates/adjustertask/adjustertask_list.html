@@ -31,7 +31,7 @@
           <a href="{% url 'adjustertask:archive' %}" class="btn btn-success add-bottom">
             <span class="glyphicon glyphicon-folder-close"></span> Архив задач
           </a>
-          <div class="col-lg-12">
+          <div>
             {% load tasks %}
             {% if months %}
               <div class="add-bottom panel panel-success">
@@ -52,24 +52,14 @@
           <div>
             <form action="" method="get" class="add-bottom" id="js-adjuster-task-filter-form" role="form">
               {% load widget_tweaks %}
-              <table class="table table-condensed search-table">
+              <table class="table table-condensed table-search">
                 <thead>
                   <tr>
-                    <th>
-                      {{ filter_form.city.label_tag }}
-                    </th>
-                    <th>
-                      {{ filter_form.adjuster.label_tag }}
-                    </th>
-                    <th>
-                      {{ filter_form.type.label_tag }}
-                    </th>
-                    <th>
-                      {{ filter_form.date_s.label_tag }}
-                    </th>
-                    <th>
-                      {{ filter_form.date_e.label_tag }}
-                    </th>
+                    <th>{{ filter_form.city.label_tag }}</th>
+                    <th>{{ filter_form.adjuster.label_tag }}</th>
+                    <th>{{ filter_form.type.label_tag }}</th>
+                    <th>{{ filter_form.date_s.label_tag }}</th>
+                    <th>{{ filter_form.date_e.label_tag }}</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -89,24 +79,20 @@
                     {{ filter_form.adjuster }}
                   {% endif %}
                   </td>
+                  <td>{{ filter_form.type }}</td>
+                  <td>{{ filter_form.date_s }}</td>
+                  <td>{{ filter_form.date_e }}</td>
                   <td>
-                    {{ filter_form.type }}
-                  </td>
-                  <td>
-                    {{ filter_form.date_s }}
-                  </td>
-                  <td>
-                    {{ filter_form.date_e }}
-                  </td>
-                  <td>
-                    <button class="btn btn-info btn-sm" type="submit"><span class="glyphicon glyphicon-search"></span> Искать</button>
+                    <button class="btn btn-info btn-sm" type="submit">
+                      <span class="glyphicon glyphicon-search"></span> Искать
+                    </button>
                   </td>
                 </tr>
                 </tbody>
               </table>
             </form>
           </div>
-          <table class="table table-hover">
+          <table class="table table-hover table-condensed table-bordered table-list">
             <thead>
               <tr>
                 <th>Название</th>
@@ -143,7 +129,7 @@
                 <td>{{ object.get_actual_cost }}</td>
                 <td>
                   {% if user.type != 4 %}
-                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-AdjusterTask-{{ object.id }}" class="btn btn-danger js-ajax-remove-btn">
+                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-AdjusterTask-{{ object.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
                     <span class="glyphicon glyphicon-remove"></span> Удалить
                   </a>
                   {% else %}
@@ -153,8 +139,8 @@
               </tr>
               {% empty %}
                 <tr>
-                  <td colspan="10">
-                    <p class="alert alert-info">Задач не найдено</p>
+                  <td colspan="11">
+                    <p class="alert alert-info text-left">Задач не найдено</p>
                   </td>
                 </tr>
               {% endfor %}

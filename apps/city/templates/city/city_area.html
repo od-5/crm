@@ -13,7 +13,7 @@
           <div class="row">
             <div class="col-lg-6">
               <p class="text-info lead">Добавить район</p>
-              <form action="" role="form" class="form-profile" id="js-city-form" method="post">
+              <form action="" role="form" class="form-profile add-bottom" id="js-city-form" method="post">
                 {% csrf_token %}
                 {{ area_form.city }}
                 <div class="form-group">
@@ -27,7 +27,7 @@
             </div>
             <div class="clearfix"></div>
             <div class="col-lg-8">
-              <table class="table">
+              <table class="table table-condensed table-bordered table-list">
                 <thead>
                   <tr>
                     <th>Название</th>
@@ -41,8 +41,8 @@
                     <td><a href="{% url 'city:area-update' area.id %}">{{ area.name }}</a></td>
                     <td>{{ area.street_set.all.count|default:'0' }}</td>
                     <td>
-                      <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-Area-{{ area.id }}" class="btn btn-danger js-ajax-remove-btn">
-                        Удалить
+                      <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-Area-{{ area.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
+                        <span class="glyphicon glyphicon-remove"></span> Удалить
                       </a>
                     </td>
                   </tr>

@@ -57,7 +57,7 @@ def ajax_order_adjuster_list(request):
     if int(r_client) != 0:
         client = Client.objects.get(pk=int(r_client))
         adjuster_qs = Adjuster.objects.filter(city=client.city)
-        clientorder_qs = client.clientorder_set.all()
+        clientorder_qs = client.clientorder_set.filter(is_closed=False)
         adjuster_list = []
         clientorder_list = []
         for adjuster in adjuster_qs:

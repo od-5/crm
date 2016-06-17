@@ -20,7 +20,6 @@ import logging
 # Get an instance of a logger
 logger = logging.getLogger('django.request')
 
-print __name__
 
 __author__ = 'alexy'
 

@@ -12,26 +12,32 @@
         <div class="panel-body">
           <form action="" id="js-client-add-order-form" method="post" role="form" class="add-bottom">
             {% csrf_token %}
-            <div class="col-lg-6">
-              {{ client_order_form.client }}
-              <div class="form-group">
+            <div class="row">
+              <div class="col-lg-6">
                 <p class="lead add-bottom">Добавить заказ</p>
-                <div class="col-lg-5">{{ client_order_form.date_start.label_tag }}</div>
-                <div class="col-lg-7">{{ client_order_form.date_start }}</div>
-                {{ client_order_form.date_start.errors }}
-                <div class="clearfix"></div>
+                {{ client_order_form.client }}
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col-lg-5">{{ client_order_form.date_start.label_tag }}</div>
+                    <div class="col-lg-7">{{ client_order_form.date_start }}</div>
+                    {{ client_order_form.date_start.errors }}
+                  </div>
+                  <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col-lg-5">{{ client_order_form.date_end.label_tag }}</div>
+                    <div class="col-lg-7">{{ client_order_form.date_end }}</div>
+                    {{ client_order_form.date_end.errors }}
+                  </div>
+                  <div class="clearfix"></div>
+                </div>
+                <input type="submit" value="Создать заказ" class="btn btn-default">
               </div>
-              <div class="form-group">
-                <div class="col-lg-5">{{ client_order_form.date_end.label_tag }}</div>
-                <div class="col-lg-7">{{ client_order_form.date_end }}</div>
-                {{ client_order_form.date_end.errors }}
-                <div class="clearfix"></div>
-              </div>
-              <input type="submit" value="Создать заказ" class="btn btn-default">
             </div>
             <div class="clearfix"></div>
           </form>
-          <table class="table table-hover">
+          <table class="table table-hover table-condensed table-bordered table-list">
             <thead>
               <tr>
                 <th>Название</th>
@@ -44,7 +50,7 @@
             </thead>
             <tbody class="js-list">
             {% for order in order_list %}
-              <tr data-id="{{ order.id }}" data-name="{{ order }}" data-model="ClientOrder" id="id_ClientOrder_{{ order.id }}">
+              <tr data-id="{{ order.id }}" data-name="{{ order }}" data-model="ClientOrder" id="id_ClientOrder_{{ order.id }}" {% if order.is_closed %}class="success"{% endif %}>
                 <td><a href="{% url 'client:order-update' order.id %}">{{ order|default:'Не указано' }}</a></td>
                 <td>{{ order.date_start|default:'Не указано' }}</td>
                 <td>{{ order.date_end|default:'Не указано' }}</td>
@@ -63,7 +69,7 @@
             {% empty %}
               <tr>
               <td colspan="6">
-                <p class="alert alert-info">Заказов не найдено</p>
+                <p class="alert alert-info text-left">Заказов не найдено</p>
               </td>
               </tr>
             {% endfor %}

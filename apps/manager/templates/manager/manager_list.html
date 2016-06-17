@@ -2,6 +2,10 @@
 {% block content %}
   <div class="container">
     <div class="col-lg-12">
+      <ol class="breadcrumb">
+        <li><a href="{% url 'cabinet:cabinet' %}">Рабочий стол</a></li>
+        <li class="active">Список менеджеров</li>
+      </ol>
       <div class="panel panel-default">
         <div class="panel-heading">
           <p class="lead remove-bottom text-center">Менеджеры</p>
@@ -10,7 +14,7 @@
           <a href="{% url 'manager:add' %}" class="btn btn-success add-bottom">
             <span class="glyphicon glyphicon-plus-sign"></span> Добавить менеджера
           </a>
-          <form action="" method="GET" role="form" class="form-inline">
+          <form action="" method="GET" role="form" class="form-inline add-bottom">
             <input type="text" name="email" value="{{ r_email|default:'' }}" class="form-control input-sm" placeholder="e-mail">
             <input type="text" name="last_name" value="{{ r_last_name|default:'' }}" class="form-control input-sm" placeholder="Фамилия">
             <input type="text" name="first_name" value="{{ r_first_name|default:'' }}" class="form-control input-sm" placeholder="Имя">
@@ -18,7 +22,7 @@
             <input type="text" name="phone" value="{{ r_phone|default:'' }}" class="form-control input-sm" placeholder="Телефон">
             <button type="submit" class="btn btn-info btn-sm"> <span class="glyphicon glyphicon-search"></span> Искать</button>
           </form>
-          <table class="table table-hover">
+          <table class="table table-hover table-bordered table-list">
             <thead>
               <tr>
                 <th>e-mail</th>
@@ -48,7 +52,7 @@
             {% empty %}
               <tr>
                 <td colspan="5">
-                  <p class="alert alert-info">Менеджеров не найдено</p>
+                  <p class="alert alert-info text-left">Менеджеров не найдено</p>
                 </td>
               </tr>
             {% endfor %}

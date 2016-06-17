@@ -16,21 +16,23 @@
             <p><strong>Количество адресов: {{ surface_count|default:'0' }}</strong></p>
             <p><strong>Количество подъездов: {{ porch_count|default:'0' }}</strong></p>
           </div>
-          <div class="col-lg-6">
-          {% if user.type == 1 or user.type == 2 or user.is_leader_manager %}
-            <a href="{% url 'surface:add' %}" class="btn btn-success add-bottom">
-              <span class="glyphicon glyphicon-plus-sign"></span> Добавить новую поверхность
-            </a>
-          {% endif %}
-            <a href="{% url 'surface:export' %}?city={{ city_id|default:'' }}&area={{ area_id|default:'' }}&street={{ street_id|default:'' }}&management={{ management_id|default:'' }}&releade_date={{ releade_date|default:'' }}" class="btn btn-warning add-bottom">
-              <span class="glyphicon glyphicon-download-alt"></span> Скачать в EXCEL
-            </a>
-          </div>
-          <div class="col-lg-6 text-right">
-            <form action="{% url 'surface:import' %}" method="POST" enctype="multipart/form-data" class="form-inline" role="form">{% csrf_token %}
-              {{ import_form.file }}
-              <input type="submit" value="Загрузить" class="js-show-loader btn btn-info form-control">
-            </form>
+          <div class="row">
+            <div class="col-lg-6">
+            {% if user.type == 1 or user.type == 2 or user.is_leader_manager %}
+              <a href="{% url 'surface:add' %}" class="btn btn-success add-bottom">
+                <span class="glyphicon glyphicon-plus-sign"></span> Добавить новую поверхность
+              </a>
+            {% endif %}
+              <a href="{% url 'surface:export' %}?city={{ city_id|default:'' }}&area={{ area_id|default:'' }}&street={{ street_id|default:'' }}&management={{ management_id|default:'' }}&releade_date={{ releade_date|default:'' }}" class="btn btn-warning add-bottom">
+                <span class="glyphicon glyphicon-download-alt"></span> Скачать в EXCEL
+              </a>
+            </div>
+            <div class="col-lg-6 text-right">
+              <form action="{% url 'surface:import' %}" method="POST" enctype="multipart/form-data" class="form-inline" role="form">{% csrf_token %}
+                {{ import_form.file }}
+                <input type="submit" value="Загрузить" class="js-show-loader btn btn-info form-control">
+              </form>
+            </div>
           </div>
           <div class="clearfix"></div>
           <div class="panel panel-success">
@@ -40,7 +42,7 @@
             </div>
           </div>
 {#          {% if object_list %}#}
-            <form action="{% url 'surface:list' %}" id="js-surface-filter-form" class="form-inline" method="GET" role="form">
+            <form action="{% url 'surface:list' %}" id="js-surface-filter-form" class="form-inline add-bottom" method="GET" role="form">
 {#              {% csrf_token %}#}
 {#              <input type="text" name="city" class="search-form__city" {% if city_id %}value="{{ city_id }}"{% endif %}>#}
 {#              <input type="text" name="area" class="search-form__area" {% if area_id %}value="{{ area_id }}"{% endif %}>#}
@@ -85,7 +87,7 @@
               <input type="text" name="release_date" class="form-control input-sm" placeholder="свободна от:" id="id_release_date" value="{{ release_date }}">
               <button type="submit" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-search"></span> Искать</button>
             </form>
-          <table class="table table-hover" style="font-size: 12px;">
+          <table class="table table-hover table-condensed table-bordered table-list">
             <thead>
               <tr>
                 <th>Город</th>

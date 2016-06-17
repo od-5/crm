@@ -13,31 +13,39 @@
                 role="form" class="add-bottom" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="col-lg-6">
-                  {{ client_maket_form.client }}
-              <div class="form-group">
+              <div class="row">
                 <p class="lead add-bottom">Добавить макет</p>
-                <div class="col-lg-5">{{ client_maket_form.name.label_tag }}</div>
-                <div class="col-lg-7">{{ client_maket_form.name }}</div>
-                {{ client_maket_form.name.errors }}
-                <div class="clearfix"></div>
+                {{ client_maket_form.client }}
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col-lg-5">{{ client_maket_form.name.label_tag }}</div>
+                    <div class="col-lg-7">{{ client_maket_form.name }}</div>
+                    {{ client_maket_form.name.errors }}
+                  </div>
+                  <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col-lg-5">{{ client_maket_form.file.label_tag }}</div>
+                    <div class="col-lg-7">{{ client_maket_form.file }}</div>
+                    {{ client_maket_form.file.errors }}
+                  </div>
+                  <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col-lg-5">{{ client_maket_form.date.label_tag }}</div>
+                    <div class="col-lg-7">{{ client_maket_form.date }}</div>
+                    {{ client_maket_form.date.errors }}
+                  </div>
+                  <div class="clearfix"></div>
+                </div>
+                <input type="submit" value="Загрузить" class="btn btn-default">
               </div>
-              <div class="form-group">
-                <div class="col-lg-5">{{ client_maket_form.file.label_tag }}</div>
-                <div class="col-lg-7">{{ client_maket_form.file }}</div>
-                {{ client_maket_form.file.errors }}
-                <div class="clearfix"></div>
-              </div>
-              <div class="form-group">
-                <div class="col-lg-5">{{ client_maket_form.date.label_tag }}</div>
-                <div class="col-lg-7">{{ client_maket_form.date }}</div>
-                {{ client_maket_form.date.errors }}
-                <div class="clearfix"></div>
-              </div>
-              <input type="submit" value="Загрузить" class="btn btn-default">
             </div>
             <div class="clearfix"></div>
           </form>
-          <table class="table table-hover">
+          <table class="table table-hover table-condensed table-bordered table-list">
             <thead>
               <tr>
                 <th>id</th>
@@ -54,12 +62,12 @@
                 <td><a href="{% url 'client:maket-update' item.id %}">{{ item.name|default:'Не указано' }}</a></td>
                 <td>{{ item.date|default:'Не указано' }}</td>
                 <td>
-                  <a href="{{ item.file.url|default:'Не указано' }}" class="btn btn-success">
+                  <a href="{{ item.file.url|default:'Не указано' }}" class="btn btn-sm btn-success">
                     <span class="glyphicon glyphicon-download-alt"></span> СКАЧАТЬ
                   </a>
                 </td>
                 <td>
-                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-ClientMaket-{{ item.id }}" class="btn btn-danger js-ajax-remove-btn">
+                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-ClientMaket-{{ item.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
                     <span class="glyphicon glyphicon-remove"></span> Удалить
                   </a>
                 </td>
@@ -67,7 +75,7 @@
             {% empty %}
               <tr>
                 <td colspan="5">
-                  <p class="alert alert-info">У клиента нет загруженных макетов</p>
+                  <p class="alert alert-info text-left">У клиента нет загруженных макетов</p>
                 </td>
               </tr>
             {% endfor %}

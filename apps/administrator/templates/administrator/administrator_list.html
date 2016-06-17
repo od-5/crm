@@ -22,7 +22,7 @@
             <input type="text" name="phone" value="{{ r_phone|default:'' }}" class="form-control input-sm" placeholder="Телефон">
             <button type="submit" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-search"></span> Искать</button>
           </form>
-          <table class="table table-hover">
+          <table class="table table-hover table-condensed table-bordered table-list">
             <thead>
               <tr>
                 <th>e-mail</th>
@@ -50,7 +50,7 @@
             {% empty %}
               <tr>
                 <td colspan="6">
-                  <p class="alert alert-info">Администраторов не найдено</p>
+                  <p class="alert alert-info text-left">Администраторов не найдено</p>
                 </td>
               </tr>
             {% endfor %}

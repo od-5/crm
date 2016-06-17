@@ -12,28 +12,30 @@
         </div>
         <div class="panel-body">
           {% if user.is_leader_manager %}
-          <a href="{% url 'client:add' %}" class="btn btn-success">
+          <a href="{% url 'client:add' %}" class="btn btn-success add-bottom">
             <span class="glyphicon glyphicon-plus-sign"></span> Добавить новую продажу
           </a>
           {% endif %}
-          <form action="{% url 'client:list' %}" class="client-search-form" method="GET">
-            <select name="city" class="form-control">
+          <form action="{% url 'client:list' %}" class="form-inline add-bottom" role="form" method="GET">
+            <select name="city" class="form-control input-sm">
               <option value="0">Город</option>
               {% for city in city_list %}
                 <option value="{{ city.id }}" {% if city.id == city_id %}selected="selected"{% endif %}>{{ city }}</option>
               {% endfor %}
             </select>
-            <select name="manager" class="form-control" {% if not user.is_leader_manager %}disabled="disabled"{% endif %}>
+            <select name="manager" class="form-control input-sm" {% if not user.is_leader_manager %}disabled="disabled"{% endif %}>
               <option value="0">Менеджер</option>
               {% for manager in manager_list %}
                 <option value="{{ manager.id }}" {% if manager.id == manager_id %}selected="selected"{% endif %}>{{ manager }}</option>
               {% endfor %}
             </select>
-            <input type="text" name="email" class="form-control" placeholder="email">
-            <input type="text" name="legal_name" class="form-control" placeholder="Юридическое название">
-            <input type="submit" value="Искать" class="btn btn-info">
+            <input type="text" name="email" class="form-control input-sm" placeholder="email">
+            <input type="text" name="legal_name" class="form-control input-sm" placeholder="Юридическое название">
+            <button class="btn btn-info btn-sm" type="submit">
+              <span class="glyphicon glyphicon-search"></span> Искать
+            </button>
           </form>
-          <table class="table table-hover">
+          <table class="table table-hover table-condensed table-bordered table-list">
             <thead>
               <tr>
                 <th>id</th>
@@ -68,7 +70,7 @@
               {% endfor %}
             {% else %}
               <tr>
-                <td colspan="9"><p class="alert alert-info">Клиентов нет</p></td>
+                <td colspan="9"><p class="alert alert-info text-left">Клиентов нет</p></td>
               </tr>
             {% endif %}
             </tbody>

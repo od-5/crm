@@ -191,7 +191,7 @@ class AdjusterTaskSurface(models.Model):
         app_label = 'adjuster'
 
     def __unicode__(self):
-        return u'#%d Задача для монтажника %s. Дата: %s' % (self.id, self.adjustertask.adjuster.user.get_full_name, self.adjustertask.date)
+        return u'поверхность %s' % self.surface
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
