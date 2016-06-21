@@ -14,10 +14,10 @@
         <p class="lead text-center remove-bottom">Настройки сайта</p>
       </div>
       <div class="panel-body">
-        <a href="{% url 'setup-add' %}" class="btn btn-success">
+        <a href="{% url 'setup-add' %}" class="btn btn-success add-bottom">
           <span class="glyphicon glyphicon-plus-sign"></span> Добавить
         </a>
-        <table class="table">
+        <table class="table table-condensed table-bordered table-list">
           <thead>
             <tr>
               <th>id</th>
@@ -38,7 +38,7 @@
                 </a>
               </td>
               <td>
-                <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-Setup-{{ object.id }}" class="btn btn-danger js-ajax-remove-btn">
+                <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-Setup-{{ object.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
                   <span class="glyphicon glyphicon-remove"></span> Удалить
                 </a>
               </td>
