@@ -23,7 +23,7 @@
           </form>
 
           <div>
-            <table class="table table-hover">
+            <table class="table table-hover table-condensed table-bordered table-list">
               <thead>
                 <tr>
                   <th>Город</th>
@@ -43,7 +43,7 @@
                   <td>{{ object.leader_name|default:'Не указано' }}</td>
                   <td>{{ object.phone|default:'Не указано' }}</td>
                   <td>
-                    <a href="#js-ajax-item-remove" id="js-ajax-remove-btт-ManagementCompany-{{ object.id }}" class="btn btn-danger js-ajax-remove-btn">
+                    <a href="#js-ajax-item-remove" id="js-ajax-remove-btт-ManagementCompany-{{ object.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
                       <span class="glyphicon glyphicon-remove"></span> Удалить
                     </a>
                   </td>
@@ -51,7 +51,7 @@
               {% empty %}
                 <tr style="width:100%">
                   <td colspan="6">
-                    <p class="alert alert-info">Управляющих компаний не найдено</p>
+                    <p class="alert alert-info text-left">Управляющих компаний не найдено</p>
                   </td>
                 </tr>
               {% endfor %}

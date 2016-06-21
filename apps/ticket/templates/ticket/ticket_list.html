@@ -28,7 +28,7 @@
             <input type="text" name="phone" class="form-control" placeholder="Телефон" value="{{ r_phone|default:'' }}">
             <input type="submit" value="Искать" class="btn btn-info">
           </form>
-          <table class="table table-hover">
+          <table class="table table-hover table-condensed table-bordered table-list">
             <thead>
               <tr>
                 <th>Имя</th>
@@ -60,7 +60,7 @@
               {% endfor %}
             {% else %}
               <tr>
-                <td colspan="6"><p class="alert alert-info">Заявок нет</p></td>
+                <td colspan="7"><p class="alert alert-info text-left">Заявок нет</p></td>
               </tr>
             {% endif %}
             </tbody>
