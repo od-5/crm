@@ -1,6 +1,6 @@
 # coding=utf-8
 from django.conf.urls import patterns, url
-from ajax import get_client_order_list, get_client_order_address_list
+from ajax import get_client_order_list, get_client_order_address_list, payment_add
 from .models import Client
 from .views import ClientListView
 
@@ -29,6 +29,7 @@ urlpatterns = patterns(
 
 
     url(r'^export/(?P<pk>\d+)/$', 'client_excel_export', name='excel_export'),
-
     url(r'archive/$', 'get_files', name='download-archive'),
+    url(r'(?P<pk>\d+)/payment/$', 'clientjournalpayment_list', name='payment-list'),
+    url(r'payment/add/$', payment_add, name='payment-add')
 )

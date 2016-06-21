@@ -14,22 +14,49 @@
         <div class="panel-body">
           <p class="lead">Общая стоимость всех продаж: <strong>{{ total_cost }}</strong> руб.</p>
           <form action="" method="GET" role="form" class="form-inline add-bottom">
-            <select name="city" id="" class="form-control input-sm">
-              <option value="">Город</option>
-              {% for city in city_list %}
-              <option value="{{ city.id }}" {% if city.id == r_city %}selected="selected"{% endif %}>{{ city.name }}</option>
-              {% endfor %}
-            </select>
-            <input type="text" name="date_s" value="{{ r_date_s|default:'' }}" id="js-journal-filter-date_s" class="form-control input-sm" placeholder="Дата от">
-            <input type="text" name="date_e" value="{{ r_date_e|default:'' }}" id="js-journal-filter-date_e" class="form-control input-sm" placeholder="Дата до">
-            <input type="text" name="legal_name" value="{{ r_legal_name|default:'' }}" class="form-control input-sm" placeholder="Юридическое название">
-            <select name="manager" id="" class="form-control input-sm" {% if user.type == 5 %}disabled="disabled"{% endif %}>
-              <option value="">Менеджер</option>
-              {% for manager in manager_list %}
-              <option value="{{ manager.id }}" {% if manager.id == r_manager %}selected="selected"{% endif %}>{{ manager.user.get_full_name }}</option>
-              {% endfor %}
-            </select>
-            <button type="submit" class="btn btn-info btn-sm"> <span class="glyphicon glyphicon-search"></span> Искать</button>
+            <table class="table table-condensed table-search">
+              <tbody>
+                <tr>
+                  <td>
+                    <select name="city" id="" class="form-control input-sm">
+                      <option value="">Город</option>
+                      {% for city in city_list %}
+                      <option value="{{ city.id }}" {% if city.id == r_city %}selected="selected"{% endif %}>{{ city.name }}</option>
+                      {% endfor %}
+                    </select>
+                  </td>
+                  <td>
+                    <input type="text" name="date_s" value="{{ r_date_s|default:'' }}" id="js-journal-filter-date_s" class="form-control input-sm" placeholder="Дата от">
+                  </td>
+                  <td>
+                    <input type="text" name="date_e" value="{{ r_date_e|default:'' }}" id="js-journal-filter-date_e" class="form-control input-sm" placeholder="Дата до">
+                  </td>
+                  <td>
+                    <input type="text" name="legal_name" value="{{ r_legal_name|default:'' }}" class="form-control input-sm" placeholder="Юридическое название">
+                  </td>
+                  <td>
+                    <select name="manager" id="" class="form-control input-sm" {% if user.type == 5 %}disabled="disabled"{% endif %}>
+                      <option value="">Менеджер</option>
+                      {% for manager in manager_list %}
+                      <option value="{{ manager.id }}" {% if manager.id == r_manager %}selected="selected"{% endif %}>{{ manager.user.get_full_name }}</option>
+                      {% endfor %}
+                    </select>
+                  </td>
+                  <td>
+                    <select name="payment" id="" class="form-control input-sm">
+                      <option value="">-- Поступления --</option>
+                      <option value="0" {% if r_payment == 0 %}selected="selected"{% endif %}>Нет поступлений</option>
+                      <option value="1" {% if r_payment == 1 %}selected="selected"{% endif %}>Полная оплата</option>
+                      <option value="2" {% if r_payment == 2 %}selected="selected"{% endif %}>Частичная оплата</option>
+                      <option value="3" {% if r_payment == 3 %}selected="selected"{% endif %}>Частичная и полная оплата</option>
+                    </select>
+                  </td>
+                  <td>
+                    <button type="submit" class="btn btn-info btn-sm"> <span class="glyphicon glyphicon-search"></span> Искать</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </form>
           <table class="table table-hover table-condensed table-bordered table-list">
             <thead>
@@ -42,13 +69,14 @@
                 <th>Скидка, %</th>
                 <th>Количество стендов</th>
                 <th>Полная стоимость, руб</th>
+                <th>Поступления, руб</th>
                 <th>&nbsp;</th>
                 <th>&nbsp;</th>
               </tr>
             </thead>
             <tbody class="js-list">
               {% for item in object_list %}
-              <tr data-id="{{ item.id }}" data-name="{{ item }}" data-model="ClientJournal" id="id_ClientJournal_{{ item.id }}">
+              <tr data-id="{{ item.id }}" data-name="{{ item }}" class="clientjournal-tr{% if item.full_payment %} success{% elif item.has_payment %} info{% endif %}" data-model="ClientJournal" id="id_ClientJournal_{{ item.id }}">
                 <td>{{ item.client.legal_name|default:'Не указано' }}</td>
                 <td>{{ item.client.manager|default:'Не указано' }}</td>
                 <td>
@@ -63,6 +91,12 @@
                 <td>{{ item.discount|default:'Не указано' }}</td>
                 <td>{{ item.stand_count|default:'Не указано' }}</td>
                 <td>{{ item.total_cost|default:'Не указано' }}</td>
+                <td style="width: 120px;">
+                  {{ item.current_payment|default:'0' }}
+                  <a href="#js-modal-payment-add" id="js-payment-btn-{{ item.id }}" class="btn btn-sm btn-info js-payment-add-btn hide" data-client="{{ item.client.id }}" data-clientjournal="{{ item.id }}">
+                    <span class="glyphicon glyphicon-plus-sign"></span> Добавить
+                  </a>
+                </td>
                 <td>
                   <a href="{% url 'client:journal-export' item.id %}" class="btn btn-sm btn-success">
                     <span class="glyphicon glyphicon-download-alt"></span> Скачать в EXCEL
@@ -90,4 +124,5 @@
     </div>
   </div>
   {% include '__modal/js_ajax_remove_form.html' %}
+  {% include 'journal/__modal/payment_modal.html' %}
 {% endblock %}

@@ -13,6 +13,9 @@
   <a href="{% url 'client:journal' client.id %}" class="btn btn-default">
     <span class="glyphicon glyphicon-calendar"></span> Журнал продаж
   </a>
+  <a href="{% url 'client:payment-list' client.id %}" class="btn btn-default">
+    <span class="glyphicon glyphicon-shopping-cart"></span> Журнал поступлений
+  </a>
   <a href="{% url 'client:maket' client.id %}" class="btn btn-default">
     <span class="glyphicon glyphicon-folder-open"></span> Архив макетов
   </a>

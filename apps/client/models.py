@@ -2,6 +2,8 @@
 import datetime
 from django.conf import settings
 import datetime
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 from django.utils.timezone import utc
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -124,13 +126,28 @@ class ClientJournal(models.Model):
     def __unicode__(self):
         return u'Покупка на дату %s' % self.created
 
+    def current_payment(self):
+        """
+        Показывает текущую сумму поступлений по покупке
+        """
+        count = 0
+        for payment in self.clientjournalpayment_set.all():
+            count += payment.sum
+        return round(count, 2)
+
     def stand_count(self):
+        """
+        Показывает количество стендов в покупке
+        """
         stand_count = 0
         for clientorder in self.clientorder.all():
             stand_count += clientorder.stand_count()
         return stand_count
 
     def total_cost(self):
+        """
+        Показывает общую стоимость покупки
+        """
         cost = self.cost
         if self.add_cost:
             add_cost = self.add_cost
@@ -143,11 +160,55 @@ class ClientJournal(models.Model):
         sum = ((float(cost)*(1+float(add_cost)*0.01))*(1-float(discount)*0.01)) * self.stand_count()
         return round(sum, 2)
 
+    def price_without_stands(self):
+        """
+        Полная стоимость за 1 стенд
+        """
+        cost = self.cost
+        if self.add_cost:
+            add_cost = self.add_cost
+        else:
+            add_cost = 0
+        if self.discount:
+            discount = self.discount
+        else:
+            discount = 0
+        sum = ((cost*(1+add_cost*0.01))*(1-discount*0.01))
+        return round(sum, 2)
+
     client = models.ForeignKey(to=Client, verbose_name=u'клиент')
     clientorder = models.ManyToManyField(to=ClientOrder, verbose_name=u'заказ клиента')
     cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Цена за стенд, руб')
     add_cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Наценка, %', blank=True, null=True)
     discount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Скидка, %', blank=True, null=True)
+    created = models.DateField(auto_now_add=True, verbose_name=u'Дата создания')
+    has_payment = models.BooleanField(default=False, verbose_name=u'Есть поступления')
+    full_payment = models.BooleanField(default=False, verbose_name=u'Оплачено')
+
+
+class ClientJournalPayment(models.Model):
+    class Meta:
+        verbose_name = u'Поступление'
+        verbose_name_plural = u'Поступления'
+        app_label = 'client'
+        ordering = ['-created']
+
+    def __unicode__(self):
+        return u'Поступление на сумму %s руб. Дата: %s' % (self.sum, self.created)
+
+    def save(self, *args, **kwargs):
+        super(ClientJournalPayment, self).save()
+        clientjournal = self.clientjournal
+        clientjournal.has_payment = True
+        if clientjournal.current_payment() >= clientjournal.total_cost():
+            clientjournal.full_payment = True
+        else:
+            clientjournal.full_payment = False
+        clientjournal.save()
+
+    client = models.ForeignKey(to=Client, verbose_name=u'Клиент')
+    clientjournal = models.ForeignKey(to=ClientJournal, verbose_name=u'Покупка')
+    sum = models.DecimalField(max_digits=11, decimal_places=2, verbose_name=u'Сумма')
     created = models.DateField(auto_now_add=True, verbose_name=u'Дата создания')
 
 

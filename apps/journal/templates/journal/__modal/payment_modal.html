@@ -1,0 +1,10 @@
+<div id="js-modal-payment-add">
+  <form action="{% url 'client:payment-add' %}" role="form" class="js-modal-payment-add-form" method="post">
+    {% csrf_token %}
+    <p class="lead text-center">Поступление</p>
+    <input type="hidden" name="p_client" id="p_client">
+    <input type="hidden" name="p_clientjournal" id="p_clientjournal">
+    <input type="number" name="p_sum" id="p_sum" step="0.01" class="form-control add-bottom" placeholder="Сумма, руб">
+    <input type="submit" value="Добавить" class="btn btn-success">
+  </form>
+</div>

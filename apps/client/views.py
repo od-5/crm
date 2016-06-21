@@ -401,6 +401,28 @@ def client_journal(request, pk):
     return render(request, 'client/client_journal.html', context)
 
 
+def clientjournalpayment_list(request, pk):
+    context = {}
+    client = Client.objects.get(pk=int(pk))
+    success_msg = u''
+    error_msg = u''
+    qs = client.clientjournalpayment_set.all()
+    paginator = Paginator(qs, 25)
+    page = request.GET.get('page')
+    try:
+        qs_list = paginator.page(page)
+    except PageNotAnInteger:
+        qs_list = paginator.page(1)
+    except EmptyPage:
+        qs_list = paginator.page(paginator.num_pages)
+    context.update({
+        'object': client,
+        'client': client,
+        'object_list': qs_list
+    })
+    return render(request, 'client/clientjournalpayment_list.html', context)
+
+
 def client_journal_export(request, pk):
     journal = ClientJournal.objects.get(pk=int(pk))
     client = journal.client

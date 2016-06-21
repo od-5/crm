@@ -6164,6 +6164,10 @@ h2 {
   border: none;
   background-color: transparent !important;
 }
+.caret.caret-reversed {
+  border-top-width: 0;
+  border-bottom: 4px solid #fff;
+}
 #scrollup {
   position: fixed;
   opacity: 0.8;
@@ -6372,6 +6376,9 @@ body {
 }
 #js-ajax-item-remove,
 #js-ajax-item-update {
+  display: none;
+}
+#js-modal-payment-add {
   display: none;
 }
 #js-modal-item-remove,

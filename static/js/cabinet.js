@@ -124,6 +124,51 @@ $(function() {
       }
     }
   });
+  // валидация формы добавления оплаты
+  $( '#js-payment-add-form' ).validate({
+    rules: {
+      p_client: {
+        required: true
+      },
+      p_clientjournal: {
+        required: true
+      },
+      p_sum: {
+        required: true,
+        number: true
+      }
+    }
+  });
+  // форма добавления оплаты
+  $('.js-payment-add-btn').fancybox({
+    afterClose: function () {
+      $('.js-modal-payment-add-form').resetForm();
+    },
+    beforeLoad: function() {
+      var item_id = '#' + this.element[0].id;
+      var item = $(item_id);
+      var form = $('.js-modal-payment-add-form');
+      console.log(item);
+      console.log(item.data('client'));
+      console.log(item.data('clientjournal'));
+      form.find('#p_client').val(item.data('client'));
+      form.find('#p_clientjournal').val(item.data('clientjournal'));
+      console.log('client' + form.find('#p_client').val());
+      console.log('clientjournal' + form.find('#p_client').val());
+     }
+  });
+  $('.js-modal-payment-add-form').ajaxForm({
+    success: function (data) {
+      if (data.success) {
+        $.notify('Оплата сохранена. Идёт пересчёт поступлений.', 'success');
+        $.fancybox.close();
+        location.reload();
+      } else {
+        $.notify('Произошла ошибка. Оплата не сохранена', 'error');
+        $.fancybox.close();
+      }
+    }
+  });
   // ajax удаление объектов
   var fancy_initial = function(){
     $('.js-ajax-remove-btn').fancybox({
@@ -1384,38 +1429,23 @@ $(function() {
   $('.js-show-loader').click(function() {
     $('.loader').show();
   });
-  //  var url = $(this).data('url');
-  //  var city = $('#id_a_city').val();
-  //  var area = $('#id_a_area').val();
-  //  var street = $('#id_a_street').val();
-  //  var date_s = $('#id_a_date_s').val();
-  //  var date_e = $('#id_a_date_e').val();
-  //  console.log(url);
-  //  console.log(city);
-  //  console.log(area);
-  //  console.log(street);
-  //  console.log(date_s);
-  //  console.log(date_e);
-  //  $.ajax({
-  //    url: url,
-  //    type: GET,
-  //    data: {
-  //      a_city: city,
-  //      a_area: area,
-  //      a_street: street,
-  //      a_date_s: date_s,
-  //      a_date_e: date_e
-  //    }
-  //  }).done(function (data) {
-  //    $('.loader').hide();
-  //    console.log(data);
-  //    location.href = data;
-  //    alert('has data');
-  //  }).fail(function(){
-  //    $('.loader').hide();
-  //    alert('fail!');
-  //  });
-  //});
-
+  $('.clientjournal-tr').hover(
+    function(){
+      $(this).find('.js-payment-add-btn').removeClass('hide');
+    },
+    function() {
+      $(this).find('.js-payment-add-btn').addClass('hide')
+    }
+  );
+  $('.js-show-order-list').click(function(){
+    $(this).parents('td').find('.journal-order-list').toggleClass('hide');
+    $(this).parents('td').find('.order-first').hide();
+    $(this).hide();
+  });
+  $('.js-hide-order-list').click(function(){
+    $(this).parents('.journal-order-list').toggleClass('hide');
+    $(this).parents('td').find('.js-show-order-list').show();
+    $(this).parents('td').find('.order-first').show();
+  });
 
 });

@@ -59,13 +59,14 @@
                 <th>Скидка, %</th>
                 <th>Количество стендов</th>
                 <th>Полная стоимость, руб.</th>
+                <th>Поступления, руб</th>
                 <th>&nbsp;</th>
                 <th>&nbsp;</th>
               </tr>
             </thead>
             <tbody class="js-list">
               {% for item in journal_list %}
-              <tr data-id="{{ item.id }}" data-name="{{ item }}" data-model="ClientJournal" id="id_ClientJournal_{{ item.id }}">
+              <tr data-id="{{ item.id }}" data-name="{{ item }}" data-model="ClientJournal" class="clientjournal-tr" id="id_ClientJournal_{{ item.id }}">
                 <td>
                   {% for order in item.clientorder.all %}
                     {{ order }}
@@ -77,6 +78,12 @@
                 <td>{{ item.discount|default:'Не указано' }}</td>
                 <td>{{ item.stand_count|default:'Не указано' }}</td>
                 <td>{{ item.total_cost|default:'Не указано' }}</td>
+                <td style="width: 120px;">
+                  {{ item.current_payment|default:'0' }}
+                  <a href="#js-modal-payment-add" id="js-payment-btn-{{ item.id }}" class="btn btn-sm btn-info js-payment-add-btn hide" data-client="{{ item.client.id }}" data-clientjournal="{{ item.id }}">
+                    <span class="glyphicon glyphicon-plus-sign"></span> Добавить
+                  </a>
+                </td>
                 <td>
                   <a href="{% url 'client:journal-export' item.id %}" class="btn btn-sm btn-success">
                     <span class="glyphicon glyphicon-download-alt"></span> Скачать в EXCEL
@@ -103,5 +110,6 @@
       </div>
     </div>
   </div>
-{% include '__modal/js_ajax_remove_form.html' %}
+  {% include '__modal/js_ajax_remove_form.html' %}
+  {% include 'journal/__modal/payment_modal.html' %}
 {% endblock %}

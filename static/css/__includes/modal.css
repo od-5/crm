@@ -5,6 +5,9 @@
 #js-ajax-item-update {
   display: none;
 }
+#js-modal-payment-add {
+  display: none;
+}
 #js-modal-item-remove,
 #js-modal-item-update {
   display: none;

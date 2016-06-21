@@ -1,9 +1,11 @@
 # coding=utf-8
+import datetime
+from django.utils.timezone import utc
 from annoying.decorators import ajax_request
 from django.shortcuts import get_object_or_404
 from apps.city.models import City, Surface, Porch, Area, Street, ManagementCompany
 from core.models import User
-from apps.client.models import Client, ClientMaket, ClientOrder, ClientOrderSurface, ClientJournal
+from apps.client.models import Client, ClientMaket, ClientOrder, ClientOrderSurface, ClientJournal, ClientJournalPayment
 from apps.adjuster.models import Adjuster, AdjusterTask, AdjusterTaskSurface
 from apps.manager.models import Manager
 from apps.incoming.models import IncomingClient, IncomingTask, IncomingClientContact
@@ -74,6 +76,12 @@ def ajax_remove_item(request):
             item_id = request.GET.get('item_id')
             item = get_object_or_404(eval(model), pk=int(item_id))
             if model == 'Client':
+                for order in item.clientorder_set.all():
+                    order.delete()
+                for journal in item.clientjournal_set.all():
+                    journal.delete()
+                for pay in item.clientjournalpayment_set.all():
+                    pay.delete()
                 user = User.objects.get(pk=item.user.id)
                 user.delete()
             if model == 'Manager':
@@ -97,8 +105,10 @@ def ajax_remove_item(request):
                 for atsp in item.adjustertasksurfaceporch_set.all():
                     atsp.delete()
             if model == 'ClientOrderSurface':
+                release_date = datetime.datetime.utcnow().replace(tzinfo=utc) - datetime.timedelta(days=1)
                 surface = Surface.objects.get(pk=item.surface.id)
                 surface.free = True
+                surface.release_date = release_date.date()
                 surface.save()
             item.delete()
             return {
