@@ -37,6 +37,16 @@ class JournalListView(ListView):
             qs = qs.filter(created__gte=datetime.strptime(self.request.GET.get('date_s'), '%d.%m.%Y'))
         if self.request.GET.get('date_e'):
             qs = qs.filter(created__lte=datetime.strptime(self.request.GET.get('date_e'), '%d.%m.%Y'))
+        if self.request.GET.get('payment'):
+            payment = int(self.request.GET.get('payment'))
+            if payment == 0:
+                qs = qs.filter(has_payment=False)
+            elif payment == 1:
+                qs = qs.filter(full_payment=True)
+            elif payment == 2:
+                qs = qs.filter(full_payment=False, has_payment=True)
+            elif payment == 3:
+                qs = qs.filter(has_payment=True)
         return qs
 
     def get_context_data(self, **kwargs):
@@ -57,6 +67,10 @@ class JournalListView(ListView):
             manager_qs = None
         r_city = self.request.GET.get('city')
         r_manager = self.request.GET.get('manager')
+        if self.request.GET.get('payment'):
+            context.update({
+                'r_payment': int(self.request.GET.get('payment'))
+            })
         if self.request.GET.get('date_s'):
             context.update({
                 'r_date_s': self.request.GET.get('date_s')
@@ -74,14 +88,17 @@ class JournalListView(ListView):
                 'r_manager': int(r_manager)
             })
         total_cost = 0
+        payments_sum = 0
         for i in self.object_list:
             total_cost += i.total_cost()
+            payments_sum += i.current_payment()
         if not r_city:
             r_city = 0
         context.update({
             'city_list': city_qs,
             'manager_list': manager_qs,
             'r_city': int(r_city),
-            'total_cost': total_cost
+            'total_cost': total_cost,
+            'payments_sum': payments_sum
         })
         return context

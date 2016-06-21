@@ -12,7 +12,16 @@
           <p class="lead remove-bottom text-center">Журнал продаж</p>
         </div>
         <div class="panel-body">
-          <p class="lead">Общая стоимость всех продаж: <strong>{{ total_cost }}</strong> руб.</p>
+          <div class="row">
+            <div class="col-lg-6">
+              <p>Общая стоимость всех продаж: <strong>{{ total_cost }}</strong> руб.</p>
+            </div>
+            <div class="col-lg-6">
+              <p class="text-right">
+                Общая сумма поступлений: <strong>{{ payments_sum|default:'0' }}</strong> руб
+              </p>
+            </div>
+          </div>
           <form action="" method="GET" role="form" class="form-inline add-bottom">
             <table class="table table-condensed table-search">
               <tbody>
