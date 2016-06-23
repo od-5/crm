@@ -143,7 +143,7 @@ class Surface(models.Model):
         try:
             today = datetime.datetime.today()
             return self.clientordersurface_set.select_related().filter(
-                clientorder__date_start__lte=today,
+                # clientorder__date_start__lte=today,
                 clientorder__date_end__gte=today
             ).first().clientorder.client.legal_name
         except:

@@ -125,7 +125,7 @@ $(function() {
     }
   });
   // валидация формы добавления оплаты
-  $( '#js-payment-add-form' ).validate({
+  $( '.js-modal-payment-add-form' ).validate({
     rules: {
       p_client: {
         required: true
@@ -154,7 +154,7 @@ $(function() {
       form.find('#p_client').val(item.data('client'));
       form.find('#p_clientjournal').val(item.data('clientjournal'));
       console.log('client' + form.find('#p_client').val());
-      console.log('clientjournal' + form.find('#p_client').val());
+      console.log('clientjournal' + form.find('#p_clientjournal').val());
      }
   });
   $('.js-modal-payment-add-form').ajaxForm({
