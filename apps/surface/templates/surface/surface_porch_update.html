@@ -104,7 +104,7 @@
                   Подъезд: {{ photo.porch.number }}, <br>
                   Дата: {{ photo.date }}
                 </a><br>
-                <a href="{% url 'surface:photo-delete' photo.id %}" class="btn btn-danger">Удалить</a>
+                <a href="{% url 'surface:photo-delete' photo.id %}" class="btn btn-sm btn-danger add-bottom">Удалить</a>
               </div>
             </div>
           {% empty %}

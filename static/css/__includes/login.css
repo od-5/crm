@@ -11,6 +11,11 @@
   background-color: #aaaaaa;
   padding: 10px;
 }
+@media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
+  .sign {
+    width: auto;
+  }
+}
 .sign label.error {
   display: none !important;
 }
@@ -28,6 +33,11 @@
 .sign-container_title {
   font-weight: bold;
   font-size: 1.8em;
+}
+@media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
+  .sign-container_title {
+    font-size: 1.7em;
+  }
 }
 .sign-container_slogan {
   font-style: italic;

@@ -30,5 +30,6 @@ INSTALLED_APPS = (
     'apps.manager',
     'apps.incoming',
     'apps.sign',
+    'apps.mobile',
     'django_cleanup',
 )

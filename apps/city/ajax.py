@@ -278,29 +278,30 @@ def get_photo_map(request):
     date_s = request.POST.get('date_s')
     date_e = request.POST.get('date_e')
     show_broken = request.session['show_broken']
-    qs = qs.filter(is_broken=show_broken)
-    if city:
-        qs = qs.filter(porch__surface__city=int(city))
-        if area:
-            qs = qs.filter(porch__surface__street__area=int(area))
-            if street:
-                qs = qs.filter(porch__surface__street=int(street))
-    if date_s:
-        # rs_date = datetime.strptime(date_s, '%d.%m.%Y')
-        # s_date = datetime.date(rs_date)
-        qs = qs.filter(date__gte=datetime.strptime(date_s, '%d.%m.%Y'))
-    if date_e:
-        # re_date = datetime.strptime(date_e, '%d.%m.%Y')
-        # e_date = datetime.date(re_date)
-        qs = qs.filter(date__lte=datetime.strptime(date_e, '%d.%m.%Y'))
-    for photo in qs:
-        photo_list.append({
-            'coord_y': str(photo.porch.surface.coord_y),
-            'coord_x': str(photo.porch.surface.coord_x),
-            'surface': photo.porch.surface.__unicode__(),
-            'porch': photo.porch.__unicode__(),
-            'image': photo.image_resize.url
-        })
+    if qs:
+        qs = qs.filter(is_broken=show_broken)
+        if city:
+            qs = qs.filter(porch__surface__city=int(city))
+            if area:
+                qs = qs.filter(porch__surface__street__area=int(area))
+                if street:
+                    qs = qs.filter(porch__surface__street=int(street))
+        if date_s:
+            # rs_date = datetime.strptime(date_s, '%d.%m.%Y')
+            # s_date = datetime.date(rs_date)
+            qs = qs.filter(date__gte=datetime.strptime(date_s, '%d.%m.%Y'))
+        if date_e:
+            # re_date = datetime.strptime(date_e, '%d.%m.%Y')
+            # e_date = datetime.date(re_date)
+            qs = qs.filter(date__lte=datetime.strptime(date_e, '%d.%m.%Y'))
+        for photo in qs:
+            photo_list.append({
+                'coord_y': str(photo.porch.surface.coord_y),
+                'coord_x': str(photo.porch.surface.coord_x),
+                'surface': photo.porch.surface.__unicode__(),
+                'porch': photo.porch.__unicode__(),
+                'image': photo.image_resize.url
+            })
     return {
         'photo_list': photo_list
     }

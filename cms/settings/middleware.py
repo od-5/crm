@@ -12,6 +12,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'core.context.SubdomainMiddleware',
+    'apps.mobile.middleware.MobileRedirectMiddleware',
 )
 
 if settings.DEBUG:

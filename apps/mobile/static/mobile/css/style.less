@@ -1,0 +1,121 @@
+body {
+  background: #f1f1f1;
+}
+header {
+  background-color: #eee;
+  -webkit-box-shadow: 0 0 10px #333;
+  -moz-box-shadow: 0 0 10px #333;
+  box-shadow: 0 0 10px #333;
+  margin-bottom: 10px;
+  .text {
+    color: #666;
+    font-weight: bold;
+  }
+}
+a {
+  color: #777;
+  -webkit-transition: color 0.5s ease;
+  -moz-transition: color 0.5s ease;
+  -ms-transition: color 0.5s ease;
+  -o-transition: color 0.5s ease;
+  transition: color 0.5s ease;
+  &:hover {
+    color: #333;
+  }
+}
+h2 {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 0;
+}
+
+img {
+  max-width: 100%;
+}
+.add {
+  &-bottom {
+    margin-bottom: 20px !important;
+  }
+}
+.remove {
+  &-bottom {
+    margin-bottom: 0;
+  }
+}
+.text {
+  &-left {
+    text-align: left;
+  }
+  &-right {
+    text-align: right;
+  }
+  &-center {
+    text-align: center;
+  }
+}
+.menu {
+  &-btn {
+    margin-top: 20px;
+  }
+}
+.navbar {
+  display: none;
+  border: none;
+  background-color: transparent;
+}
+.btn {
+  &-default {
+    background-color: #ccc;
+    border-color: #eee;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+}
+.form {
+  &-control {
+    margin-bottom: 5px;
+  }
+  &-search {
+    display: none;
+  }
+}
+.photo {
+  &-item {
+    &-link {
+      display: block;
+      //margin-bottom: 10px;
+      position: relative;
+      &__name {
+        position: absolute;
+        z-index: 99;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.78);
+        color: #333;
+        font-size: 16px;
+        width: 100%;
+      }
+      &__image {
+        width: 100%;
+      }
+    }
+  }
+}
+#map {
+  &-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 800;
+    #map {
+      z-index: 900;
+    }
+    .js-map-hide-btn {
+      z-index: 999;
+      position: absolute;
+      top: 0;
+      width: 100%;
+    }
+
+  }
+}

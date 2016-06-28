@@ -81,10 +81,6 @@ def get_client_order_address_list(request):
 @ajax_request
 def payment_add(request):
     try:
-        print request.META.get('HTTP_REFERER')
-        print request.POST.get('p_client')
-        print request.POST.get('p_clientjournal')
-        print request.POST.get('p_sum')
         client = Client.objects.get(pk=int(request.POST.get('p_client')))
         clientjournal = ClientJournal.objects.get(pk=int(request.POST.get('p_clientjournal')))
         sum = request.POST.get('p_sum')

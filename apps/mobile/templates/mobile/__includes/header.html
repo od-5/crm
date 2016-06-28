@@ -1,0 +1,37 @@
+<header>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-9 col-xs-9">
+        <h2 class="add-bottom">Контроль рекламных поверхностей</h2>
+      </div>
+      <div class="col-md-3 col-xs-3 text-right">
+        <button id="js-show-menu" class="btn btn-default menu-btn">
+          <span class="glyphicon glyphicon-th"></span>
+        </button>
+      </div>
+      <div class="col-md-12 col-xs-12">
+        <nav class="navbar">
+          <div class="container-fluid">
+            <ul class="nav navbar-nav">
+              <li>
+                <a href="{% url 'surface:photo-list' %}?full_view=1" class="btn btn-default">
+                  <span class="glyphicon glyphicon-globe"></span> полная версия кабинета
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'cabinet:profile' %}" class="btn btn-default">
+                  <span class="glyphicon glyphicon-user"></span> {{ user }}
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'cabinet:logout' %}?next={% url 'cabinet:cabinet' %}" class="btn btn-default">
+                  <span class="glyphicon glyphicon-log-out"></span> Выход
+                </a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </div>
+</header>

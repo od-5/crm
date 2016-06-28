@@ -1,0 +1,65 @@
+<main class="container" data-city="{{ user.client.city.name|default:'Волгоград' }}">
+  <div class="row">
+    <div class="col-md-12 col-xs-12">
+      <form action="" method="GET" role="form" id="js-client-photo-search-form" class="add-bottom form-search">
+        <select name="a_city" id="id_a_city" class="form-control input-sm" data-ajax-url="{% url 'city:get_area_list' %}">
+          <option value="">Город</option>
+          {% for city in city_list %}
+          <option value="{{ city.id }}" {% if city.id == a_city %}selected="selected"{% endif %}>{{ city.name }}</option>
+          {% endfor %}
+        </select>
+        <select name="a_area" id="id_a_area" class="form-control input-sm"  data-ajax-url="{% url 'city:simple_get_area_streets' %}">
+          <option value="">Район</option>
+          {% if area_list %}
+            {% for area in area_list %}
+            <option value="{{ area.id }}" {% if area.id == a_area %}selected="selected"{% endif %}>{{ area.name }}</option>
+            {% endfor %}
+          {% endif %}
+        </select>
+        <select name="a_street" id="id_a_street" class="form-control input-sm">
+          <option value="">Улица</option>
+          {% if street_list %}
+            {% for street in street_list %}
+            <option value="{{ street.id }}" {% if street.id == a_street %}selected="selected"{% endif %}>{{ street.name }}</option>
+            {% endfor %}
+          {% endif %}
+        </select>
+        <input type="text" name="a_date_s" id="id_a_date_s" placeholder="дата от" class="form-control input-sm" value="{{ a_date_s|default:'' }}">
+        <input type="text" name="a_date_e" id="id_a_date_e" placeholder="дата до" class="form-control input-sm" value="{{ a_date_e|default:'' }}">
+
+
+
+        <button class="btn btn-info form-control"><span class="glyphicon glyphicon-search"></span> Искать</button>
+      </form>
+      <button class="btn btn-default form-control" id="js-show-search">
+        <span class="glyphicon glyphicon-chevron-down"></span><span class="glyphicon glyphicon-chevron-up hide"></span> панель поиска
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-md-12">
+      <p class="lead">
+        Количество фотографий: {{ photo_count|default:'0' }}
+      </p>
+    </div>
+  {% for item in address_list %}
+    <div class="col-xs-12 col-md-12 photo-item">
+      <a href="{{ item.image.url }}" class="photo-item-link" title="{{ item.address }}, подъезд {{ item.porch.number }}" target="_blank">
+        <img src="{{ item.image_resize.url }}" alt="" class="photo-item-link__image">
+        <span class="photo-item-link__name">
+          Адрес: {{ item.address }} <br>
+          Подъезд: {{ item.porch.number }}, <br>
+          Дата: {{ item.date }}
+        </span>
+      </a>
+      <button data-coord-x="{{ item.porch.surface.coord_x|safe }}" data-coord-y="{{ item.porch.surface.coord_y|safe }}" class="btn btn-success form-control add-bottom js-map-show-btn">Показать на карте</button>
+    </div>
+  {% endfor %}
+    <div class="clearfix"></div>
+    {% include '__includes/pagination.html' with page_obj=address_list%}
+  </div>
+</main>
+<div id="map-wrapper" class="hide">
+  <div id="map" style="width:100%; height:100%;"></div>
+  <button class="btn btn-info btn-lg js-map-hide-btn">Закрыть карту</button>
+</div>

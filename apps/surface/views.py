@@ -1,5 +1,6 @@
 # coding=utf-8
 import xlwt
+from os import path as op
 from datetime import datetime
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
@@ -275,11 +276,20 @@ def surface_photo_list(request):
     """
     context = {}
     user = request.user
+    folder = 'surface'
+    template = 'surface_photo_list.html'
     if user.type == 5:
         manager = Manager.objects.get(user=user)
         city_qs = City.objects.filter(moderator=manager.moderator)
         a_qs = SurfacePhoto.objects.filter(porch__surface__city__moderator=manager.moderator)
     elif user.type == 3:
+        try:
+            if request.session['is_mobile']:
+                folder = 'mobile'
+                template = 'photo_list.html'
+        except:
+            request.session['is_mobile'] = False
+
         request.session['show_broken'] = False
         # client = get_object_or_None(Client, user=user)
         client = user.client
@@ -412,7 +422,7 @@ def surface_photo_list(request):
         'photo_count': photo_count,
         'page_count': page_count
     })
-    return render(request, 'surface/surface_photo_list.html', context)
+    return render(request, op.join(folder, template), context)
 
 
 def surface_export(request):
