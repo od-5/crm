@@ -9,7 +9,7 @@
         <div class="panel-body">
           <div class="col-lg-6">
             <p class="text-info lead">Персональная информация</p>
-            <form action="{% url 'cabinet:profile' %}" role="form" class="form-horizontal form-profile" method="post">
+            <form action="{% url 'cabinet:profile' %}" role="form" class="add-bottom form-horizontal form-profile" method="post">
               {% csrf_token %}
               <div class="form-group">
                 <div class="col-lg-5">
