@@ -1,6 +1,8 @@
+{% if user.type == 3 %}
 <a href="{% url 'surface:photo-list' %}?full_view=0" class="btn btn-info add-bottom">
   <span class="glyphicon glyphicon-phone"></span> Перейти на мобильную версию
 </a>
+{% endif %}
 
 <div class="panel panel-default">
   <div class="panel-heading"><p class="lead remove-bottom text-center">Фотографии поверхностей</p></div>
