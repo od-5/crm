@@ -1,5 +1,6 @@
 # coding=utf-8
 from django.conf.urls import patterns, url
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import logout
 from django.views.generic import ListView, UpdateView, CreateView
 from django.contrib.admin.views.decorators import staff_member_required
@@ -28,7 +29,7 @@ urlpatterns = patterns(
         template_name='cabinet/user_add.html',
         success_url='/cabinet/user/')),
         name='user-add'),
-    url(r'^profile/$', UserUpdateView.as_view(), name='profile'),
+    url(r'^profile/$', login_required(UserUpdateView.as_view()), name='profile'),
     url(r'^password_change/$', 'password_change', name='password_change'),
     url(r'^login/$', 'cabinet_login', name='login'),
     url(r'^logout/$', logout, name='logout'),

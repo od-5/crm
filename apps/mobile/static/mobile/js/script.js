@@ -102,4 +102,45 @@ $(function() {
       }));
     }
   });
+
+  // валидация профиля
+  $('#js-form-profile-update').validate({
+    rules: {
+      email: {
+        required: true
+      }
+    },
+    messages: {
+      email: {
+        required: "Вы не указали e-mail. Значение этого поля будет использоваться для входа в систему",
+        email: "email должен иметь формат name@domain.com"
+      }
+    }
+  });
+  // валидация формы изменения пароля
+  $( '.js-form-password-change' ).validate({
+    rules: {
+      user_id: {
+        required: true
+      },
+      password1: {
+        required: true
+      },
+      password2: {
+        required: true
+      }
+    },
+    submitHandler: function(e) {
+      $('.js-form-password-change').ajaxSubmit({
+          success: function(data){
+            if (data.success) {
+              $.notify(data.success, 'success');
+            } else {
+              $.notify(data.error, 'error');
+            }
+            $('.js-form-password-change').trigger('reset');
+          }
+      });
+    }
+  });
 });
