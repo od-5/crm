@@ -1,4 +1,5 @@
 # coding=utf-8
+from django.contrib.auth.decorators import login_required
 import xlwt
 from os import path as op
 from datetime import datetime
@@ -270,6 +271,7 @@ def surface_photo_update(request, pk):
     return render(request, 'surface/surface_photo_update.html', context)
 
 
+@login_required
 def surface_photo_list(request):
     """
     Фотографии рекламных поверхностей для менеджера и клиента
