@@ -37,7 +37,7 @@
         </a>
       </li>
       <li>
-        <a href="{{ URL_WITH_FILTER }}page={{ page_obj.paginator.count }}" aria-label="Next">
+        <a href="{{ URL_WITH_FILTER }}page={{ page_obj.paginator.num_pages }}" aria-label="Next">
           <span class="glyphicon glyphicon-fast-forward"></span>
         </a>
       </li>
@@ -48,7 +48,7 @@
         </a>
       </li>
       <li  class="disabled">
-        <a href="{{ URL_WITH_FILTER }}page={{ page_obj.paginator.count }}" aria-label="Next">
+        <a href="{{ URL_WITH_FILTER }}page={{ page_obj.paginator.num_pages }}" aria-label="Next">
           <span class="glyphicon glyphicon-fast-forward"></span>
         </a>
       </li>
