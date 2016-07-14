@@ -13,6 +13,28 @@ __author__ = 'alexy'
 
 
 @ajax_request
+def get_simple_city_map(request):
+    """
+    Функция получения информации для карты главной страницы сайта
+    Получение полного списка городов с координатами и количеством поверхностей.
+    """
+    qs = City.objects.all()
+    city_list = []
+    print qs
+    for city in qs:
+        city_list.append({
+            'name': city.name,
+            'coord_x': float(city.coord_x),
+            'coord_y': float(city.coord_y),
+            'surface_count': int(city.surface_count())
+        })
+    print city_list
+    return {
+        'city_list': city_list
+    }
+
+
+@ajax_request
 def get_city_area(request):
     """
     получение списка районов данного города.

@@ -54,6 +54,7 @@ class City(models.Model):
         self.coord_y = float(pos[1])
         if not self.slug:
             self.slug = slugify(self.name)
+        # self.surfaces = self.surface_count()
         super(City, self).save()
 
     name = models.CharField(max_length=100, verbose_name=u'Город')
@@ -63,6 +64,7 @@ class City(models.Model):
     coord_x = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=u'Ширина')
     coord_y = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=u'Долгота')
     slug = models.SlugField(verbose_name=u'url имя поддомена', blank=True, null=True, max_length=50)
+    # surfaces = models.IntegerField(verbose_name=u'Кол-во поверхностей', default=0)
 
 
 @receiver(post_save, sender=City)
@@ -254,3 +256,5 @@ class Porch(models.Model):
     against_tenants = models.BooleanField(verbose_name=u'Жильцы против', default=False)
     no_social_info = models.BooleanField(verbose_name=u'Отсутствует социальная информация', default=False)
     is_broken = models.BooleanField(verbose_name=u'Стенд поломан', default=False)
+
+

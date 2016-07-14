@@ -26,13 +26,7 @@
   <script src="{% static 'landing/js/all.js' %}"></script>
 {#  <script src="{{ STATIC_URL }}js/map.js"></script>#}
 {% load cache %}
-{% if MAIN_PAGE %}
-  {% cache 500 main_map %}
-    {% include 'landing/__include/map.html' %}
-  {% endcache %}
-{% else %}
-  {% include 'landing/__include/surface-map.html' with surface_list=current_city.surface_set.all %}
-{% endif %}
+
 {% if setup %}
   {{ setup.top_js|safe }}
 {% endif %}
@@ -187,7 +181,7 @@
       <div class="holder">
         <h2>Карта возможностей размещения вашей
         <span>рекламы в городах России</span></h2>
-        <div id="YMapsID" style="height: 500px; margin-bottom: 40px;" class="add-bottom"></div>
+        <div id="YMapsID" {% if not current_city %}data-url="{% url 'city:simple-map' %}"{% endif %} data-city="{{ current_city.slug|default:'' }}" style="height: 500px; margin-bottom: 40px;" class="add-bottom"></div>
         <div class="city-button-holder">
           <a href="" class="city-button">Посмотреть возможности по вашему городу</a>
           <div class="city-hidden">
@@ -499,6 +493,14 @@
     </div>
     <!--   Всплывающие окна end  -->
   </div>
+{% if MAIN_PAGE %}
+  <script src="{% static 'landing/js/city_map.js' %}"></script>
+{#  {% cache 500 main_map %}#}
+{#    {% include 'landing/__include/map.html' %}#}
+{#  {% endcache %}#}
+{% else %}
+  {% include 'landing/__include/surface-map.html' with surface_list=current_city.surface_set.all %}
+{% endif %}
 {% if setup %}
   {{ setup.bottom_js|safe }}
 {% endif %}
