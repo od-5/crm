@@ -22,8 +22,8 @@ ymaps.ready(function () {
             console.log(city_list[i]);
             myMap.geoObjects.add(
               new ymaps.Placemark([city_list[i]['coord_y'], city_list[i]['coord_x']], {
-              balloonContent: city_list[i]['name'] + 'Количество поверхностей: ' + city_list[i]['surface_count'],
-              hintContent: city_list[i]['name'] + 'Количество поверхностей: ' + city_list[i]['surface_count']
+              balloonContent: city_list[i]['name'] + ' Количество поверхностей: ' + city_list[i]['surface_count'],
+              hintContent: city_list[i]['name'] + ' Количество поверхностей: ' + city_list[i]['surface_count']
               })
             );
           }
