@@ -20,7 +20,6 @@ def get_simple_city_map(request):
     """
     qs = City.objects.all()
     city_list = []
-    print qs
     for city in qs:
         city_list.append({
             'name': city.name,
@@ -28,7 +27,6 @@ def get_simple_city_map(request):
             'coord_y': float(city.coord_y),
             'surface_count': int(city.surface_count())
         })
-    print city_list
     return {
         'city_list': city_list
     }
