@@ -31,9 +31,7 @@
     {% include 'landing/__include/map.html' %}
   {% endcache %}
 {% else %}
-  {% cache 500 surface_map %}
   {% include 'landing/__include/surface-map.html' with surface_list=current_city.surface_set.all %}
-  {% endcache %}
 {% endif %}
 {% if setup %}
   {{ setup.top_js|safe }}
