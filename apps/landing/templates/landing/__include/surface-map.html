@@ -3,12 +3,16 @@ ymaps.ready(function () {
   {% if surface_list %}
     var surface_points = [
         {% for surface in surface_list %}
+          {% if surface.coord_y and surface.coord_x %}
           [{{ surface.coord_y|safe }}, {{ surface.coord_x|safe }}],
+          {% endif %}
         {% endfor %}
     ];
     var surface_baloons = [
         {% for surface in surface_list %}
+          {% if surface.coord_y and surface.coord_x %}
           ['{{ surface|safe }}', '{{ surface.porch_count|default:"0" }}'],
+          {% endif %}
         {% endfor %}
     ];
   {% else %}
