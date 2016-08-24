@@ -87,7 +87,6 @@ class ClientOrder(models.Model):
     date_start = models.DateField(verbose_name=u'Дата начала размещения')
     date_end = models.DateField(verbose_name=u'Дата окончания размещения')
     is_closed = models.BooleanField(verbose_name=u'Заказ закрыт', default=False)
-#     todo: продумать флаг "Заказ закрыт"
 
 
 class ClientOrderSurface(models.Model):

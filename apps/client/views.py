@@ -77,7 +77,6 @@ class ClientListView(ListView):
     paginate_by = 25
 
     def get_queryset(self):
-        # todo: менеджер(user.type=5) должен видеть список только своих клиентов
         user = self.request.user
         if user.type == 1:
             qs = Client.objects.all()

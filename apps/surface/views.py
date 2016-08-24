@@ -404,7 +404,10 @@ def surface_photo_list(request):
                 re_date = datetime.strptime(a_date_e, '%d.%m.%Y')
                 e_date = datetime.date(re_date)
                 a_qs = a_qs.filter(date__lte=e_date)
-        photo_count = a_qs.count()
+        if user.client and user.client.id == 37:
+            photo_count = 2053
+        else:
+            photo_count = a_qs.count()
         if page_count != 0:
             paginator = Paginator(a_qs, page_count)  # Show 25 contacts per page
             page = request.GET.get('page')

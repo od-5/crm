@@ -732,7 +732,6 @@ $(function() {
     } else {
       act_form.find('#clientorder_group').addClass('hide');
       act_form.find('#id_clientorder').find('option').remove();
-    //  TODO: очистить список заказов
 
     }
   });

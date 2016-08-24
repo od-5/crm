@@ -225,7 +225,6 @@ class Porch(models.Model):
             # surface.has_broken = False
             # surface.save()
         super(Porch, self).save()
-        # todo: если что - искать неполадки с сохранением подъезда здесь!
         surface = Surface.objects.get(pk=self.surface.id)
         if surface.damaged():
             surface.has_broken = True

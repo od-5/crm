@@ -25,7 +25,6 @@ class IncomingClient(models.Model):
         (2, u'Переданный клиент'),
     )
 
-    # todo: если нужна возможность модератору вести клиентов - manager должен быть null=True
     manager = models.ForeignKey(to=Manager, verbose_name=u'Менеджер')
     name = models.CharField(verbose_name=u'Название', max_length=255)
     city = models.ForeignKey(to=City, verbose_name=u'Город')
