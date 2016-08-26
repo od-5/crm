@@ -11,9 +11,16 @@
           <p class="lead remove-bottom text-center">Модераторы</p>
         </div>
         <div class="panel-body">
-          <a href="{% url 'moderator:add' %}" class="btn btn-success add-bottom">
-            <span class="glyphicon glyphicon-plus-sign"></span> Добавить модератора
-          </a>
+          <div class="col-lg-6">
+            {% if user.type == 1 %}
+            <a href="{% url 'moderator:add' %}" class="btn btn-success add-bottom">
+              <span class="glyphicon glyphicon-plus-sign"></span> Добавить модератора
+            </a>
+            {% endif %}
+          </div>
+          <div class="col-lg-6">
+            <p class="text-right">Всего модераторов: <strong>{{ page_obj.paginator.count|default:'0' }}</strong></p>
+          </div>
           <form action="" method="GET" role="form" class="form-inline add-bottom">
             <input type="text" name="email" value="{{ r_email|default:'' }}" class="form-control input-sm" placeholder="e-mail">
             <input type="text" name="last_name" value="{{ r_last_name|default:'' }}" class="form-control input-sm" placeholder="Фамилия">

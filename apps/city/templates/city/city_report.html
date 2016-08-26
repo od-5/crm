@@ -1,0 +1,109 @@
+{% extends 'cabinet_index.html' %}
+{#{% block header %}{% with mobile_class='js-nav-main' %}{{ block.super }}{% endwith %}{% endblock %}#}
+{% block content %}
+  <div class="container">
+    <div class="col-lg-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="lead remove-bottom text-center">Отчёты по городам</p>
+        </div>
+        <div class="panel-body">
+          <form action="" method="GET" role="form" class="form-inline add-bottom js-city-report-form">
+            <select name="city" id="city_filter" class="form-control input-sm">
+              <option value="0">Город</option>
+              {% for item in city_list %}
+                <option value="{{ item.id }}" {% if item.id == city.id %}selected="selected"{% endif %}>{{ item }}</option>
+              {% endfor %}
+            </select>
+            <input type="text" name="date_s" id="id_date_s" class="form-control input-sm" value="{{ r_date_s|default:'' }}" placeholder="Дата от">
+            <input type="text" name="date_e" id="id_date_e" class="form-control input-sm" value="{{ r_date_e|default:'' }}" placeholder="Дата до">
+            <button type="submit" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-random"></span> Построить отчёт</button>
+          </form>
+        {% if city %}
+          <div class="row add-bottom">
+            <div class="col-lg-3 text-center">
+              <div class="text-info">Продажи</div>
+              <div class="city-report__value alert-info">{{ total_cost|default:'0' }}руб.</div>
+            </div>
+            <div class="col-lg-3 text-center">
+              <div class="text-success">Поступления</div>
+              <div class="city-report__value alert-success">{{ total_payment|default:'0' }}руб.</div>
+            </div>
+            <div class="col-lg-3 text-center">
+              <div class="text-warning">Количество клиентов</div>
+              <div class="city-report__value alert-warning">{{ city.client_set.count|default:'0' }}</div>
+            </div>
+            <div class="col-lg-3 text-center">
+              <div class="text-danger">Количество поверхностей</div>
+              <div class="city-report__value alert-danger">{{ city.surface_count|default:'0' }}</div>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+        {% endif %}
+          <div class="row">
+            <div id="city-chart" style="height:700px; width: 100%;"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+{% endblock %}
+{% block bottom_js %}
+  <script src="{{ STATIC_URL }}js/echarts-all.js"></script>
+  <script>
+    var myChart = echarts.init(document.getElementById('city-chart'));
+  var city_option = {
+      title : {
+        text: 'Продажи',
+        subtext: 'по всем городам за выбранный период',
+        x: 'center'
+      },
+      tooltip : {
+        trigger: 'item'
+      },
+      grid: {
+        height: 300,
+        y2: 0
+      },
+      legend: {
+        data:[{% for city in city_list %}'{{ city.name }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+        orient: 'horizontal',
+        x: 'center',
+        y: 400
+      },
+      toolbox: {
+        show : false,
+        feature : {
+          mark : {show: true},
+          dataView : {show: true, readOnly: false},
+          magicType : {show: true, type: ['line', 'bar']},
+          restore : {show: true},
+          saveAsImage : {show: true}
+        }
+      },
+      calculable : false,
+      xAxis : [
+        {
+          type : 'category',
+          data : ['Города']
+        }
+      ],
+      yAxis : [
+        {
+          type : 'value'
+        }
+      ],
+      series : [
+      {% for city in city_list %}
+        {
+          name:'{{ city.name }}',
+          type:'bar',
+          data:[{{ city.total_cost|safe|default:0 }}]
+        }{% if not forloop.last %},{% endif %}
+      {% endfor %}
+      ]
+    };
+  myChart.setOption(city_option);
+  </script>
+{% endblock %}

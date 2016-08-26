@@ -6,24 +6,20 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import ListView
-from .forms import ModeratorAddForm, ModeratorUpdateForm
+from apps.superviser.models import Superviser
+from .forms import SuperviserAddForm, SuperviserUpdateForm, SuperviserCityForm
 from core.models import User
-from .models import ModeratorInfo
-from .forms import ModeratorInfoForm
 
 __author__ = 'alexy'
 
 
-class ModeratorListView(ListView):
+class SuperviserListView(ListView):
     queryset = User.objects.filter(type=2)
-    template_name='moderator/moderator_list.html'
+    template_name='superviser/superviser_list.html'
     paginate_by = 50
 
     def get_queryset(self):
-        qs = User.objects.filter(type=2)
-        user = self.request.user
-        if user.type == 6:
-            qs = qs.filter(pk__in=user.superviser.moderator_id_list())
+        qs = User.objects.filter(type=6)
         if self.request.GET.get('email'):
             qs = qs.filter(email=self.request.GET.get('email'))
         if self.request.GET.get('last_name'):
@@ -37,7 +33,7 @@ class ModeratorListView(ListView):
         return qs
 
     def get_context_data(self, **kwargs):
-        context = super(ModeratorListView, self).get_context_data(**kwargs)
+        context = super(SuperviserListView, self).get_context_data(**kwargs)
         context.update({
             'r_email': self.request.GET.get('email', ''),
             'r_last_name': self.request.GET.get('last_name', ''),
@@ -48,13 +44,13 @@ class ModeratorListView(ListView):
         return context
 
 
-def moderator_add(request):
+def superviser_add(request):
     context = {}
     if request.method == "POST":
-        form = ModeratorAddForm(request.POST)
+        form = SuperviserAddForm(request.POST)
         if form.is_valid():
             user = form.save()
-            user.type = 2
+            user.type = 6
             user.save()
             try:
                 subject = u'Создана учётная запись nadomofone.ru'
@@ -68,29 +64,29 @@ def moderator_add(request):
                 )
             except:
                 pass
-            return HttpResponseRedirect(reverse('moderator:change', args=(user.id, )))
+            return HttpResponseRedirect(reverse('superviser:update', args=(user.id, )))
         else:
             context.update({
                 'error': u'Проверьте правильность ввода полей'
             })
     else:
-        form = ModeratorAddForm()
+        form = SuperviserAddForm()
     context.update({
         'form': form,
     })
-    return render(request, 'moderator/moderator_add.html', context)
+    return render(request, 'superviser/superviser_add.html', context)
 
 
-def moderator_change(request, pk):
+def superviser_update(request, pk):
     context = {}
     user = User.objects.get(pk=int(pk))
     try:
-        moderatorinfo = ModeratorInfo.objects.get(moderator=user)
+        superviser = Superviser.objects.get(superviser=user)
     except:
-        moderatorinfo = ModeratorInfo(
-            moderator=user
+        superviser = Superviser(
+            superviser=user
         )
-        moderatorinfo.save()
+        superviser.save()
     success_msg = u''
     error_msg = u''
     if request.method == 'POST':
@@ -102,21 +98,27 @@ def moderator_change(request, pk):
                 success_msg = u'Пароль успешно изменён!'
             else:
                 error_msg = u'Пароль и подтверждение пароля не совпадают!'
-        form = ModeratorUpdateForm(request.POST, instance=user)
-        info_form = ModeratorInfoForm(request.POST, instance=moderatorinfo)
+        form = SuperviserUpdateForm(request.POST, instance=user)
+        city_form = SuperviserCityForm(request.POST, instance=superviser)
         if form.is_valid():
             form.save()
             success_msg += u' Изменения успешно сохранены'
         else:
             error_msg = u'Проверьте правильность ввода полей!'
+        if city_form.is_valid():
+            city_form.save()
+            success_msg += u' Изменения успешно сохранены'
+        else:
+            error_msg = u'Проверьте правильность ввода полей!'
+
     else:
-        form = ModeratorUpdateForm(instance=user)
-        info_form = ModeratorInfoForm(instance=moderatorinfo)
+        form = SuperviserUpdateForm(instance=user)
+        city_form = SuperviserCityForm(instance=superviser)
     context.update({
         'success': success_msg,
         'error': error_msg,
         'form': form,
-        'info_form': info_form,
+        'city_form': city_form,
         'object': user
     })
-    return render(request, 'moderator/moderator_change.html', context)
+    return render(request, 'superviser/superviser_update.html', context)

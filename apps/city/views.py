@@ -3,6 +3,7 @@ from datetime import datetime
 from django.conf import settings
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
+from django.db.models import Sum
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
@@ -11,6 +12,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from apps.adjuster.models import SurfacePhoto
 from apps.city.forms import CityAddForm, StreetForm, AreaAddForm, ManagementCompanyForm
 from apps.city.models import City, Area, Street, ManagementCompany
+from apps.client.models import ClientJournal
+from apps.client.models import ClientJournalPayment
 from apps.manager.models import Manager
 
 __author__ = 'alexy'
@@ -376,3 +379,67 @@ def management_company_update(request, pk):
         'object': m_company
     })
     return render(request, 'city/management_company.html', context)
+
+
+def city_report(request):
+    context = {}
+    user = request.user
+    total_cost = total_payment = 0
+    if user.type == 1:
+        city_qs = City.objects.select_related().all()
+    elif user.type == 6:
+        city_qs = user.superviser.city.all()
+    elif user.type == 2:
+        city_qs = City.objects.select_related().filter(moderator=user)
+    elif user.type == 5 and user.is_leader_manager():
+        city_qs = City.objects.select_related().filter(moderator=user.manager.moderator)
+    else:
+        city_qs = None
+    r_city = request.GET.get('city')
+    r_date_s = request.GET.get('date_s')
+    r_date_e = request.GET.get('date_e')
+    if r_date_s:
+        context.update({
+            'r_date_s': r_date_s
+        })
+    if r_date_e:
+        context.update({
+            'r_date_e': r_date_e
+        })
+    for city_item in city_qs:
+        city_journal_qs = ClientJournal.objects.filter(client__city=city_item)
+        # city_payment_qs = ClientJournalPayment.objects.filter(client__city=city_item)
+        if r_date_s:
+            city_journal_qs = city_journal_qs.filter(created__gte=datetime.strptime(r_date_s, '%d.%m.%Y'))
+            # city_payment_qs = city_payment_qs.filter(created__gte=datetime.strptime(r_date_s, '%d.%m.%Y'))
+        if r_date_e:
+            city_journal_qs = city_journal_qs.filter(created__gte=datetime.strptime(r_date_s, '%d.%m.%Y'))
+            # city_payment_qs = city_payment_qs.filter(created__gte=datetime.strptime(r_date_s, '%d.%m.%Y'))
+        city_item.total_cost = 0
+        # city_total_payment = city_payment_qs.aggregate(Sum('sum'))
+        # city_item.total_payment = city_total_payment['sum__sum']
+        for item in city_journal_qs:
+            city_item.total_cost += item.total_cost()
+    if r_city and int(r_city) != 0:
+        city = city_qs.get(id=int(r_city))
+        journal_qs = ClientJournal.objects.filter(client__city=city)
+        payment_qs = ClientJournalPayment.objects.filter(client__city=city)
+        if r_date_s:
+            journal_qs = journal_qs.filter(created__gte=datetime.strptime(r_date_s, '%d.%m.%Y'))
+            payment_qs = payment_qs.filter(created__gte=datetime.strptime(r_date_s, '%d.%m.%Y'))
+        if r_date_e:
+            journal_qs = journal_qs.filter(created__gte=datetime.strptime(r_date_s, '%d.%m.%Y'))
+            payment_qs = payment_qs.filter(created__gte=datetime.strptime(r_date_s, '%d.%m.%Y'))
+
+        total_payment = payment_qs.aggregate(Sum('sum'))['sum__sum']
+        for item in journal_qs:
+            total_cost += item.total_cost()
+    else:
+        city = None
+    context.update({
+        'city_list': city_qs,
+        'city': city,
+        'total_payment': total_payment,
+        'total_cost': total_cost
+    })
+    return render(request, 'city/city_report.html', context)

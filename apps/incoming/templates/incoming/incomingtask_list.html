@@ -16,9 +16,18 @@
             Продажа не может быть создана: клиент с таким email уже зарегистрирован в системе.
           </p>
           {% endif %}
-          <a href="{% url 'incoming:task-add' %}" class="btn btn-success add-bottom">
-            <span class="glyphicon glyphicon-plus-sign"></span> Добавить новую задачу по клиенту
-          </a>
+          <div class="row">
+            <div class="col-lg-6">
+              <a href="{% url 'incoming:task-add' %}" class="btn btn-success add-bottom">
+              <span class="glyphicon glyphicon-plus-sign"></span> Добавить новую задачу по клиенту
+            </a>
+            </div>
+            <div class="col-lg-6">
+              <p class="text-right">Количество задач: <strong>{{ object_list.paginator.count|default:'0' }}</strong></p>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+
           <form action="" method="GET" role="form" id="js-incomingtask-search-form" class="form-inline add-bottom">
             <input type="text" name="name" value="{{ r_name|default:'' }}" class="form-control input-sm" placeholder="Название">
             <input type="text" name="date_s" id="id_date_s" value="{{ r_date_s|default:'' }}" class="form-control input-sm" placeholder="Дата от">

@@ -12,6 +12,7 @@ __author__ = 'alexy'
 urlpatterns = patterns(
     'apps.city.views',
     url(r'^$', CityListView.as_view(model=City), name='list'),
+    url(r'^report/$', 'city_report', name='report'),
     url(r'^add/$', staff_member_required(CityCreateView.as_view()), name='add'),
     url(r'^(?P<pk>\d+)/$', 'city_update', name='update'),
 

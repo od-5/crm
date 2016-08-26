@@ -100,7 +100,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     #     super(User, self).save()
 
     def is_leader_manager(self):
-        if self.type == 1 or self.type == 2:
+        if self.type == 1 or self.type == 2 or self.type == 6:
             return True
         if self.type == 5:
             if self.manager.leader:

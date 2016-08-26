@@ -116,6 +116,7 @@ $(function() {
       }
     }
   });
+  //$('.js-form-administrator-change input[type=checkbox]').
   // валидация формы изменения администратора
   $( '.js-form-administrator-change' ).validate({
     rules: {
@@ -1445,6 +1446,12 @@ $(function() {
     $(this).parents('.journal-order-list').toggleClass('hide');
     $(this).parents('td').find('.js-show-order-list').show();
     $(this).parents('td').find('.order-first').show();
+  });
+
+  var table_report = $('.js-table-report');
+  table_report.find('#js-select-all');
+  table_report.find('#js-select-all').on('click', function(){
+      table_report.find('tbody input[type=checkbox]').prop('checked', $(this).prop('checked'));
   });
 
 });

@@ -10,7 +10,9 @@ urlpatterns = patterns(
     url(r'^$', ManagerListView.as_view(model=Manager), name='list'),
     url(r'^add/$', 'manager_add', name='add'),
     url(r'^(?P<pk>\d+)/$', 'manager_update', name='update'),
-    #
+    url(r'^report/$', 'manager_report', name='report'),
+    url(r'^report/excel/$', 'manager_report_excel', name='report-excel'),
+    url(r'^report/detail/(?P<pk>\d+)/$', 'manager_detail_report_excel', name='report-detail'),
     # url(r'^(?P<pk>\d+)/maket/$', 'client_maket', name='maket'),
     # url(r'^maket/add/$', 'client_maket_add', name='maket-add'),
     # url(r'^maket/(?P<pk>\d+)/$', 'client_maket_update', name='maket-update'),

@@ -13,3 +13,12 @@ label.error {
   padding-left: 0;
   list-style: none;
 }
+.js-form-administrator-change ul#id_city {
+  list-style: none;
+  padding-left: 0;
+}
+.js-form-administrator-change input[type=checkbox] {
+  height: auto;
+  width: auto;
+  display: initial;
+}

@@ -11,9 +11,14 @@
           <p class="lead remove-bottom text-center">Журнал клиентов</p>
         </div>
         <div class="panel-body">
-          <div>
-            <p><strong>Количество клиентов: {{ manager_client_count|default:'0' }}</strong></p>
-            <p><strong>Количество задач: {{ manager_task_count|default:'0' }}</strong></p>
+          <div class="row">
+            <div class="col-lg-6">
+              <p>Количество клиентов: <strong>{{ manager_client_count|default:'0' }}</strong></p>
+            </div>
+            <div class="col-lg-6">
+              <p class="text-right">Количество задач: <strong>{{ manager_task_count|default:'0' }}</strong></p>
+            </div>
+            <div class="clearfix"></div>
           </div>
           <div class="row">
             <div class="col-lg-7">

@@ -13,6 +13,7 @@ urlpatterns = patterns(
     url(r'^sign/', include('apps.sign.urls', namespace='sign'),),
     url(r'^cabinet/', include('apps.cabinet.urls', namespace='cabinet'),),
     url(r'^administrator/', include('apps.administrator.urls', namespace='administrator'),),
+    url(r'^superviser/', include('apps.superviser.urls', namespace='superviser'),),
     url(r'^moderator/', include('apps.moderator.urls', namespace='moderator'),),
     url(r'^city/', include('apps.city.urls', namespace='city'),),
     url(r'^client/', include('apps.client.urls', namespace='client'),),

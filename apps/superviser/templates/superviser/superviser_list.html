@@ -4,23 +4,23 @@
     <div class="col-lg-12">
       <ol class="breadcrumb">
         <li><a href="{% url 'cabinet:cabinet' %}">Рабочий стол</a></li>
-        <li class="active">Список менеджеров</li>
+        <li class="active">Список супервайзеров</li>
       </ol>
       <div class="panel panel-default">
         <div class="panel-heading">
-          <p class="lead remove-bottom text-center">Менеджеры</p>
+          <p class="lead remove-bottom text-center">Супервайзеры</p>
         </div>
         <div class="panel-body">
           <div class="row">
             <div class="col-lg-6">
-              <a href="{% url 'manager:add' %}" class="btn btn-success add-bottom">
-              <span class="glyphicon glyphicon-plus-sign"></span> Добавить менеджера
-            </a>
+              <a href="{% url 'superviser:add' %}" class="btn btn-success add-bottom">
+                <span class="glyphicon glyphicon-plus-sign"></span> Добавить супервайзера
+              </a>
             </div>
             <div class="col-lg-6">
-                <p class="text-right">Всего менеджеров: <strong>{{ page_obj.paginator.count|default:'0' }}</strong></p>
+              <p class="text-right">Всего супервайзеров: <strong>{{ page_obj.paginator.count|default:'0' }}</strong></p>
             </div>
-          <div class="clearfix"></div>
+            <div class="clearfix"></div>
           </div>
           <form action="" method="GET" role="form" class="form-inline add-bottom">
             <input type="text" name="email" value="{{ r_email|default:'' }}" class="form-control input-sm" placeholder="e-mail">
@@ -30,7 +30,7 @@
             <input type="text" name="phone" value="{{ r_phone|default:'' }}" class="form-control input-sm" placeholder="Телефон">
             <button type="submit" class="btn btn-info btn-sm"> <span class="glyphicon glyphicon-search"></span> Искать</button>
           </form>
-          <table class="table table-hover table-bordered table-list">
+          <table class="table table-hover table-condensed table-bordered table-list">
             <thead>
               <tr>
                 <th>e-mail</th>
@@ -38,29 +38,37 @@
                 <th>Имя</th>
                 <th>Отчество</th>
                 <th>Телефон</th>
+                <th>Города</th>
                 <th>&nbsp;</th>
               </tr>
             </thead>
             <tbody class="js-list">
             {% for object in object_list %}
-              <tr data-id="{{ object.id }}" data-name="{{ object.user.get_full_name }}" data-model="Manager" id="id_Manager_{{ object.id }}">
-                <td><a href="{% url 'manager:update' object.id %}" class="js-moderator-email"> {{ object.user.email|default:'' }}</a></td>
-                <td>{{ object.user.last_name|default:'Не указано' }}</td>
-                <td>{{ object.user.first_name|default:'Не указано' }}</td>
-                <td>{{ object.user.patronymic|default:'Не указано' }}</td>
-                <td>{{ object.user.phone|default:'Не указано' }}</td>
+              <tr data-id="{{ object.id }}" data-name="{{ object.get_full_name }}" data-model="User" id="id_User_{{ object.id }}">
+                <td><a href="{% url 'superviser:update' object.pk %}" > {{ object.email|default:'' }}</a></td>
+                <td>{{ object.last_name|default:'Не указано' }}</td>
+                <td>{{ object.first_name|default:'Не указано' }}</td>
+                <td>{{ object.patronymic|default:'Не указано' }}</td>
+                <td>{{ object.phone|default:'Не указано' }}</td>
                 <td>
-                  {% if user.type != 5 %}
-                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-Manager-{{ object.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
+                {% if object.superviser.city.all %}
+                  {% for city in object.superviser.city.all %}
+                    {{ city.name }}{% if not forloop.last %}, {% endif %}
+                  {% endfor %}
+                {% else %}
+                  Не назначено
+                {% endif %}
+                </td>
+                <td>
+                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-User-{{ object.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
                     <span class="glyphicon glyphicon-remove"></span> Удалить
                   </a>
-                  {% endif %}
                 </td>
               </tr>
             {% empty %}
               <tr>
-                <td colspan="5">
-                  <p class="alert alert-info text-left">Менеджеров не найдено</p>
+                <td colspan="7">
+                  <p class="alert alert-info text-left">Супервайзеров не найдено</p>
                 </td>
               </tr>
             {% endfor %}

@@ -26,22 +26,24 @@ class IncomingClientListView(ListView):
         phone = self.request.GET.get('phone')
         contact = self.request.GET.get('contact')
         if user.type == 1:
-            qs = IncomingClient.objects.all()
+            qs = IncomingClient.objects.select_related().all()
+        elif user.type == 6:
+            qs = IncomingClient.objects.select_related().filter(city__moderator__in=user.superviser.moderator_id_list())
         elif user.type == 2:
-            qs = IncomingClient.objects.filter(city__moderator=user)
+            qs = IncomingClient.objects.select_related().filter(city__moderator=user)
         elif user.type == 5:
             if user.is_leader_manager():
                 manager = Manager.objects.get(user=user)
-                qs = IncomingClient.objects.filter(city__moderator=manager.moderator)
+                qs = IncomingClient.objects.select_related().filter(city__moderator=manager.moderator)
             else:
-                qs = IncomingClient.objects.filter(manager__user=user)
+                qs = IncomingClient.objects.select_related().filter(manager__user=user)
         else:
             qs = None
         if name:
             qs = qs.filter(name__icontains=name)
         if phone or name:
             client_id_list = [int(i.id) for i in qs]
-            c_qs = IncomingClientContact.objects.filter(incomingclient__in=client_id_list)
+            c_qs = IncomingClientContact.objects.select_related().filter(incomingclient__in=client_id_list)
             if phone:
                 c_qs = c_qs.filter(phone=phone)
             if contact:
@@ -64,7 +66,7 @@ class IncomingClientListView(ListView):
             context.update({
                 'r_contact': self.request.GET.get('contact')
             })
-        queryset = self.get_queryset()
+        queryset = self.object_list
         manager_client_count = queryset.count()
         manager_task_count = 0
         search_client_name = self.request.GET.get('client_name')
@@ -87,6 +89,8 @@ class IncomingClientListView(ListView):
         user = self.request.user
         if user.type == 1:
             manager_qs = Manager.objects.all()
+        elif user.type == 6:
+            manager_qs = Manager.objects.filter(moderator__in=user.superviser.moderator_id_list())
         elif user.type == 2:
             manager_qs = Manager.objects.filter(moderator=user)
         elif user.type == 5:
@@ -112,6 +116,9 @@ def incomingclient_add(request):
     if user.type == 1:
         manager_qs = Manager.objects.all()
         city_qs = City.objects.all()
+    elif user.type == 6:
+        manager_qs = Manager.objects.filter(moderator__in=user.superviser.moderator_id_list(), user__is_active=True)
+        city_qs = user.superviser.city.all()
     elif user.type == 2:
         manager_qs = Manager.objects.filter(moderator=user)
         city_qs = City.objects.filter(moderator=user)
@@ -158,6 +165,9 @@ def incomingclient_update(request, pk):
     if user.type == 1:
         manager_qs = Manager.objects.all()
         city_qs = City.objects.all()
+    elif user.type == 6:
+        manager_qs = Manager.objects.filter(moderator__in=user.superviser.moderator_id_list(), user__is_active=True)
+        city_qs = user.superviser.city.all()
     elif user.type == 2:
         manager_qs = Manager.objects.filter(moderator=user)
         city_qs = City.objects.filter(moderator=user)
@@ -274,6 +284,9 @@ def incomingtask_list(request):
         qs = IncomingTask.objects.all()
     elif user.type == 2:
         qs = IncomingTask.objects.filter(manager__moderator=user)
+    elif user.type == 6:
+        qs = IncomingTask.objects.filter(manager__moderator__in=user.superviser.moderator_id_list())
+        manager_qs = Manager.objects.filter(moderator__in=user.superviser.moderator_id_list())
     elif user.type == 5:
         if user.is_leader_manager():
             manager = Manager.objects.get(user=user)
@@ -355,6 +368,9 @@ def incomingtask_add(request):
     elif user.type == 2:
         manager_qs = Manager.objects.filter(moderator=user)
         incomingclient_qs = IncomingClient.objects.filter(manager__moderator=user)
+    elif user.type == 6:
+        manager_qs = Manager.objects.filter(moderator__in=user.superviser.moderator_id_list(), user__is_active=True)
+        incomingclient_qs = IncomingClient.objects.filter(manager__moderator__in=user.superviser.moderator_id_list())
     elif user.type == 5:
         manager = Manager.objects.get(user=user)
         manager_qs = Manager.objects.filter(moderator=manager.moderator)
@@ -396,6 +412,8 @@ def incomingtask_update(request, pk):
     user = request.user
     if user.type == 1:
         manager_qs = Manager.objects.all()
+    elif user.type == 6:
+        manager_qs = Manager.objects.filter(moderator__in=user.superviser.moderator_id_list(), user__is_active=True)
     elif user.type == 2:
         manager_qs = Manager.objects.filter(moderator=user)
     elif user.type == 5:

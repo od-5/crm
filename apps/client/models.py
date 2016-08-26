@@ -130,7 +130,7 @@ class ClientJournal(models.Model):
         Показывает текущую сумму поступлений по покупке
         """
         count = 0
-        for payment in self.clientjournalpayment_set.all():
+        for payment in self.clientjournalpayment_set.select_related().all():
             count += payment.sum
         return round(count, 2)
 
@@ -139,7 +139,7 @@ class ClientJournal(models.Model):
         Показывает количество стендов в покупке
         """
         stand_count = 0
-        for clientorder in self.clientorder.all():
+        for clientorder in self.clientorder.select_related().all():
             stand_count += clientorder.stand_count()
         return stand_count
 
@@ -183,6 +183,8 @@ class ClientJournal(models.Model):
     created = models.DateField(auto_now_add=True, verbose_name=u'Дата создания')
     has_payment = models.BooleanField(default=False, verbose_name=u'Есть поступления')
     full_payment = models.BooleanField(default=False, verbose_name=u'Оплачено')
+#     todo: добавить поля "Полная стоимость" и "Сумма поступлений"
+#     todo: добавить pre_save сигналы для расчёта и перерасчёта полной стоимости и суммы поступлений
 
 
 class ClientJournalPayment(models.Model):
@@ -209,6 +211,7 @@ class ClientJournalPayment(models.Model):
     clientjournal = models.ForeignKey(to=ClientJournal, verbose_name=u'Покупка')
     sum = models.DecimalField(max_digits=11, decimal_places=2, verbose_name=u'Сумма')
     created = models.DateField(auto_now_add=True, verbose_name=u'Дата создания')
+#     todo: добавить post_save сигнал для перерасчёта полной суммы поступлений по покупке
 
 
 class ClientMaket(models.Model):

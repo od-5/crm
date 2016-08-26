@@ -18,6 +18,7 @@ INSTALLED_APPS = (
     'api',
     'apps.ticket',
     'apps.administrator',
+    'apps.superviser',
     'apps.moderator',
     'apps.landing',
     'apps.cabinet',

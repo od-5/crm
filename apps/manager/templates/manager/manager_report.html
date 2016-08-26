@@ -1,0 +1,232 @@
+{% extends 'cabinet_index.html' %}
+{% block title %}Отчёты по менеджерам | {{ block.super }}{% endblock %}
+{% block extra_js %}
+  <script src="http://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+{% endblock %}
+{% block content %}
+  <div class="container">
+    <div class="col-lg-12">
+      <ol class="breadcrumb">
+        <li><a href="{% url 'cabinet:cabinet' %}">Рабочий стол</a></li>
+        <li><a href="{% url 'manager:list' %}">Список менеджеров</a></li>
+        <li class="active">Отчёт по менеджерам</li>
+      </ol>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="lead remove-bottom text-center">Отчёт по менеджерам</p>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-lg-12">
+              <p class="text-right">Найдено менеджеров: <strong>{{ object_list.count|default:'0' }}</strong></p>
+            </div>
+          </div>
+          <form action="" method="GET" role="form" class="js-manager-report-form add-bottom">
+            <table class="table table-search">
+              <tbody>
+              <tr>
+              {% if user.type == 1 or user.type == 6 %}
+                <td>
+                  <select name="moderator" id="id_moderator" class="form-control input-sm">
+                    <option value="0">Выберите модератора</option>
+                    {% for moderator in moderator_list %}
+                      <option value="{{ moderator.id }}" {% if moderator.id == r_moderator %}selected="selected"{% endif %}>{{ moderator.company|default:moderator }}</option>
+                    {% endfor %}
+                  </select>
+                </td>
+                {% endif %}
+                <td>
+                  <input type="text" name="email" value="{{ r_email|default:'' }}" class="form-control input-sm" placeholder="e-mail">
+                </td>
+                <td>
+                  <input type="text" name="last_name" value="{{ r_last_name|default:'' }}" class="form-control input-sm" placeholder="Фамилия">
+                </td>
+                <td>
+                  <input type="text" name="first_name" value="{{ r_first_name|default:'' }}" class="form-control input-sm" placeholder="Имя">
+                </td>
+                <td>
+                  <input type="text" name="phone" value="{{ r_phone|default:'' }}" class="form-control input-sm" placeholder="Телефон">
+                </td>
+                <td>
+                  <input type="text" name="date_s" id="id_date_s" class="form-control input-sm" placeholder="Дата от" value="{{ r_date_s|default:'' }}">
+                </td>
+                <td>
+                  <input type="text" name="date_e" id="id_date_e" class="form-control input-sm" placeholder="Дата до" value="{{ r_date_e|default:'' }}">
+                </td>
+                <td>
+                  <button type="submit" class="btn btn-info btn-sm"> <span class="glyphicon glyphicon-search"></span> Искать</button>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </form>
+          <form action="{% url 'manager:report-excel' %}" method="post" class="add-bottom" target="_blank">{% csrf_token %}
+            <input type="hidden" name="date_from" value="{{ r_date_s|default:'' }}">
+            <input type="hidden" name="date_to" value="{{ r_date_e|default:'' }}">
+            <table class="table table-hover table-condensed table-bordered table-list js-table-report">
+              <thead>
+                <tr>
+                  <th><input type="checkbox" name="select_all" id="js-select-all" value=""></th>
+                  <th>email</th>
+                  <th>ФИО</th>
+                  <th>Клиенты</th>
+                  <th>Задачи</th>
+                  <th>Звонки</th>
+                  <th>Встречи</th>
+                  <th>Продажи</th>
+                  <th>Отказы</th>
+                  <th>Сумма продаж</th>
+                  <th>Сумма поступлений</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for manager in object_list %}
+                <tr>
+                  <td><input type="checkbox" name="chk_group[]" value="{{ manager.id }}"></td>
+                  <td>{{ manager.user.email|default:'не указано' }}</td>
+                  <td>{{ manager|default:'не указано' }}</td>
+                  <td>{{ manager.client_count|default:'0' }}</td>
+                  <td>{{ manager.task_count|default:'0' }}</td>
+                  <td>{{ manager.call_count|default:'0' }}</td>
+                  <td>{{ manager.meet_count|default:'0' }}</td>
+                  <td>{{ manager.sale_count|default:'0' }}</td>
+                  <td>{{ manager.deny_count|default:'0' }}</td>
+                  <td>{{ manager.total_sale|default:'0' }}</td>
+                  <td>{{ manager.total_payment|default:'0' }}</td>
+                  <td><a href="{% url 'manager:report-detail' manager.id %}?date_from={{ r_date_s }}&date_to={{ r_date_e }}" class="btn btn-sm btn-success" >детальный отчёт</a></td>
+                </tr>
+              {% empty %}
+                <tr>
+                  <td colspan="12"><p class="alert alert-info text-left">Менеджеров не найдено.</p></td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+            <button type="submit" class="btn btn-info add-bottom" {% if not object_list %}disabled='disabled'{% endif %}><span class="glyphicon glyphicon-download-alt"></span> Экспорт в EXCEL по выбранным менеджерам</button>
+          </form>
+          <div class="col-lg-12">
+            <div id="sale-chart" style="height:500px; width: 100%;"></div>
+          </div>
+          <div class="col-lg-12">
+            <div id="payment-chart" style="height:500px; width: 100%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block bottom_js %}
+  <script src="{{ STATIC_URL }}js/echarts-all.js"></script>
+  <script>
+    var saleChart = echarts.init(document.getElementById('sale-chart'));
+    var paymentChart = echarts.init(document.getElementById('payment-chart'));
+    var sale_option = {
+      title : {
+        text: 'Продажи',
+        subtext: 'по найденым менеджерам',
+        x: 'center'
+      },
+      tooltip : {
+        trigger: 'item'
+      },
+      grid: {
+        height: 300,
+        y2: 0
+      },
+      legend: {
+        data:[{% for manager in object_list %}'{{ manager }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+        orient: 'horizontal',
+        x: 'center',
+        y: 'bottom'
+      },
+      toolbox: {
+        show : false,
+        feature : {
+          mark : {show: true},
+          dataView : {show: true, readOnly: false},
+          magicType : {show: true, type: ['line', 'bar']},
+          restore : {show: true},
+          saveAsImage : {show: true}
+        }
+      },
+      calculable : false,
+      xAxis : [
+        {
+          type : 'category',
+          data : ['Менеджеры']
+        }
+      ],
+      yAxis : [
+        {
+          type : 'value'
+        }
+      ],
+      series : [
+      {% for manager in object_list %}
+        {
+          name:'{{ manager }}',
+          type:'bar',
+          data:[{{ manager.total_sale|safe|default:0 }}]
+        }{% if not forloop.last %},{% endif %}
+      {% endfor %}
+      ]
+    };
+
+
+  var payment_option = {
+      title : {
+        text: 'Поступления',
+        subtext: 'по найденым менеджерам',
+        x: 'center'
+      },
+      tooltip : {
+        trigger: 'item'
+      },
+      grid: {
+        height: 300,
+        y2: 0
+      },
+      legend: {
+        data:[{% for manager in object_list %}'{{ manager }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+        orient: 'horizontal',
+        x: 'center',
+        y: 'bottom'
+      },
+      toolbox: {
+        show : false,
+        feature : {
+          mark : {show: true},
+          dataView : {show: true, readOnly: false},
+          magicType : {show: true, type: ['line', 'bar']},
+          restore : {show: true},
+          saveAsImage : {show: true}
+        }
+      },
+      calculable : false,
+      xAxis : [
+        {
+          type : 'category',
+          data : ['Менеджеры']
+        }
+      ],
+      yAxis : [
+        {
+          type : 'value'
+        }
+      ],
+      series : [
+      {% for manager in object_list %}
+        {
+          name:'{{ manager }}',
+          type:'bar',
+          data:[{{ manager.total_payment|safe|default:0 }}]
+        }{% if not forloop.last %},{% endif %}
+      {% endfor %}
+      ]
+    };
+  saleChart.setOption(sale_option);
+  paymentChart.setOption(payment_option);
+  </script>
+
+{% endblock %}

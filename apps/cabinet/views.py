@@ -29,7 +29,7 @@ def cabinet_view(request):
     user = request.user
     if user.type == 1:
         template_name = 'cabinet/dash_admin.html'
-    elif user.type == 2:
+    elif user.type == 2 or user.type == 6:
         template_name = 'cabinet/dash_moderator.html'
     elif user.type == 3:
         return HttpResponseRedirect(reverse('surface:photo-list'))

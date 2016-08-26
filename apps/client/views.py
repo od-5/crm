@@ -79,15 +79,14 @@ class ClientListView(ListView):
     def get_queryset(self):
         user = self.request.user
         if user.type == 1:
-            qs = Client.objects.all()
+            qs = Client.objects.select_related().all()
         elif user.type == 2:
-            qs = Client.objects.filter(city__moderator=user)
+            qs = Client.objects.select_related().filter(city__moderator=user)
         elif user.type == 5:
-            manager = Manager.objects.get(user=user)
             if user.is_leader_manager():
-                qs = Client.objects.filter(city__moderator=manager.moderator)
+                qs = Client.objects.select_related().filter(city__moderator=user.manager.moderator)
             else:
-                qs = Client.objects.filter(manager=manager)
+                qs = Client.objects.select_related().filter(manager=user.manager)
         else:
             qs = None
         r_email = self.request.GET.get('email')
