@@ -31,16 +31,22 @@ def address_list_import(request):
                     else:
                         house_number += i
 
-                try:
-                    porch_list = [int(data[row][4])]
-                except:
-                    r_porch_list = data[row][4].strip().split(',')
-                    porch_list = []
-                    for porch in r_porch_list:
-                        try:
-                            porch_list.append(int(porch))
-                        except:
-                            pass
+                # try:
+                #     porch_list = [int(data[row][4])]
+                # except:
+                #     r_porch_list = data[row][4].strip().split(',')
+                #     porch_list = []
+                #     for porch in r_porch_list:
+                #         try:
+                #             porch_list.append(int(porch))
+                #         except:
+                #             pass
+                raw_porch_list = str(data[row][4]).replace('.', ',').strip().split(',')
+                # import pdb; pdb.set_trace()
+                porch_list = []
+                for i in raw_porch_list:
+                    if i.strip() != '0' or i.strip() != '0':
+                        porch_list.append(int(i.strip()))
                 try:
                     # пробуем получить город
                     city_instance = City.objects.get(name__iexact=city)
