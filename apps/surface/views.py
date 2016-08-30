@@ -29,6 +29,8 @@ class SurfaceListView(ListView):
         user = self.request.user
         if user.type == 1:
             qs = Surface.objects.select_related().all()
+        elif user.type == 6:
+            qs = Surface.objects.select_related().filter(city__in=user.superviser.city_id_list())
         elif user.type == 2:
             qs = Surface.objects.select_related().filter(city__moderator=user)
         elif user.type == 5:
@@ -59,7 +61,7 @@ class SurfaceListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(SurfaceListView, self).get_context_data(**kwargs)
-        user_id = self.request.user.id
+        user = self.request.user
         """
         Администратор может выбирать любой город системы.
         Модератор - только те города, которыми он управляет.
@@ -75,16 +77,18 @@ class SurfaceListView(ListView):
             'surface_count': surface_count,
             'center': surface_qs.first()
         })
-        if self.request.user.type == 1:
+        if user.type == 1:
             qs = City.objects.all()
             management_qs = ManagementCompany.objects.all()
-        elif self.request.user.type == 2:
-            qs = City.objects.filter(moderator=user_id)
-            management_qs = ManagementCompany.objects.filter(city__moderator=user_id)
-        elif self.request.user.type == 5:
-            manager = Manager.objects.get(user=user_id)
-            qs = City.objects.filter(moderator=manager.moderator)
-            management_qs = ManagementCompany.objects.filter(city__moderator=manager.moderator)
+        elif user.type == 6:
+            qs = user.superviser.city.all()
+            management_qs = ManagementCompany.objects.filter(city__in=user.superviser.city_id_list())
+        elif user.type == 2:
+            qs = City.objects.filter(moderator=user)
+            management_qs = ManagementCompany.objects.filter(city__moderator=user)
+        elif user.type == 5:
+            qs = City.objects.filter(moderator=user.manager.moderator)
+            management_qs = ManagementCompany.objects.filter(city__moderator=user.manager.moderator)
         else:
             qs = None
             management_qs = None
@@ -121,6 +125,10 @@ class SurfaceListView(ListView):
             context.update({
                 'release_date': self.request.GET.get('release_date')
             })
+        if self.request.META['QUERY_STRING']:
+            self.request.session['surface_filtered_list'] = '%s?%s' % (self.request.path, self.request.META['QUERY_STRING'])
+        else:
+            self.request.session['surface_filtered_list'] = reverse('surface:list')
         return context
 
 
@@ -139,6 +147,17 @@ class SurfaceCreateView(CreateView):
         initial = initial.copy()
         initial['user'] = self.request.user
         return initial
+
+    def get_context_data(self, **kwargs):
+        context = super(SurfaceCreateView, self).get_context_data(**kwargs)
+        try:
+            self.request.session['surface_filtered_list']
+        except:
+            self.request.session['surface_filtered_list'] = reverse('surface:list')
+        context.update({
+            'back_to_list': self.request.session['surface_filtered_list']
+        })
+        return context
 
 
 class SurfaceUpdateView(UpdateView):
@@ -159,8 +178,13 @@ class SurfaceUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(SurfaceUpdateView, self).get_context_data(**kwargs)
+        try:
+            self.request.session['surface_filtered_list']
+        except:
+            self.request.session['surface_filtered_list'] = reverse('surface:list')
         context.update({
-            'surface': self.object
+            'surface': self.object,
+            'back_to_list': self.request.session['surface_filtered_list']
         })
         return context
 
@@ -172,8 +196,13 @@ class SurfacePhotoDeleteView(DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super(SurfacePhotoDeleteView, self).get_context_data(**kwargs)
+        try:
+            self.request.session['surface_filtered_list']
+        except:
+            self.request.session['surface_filtered_list'] = reverse('surface:list')
         context.update({
-            'surface': self.object.porch.surface
+            'surface': self.object.porch.surface,
+            'back_to_list': self.request.session['surface_filtered_list']
         })
         return context
 
@@ -197,8 +226,13 @@ def surface_porch(request, pk):
                 'surface': surface
             }
         )
+    try:
+        request.session['surface_filtered_list']
+    except:
+        request.session['surface_filtered_list'] = reverse('surface:list')
     context.update({
-        'porch_form': form
+        'porch_form': form,
+        'back_to_list': request.session['surface_filtered_list']
     })
     return render(request, 'surface/surface_porch.html', context)
 
@@ -227,12 +261,17 @@ def surface_porch_update(request, pk):
         photo_list = paginator.page(1)
     except EmptyPage:
         photo_list = paginator.page(paginator.num_pages)
+    try:
+        request.session['surface_filtered_list']
+    except:
+        request.session['surface_filtered_list'] = reverse('surface:list')
     context.update({
         'object': porch,
         'surface': porch.surface,
         'photo_list': photo_list,
         'porch_form': form,
-        'photo_form': photo_form
+        'photo_form': photo_form,
+        'back_to_list': request.session['surface_filtered_list']
     })
     return render(request, 'surface/surface_porch_update.html', context)
 
@@ -261,12 +300,17 @@ def surface_photo_update(request, pk):
         form = SurfacePhotoForm(instance=photo, initial={
             'file': photo.image.file
         })
+    try:
+        request.session['surface_filtered_list']
+    except:
+        request.session['surface_filtered_list'] = reverse('surface:list')
     context.update({
         'success': success_msg,
         'error': error_msg,
         'photo_form': form,
         'object': photo,
-        'surface': photo.porch.surface
+        'surface': photo.porch.surface,
+        'back_to_list': request.session['surface_filtered_list']
     })
     return render(request, 'surface/surface_photo_update.html', context)
 
@@ -405,6 +449,7 @@ def surface_photo_list(request):
                 e_date = datetime.date(re_date)
                 a_qs = a_qs.filter(date__lte=e_date)
         if user.client and user.client.id == 37:
+            # fixme: fix for client with id=37
             photo_count = 2053
         else:
             photo_count = a_qs.count()
@@ -434,6 +479,8 @@ def surface_export(request):
     user = request.user
     if user.type == 1:
         qs = Surface.objects.select_related().all()
+    elif user.type == 6:
+        qs = Surface.objects.select_related().filter(city__in=user.superviser.city_id_list())
     elif user.type == 2:
         qs = Surface.objects.select_related().filter(city__moderator=user)
     elif user.type == 5:

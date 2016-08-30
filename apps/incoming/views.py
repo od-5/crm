@@ -102,6 +102,10 @@ class IncomingClientListView(ListView):
         else:
             manager_qs = None
         import_form = IncomingClientImportForm()
+        if self.request.META['QUERY_STRING']:
+            self.request.session['incoming_filtered_list'] = '%s?%s' % (self.request.path, self.request.META['QUERY_STRING'])
+        else:
+            self.request.session['incoming_filtered_list'] = reverse('incoming:list')
         context.update({
             'import_form': import_form,
             'manager_list': manager_qs
@@ -149,8 +153,13 @@ def incomingclient_add(request):
         form = IncomingClientAddForm(initial=initial)
     form.fields['manager'].queryset = manager_qs
     form.fields['city'].queryset = city_qs
+    try:
+        request.session['incoming_filtered_list']
+    except:
+        request.session['incoming_filtered_list'] = reverse('incoming:list')
     context.update({
         'form': form,
+        'back_to_list': request.session['incoming_filtered_list']
     })
     return render(request, 'incoming/incoming_add.html', context)
 
@@ -196,30 +205,44 @@ def incomingclient_update(request, pk):
 
     form.fields['manager'].queryset = manager_qs
     form.fields['city'].queryset = city_qs
-
+    try:
+        request.session['incoming_filtered_list']
+    except:
+        request.session['incoming_filtered_list'] = reverse('incoming:list')
     context.update({
         'success': success_msg,
         'error': error_msg,
         'form': form,
         'object': incomingclient,
+        'back_to_list': request.session['incoming_filtered_list']
     })
     return render(request, 'incoming/incoming_update.html', context)
 
 
 def incomingclientcontact_history(request, pk):
     incomingclient = IncomingClient.objects.get(pk=int(pk))
+    try:
+        request.session['incoming_filtered_list']
+    except:
+        request.session['incoming_filtered_list'] = reverse('incoming:list')
     context = {
         'object': incomingclient,
-        'object_list': incomingclient.incomingclientmanager_set.all()
+        'object_list': incomingclient.incomingclientmanager_set.all(),
+        'back_to_list': request.session['incoming_filtered_list']
     }
     return render(request, 'incoming/incomingclientcontact_history.html', context)
 
 
 def incomingclientcontact_list(request, pk):
     incomingclient = IncomingClient.objects.get(pk=int(pk))
+    try:
+        request.session['incoming_filtered_list']
+    except:
+        request.session['incoming_filtered_list'] = reverse('incoming:list')
     context = {
         'object': incomingclient,
-        'object_list': incomingclient.incomingclientcontact_set.all()
+        'object_list': incomingclient.incomingclientcontact_set.all(),
+        'back_to_list': request.session['incoming_filtered_list']
     }
     return render(request, 'incoming/incomingclientcontact_list.html', context)
 
@@ -241,11 +264,16 @@ def incomingclientcontact_add(request, pk):
                 'incomingclient': incomingclient
             }
         )
+    try:
+        request.session['incoming_filtered_list']
+    except:
+        request.session['incoming_filtered_list'] = reverse('incoming:list')
     context = {
         'object': incomingclient,
         'form': form,
         'success_msg': success_msg,
-        'error_msg': error_msg
+        'error_msg': error_msg,
+        'back_to_list': request.session['incoming_filtered_list']
     }
     return render(request, 'incoming/incomingclientcontact_add.html', context)
 
@@ -263,12 +291,17 @@ def incomingclientcontact_update(request, pk):
             error_msg = u'Проверьте правильность ввода полей!'
     else:
         form = IncomingClientContactForm(instance=contact)
+    try:
+        request.session['incoming_filtered_list']
+    except:
+        request.session['incoming_filtered_list'] = reverse('incoming:list')
     context = {
         'contact': contact,
         'object': contact.incomingclient,
         'form': form,
         'success_msg': success_msg,
-        'error_msg': error_msg
+        'error_msg': error_msg,
+        'back_to_list': request.session['incoming_filtered_list']
     }
     return render(request, 'incoming/incomingclientcontact_update.html', context)
 
@@ -282,19 +315,22 @@ def incomingtask_list(request):
     user = request.user
     if user.type == 1:
         qs = IncomingTask.objects.all()
+        manager_qs = Manager.objects.all()
     elif user.type == 2:
         qs = IncomingTask.objects.filter(manager__moderator=user)
+        manager_qs = Manager.objects.filter(moderator=user)
     elif user.type == 6:
         qs = IncomingTask.objects.filter(manager__moderator__in=user.superviser.moderator_id_list())
         manager_qs = Manager.objects.filter(moderator__in=user.superviser.moderator_id_list())
     elif user.type == 5:
+        manager_qs = Manager.objects.filter(moderator=user.manager.moderator)
         if user.is_leader_manager():
-            manager = Manager.objects.get(user=user)
-            qs = IncomingTask.objects.filter(manager__moderator=manager.moderator)
+            qs = IncomingTask.objects.filter(manager__moderator=user.manager.moderator)
         else:
             qs = IncomingTask.objects.filter(manager__user=user)
     else:
-        qs = None
+        qs = manager_qs = None
+    r_manager = request.GET.get('r_manager')
     r_name = request.GET.get('name')
     r_date_s = request.GET.get('date_s')
     r_date_e = request.GET.get('date_e')
@@ -318,6 +354,11 @@ def incomingtask_list(request):
             qs = qs.filter(date__gte=datetime.strptime(r_date_s, '%d.%m.%Y'))
         if r_date_e:
             qs = qs.filter(date__lte=datetime.strptime(r_date_e, '%d.%m.%Y'))
+    if r_manager and int(r_manager) != 0:
+        qs = qs.filter(manager=int(r_manager))
+        context.update({
+            'r_manager': int(r_manager)
+        })
     if r_type:
         qs = qs.filter(type=int(r_type))
         context.update({
@@ -352,8 +393,13 @@ def incomingtask_list(request):
         object_list = paginator.page(1)
     except EmptyPage:
         object_list = paginator.page(paginator.num_pages)
+    if request.META['QUERY_STRING']:
+        request.session['incomingtask_filtered_list'] = '%s?%s' % (request.path, request.META['QUERY_STRING'])
+    else:
+        request.session['incomingtask_filtered_list'] = reverse('incoming:task-list')
     context.update({
-        'object_list': object_list
+        'object_list': object_list,
+        'manager_list': manager_qs
     })
     return render(request, 'incoming/incomingtask_list.html', context)
 
@@ -398,8 +444,13 @@ def incomingtask_add(request):
         form = IncomingTaskForm(initial=initial)
     form.fields['manager'].queryset = manager_qs
     form.fields['incomingclient'].queryset = incomingclient_qs
+    try:
+        request.session['incomingtask_filtered_list']
+    except:
+        request.session['incomingtask_filtered_list'] = reverse('incoming:task-list')
     context.update({
         'form': form,
+        'back_to_list': request.session['incomingtask_filtered_list']
     })
     return render(request, 'incoming/incomingtask_add.html', context)
 
@@ -432,10 +483,15 @@ def incomingtask_update(request, pk):
         form = IncomingTaskForm(instance=object)
     form.fields['manager'].queryset = manager_qs
     form.fields['incomingclientcontact'].queryset = object.incomingclient.incomingclientcontact_set.all()
+    try:
+        request.session['incomingtask_filtered_list']
+    except:
+        request.session['incomingtask_filtered_list'] = reverse('incoming:task-list')
     context.update({
         'success': success_msg,
         'error': error_msg,
         'form': form,
         'object': object,
+        'back_to_list': request.session['incomingtask_filtered_list']
     })
     return render(request, 'incoming/incomingtask_update.html', context)

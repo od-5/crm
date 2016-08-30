@@ -31,7 +31,11 @@ class SurfaceAddForm(forms.ModelForm):
         super(SurfaceAddForm, self).__init__(*args, **kwargs)
         initial = kwargs.pop('initial')
         user = initial['user']
-        if user.type == 2:
+        if user.type == 6:
+            self.fields['city'].queryset = user.superviser.city.all()
+            self.fields['street'].queryset = Street.objects.filter(city__in=user.superviser.city_id_list())
+            self.fields['management'].queryset = ManagementCompany.objects.filter(city__in=user.superviser.city_id_list())
+        elif user.type == 2:
             self.fields['city'].queryset = City.objects.filter(moderator=user)
             self.fields['street'].queryset = Street.objects.filter(city__moderator=user)
             self.fields['management'].queryset = ManagementCompany.objects.filter(city__moderator=user)

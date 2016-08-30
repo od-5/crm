@@ -7,6 +7,9 @@
         <li><a href="{% url 'manager:list' %}">Список менеджеров</a></li>
         <li class="active">Редактирование менеджера</li>
       </ol>
+      <a href="{{ back_to_list|default:'' }}" class="btn btn-default btn-sm add-bottom">
+        <span class="glyphicon glyphicon-circle-arrow-left"></span> назад к списку
+      </a>
       <div class="panel panel-default">
         <div class="panel-heading">
           <p class="lead text-center remove-bottom">Редактирование менеджера {{ object.email }}</p>

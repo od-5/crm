@@ -6157,10 +6157,12 @@ h2 {
   font-size: 12px;
 }
 .table-search thead tr th {
+  padding: 0 5px;
   border: none;
   background: transparent;
 }
 .table-search tbody tr td {
+  padding: 0 5px;
   border: none;
   background-color: transparent !important;
 }

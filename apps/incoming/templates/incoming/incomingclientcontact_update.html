@@ -7,14 +7,14 @@
         <li><a href="{% url 'incoming:list' %}">Журнал клиентов</a></li>
         <li class="active">Редактирование клиента</li>
       </ol>
+      {% include 'incoming/__include/incoming_menu.html' %}
       <div class="panel panel-default">
         <div class="panel-heading">
           <p class="lead text-center remove-bottom">
-            Добавление контактного лица клиента {{ object.name }}
+            Редактирование контактного лица клиента {{ object.name }}
           </p>
         </div>
         <div class="panel-body">
-          {% include 'incoming/__include/incoming_menu.html' %}
           <div class="col-lg-6">
             <form action="" role="form" class="js-form-incomingclientcontact-add" method="post">
               {% csrf_token %}

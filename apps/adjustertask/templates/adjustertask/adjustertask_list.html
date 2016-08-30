@@ -22,7 +22,14 @@
           <p class="lead remove-bottom text-center">Список задач</p>
         </div>
         <div class="panel-body">
-          <p class="lead">Предварительная сумма выплат составляет: <strong>{{ total_sum|default:'0' }} руб.</strong> </p>
+          <div class="row">
+            <div class="col-lg-6">
+              <p>Предварительная сумма выплат составляет: <strong>{{ total_sum|default:'0' }} руб.</strong> </p>
+            </div>
+            <div class="col-lg-6">
+              <p class="text-right">Количество задач: <strong>{{ object_list.count|default:'0' }}</strong></p>
+            </div>
+          </div>
           {% if user.type != 4 %}
           <a href="{% url 'adjustertask:client-add' %}" class="btn btn-success add-bottom">
             <span class="glyphicon glyphicon-plus-sign"></span> Добавить задачу

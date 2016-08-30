@@ -39,16 +39,31 @@ class ManagerListView(ListView):
         else:
             qs = None
         if self.request.GET.get('email'):
-            qs = qs.filter(user__email=self.request.GET.get('email'))
+            qs = qs.filter(user__email__icontains=self.request.GET.get('email'))
         if self.request.GET.get('last_name'):
-            qs = qs.filter(user__last_name=self.request.GET.get('last_name'))
+            qs = qs.filter(user__last_name__icontains=self.request.GET.get('last_name'))
         if self.request.GET.get('email'):
-            qs = qs.filter(user__first_name=self.request.GET.get('first_name'))
+            qs = qs.filter(user__first_name__icontains=self.request.GET.get('first_name'))
         if self.request.GET.get('patronymic'):
-            qs = qs.filter(user__patronymic=self.request.GET.get('patronymic'))
+            qs = qs.filter(user__patronymic__icontains=self.request.GET.get('patronymic'))
         if self.request.GET.get('phone'):
-            qs = qs.filter(user__phone=self.request.GET.get('phone'))
+            qs = qs.filter(user__phone__icontains=self.request.GET.get('phone'))
+        if self.request.META['QUERY_STRING']:
+            self.request.session['manager_filtered_list'] = '%s?%s' % (self.request.path, self.request.META['QUERY_STRING'])
+        else:
+            self.request.session['manager_filtered_list'] = reverse('manager:list')
         return qs
+
+    def get_context_data(self, **kwargs):
+        context = super(ManagerListView, self).get_context_data()
+        context.update({
+            'r_email': self.request.GET.get('email'),
+            'r_last_name': self.request.GET.get('last_name'),
+            'r_first_name': self.request.GET.get('first_name'),
+            'r_patronymic': self.request.GET.get('patronymic'),
+            'r_phone': self.request.GET.get('phone'),
+        })
+        return context
 
 
 def manager_add(request):
@@ -90,10 +105,14 @@ def manager_add(request):
         elif request.user.type == 5:
             manager = Manager.objects.get(user=request.user)
             m_form.fields['moderator'].queryset = User.objects.filter(pk=manager.moderator.id)
-
+    try:
+        request.session['manager_filtered_list']
+    except:
+        request.session['manager_filtered_list'] = reverse('manager:list')
     context.update({
         'u_form': u_form,
-        'm_form': m_form
+        'm_form': m_form,
+        'back_to_list': request.session['manager_filtered_list']
     })
     return render(request, 'manager/manager_add.html', context)
 
@@ -133,13 +152,17 @@ def manager_update(request, pk):
         elif request.user.type == 5:
             manager = Manager.objects.get(user=request.user)
             m_form.fields['moderator'].queryset = User.objects.filter(pk=manager.moderator.id)
-
+    try:
+        request.session['manager_filtered_list']
+    except:
+        request.session['manager_filtered_list'] = reverse('manager:list')
     context.update({
         'success': success_msg,
         'error': error_msg,
         'u_form': u_form,
         'm_form': m_form,
         'object': manager,
+        'back_to_list': request.session['manager_filtered_list']
     })
     return render(request, 'manager/manager_update.html', context)
 

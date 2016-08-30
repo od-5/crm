@@ -208,6 +208,7 @@ def get_area_surface_list(request):
             'error': u'Что то пошло не так!'
         }
 
+
 @ajax_request
 def get_area_surface_list_with_damage(request):
     """
@@ -271,6 +272,8 @@ def get_photo_map(request):
     photo_list = []
     if user.type == 1:
         qs = SurfacePhoto.objects.select_related().all()
+    elif user.type == 6:
+        qs = SurfacePhoto.objects.select_related().filter(porch__surface__city__in=user.superviser.city_id_list())
     elif user.type == 2:
         qs = SurfacePhoto.objects.select_related().filter(porch__surface__city__moderator=user)
     elif user.type == 3:

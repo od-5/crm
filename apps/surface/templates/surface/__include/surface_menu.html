@@ -3,6 +3,9 @@
   <li><a href="{% url 'surface:list' %}">Список поверхностей</a></li>
   <li class="active">Редактирование рекламной поверхности</li>
 </ol>
+<a href="{{ back_to_list|default:'' }}" class="btn btn-default btn-sm add-bottom">
+  <span class="glyphicon glyphicon-circle-arrow-left"></span> назад к списку
+</a>
 <div class="div add-bottom">
   <a href="{% url 'surface:update' surface.id %}" class="btn btn-default">
     <span class="glyphicon glyphicon-edit"></span> Редактирование адреса

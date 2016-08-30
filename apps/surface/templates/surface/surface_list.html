@@ -12,9 +12,13 @@
           <p class="lead remove-bottom text-center">Список поверхностей</p>
         </div>
         <div class="panel-body">
-          <div>
-            <p><strong>Количество адресов: {{ surface_count|default:'0' }}</strong></p>
-            <p><strong>Количество подъездов: {{ porch_count|default:'0' }}</strong></p>
+          <div class="row">
+            <div class="col-lg-6">
+              <p>Количество адресов: <strong>{{ surface_count|default:'0' }}</strong></p>
+            </div>
+            <div class="col-lg-6">
+              <p class="text-right">Количество подъездов: <strong>{{ porch_count|default:'0' }}</strong></p>
+            </div>
           </div>
           <div class="row">
             <div class="col-lg-6">
@@ -128,7 +132,7 @@
                   {% if object.free %}
                   отсутствует
                   {% else %}
-                  {{ object.get_current_client }}
+                  {{ object.get_current_client|default:'---' }}
                   {% endif %}
                 </td>
                 <td>

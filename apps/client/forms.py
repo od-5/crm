@@ -38,7 +38,10 @@ class ClientUpdateForm(forms.ModelForm):
         self.request = kwargs.pop("request")
         super(ClientUpdateForm, self).__init__(*args, **kwargs)
         if self.request.user:
-            if self.request.user.type == 2:
+            if self.request.user.type == 6:
+                self.fields['city'].queryset = self.request.user.superviser.city.all()
+                self.fields['manager'].queryset = Manager.objects.filter(moderator__in=self.request.user.superviser.moderator_id_list())
+            elif self.request.user.type == 2:
                 self.fields['city'].queryset = City.objects.filter(moderator=self.request.user)
                 self.fields['manager'].queryset = Manager.objects.filter(moderator=self.request.user)
             elif self.request.user.type == 5 and self.request.user.is_leader_manager():
@@ -76,6 +79,8 @@ class ClientAddForm(forms.ModelForm):
         self.request = kwargs.pop("request")
         super(ClientAddForm, self).__init__(*args, **kwargs)
         if self.request.user:
+            if self.request.user.type == 6:
+                self.fields['city'].queryset = self.request.user.superviser.city.all()
             if self.request.user.type == 2:
                 self.fields['city'].queryset = City.objects.filter(moderator=self.request.user)
             elif self.request.user.type == 5 and self.request.user.is_leader_manager():

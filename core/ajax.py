@@ -46,11 +46,12 @@ def ymap_surface(request):
     if request.is_ajax():
         if user.type == 1:
             query = Surface.objects.all()
+        elif user.type == 6:
+            query = Surface.objects.filter(city__in=user.superviser.city_id_list())
         elif user.type == 2:
-            query = Surface.objects.filter(city__moderator=request.user)
+            query = Surface.objects.filter(city__moderator=user)
         elif user.type == 5:
-            manager = Manager.objects.get(user=user)
-            query = Surface.objects.filter(city__moderator=manager.moderator)
+            query = Surface.objects.filter(city__moderator=user.manager.moderator)
         else:
             query = None
         result = []

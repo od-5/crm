@@ -11,6 +11,9 @@
         <li><a href="{% url 'adjustertask:list' %}">Список задач монтажников</a></li>
         <li class="active">Редактирование задачи монтажника</li>
       </ol>
+      <a href="{{ back_to_list|default:'' }}" class="btn btn-default btn-sm add-bottom">
+        <span class="glyphicon glyphicon-circle-arrow-left"></span> назад к списку
+      </a>
       <div class="panel panel-default">
         <div class="panel-heading">
           <p class="lead text-center remove-bottom">Задача для монтажника на {{ object.date }}</p>

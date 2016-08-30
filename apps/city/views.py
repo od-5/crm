@@ -29,6 +29,8 @@ class CityListView(ListView):
             qs = City.objects.select_related().all()
         elif user.type == 2:
             qs = City.objects.select_related().filter(moderator=user)
+        elif user.type == 6:
+            qs = user.superviser.city.all()
         elif user.type == 5 and user.is_leader_manager():
             manager = Manager.objects.get(user=user)
             qs = City.objects.select_related().filter(moderator=manager.moderator)
@@ -51,6 +53,9 @@ class CityListView(ListView):
         if user.type == 1:
             qs = City.objects.select_related().all()
             a_qs = SurfacePhoto.objects.select_related().all()
+        elif user.type == 6:
+            qs = user.superviser.city.all()
+            a_qs = SurfacePhoto.objects.select_related().filter(porch__surface__city__in=user.superviser.city_id_list())
         elif user.type == 2:
             qs = City.objects.select_related().filter(moderator=user)
             a_qs = SurfacePhoto.objects.select_related().filter(porch__surface__city__moderator=user)
@@ -330,6 +335,9 @@ def management_company_list(request):
     if request.user.type == 1:
         qs = ManagementCompany.objects.all()
         city_qs = City.objects.all()
+    elif request.user.type == 6:
+        qs = ManagementCompany.objects.filter(city__in=request.user.superviser.city_id_list())
+        city_qs = request.user.superviser.city.all()
     elif request.user.type == 2:
         qs = ManagementCompany.objects.filter(city__moderator=request.user)
         city_qs = City.objects.filter(moderator=request.user)
@@ -343,6 +351,10 @@ def management_company_list(request):
         })
     if request.GET.get('name'):
         qs = qs.filter(name__icontains=request.GET.get('name'))
+    if request.META['QUERY_STRING']:
+        request.session['mc_filtered_list'] = '%s?%s' % (request.path, request.META['QUERY_STRING'])
+    else:
+        request.session['mc_filtered_list'] = reverse('city:management-company')
     context.update({
         'object_list': qs,
         'city_list': city_qs
@@ -359,8 +371,13 @@ def management_company_add(request):
             return HttpResponseRedirect(reverse('city:management-company-update', args=(management_company.id, )))
     else:
         form = ManagementCompanyForm(request=request)
+    try:
+        request.session['mc_filtered_list']
+    except:
+        request.session['mc_filtered_list'] = reverse('city:management-company')
     context.update({
-        'form': form
+        'form': form,
+        'back_to_list': request.session['mc_filtered_list']
     })
     return render(request, 'city/management_company.html', context)
 
@@ -374,9 +391,14 @@ def management_company_update(request, pk):
             form.save()
     else:
         form = ManagementCompanyForm(request=request, instance=m_company)
+    try:
+        request.session['mc_filtered_list']
+    except:
+        request.session['mc_filtered_list'] = reverse('city:management-company')
     context.update({
         'form': form,
-        'object': m_company
+        'object': m_company,
+        'back_to_list': request.session['mc_filtered_list']
     })
     return render(request, 'city/management_company.html', context)
 

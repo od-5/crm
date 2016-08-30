@@ -25,6 +25,8 @@ def adjustertask_list(request):
     user = request.user
     if user.type == 1:
         qs = AdjusterTask.objects.select_related().filter(is_closed=False)
+    elif user.type == 6:
+        qs = AdjusterTask.objects.select_related().filter(is_closed=False, adjuster__city__in=user.superviser.city_id_list())
     elif user.type == 2:
         qs = AdjusterTask.objects.select_related().filter(is_closed=False, adjuster__city__moderator=user)
     elif user.type == 4:
@@ -64,10 +66,13 @@ def adjustertask_list(request):
         year = request.GET.get('date__year')
         qs = qs.filter(date__day=day, date__month=month, date__year=year)
     filter_form = AdjusterTaskFilterForm(initial=initial_args)
-    if user.type == 2:
+    if user.type == 6:
+        filter_form.fields['city'].queryset = user.superviser.city.all()
+        filter_form.fields['adjuster'].queryset = Adjuster.objects.filter(city__in=user.superviser.city.all())
+    elif user.type == 2:
         filter_form.fields['city'].queryset = City.objects.filter(moderator=user)
         filter_form.fields['adjuster'].queryset = Adjuster.objects.filter(city__moderator=user)
-    elif user.type == 2:
+    elif user.type == 5:
         manager = Manager.objects.get(user=user)
         filter_form.fields['city'].queryset = City.objects.filter(moderator=manager.moderator)
         filter_form.fields['adjuster'].queryset = Adjuster.objects.filter(city__moderator=manager.moderator)
@@ -86,6 +91,10 @@ def adjustertask_list(request):
         object_list = paginator.page(1)
     except EmptyPage:
         object_list = paginator.page(paginator.num_pages)
+    if request.META['QUERY_STRING']:
+        request.session['adjustertask_filtered_list'] = '%s?%s' % (request.path, request.META['QUERY_STRING'])
+    else:
+        request.session['adjustertask_filtered_list'] = reverse('adjustertask:list')
     context.update({
         'total_sum': total_sum,
         'object_list': object_list
@@ -105,6 +114,8 @@ class TaskArchiveListView(ListView):
         user = self.request.user
         if user.type == 1:
             qs = AdjusterTask.objects.filter(is_closed=True)
+        elif user.type == 6:
+            qs = AdjusterTask.objects.filter(is_closed=True, adjuster__city__in=user.superviser.city_id_list())
         elif user.type == 2:
             qs = AdjusterTask.objects.filter(is_closed=True, adjuster__city__moderator=user)
         elif user.type == 4:
@@ -152,13 +163,20 @@ class TaskArchiveListView(ListView):
             })
         filter_form = AdjusterTaskFilterForm(initial=initial_args)
         user = self.request.user
-        if user.type == 2:
+        if user.type == 6:
+            filter_form.fields['city'].queryset = user.superviser.city.all()
+            filter_form.fields['adjuster'].queryset = Adjuster.objects.filter(city__in=user.superviser.city_id_list())
+        elif user.type == 2:
             filter_form.fields['city'].queryset = City.objects.filter(moderator=user)
             filter_form.fields['adjuster'].queryset = Adjuster.objects.filter(city__moderator=user)
         elif user.type == 2:
             manager = Manager.objects.get(user=user)
             filter_form.fields['city'].queryset = City.objects.filter(moderator=manager.moderator)
             filter_form.fields['adjuster'].queryset = Adjuster.objects.filter(city__moderator=manager.moderator)
+        if self.request.META['QUERY_STRING']:
+            self.request.session['adjustertaskarchive_filtered_list'] = '%s?%s' % (self.request.path, self.request.META['QUERY_STRING'])
+        else:
+            self.request.session['adjustertaskarchive_filtered_list'] = reverse('adjustertask:archive')
         context.update({
             'filter_form': filter_form
         })
@@ -204,6 +222,8 @@ def adjustertask_client(request):
         form = AdjusterTaskClientForm()
         if user.type == 1:
             client_qs = Client.objects.all()
+        elif user.type == 6:
+            client_qs = Client.objects.filter(city__in=user.superviser.city_id_list())
         elif user.type == 2:
             client_qs = Client.objects.filter(city__moderator=user)
         elif user.type == 5:
@@ -212,9 +232,13 @@ def adjustertask_client(request):
         else:
             client_qs = None
         form.fields['client'].queryset = client_qs
-
+    try:
+        request.session['adjustertask_filtered_list']
+    except:
+        request.session['adjustertask_filtered_list'] = reverse('adjustertask:list')
     context.update({
-        'form': form
+        'form': form,
+        'back_to_list': request.session['adjustertask_filtered_list']
     })
     return render(request, 'adjustertask/adjustertask_client_add.html', context)
 
@@ -254,8 +278,13 @@ def adjuster_c_task(request):
         adjustertask_client_form = AdjusterTaskClientAddForm(request=request)
         # adjustertask_form = AdjusterTaskAddForm(request=request)
     # adjustertask_client_form = AdjusterTaskClientAddForm(request=request)
+    try:
+        request.session['adjustertask_filtered_list']
+    except:
+        request.session['adjustertask_filtered_list'] = reverse('adjustertask:list')
     context.update({
-        'adjustertask_client_form': adjustertask_client_form
+        'adjustertask_client_form': adjustertask_client_form,
+        'back_to_list': request.session['adjustertask_filtered_list']
     })
     return render(request, 'adjustertask/adjustertask_c_add.html', context)
 
@@ -299,6 +328,8 @@ def adjustertask_area(request):
         form = AdjusterTaskAreaAddForm()
         if user.type == 1:
             city_qs = City.objects.all()
+        elif user.type == 6:
+            city_qs = user.superviser.city.all()
         elif user.type == 2:
             city_qs = City.objects.filter(moderator=user)
         elif user.type == 5:
@@ -307,8 +338,13 @@ def adjustertask_area(request):
         else:
             city_qs = None
         form.fields['city'].queryset = city_qs
+    try:
+        request.session['adjustertask_filtered_list']
+    except:
+        request.session['adjustertask_filtered_list'] = reverse('adjustertask:list')
     context.update({
-        'form': form
+        'form': form,
+        'back_to_list': request.session['adjustertask_filtered_list']
     })
     return render(request, 'adjustertask/adjustertask_area_add.html', context)
 
@@ -339,8 +375,13 @@ def adjuster_a_task(request):
             })
     else:
         adjustertask_form = AdjusterTaskAddForm(request=request)
+    try:
+        request.session['adjustertask_filtered_list']
+    except:
+        request.session['adjustertask_filtered_list'] = reverse('adjustertask:list')
     context.update({
-        'adjustertask_form': adjustertask_form
+        'adjustertask_form': adjustertask_form,
+        'back_to_list': request.session['adjustertask_filtered_list']
     })
     return render(request, 'adjustertask/adjustertask_a_add.html', context)
 
@@ -383,6 +424,8 @@ def adjustertask_repair(request):
         form = AdjusterTaskRepairAddForm()
     if user.type == 1:
         city_qs = City.objects.all()
+    elif user.type == 6:
+        city_qs = user.superviser.city.all()
     elif user.type == 2:
         city_qs = City.objects.filter(moderator=user)
     elif user.type == 5:
@@ -391,9 +434,14 @@ def adjustertask_repair(request):
     else:
         city_qs = None
     form.fields['city'].queryset = city_qs
+    try:
+        request.session['adjustertask_filtered_list']
+    except:
+        request.session['adjustertask_filtered_list'] = reverse('adjustertask:list')
     context.update({
         'form': form,
-        'error': error
+        'error': error,
+        'back_to_list': request.session['adjustertask_filtered_list']
     })
     return render(request, 'adjustertask/adjustertask_repair_add.html', context)
 
@@ -431,7 +479,12 @@ def adjuster_task_update(request, pk):
         adjuster_task_form.fields['type'].widget.attrs['disabled'] = True
         adjuster_task_form.fields['date'].widget.attrs['disabled'] = True
         adjuster_task_form.fields['comment'].widget.attrs['disabled'] = True
+    try:
+        request.session['adjustertask_filtered_list']
+    except:
+        request.session['adjustertask_filtered_list'] = reverse('adjustertask:list')
     context.update({
-        'adjuster_task_form': adjuster_task_form
+        'adjuster_task_form': adjuster_task_form,
+        'back_to_list': request.session['adjustertask_filtered_list']
     })
     return render(request, 'adjustertask/adjustertask_update.html', context)

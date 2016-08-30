@@ -2,9 +2,21 @@
 {% block content %}
   <div class="container">
     <div class="col-lg-12">
+      <ol class="breadcrumb">
+        <li><a href="{% url 'cabinet:cabinet' %}">Рабочий стол</a></li>
+        <li><a href="{% url 'city:management-company' %}">Список управляющих компаний</a></li>
+      {% if object %}
+        <li class="active">Редактирование {{ object.name|default:'' }}</li>
+      {% else %}
+        <li class="active">Добавление управляющей компании</li>
+      {% endif %}
+      </ol>
+      <a href="{{ back_to_list|default:'' }}" class="btn btn-default btn-sm add-bottom">
+        <span class="glyphicon glyphicon-circle-arrow-left"></span> назад к списку
+      </a>
       <div class="panel panel-default">
         <div class="panel-heading">
-          {% if m_object %}
+          {% if object %}
           <p class="lead text-center remove-bottom">Редактирование {{ object.name }}</p>
           {% else %}
           <p class="lead text-center remove-bottom">Добавление управляющей компании</p>

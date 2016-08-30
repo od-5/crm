@@ -14,9 +14,17 @@
           <p class="lead remove-bottom text-center">Монтажники</p>
         </div>
         <div class="panel-body">
-          <a href="{% url 'adjuster:add' %}" class="btn btn-success add-bottom">
-            <span class="glyphicon glyphicon-plus-sign"></span> Добавить монтажника
-          </a>
+          <div class="row">
+            <div class="col-lg-6">
+              <a href="{% url 'adjuster:add' %}" class="btn btn-success add-bottom">
+                <span class="glyphicon glyphicon-plus-sign"></span> Добавить монтажника
+              </a>
+            </div>
+            <div class="col-lg-6">
+              <p class="text-right">Количество монтажников: <strong>{{ page_obj.paginator.count|default:'0' }}</strong></p>
+            </div>
+            <div class="clearfix"></div>
+          </div>
           <div class="panel panel-success">
             <div class="panel-heading js-show-map">Посмотреть монтажников на карте <span class="caret"></span></div>
             <div class="panel-body js-map">

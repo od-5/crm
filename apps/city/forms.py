@@ -59,5 +59,8 @@ class ManagementCompanyForm(ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
         super(ManagementCompanyForm, self).__init__(*args, **kwargs)
-        if self.request.user and self.request.user.type == 2:
-            self.fields['city'].queryset = City.objects.filter(moderator=self.request.user)
+        if self.request.user:
+            if self.request.user.type == 6:
+                self.fields['city'].queryset = self.request.user.superviser.city.all()
+            elif self.request.user.type == 2:
+                self.fields['city'].queryset = City.objects.filter(moderator=self.request.user)

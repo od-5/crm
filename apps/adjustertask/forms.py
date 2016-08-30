@@ -70,9 +70,14 @@ class AdjusterTaskClientAddForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
         super(AdjusterTaskClientAddForm, self).__init__(*args, **kwargs)
-        if self.request.user and self.request.user.type == 2:
-            self.fields['adjuster'].queryset = Adjuster.objects.filter(city__moderator=self.request.user)
-            self.fields['client'].queryset = Client.objects.filter(city__moderator=self.request.user)
+        if self.request.user:
+            user = self.request.user
+            if user.type == 6:
+                self.fields['adjuster'].queryset = Adjuster.objects.filter(city__in=user.superviser.city_id_list())
+                self.fields['client'].queryset = Client.objects.filter(city__in=user.superviser.city_id_list())
+            elif user.type == 2:
+                self.fields['adjuster'].queryset = Adjuster.objects.filter(city__moderator=user)
+                self.fields['client'].queryset = Client.objects.filter(city__moderator=user)
 
 
 class AdjusterTaskAreaAddForm(forms.ModelForm):
@@ -131,10 +136,16 @@ class AdjusterTaskAddForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
         super(AdjusterTaskAddForm, self).__init__(*args, **kwargs)
-        if self.request.user and self.request.user.type == 2:
-            self.fields['city'].queryset = City.objects.filter(moderator=self.request.user)
-            self.fields['adjuster'].queryset = Adjuster.objects.filter(city__moderator=self.request.user)
-            self.fields['area'].queryset = Area.objects.filter(city__moderator=self.request.user)
+        if self.request.user:
+            user = self.request.user
+            if user.type == 6:
+                self.fields['city'].queryset = user.superviser.city.all()
+                self.fields['adjuster'].queryset = Adjuster.objects.filter(city__in=user.superviser.city_id_list())
+                self.fields['area'].queryset = Area.objects.filter(city__in=user.superviser.city_id_list())
+            elif user.type == 2:
+                self.fields['city'].queryset = City.objects.filter(moderator=self.request.user)
+                self.fields['adjuster'].queryset = Adjuster.objects.filter(city__moderator=self.request.user)
+                self.fields['area'].queryset = Area.objects.filter(city__moderator=self.request.user)
 
 
 class AdjusterTaskRepairAddForm(forms.ModelForm):
@@ -166,8 +177,12 @@ class AdjusterTaskUpdateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
         super(AdjusterTaskUpdateForm, self).__init__(*args, **kwargs)
-        if self.request.user and self.request.user.type == 2:
-            self.fields['adjuster'].queryset = Adjuster.objects.filter(city__moderator=self.request.user)
+        if self.request.user:
+            user = self.request.user
+            if user.type == 6:
+                self.fields['adjuster'].queryset = Adjuster.objects.filter(city__in=user.superviser.city_id_list())
+            elif user.type == 2:
+                self.fields['adjuster'].queryset = Adjuster.objects.filter(city__moderator=user)
 
 
 class AdjusterTaskFilterForm(forms.Form):

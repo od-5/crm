@@ -21,6 +21,8 @@ class TicketListView(ListView):
         user = self.request.user
         if user.type == 1:
             qs = Ticket.objects.all()
+        elif user.type == 6:
+            qs = Ticket.objects.filter(city__in=user.superviser.city_id_list())
         elif user.type == 2:
             qs = Ticket.objects.filter(city__moderator=user)
         elif user.type == 5:
@@ -43,6 +45,8 @@ class TicketListView(ListView):
         user = self.request.user
         if user.type == 1:
             city_qs = City.objects.all()
+        elif user.type == 6:
+            city_qs = user.superviser.city.all()
         elif user.type == 2:
             city_qs = City.objects.filter(moderator=user)
         elif user.type == 5:
@@ -75,12 +79,17 @@ class TicketListView(ListView):
 def ticket_detail(request, pk):
     context = {}
     user = request.user
-    city_qs = City.objects.all()
-    if user.type == 2:
-        city_qs = city_qs.filter(moderator=user)
+    if user.type == 1:
+        city_qs = City.objects.all()
+    elif user.type == 6:
+        city_qs = user.superviser.city.all()
+    elif user.type == 2:
+        city_qs = City.objects.filter(moderator=user)
     elif user.type == 5:
-        manager = Manager.objects.get(user=user)
-        city_qs = city_qs.filter(moderator=manager.moderator)
+        # manager = Manager.objects.get(user=user)
+        city_qs = City.objects.filter(moderator=user.manager.moderator)
+    else:
+        city_qs = None
     ticket = get_object_or_None(Ticket, pk=int(pk))
     if request.method == 'POST':
         form = TicketChangeForm(request.POST, instance=ticket)

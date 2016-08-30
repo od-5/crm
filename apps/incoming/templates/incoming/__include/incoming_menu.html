@@ -1,3 +1,6 @@
+<a href="{{ back_to_list|default:'' }}" class="btn btn-default btn-sm add-bottom">
+  <span class="glyphicon glyphicon-circle-arrow-left"></span> назад к списку
+</a>
 <div class="div add-bottom">
   <a href="{% url 'incoming:update' object.id %}" class="btn btn-default">
     <span class="glyphicon glyphicon-edit"></span> Данные клиента

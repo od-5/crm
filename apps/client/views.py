@@ -60,14 +60,20 @@ def client_add(request):
             legal_name = IncomingClient.objects.get(id=int(request.GET.get('id'))).name
         user_form = UserAddForm()
         client_form = ClientAddForm(request=request, initial={'legal_name': legal_name})
-    if user.type == 2:
+    if user.type == 6:
+        client_form.fields['manager'].queryset = Manager.objects.filter(moderator__in=user.superviser.moderator_id_list())
+    elif user.type == 2:
         client_form.fields['manager'].queryset = Manager.objects.filter(moderator=user)
     elif user.type == 5 and user.is_leader_manager():
-        manager = Manager.objects.get(user=user)
-        client_form.fields['manager'].queryset = Manager.objects.filter(moderator=manager.moderator)
+        client_form.fields['manager'].queryset = Manager.objects.filter(moderator=user.manager.moderator)
+    try:
+        request.session['client_filtered_list']
+    except:
+        request.session['client_filtered_list'] = reverse('client:list')
     context.update({
         'user_form': user_form,
-        'client_form': client_form
+        'client_form': client_form,
+        'back_to_list': request.session['client_filtered_list']
     })
     return render(request, 'client/client_add.html', context)
 
@@ -80,6 +86,8 @@ class ClientListView(ListView):
         user = self.request.user
         if user.type == 1:
             qs = Client.objects.select_related().all()
+        elif user.type == 6:
+            qs = Client.objects.select_related().filter(city__in=user.superviser.city.all())
         elif user.type == 2:
             qs = Client.objects.select_related().filter(city__moderator=user)
         elif user.type == 5:
@@ -109,6 +117,9 @@ class ClientListView(ListView):
         if user.type == 1:
             city_qs = City.objects.all()
             manager_qs = Manager.objects.all()
+        elif user.type == 6:
+            city_qs = user.superviser.city.all()
+            manager_qs = Manager.objects.filter(moderator__in=user.superviser.moderator_id_list())
         elif user.type == 2:
             city_qs = City.objects.filter(moderator=user)
             manager_qs = Manager.objects.filter(moderator=user)
@@ -139,6 +150,10 @@ class ClientListView(ListView):
             context.update({
                 'r_legal_name': self.request.GET.get('legal_name')
             })
+        if self.request.META['QUERY_STRING']:
+            self.request.session['client_filtered_list'] = '%s?%s' % (self.request.path, self.request.META['QUERY_STRING'])
+        else:
+            self.request.session['client_filtered_list'] = reverse('client:list')
         return context
 
 
@@ -168,6 +183,10 @@ def client_update(request, pk):
     else:
         user_form = UserUpdateForm(instance=user)
         client_form = ClientUpdateForm(request=request, instance=client)
+    try:
+        request.session['client_filtered_list']
+    except:
+        request.session['client_filtered_list'] = reverse('client:list')
     context.update({
         'success': success_msg,
         'error': error_msg,
@@ -175,6 +194,7 @@ def client_update(request, pk):
         'client_form': client_form,
         'object': client,
         'client': client,
+        'back_to_list': request.session['client_filtered_list']
     })
     return render(request, 'client/client_update.html', context)
 
@@ -198,13 +218,18 @@ def client_maket(request, pk):
         maket_list = paginator.page(1)
     except EmptyPage:
         maket_list = paginator.page(paginator.num_pages)
+    try:
+        request.session['client_filtered_list']
+    except:
+        request.session['client_filtered_list'] = reverse('client:list')
     context.update({
         'success': success_msg,
         'error': error_msg,
         'client_maket_form': client_maket_form,
         'object': client,
         'client': client,
-        'maket_list': maket_list
+        'maket_list': maket_list,
+        'back_to_list': request.session['client_filtered_list']
     })
     return render(request, 'client/client_maket.html', context)
 
@@ -223,12 +248,17 @@ def client_maket_update(request, pk):
         form = ClientMaketForm(instance=maket, initial={
             'file': maket.file
         })
+    try:
+        request.session['client_filtered_list']
+    except:
+        request.session['client_filtered_list'] = reverse('client:list')
     context.update({
         'success': success_msg,
         'error': error_msg,
         'client_maket_form': form,
         'object': maket,
-        'client': maket.client
+        'client': maket.client,
+        'back_to_list': request.session['client_filtered_list']
     })
     return render(request, 'client/client_maket_update.html', context)
 
@@ -256,13 +286,18 @@ def client_order(request, pk):
         form = ClientOrderForm(initial={
             'client': client
         })
+    try:
+        request.session['client_filtered_list']
+    except:
+        request.session['client_filtered_list'] = reverse('client:list')
     context.update({
         'success': success_msg,
         'error': error_msg,
         'client_order_form': form,
         'object': client,
         'client': client,
-        'order_list': order_list
+        'order_list': order_list,
+        'back_to_list': request.session['client_filtered_list']
     })
     return render(request, 'client/client_order.html', context)
 
@@ -286,13 +321,18 @@ def client_order_update(request, pk):
                     surface.save()
     else:
         form = ClientOrderForm(instance=order)
+    try:
+        request.session['client_filtered_list']
+    except:
+        request.session['client_filtered_list'] = reverse('client:list')
     context.update({
         'success': success_msg,
         'error': error_msg,
         'order_form': form,
         'object': order,
         'client': client,
-        'area_list': area_list
+        'area_list': area_list,
+        'back_to_list': request.session['client_filtered_list']
     })
     return render(request, 'client/client_order_update.html', context)
 
@@ -386,15 +426,19 @@ def client_journal(request, pk):
         form = ClientJournalForm(initial={
             'client': client
         })
-
     form.fields['clientorder'].queryset = client.clientorder_set.filter(is_closed=False)
+    try:
+        request.session['client_filtered_list']
+    except:
+        request.session['client_filtered_list'] = reverse('client:list')
     context.update({
         'success': success_msg,
         'error': error_msg,
         'clientjournal_form': form,
         'object': client,
         'client': client,
-        'journal_list': journal_list
+        'journal_list': journal_list,
+        'back_to_list': request.session['client_filtered_list']
     })
     return render(request, 'client/client_journal.html', context)
 
@@ -413,10 +457,15 @@ def clientjournalpayment_list(request, pk):
         qs_list = paginator.page(1)
     except EmptyPage:
         qs_list = paginator.page(paginator.num_pages)
+    try:
+        request.session['client_filtered_list']
+    except:
+        request.session['client_filtered_list'] = reverse('client:list')
     context.update({
         'object': client,
         'client': client,
-        'object_list': qs_list
+        'object_list': qs_list,
+        'back_to_list': request.session['client_filtered_list']
     })
     return render(request, 'client/clientjournalpayment_list.html', context)
 

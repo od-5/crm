@@ -1,0 +1,93 @@
+{% extends 'cabinet_index.html' %}
+{% block title %}Отчёты по монтажникам | {{ block.super }}{% endblock %}
+{% block extra_js %}
+  <script src="http://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+{% endblock %}
+{% block content %}
+  <div class="container">
+    <div class="col-lg-12">
+      <ol class="breadcrumb">
+        <li><a href="{% url 'cabinet:cabinet' %}">Рабочий стол</a></li>
+        <li><a href="{% url 'adjuster:list' %}">Список монтажников</a></li>
+        <li class="active">Отчёт по монтажникам</li>
+      </ol>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="lead remove-bottom text-center">Отчёт по монтажникам</p>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-lg-10">
+              <form action="" class="js-adjuster-report-form form-inline add-bottom" method="GET">
+                <select name="city" id="id_city" class="form-control input-sm">
+                  <option value="">Выберите город</option>
+                  <option value="0" {% if r_city == 0 %}selected="selected"{% endif %}>Все города</option>
+                  {% for city in city_list %}
+                    <option value="{{ city.id }}" {% if city.id == r_city %}selected="selected"{% endif %}>{{ city }}</option>
+                  {% endfor %}
+                </select>
+                <input type="text" name="email" id="id_email" class="form-control input-sm" placeholder="email" value="{{ r_email }}">
+                <input type="text" name="last_name" id="id_last_name" class="form-control input-sm" placeholder="Фамилия" value="{{ r_last_name }}">
+                <input type="text" name="date_s" id="id_date_s" class="form-control input-sm" placeholder="Дата от" value="{{ r_date_s|default:'' }}">
+                <input type="text" name="date_e" id="id_date_e" class="form-control input-sm" placeholder="Дата до" value="{{ r_date_e|default:'' }}">
+                <button class="btn btn-info btn-sm" type="submit"><span class="glyphicon glyphicon-search"></span> Искать</button>
+              </form>
+            </div>
+            <div class="col-lg-2">
+              <p class="text-right">Всего монтажников: <strong>{{ object_list.count|default:'0' }}</strong></p>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+
+          <form action="{% url 'adjuster:report-excel' %}" method="post" target="_blank">{% csrf_token %}
+            <input type="hidden" name="date_from" value="{{ r_date_s|default:'' }}">
+            <input type="hidden" name="date_to" value="{{ r_date_e|default:'' }}">
+            <table class="table table-hover table-condensed table-bordered table-list js-table-report">
+              <thead>
+                <tr>
+                  <th><input type="checkbox" name="select_all" id="js-select-all" value=""></th>
+                  <th>email</th>
+                  <th>ФИО</th>
+                  <th>Город</th>
+                  <th>Задачи</th>
+                  <th>Поверхности</th>
+                  <th>Ремонт</th>
+                  <th>Замены</th>
+                  <th>Новые конструкции</th>
+                  <th>Стоимость работ</th>
+                  <th>Сумма к выплате</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for adjuster in object_list %}
+                <tr>
+                  <td><input type="checkbox" name="chk_group[]" value="{{ adjuster.id }}"></td>
+                  <td>{{ adjuster.user.email|default:'не указано' }}</td>
+                  <td>{{ adjuster.user.get_full_name|default:'не указано' }}</td>
+                  <td>{{ adjuster.city|default:'не указано' }}</td>
+                  <td>{{ adjuster.task_count|default:'0' }}</td>
+                  <td>{{ adjuster.stand_count|default:'0' }}</td>
+                  <td>{{ adjuster.repair_count|default:'0' }}</td>
+                  <td>{{ adjuster.change_count|default:'0' }}</td>
+                  <td>{{ adjuster.new_count|default:'0' }}</td>
+                  <td>{{ adjuster.total_cost|default:'0' }}</td>
+                  <td>{{ adjuster.actual_cost|default:'0' }}</td>
+                  <td><a href="{% url 'adjuster:report-detail' adjuster.id %}?date_from={{ r_date_s }}&date_to={{ r_date_e }}" class="btn btn-sm btn-success">детальный отчёт</a></td>
+                </tr>
+              {% empty %}
+                <tr>
+                  <td colspan="12"><p class="alert alert-info text-left">Монтажников не найдено.</p></td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+            <button type="submit" class="btn btn-info" {% if not object_list %}disabled='disabled'{% endif %}><span class="glyphicon glyphicon-download-alt"></span> Экспорт в EXCEL по выбранным работникам</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block bottom_js %}
+{% endblock %}

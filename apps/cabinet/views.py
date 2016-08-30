@@ -18,11 +18,6 @@ from core.models import User
 __author__ = 'alexy'
 
 
-def manager_dashboard(user):
-    manager = Manager.objects.get(user=user)
-    return manager
-
-
 @login_required()
 def cabinet_view(request):
     context = {}
@@ -36,7 +31,7 @@ def cabinet_view(request):
     elif user.type == 4:
         return HttpResponseRedirect(reverse('adjustertask:list'))
     elif user.type == 5:
-        manager = manager_dashboard(user)
+        manager = user.manager
         if manager.leader:
             template_name = 'cabinet/dash_moderator.html'
         else:
@@ -85,6 +80,7 @@ class UserUpdateView(UpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user
+
 
 @ajax_request
 def password_change(request):

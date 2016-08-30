@@ -11,6 +11,17 @@
           <p class="lead remove-bottom text-center">Управляющие компании</p>
         </div>
         <div class="panel-body">
+          <div class="row">
+            <div class="col-lg-6">
+              <a href="{% url 'city:management-company-add' %}" class="btn btn-success add-bottom">
+                <span class="glyphicon glyphicon-plus-sign"></span> Добавить управляющую программу
+              </a>
+            </div>
+            <div class="col-lg-6">
+              <p class="text-right">Всего управляющих компаний: <strong>{{ object_list.count|default:'0' }}</strong></p>
+            </div>
+            <div class="clearfix"></div>
+          </div>
           <form action="" method="GET" role="form" class="form-inline add-bottom">
             <select name="city" id="city_filter" class="form-control input-sm">
               <option value="0">Город</option>

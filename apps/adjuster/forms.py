@@ -18,11 +18,14 @@ class AdjusterAddForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
         super(AdjusterAddForm, self).__init__(*args, **kwargs)
-        if self.request.user and self.request.user.type == 2:
-            self.fields['city'].queryset = City.objects.filter(moderator=self.request.user)
-        elif self.request.user and self.request.user.type == 5:
-            manager = Manager.objects.get(user=self.request.user)
-            self.fields['city'].queryset = City.objects.filter(moderator=manager.moderator)
+        if self.request.user:
+            user = self.request.user
+            if user.type == 6:
+                self.fields['city'].queryset = user.superviser.city.all()
+            elif user.type == 2:
+                self.fields['city'].queryset = City.objects.filter(moderator=user)
+            elif user.type == 5:
+                self.fields['city'].queryset = City.objects.filter(moderator=user.manager.moderator)
 
 
 class AdjusterUpdateForm(forms.ModelForm):
@@ -37,11 +40,14 @@ class AdjusterUpdateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
         super(AdjusterUpdateForm, self).__init__(*args, **kwargs)
-        if self.request.user and self.request.user.type == 2:
-            self.fields['city'].queryset = City.objects.filter(moderator=self.request.user)
-        elif self.request.user and self.request.user.type == 5:
-            manager = Manager.objects.get(user=self.request.user)
-            self.fields['city'].queryset = City.objects.filter(moderator=manager.moderator)
+        if self.request.user:
+            user = self.request.user
+            if user.type == 6:
+                self.fields['city'].queryset = user.superviser.city.all()
+            elif self.request.user.type == 2:
+                self.fields['city'].queryset = City.objects.filter(moderator=user)
+            elif self.request.user.type == 5:
+                self.fields['city'].queryset = City.objects.filter(moderator=user.manager.moderator)
 
 
 class AdjusterPaymentForm(forms.ModelForm):

@@ -11,11 +11,21 @@
           <p class="lead remove-bottom text-center">Список продаж</p>
         </div>
         <div class="panel-body">
-          {% if user.is_leader_manager %}
-          <a href="{% url 'client:add' %}" class="btn btn-success add-bottom">
-            <span class="glyphicon glyphicon-plus-sign"></span> Добавить новую продажу
-          </a>
-          {% endif %}
+          <div class="row">
+            <div class="col-lg-6">
+              {% if user.is_leader_manager %}
+              <a href="{% url 'client:add' %}" class="btn btn-success add-bottom">
+                <span class="glyphicon glyphicon-plus-sign"></span> Добавить новую продажу
+              </a>
+              {% else %}
+              &nbsp;
+              {% endif %}
+            </div>
+            <div class="col-lg-6">
+              <p class="text-right">Количество продаж: <strong>{{ page_obj.paginator.count|default:'0' }}</strong></p>
+            </div>
+            <div class="clearfix"></div>
+          </div>
           <form action="{% url 'client:list' %}" class="form-inline add-bottom" role="form" method="GET">
             <select name="city" class="form-control input-sm">
               <option value="0">Город</option>

@@ -14,6 +14,8 @@ def surface_map(request):
     surface_list = []
     if user.type == 1:
         qs = Surface.objects.select_related().all()
+    elif user.type == 6:
+            qs = Surface.objects.select_related().filter(city__in=user.superviser.city_id_list())
     elif user.type == 2:
         qs = Surface.objects.select_related().filter(city__moderator=user)
     elif user.type == 5:

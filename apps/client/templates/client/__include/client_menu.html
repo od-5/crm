@@ -3,6 +3,9 @@
   <li><a href="{% url 'client:list' %}">Список продаж</a></li>
   <li class="active">Редактирование продажи</li>
 </ol>
+<a href="{{ back_to_list }}" class="btn btn-default btn-sm add-bottom">
+  <span class="glyphicon glyphicon-circle-arrow-left"></span> назад к списку
+</a>
 <div class="div add-bottom">
   <a href="{% url 'client:change' client.id %}" class="btn btn-default">
     <span class="glyphicon glyphicon-edit"></span> Редактирование клиента

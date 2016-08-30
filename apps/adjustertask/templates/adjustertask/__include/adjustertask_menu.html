@@ -3,6 +3,9 @@
   <li><a href="{% url 'adjustertask:list' %}">Список задач монтажников</a></li>
   <li class="active">Добавление задачи для монтажника</li>
 </ol>
+<a href="{{ back_to_list|default:'' }}" class="btn btn-default btn-sm add-bottom">
+  <span class="glyphicon glyphicon-circle-arrow-left"></span> назад к списку
+</a>
 <div class="div add-bottom">
   <a href="{% url 'adjustertask:client-add' %}" class="btn btn-default">
     <span class="glyphicon glyphicon-edit"></span> Добавление задачи по клиенту
