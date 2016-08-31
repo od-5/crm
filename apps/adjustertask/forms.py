@@ -166,7 +166,7 @@ class AdjusterTaskRepairAddForm(forms.ModelForm):
 class AdjusterTaskUpdateForm(forms.ModelForm):
     class Meta:
         model = AdjusterTask
-        fields = ('adjuster', 'type', 'date', 'comment')
+        fields = ('adjuster', 'type', 'date', 'is_closed', 'comment')
         widgets = {
             'adjuster': forms.Select(attrs={'class': 'form-control'}),
             'type': forms.Select(attrs={'class': 'form-control'}),

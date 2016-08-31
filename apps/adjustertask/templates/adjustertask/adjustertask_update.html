@@ -99,6 +99,16 @@
                   {{ adjuster_task_form.date.errors }}
                   <div class="clearfix"></div>
                 </div>
+                <div class="form-group">
+                  <div class="col-lg-5">
+                    {{ adjuster_task_form.is_closed.label_tag }}
+                  </div>
+                  <div class="col-lg-7">
+                    {{ adjuster_task_form.is_closed }}
+                  </div>
+                  {{ adjuster_task_form.is_closed.errors }}
+                  <div class="clearfix"></div>
+                </div>
               </div>
               <div class="col-lg-6 add-bottom">
                 {{ adjuster_task_form.comment.label_tag }}

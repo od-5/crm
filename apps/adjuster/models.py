@@ -5,6 +5,8 @@ from django.db import models
 from django.conf import settings
 from imagekit.models import ImageSpecField
 from pilkit.processors import SmartResize
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from pytils.translit import slugify
 from core.files import UploadTo, upload_to, surfacephoto_upload
 from apps.city.models import City, Surface, Porch
@@ -182,6 +184,21 @@ class AdjusterTask(models.Model):
     comment = models.TextField(verbose_name=u'Комментарий', blank=True, null=True)
     is_closed = models.BooleanField(verbose_name=u'Выполнено', default=False)
     sent = models.BooleanField(verbose_name=u'Отправлено', default=False)
+
+
+@receiver(post_save, sender=AdjusterTask)
+def write_ats(sender, created, **kwargs):
+    """
+    Принудительное закрытие всех адресов в задаче при установка чекбокса ВЫПОЛНЕНО.
+    """
+    task = kwargs['instance']
+    if task.is_closed:
+        for ats in task.adjustertasksurface_set.filter(is_closed=False):
+            for atsp in ats.adjustertasksurfaceporch_set.filter(is_closed=False):
+                atsp.is_closed = True
+                atsp.save()
+            ats.is_closed = True
+            ats.save()
 
 
 class AdjusterTaskSurface(models.Model):
