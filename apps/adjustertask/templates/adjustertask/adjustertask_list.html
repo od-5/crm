@@ -27,7 +27,7 @@
               <p>Предварительная сумма выплат составляет: <strong>{{ total_sum|default:'0' }} руб.</strong> </p>
             </div>
             <div class="col-lg-6">
-              <p class="text-right">Количество задач: <strong>{{ object_list.count|default:'0' }}</strong></p>
+              <p class="text-right">Количество задач: <strong>{{ object_list.paginator.count|default:'0' }}</strong></p>
             </div>
           </div>
           {% if user.type != 4 %}
