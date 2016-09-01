@@ -123,14 +123,14 @@
           <a href="{% url 'surface:list' %}" class="dropdown-toggle" data-toggle="dropdown">Поверхности <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="{% url 'surface:list' %}"><span class="glyphicon glyphicon-list-alt text-success"></span> Список поверхностей</a></li>
-            {% if not user.is_leader_manager %}
-            <li><a href="{% url 'surface:photo-list' %}"><span class="glyphicon glyphicon-camera text-success"></span> Фотографии поверхностей</a></li>
-            {% else %}
+            {% if user.is_leader_manager %}
             <li><a href="{% url 'surface:add' %}"><span class="glyphicon glyphicon-plus-sign text-success"></span> Добавить новую поверхность</a></li>
             <li class="divider"></li>
             <li><a href="{% url 'city:management-company' %}"><span class="glyphicon glyphicon-list-alt text-success"></span> Список управляющих компании</a></li>
             <li><a href="{% url 'city:management-company-add' %}"><span class="glyphicon glyphicon-plus-sign text-success"></span> Добавить новую управляющую компанию</a></li>
             {% endif %}
+            <li class="divider"></li>
+            <li><a href="{% url 'surface:photo-list' %}"><span class="glyphicon glyphicon-camera text-success"></span> Фотографии поверхностей</a></li>
           </ul>
         </li>
       {% endif %}

@@ -54,7 +54,7 @@ def surface_map(request):
             'coord_y': surface.coord_y,
             'coord_x': surface.coord_x,
             'name': surface.__unicode__(),
-            'porch_count': surface.porch_count()
+            'porch_count': surface.porch_total_count
         })
     return {
         'surface_list': surface_list

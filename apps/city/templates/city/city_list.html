@@ -65,8 +65,8 @@
                     {{ object.moderator|default:'Не указан' }}
                   {% endif %}
                   </td>
-                  <td>{{ object.surface_count }}</td>
-                  <td>{{ object.client_set.all.count }}</td>
+                  <td>{{ object.surface_count|default:'0' }}</td>
+                  <td>{{ object.client_set.count|default:'0' }}</td>
                   <td>
                   {% if user.type == 1 %}
                     <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ object.id }}" class="btn btn-sm btn-danger btn-sm js-ajax-remove-btn">
@@ -89,7 +89,7 @@
           </div>
         </div>
       </div>
-      {% include 'city/__include/address_list.html' with city_list=object_list %}
+{#      {% include 'city/__include/address_list.html' with city_list=object_list %}#}
 
     </div>
   </div>
@@ -97,5 +97,5 @@
 {% endblock %}
 {% block bottom_js %}
   <script src="{{ STATIC_URL }}city/js/city-map.js"></script>
-  <script src="{{ STATIC_URL }}city/js/photo-map.js"></script>
+{#  <script src="{{ STATIC_URL }}city/js/photo-map.js"></script>#}
 {% endblock %}

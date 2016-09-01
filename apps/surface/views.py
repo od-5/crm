@@ -1,5 +1,6 @@
 # coding=utf-8
 from django.contrib.auth.decorators import login_required
+from django.db.models import Sum
 import xlwt
 from os import path as op
 from datetime import datetime
@@ -66,11 +67,14 @@ class SurfaceListView(ListView):
         Администратор может выбирать любой город системы.
         Модератор - только те города, которыми он управляет.
         """
-        surface_qs = self.get_queryset()
-        porch_count = 0
+        surface_qs = self.object_list
+        try:
+            porch_count = surface_qs.aggregate(Sum('porch_total_count'))['porch_total_count__sum']
+        except:
+            porch_count = 0
         surface_count = surface_qs.count()
-        for surface in surface_qs:
-            porch_count += surface.porch_count()
+        # for surface in surface_qs:
+        #     porch_count += surface.porch_count()
         context.update({
             'import_form': SurfaceImportForm(),
             'porch_count': porch_count,
@@ -318,16 +322,25 @@ def surface_photo_update(request, pk):
 @login_required
 def surface_photo_list(request):
     """
-    Фотографии рекламных поверхностей для менеджера и клиента
+    Фотографии рекламных поверхностей
     """
     context = {}
     user = request.user
     folder = 'surface'
     template = 'surface_photo_list.html'
-    if user.type == 5:
-        manager = Manager.objects.get(user=user)
-        city_qs = City.objects.filter(moderator=manager.moderator)
-        a_qs = SurfacePhoto.objects.filter(porch__surface__city__moderator=manager.moderator)
+    if user.type == 1:
+        city_qs = City.objects.select_related().all()
+        a_qs = SurfacePhoto.objects.select_related().all()
+    elif user.type == 6:
+        city_qs = user.superviser.city.all()
+        a_qs = SurfacePhoto.objects.select_related().filter(porch__surface__city__in=user.superviser.city_id_list())
+    elif user.type == 2:
+        city_qs = City.objects.select_related().filter(moderator=user)
+        a_qs = SurfacePhoto.objects.select_related().filter(porch__surface__city__moderator=user)
+    elif user.type == 5:
+        # manager = Manager.objects.get(user=user)
+        city_qs = City.objects.filter(moderator=user.manager.moderator)
+        a_qs = SurfacePhoto.objects.filter(porch__surface__city__moderator=user.manager.moderator)
     elif user.type == 3:
         try:
             if request.session['is_mobile']:
@@ -448,9 +461,12 @@ def surface_photo_list(request):
                 re_date = datetime.strptime(a_date_e, '%d.%m.%Y')
                 e_date = datetime.date(re_date)
                 a_qs = a_qs.filter(date__lte=e_date)
-        if user.client and user.client.id == 37:
-            # fixme: fix for client with id=37
-            photo_count = 2053
+        if user.type == 3:
+            if user.client and user.client.id == 37:
+                # fixme: fix for client with id=37
+                photo_count = 2053
+            else:
+                photo_count = a_qs.count()
         else:
             photo_count = a_qs.count()
         if page_count != 0:

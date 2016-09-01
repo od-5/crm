@@ -76,6 +76,7 @@ def getpointGeoObject(address, key):
     else:
         print 'Nothing to find'
 
+
 def geocode(key, address):
     response = getpointGeoObject(address, key)
     pos = list(response)[0].split(' ')

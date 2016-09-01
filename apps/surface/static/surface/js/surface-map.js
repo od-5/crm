@@ -55,8 +55,8 @@ ymaps.ready(function () {
     }),
       getPointData = function (index) {
       return {
-          balloonContentBody: '<span>Адрес: ' + surface_list[index]['name'] + '. Кол-во подъездов' + surface_list[index]['porch_count'] + '</span>',
-          clusterCaption: '<span>Адрес: ' + surface_list[index]['name'] + '. Кол-во подъездов' + surface_list[index]['porch_count'] + '</span>'
+          balloonContentBody: '<span>Адрес: ' + surface_list[index]['name'] + '. Кол-во подъездов: ' + surface_list[index]['porch_count'] + '</span>',
+          clusterCaption: '<span>Адрес: ' + surface_list[index]['name'] + '. Кол-во подъездов: ' + surface_list[index]['porch_count'] + '</span>'
       };
     },
       getPointOptions = function () {

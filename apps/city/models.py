@@ -2,7 +2,8 @@
 import datetime
 from django.conf import settings
 from django.core.mail import send_mail
-from django.db.models.signals import post_save
+from django.db.models import Sum
+from django.db.models.signals import post_save, post_delete, pre_save
 from django.dispatch import receiver
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -42,9 +43,13 @@ class City(models.Model):
         Количество стендов = Количество домов * количество подъездов в доме
         Рекламная поверхность - дом, для которого созданы подъезды.
         """
-        count = 0
-        for surface in self.surface_set.all():
-            count += surface.porch_count()
+        try:
+            count = self.surface_set.all().aggregate(Sum('porch_total_count'))['porch_total_count__sum']
+        except:
+            count = 0
+        # count = 0
+        # for surface in self.surface_set.all():
+        #     count += surface.porch_count()
         return count
 
     def save(self, *args, **kwargs):
@@ -64,7 +69,7 @@ class City(models.Model):
     coord_x = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=u'Ширина')
     coord_y = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=u'Долгота')
     slug = models.SlugField(verbose_name=u'url имя поддомена', blank=True, null=True, max_length=50)
-    # surfaces = models.IntegerField(verbose_name=u'Кол-во поверхностей', default=0)
+    # stand_total_count = models.IntegerField(blank=True, null=True, default=0)
 
 
 @receiver(post_save, sender=City)
@@ -156,7 +161,7 @@ class Surface(models.Model):
         # return '/city/surface/'
 
     def porch_count(self):
-        return self.porch_set.all().count()
+        return self.porch_set.count()
 
     def porch_list(self):
         return ', '.join([str(porch.number) for porch in self.porch_set.all()])
@@ -176,14 +181,15 @@ class Surface(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.release_date:
-            self.release_date = datetime.date.today() - datetime.timedelta(days=1)
-        address = u'город %s %s %s' % (self.city.name, self.street.name, self.house_number)
-        try:
-            pos = api.geocode(api_key, address)
-            self.coord_x = float(pos[0])
-            self.coord_y = float(pos[1])
-        except:
-            pass
+            self.release_date = datetime.date.today() - datetime.timedelta(days=30)
+        # fixme: придумать как определять координаты только при создании и изменении через сайт
+        # address = u'город %s %s %s' % (self.city.name, self.street.name, self.house_number)
+        # try:
+        #     pos = api.geocode(api_key, address)
+        #     self.coord_x = float(pos[0])
+        #     self.coord_y = float(pos[1])
+        # except:
+        #     pass
         super(Surface, self).save()
 
     city = models.ForeignKey(to=City, verbose_name=u'Город')
@@ -196,6 +202,7 @@ class Surface(models.Model):
     has_broken = models.BooleanField(default=False, verbose_name=u'Есть повреждения')
     full_broken = models.BooleanField(default=False, verbose_name=u'Все стенды повреждены')
     release_date = models.DateField(blank=True, null=True, verbose_name=u'Дата освобождения поверхности')
+    porch_total_count = models.IntegerField(blank=True, null=True, default=0)
 
 
 class Porch(models.Model):
@@ -257,3 +264,16 @@ class Porch(models.Model):
     is_broken = models.BooleanField(verbose_name=u'Стенд поломан', default=False)
 
 
+@receiver(post_save, sender=Porch)
+def increment_porch_total_count(sender, created, **kwargs):
+    surface = kwargs['instance'].surface
+    if created:
+        surface.porch_total_count += 1
+        surface.save()
+
+
+@receiver(post_delete, sender=Porch)
+def decrement_porch_total_count(sender, **kwargs):
+    surface = kwargs['instance'].surface
+    surface.porch_total_count -= 1
+    surface.save()
