@@ -57,14 +57,14 @@ class SurfacePhoto(models.Model):
         # else:
         #     self.is_broken = False
         super(SurfacePhoto, self).save()
-        if self.image:
-            image = Image.open(self.image)
-            (width, height) = image.size
-            size = (800, 800)
-            "Max width and height 200"
-            if width > 800:
-                image.thumbnail(size, Image.ANTIALIAS)
-                image.save(self.image.path, "PNG")
+        # if self.image:
+        #     image = Image.open(self.image)
+        #     (width, height) = image.size
+        #     size = (800, 800)
+        #     "Max width and height 200"
+        #     if width > 800:
+        #         image.thumbnail(size, Image.ANTIALIAS)
+        #         image.save(self.image.path, "PNG")
 
     porch = models.ForeignKey(to=Porch, verbose_name=u'Подъезд')
     adjuster = models.ForeignKey(to=Adjuster, blank=True, null=True, verbose_name=u'Монтажник')
