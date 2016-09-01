@@ -191,7 +191,7 @@ class ClientJournal(models.Model):
     full_payment = models.BooleanField(default=False, verbose_name=u'Оплачено')
     total_stand_count = models.IntegerField(blank=True, null=True, default=0)
     full_cost = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True, default=0)
-    total_payment = models.IntegerField(blank=True, null=True, default=0)
+    total_payment = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True, default=0)
 
 
 class ClientJournalPayment(models.Model):
@@ -219,6 +219,23 @@ class ClientJournalPayment(models.Model):
     sum = models.DecimalField(max_digits=11, decimal_places=2, verbose_name=u'Сумма')
     created = models.DateField(auto_now_add=True, verbose_name=u'Дата создания')
 #     todo: добавить post_save сигнал для перерасчёта полной суммы поступлений по покупке
+
+
+@receiver(post_save, sender=ClientJournalPayment)
+def increment_payment_for_clientjournal(sender, created, **kwargs):
+    instance = kwargs['instance']
+    clientjournal = instance.clientjournal
+    if created:
+        clientjournal.total_payment += instance.sum
+        clientjournal.save()
+
+
+@receiver(post_delete, sender=ClientJournalPayment)
+def decrement_payment_for_clientjournal(sender, **kwargs):
+    instance = kwargs['instance']
+    clientjournal = instance.clientjournal
+    clientjournal.total_payment -= instance.sum
+    clientjournal.save()
 
 
 class ClientMaket(models.Model):

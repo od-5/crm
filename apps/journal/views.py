@@ -1,5 +1,6 @@
 # coding=utf-8
 from datetime import datetime
+from django.db.models import Sum
 from django.views.generic import ListView
 from apps.city.models import City
 from apps.client.models import ClientJournal, ClientJournalPayment
@@ -91,8 +92,14 @@ class JournalListView(ListView):
             context.update({
                 'r_manager': int(r_manager)
             })
-        total_cost = 0
-        payments_sum = 0
+        try:
+            total_cost = self.object_list.aggregate(Sum('full_cost'))['full_cost__sum']
+        except:
+            total_cost = 0
+        try:
+            payments_sum = self.object_list.aggregate(Sum('total_payment'))['total_payment__sum']
+        except:
+            payments_sum = 0
         # for i in self.object_list:
         #     total_cost += i.total_cost()
         #     payments_sum += i.current_payment()

@@ -98,10 +98,10 @@
                 <td>{{ item.cost|default:'Не указано' }}</td>
                 <td>{{ item.add_cost|default:'Не указано' }}</td>
                 <td>{{ item.discount|default:'Не указано' }}</td>
-                <td>{{ item.total_stand_count|default:'Не указано' }}</td>
-                <td>{{ item.full_cost|default:'Не указано' }}</td>
+                <td>{{ item.total_stand_count|default:'Не указано' }} - {{ item.stand_count|default:'--' }}</td>
+                <td>{{ item.full_cost|default:'Не указано' }} - {{ item.total_cost|default:'--' }}</td>
                 <td style="width: 120px;">
-                  {{ item.total_payment|default:'0' }}
+                  {{ item.total_payment|default:'0' }} - {{ item.current_payment|default:'--' }}
                   <a href="#js-modal-payment-add" id="js-payment-btn-{{ item.id }}" class="btn btn-sm btn-info js-payment-add-btn hide" data-client="{{ item.client.id }}" data-clientjournal="{{ item.id }}">
                     <span class="glyphicon glyphicon-plus-sign"></span> Добавить
                   </a>
