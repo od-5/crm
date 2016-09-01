@@ -139,7 +139,7 @@ class ClientJournal(models.Model):
         Показывает количество стендов в покупке
         """
         stand_count = 0
-        for clientorder in self.clientorder.select_related().all():
+        for clientorder in self.clientorder.all():
             stand_count += clientorder.stand_count()
         return stand_count
 
@@ -177,9 +177,9 @@ class ClientJournal(models.Model):
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
+        super(ClientJournal, self).save()
         self.total_stand_count = self.stand_count()
         self.full_cost = self.total_cost()
-        super(ClientJournal, self).save()
 
     client = models.ForeignKey(to=Client, verbose_name=u'клиент')
     clientorder = models.ManyToManyField(to=ClientOrder, verbose_name=u'заказ клиента')
@@ -226,7 +226,10 @@ def increment_payment_for_clientjournal(sender, created, **kwargs):
     instance = kwargs['instance']
     clientjournal = instance.clientjournal
     if created:
-        clientjournal.total_payment += instance.sum
+        if clientjournal.total_payment:
+            clientjournal.total_payment = float(clientjournal.total_payment) + float(instance.sum)
+        else:
+            clientjournal.total_payment = instance.sum
         clientjournal.save()
 
 

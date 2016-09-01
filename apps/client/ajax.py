@@ -82,18 +82,24 @@ def get_client_order_address_list(request):
 def payment_add(request):
     try:
         client = Client.objects.get(pk=int(request.POST.get('p_client')))
+        print 'client: %s' % client
         clientjournal = ClientJournal.objects.get(pk=int(request.POST.get('p_clientjournal')))
-        sum = request.POST.get('p_sum')
+        print 'clientjournal: %s' % clientjournal
+        sum = float(request.POST.get('p_sum'))
+        print sum
+        # import pdb; pdb.set_trace()
         payment = ClientJournalPayment(
             client=client,
             clientjournal=clientjournal,
             sum=sum
         )
         payment.save()
+        print 'try'
         return {
             'success': True
         }
     except:
+        print 'except'
         return {
             'error': True
         }
