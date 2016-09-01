@@ -93,9 +93,9 @@ class JournalListView(ListView):
             })
         total_cost = 0
         payments_sum = 0
-        for i in self.object_list:
-            total_cost += i.total_cost()
-            payments_sum += i.current_payment()
+        # for i in self.object_list:
+        #     total_cost += i.total_cost()
+        #     payments_sum += i.current_payment()
         if not r_city:
             r_city = 0
         context.update({

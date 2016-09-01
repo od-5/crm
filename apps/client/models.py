@@ -2,7 +2,7 @@
 import datetime
 from django.conf import settings
 import datetime
-from django.db.models.signals import post_delete
+from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 from django.utils.timezone import utc
 from django.core.urlresolvers import reverse
@@ -175,6 +175,12 @@ class ClientJournal(models.Model):
         sum = ((cost*(1+add_cost*0.01))*(1-discount*0.01))
         return round(sum, 2)
 
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        self.total_stand_count = self.stand_count()
+        self.full_cost = self.total_cost()
+        super(ClientJournal, self).save()
+
     client = models.ForeignKey(to=Client, verbose_name=u'клиент')
     clientorder = models.ManyToManyField(to=ClientOrder, verbose_name=u'заказ клиента')
     cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Цена за стенд, руб')
@@ -183,8 +189,9 @@ class ClientJournal(models.Model):
     created = models.DateField(auto_now_add=True, verbose_name=u'Дата создания')
     has_payment = models.BooleanField(default=False, verbose_name=u'Есть поступления')
     full_payment = models.BooleanField(default=False, verbose_name=u'Оплачено')
-#     todo: добавить поля "Полная стоимость" и "Сумма поступлений"
-#     todo: добавить pre_save сигналы для расчёта и перерасчёта полной стоимости и суммы поступлений
+    total_stand_count = models.IntegerField(blank=True, null=True, default=0)
+    full_cost = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True, default=0)
+    total_payment = models.IntegerField(blank=True, null=True, default=0)
 
 
 class ClientJournalPayment(models.Model):
