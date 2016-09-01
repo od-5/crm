@@ -2,6 +2,7 @@
 from datetime import datetime
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.urlresolvers import reverse
+from django.forms import HiddenInput
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import ListView
@@ -429,8 +430,7 @@ def adjustertask_repair(request):
     elif user.type == 2:
         city_qs = City.objects.filter(moderator=user)
     elif user.type == 5:
-        manager = Manager.objects.get(user=user)
-        city_qs = City.objects.filter(moderator=manager.moderator)
+        city_qs = City.objects.filter(moderator=user.manager.moderator)
     else:
         city_qs = None
     form.fields['city'].queryset = city_qs
@@ -476,9 +476,9 @@ def adjuster_task_update(request, pk):
     else:
         adjuster_task_form = AdjusterTaskUpdateForm(request=request, instance=adjustertask)
     if adjustertask.sent:
-        adjuster_task_form.fields['type'].widget.attrs['disabled'] = True
-        adjuster_task_form.fields['date'].widget.attrs['disabled'] = True
-        adjuster_task_form.fields['comment'].widget.attrs['disabled'] = True
+        adjuster_task_form.fields['type'].widget = HiddenInput()
+        adjuster_task_form.fields['date'].widget = HiddenInput()
+        adjuster_task_form.fields['comment'].widget = HiddenInput()
     try:
         request.session['adjustertask_filtered_list']
     except:

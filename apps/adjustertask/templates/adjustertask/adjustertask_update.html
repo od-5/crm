@@ -79,7 +79,10 @@
                     {% if user.type == 4 %}
                     {{ adjuster_task_form.type|attr:'disabled:disabled' }}
                     {% else %}
-                    {{ adjuster_task_form.type }}
+                      {% if object.sent %}
+                      <strong>{{ object.get_type_display }}</strong>
+                      {% endif %}
+                      {{ adjuster_task_form.type }}
                     {% endif %}
                   </div>
                   {{ adjuster_task_form.type.errors }}
@@ -93,7 +96,10 @@
                     {% if user.type == 4 %}
                     {{ adjuster_task_form.date|attr:'disabled:disabled' }}
                     {% else %}
-                    {{ adjuster_task_form.date }}
+                      {% if object.sent %}
+                      <strong>{{ object.date|date:'d.m.Yг.' }}</strong>
+                      {% endif %}
+                      {{ adjuster_task_form.date }}
                     {% endif %}
                   </div>
                   {{ adjuster_task_form.date.errors }}
@@ -115,7 +121,10 @@
                 {% if user.type == 4 %}
                 {{ adjuster_task_form.comment|attr:'disabled:disabled' }}
                 {% else %}
-                {{ adjuster_task_form.comment }}
+                  {% if object.sent %}
+                    <p>{{ object.comment|safe|linebreaksbr|default:'Не указано' }}</p>
+                  {% endif %}
+                  {{ adjuster_task_form.comment }}
                 {% endif %}
                 {{ adjuster_task_form.comment.errors }}
               </div>
