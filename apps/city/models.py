@@ -47,6 +47,8 @@ class City(models.Model):
             count = self.surface_set.all().aggregate(Sum('porch_total_count'))['porch_total_count__sum']
         except:
             count = 0
+        if not count:
+            count = 0
         # count = 0
         # for surface in self.surface_set.all():
         #     count += surface.porch_count()
