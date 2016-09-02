@@ -175,11 +175,12 @@ class ClientJournal(models.Model):
         sum = ((cost*(1+add_cost*0.01))*(1-discount*0.01))
         return round(sum, 2)
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
-        super(ClientJournal, self).save()
-        self.total_stand_count = self.stand_count()
-        self.full_cost = self.total_cost()
+    # def save(self, force_insert=False, force_update=False, using=None,
+    #          update_fields=None):
+    #     super(ClientJournal, self).save()
+    #     self.total_stand_count = self.stand_count()
+    #     self.full_cost = self.total_cost()
+    #     self.save()
 
     client = models.ForeignKey(to=Client, verbose_name=u'клиент')
     clientorder = models.ManyToManyField(to=ClientOrder, verbose_name=u'заказ клиента')

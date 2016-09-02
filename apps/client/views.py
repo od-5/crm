@@ -420,7 +420,10 @@ def client_journal(request, pk):
     if request.method == 'POST':
         form = ClientJournalForm(request.POST)
         if form.is_valid():
-            form.save()
+            instance = form.save()
+            instance.total_stand_count = instance.stand_count()
+            instance.full_cost = instance.total_cost()
+            instance.save()
             return HttpResponseRedirect(reverse('client:journal', args=(client.id,)))
     else:
         form = ClientJournalForm(initial={

@@ -76,7 +76,7 @@ class UserUpdateView(UpdateView):
         if self.request.user.type == 3 and self.request.session['is_mobile']:
             return 'mobile/profile_mobile.html'
         else:
-            return 'core/profile.html'
+            return 'cabinet/profile.html'
 
     def get_object(self, queryset=None):
         return self.request.user
