@@ -464,7 +464,7 @@ def surface_photo_list(request):
         if user.type == 3:
             if user.client and user.client.id == 37:
                 # fixme: fix for client with id=37
-                photo_count = 2053
+                photo_count = 2359
             else:
                 photo_count = a_qs.count()
         else:
