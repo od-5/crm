@@ -65,7 +65,7 @@ class ClientOrder(models.Model):
         При удалении заказа, для всех заказанных поверхностей автоматически устанавливется флаг "Поверхность свободна",
         т.е. доступна для заказа
         """
-        release_date = datetime.datetime.utcnow().replace(tzinfo=utc) - datetime.timedelta(days=1)
+        release_date = datetime.datetime.utcnow().replace(tzinfo=utc) - datetime.timedelta(days=365)
         if self.clientordersurface_set.all():
             for c_surface in self.clientordersurface_set.all():
                 surface = Surface.objects.get(pk=c_surface.surface.id)
