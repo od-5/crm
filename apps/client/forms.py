@@ -32,6 +32,7 @@ class ClientUpdateForm(forms.ModelForm):
             'leader': forms.TextInput(attrs={'class': 'form-control'}),
             'leader_function': forms.TextInput(attrs={'class': 'form-control'}),
             'work_basis': forms.TextInput(attrs={'class': 'form-control'}),
+            'photo_additional': forms.NumberInput(attrs={'class': 'form-control'}),
         }
 
     def __init__(self, *args, **kwargs):

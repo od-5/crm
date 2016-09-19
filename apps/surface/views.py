@@ -326,6 +326,7 @@ def surface_photo_list(request):
     """
     context = {}
     user = request.user
+    photo_additional = 0
     folder = 'surface'
     template = 'surface_photo_list.html'
     if user.type == 1:
@@ -352,6 +353,8 @@ def surface_photo_list(request):
         request.session['show_broken'] = False
         # client = get_object_or_None(Client, user=user)
         client = user.client
+        if client.photo_additional:
+            photo_additional = client.photo_additional
         qs_list = []
         for corder in client.clientorder_set.all():
             qs = SurfacePhoto.objects.select_related().filter(porch__surface__clientordersurface__clientorder=corder).filter(date__gte=corder.date_start).filter(date__lte=corder.date_end)
@@ -466,9 +469,10 @@ def surface_photo_list(request):
                 # fixme: fix for client with id=37
                 photo_count = 2359
             else:
-                photo_count = a_qs.count()
+                photo_count = a_qs.count() + photo_additional
         else:
-            photo_count = a_qs.count()
+            photo_count = a_qs.count() + photo_additional
+        # photo_count = a_qs.count() + photo_additional
         if page_count != 0:
             paginator = Paginator(a_qs, page_count)  # Show 25 contacts per page
             page = request.GET.get('page')

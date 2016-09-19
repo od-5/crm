@@ -45,6 +45,7 @@ class Client(models.Model):
     leader = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'Руководитель')
     leader_function = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'Должность руководителя')
     work_basis = models.CharField(max_length=256, blank=True, null=True, verbose_name=u'Основание для работы')
+    photo_additional = models.PositiveIntegerField(default=0, blank=True, null=True, verbose_name=u'накрутка к кол-ву фотографий')
 
 
 class ClientOrder(models.Model):
