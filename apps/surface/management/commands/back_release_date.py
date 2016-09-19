@@ -9,7 +9,7 @@ __author__ = 'alexy'
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
-        qs = Surface.objects.filter(free=False, release_date__lt=datetime.date.today())
+        qs = Surface.objects.filter(free=True)
         for surface in qs:
             surface.release_date = datetime.date.today() - datetime.timedelta(days=365)
             surface.free = True
