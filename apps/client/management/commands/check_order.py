@@ -13,3 +13,4 @@ class Command(BaseCommand):
         for order in qs:
             order.is_closed = True
             order.save()
+            # todo: сделать при закрытии заказа сброс дат освобождения для поверхностей на год назад
