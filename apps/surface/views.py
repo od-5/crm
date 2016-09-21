@@ -4,6 +4,7 @@ from django.db.models import Sum
 import xlwt
 from os import path as op
 from datetime import datetime
+from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
@@ -211,6 +212,7 @@ class SurfacePhotoDeleteView(DeleteView):
         return context
 
 
+@login_required
 def surface_porch(request, pk):
     context = {}
     surface = Surface.objects.get(pk=int(pk))
@@ -241,6 +243,7 @@ def surface_porch(request, pk):
     return render(request, 'surface/surface_porch.html', context)
 
 
+@login_required
 def surface_porch_update(request, pk):
     context = {}
     porch = Porch.objects.get(pk=int(pk))
@@ -280,6 +283,7 @@ def surface_porch_update(request, pk):
     return render(request, 'surface/surface_porch_update.html', context)
 
 
+@login_required
 def surface_photo_add(request):
     if request.method == 'POST':
         form = SurfacePhotoForm(request.POST, request.FILES)
@@ -290,6 +294,7 @@ def surface_photo_add(request):
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
+@login_required
 def surface_photo_update(request, pk):
     context = {}
     photo = SurfacePhoto.objects.get(pk=int(pk))

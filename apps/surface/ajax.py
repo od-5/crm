@@ -1,10 +1,47 @@
 # coding=utf-8
 from datetime import datetime
+from PIL import Image
+from random import randint
 from annoying.decorators import ajax_request
 from django.views.decorators.csrf import csrf_exempt
+from apps.adjuster.models import SurfacePhoto
 from apps.city.models import Surface
 
 __author__ = 'alexy'
+
+
+@ajax_request
+@csrf_exempt
+def ajax_photo_rotate(request):
+    if request.method == 'POST':
+        photo_id = request.POST.get('id')
+        angle = request.POST.get('angle')
+        if photo_id and angle:
+            photo = SurfacePhoto.objects.get(id=int(photo_id))
+            image = Image.open(photo.image)
+            angle = 0 - int(angle)
+            # print angle
+            image_resize = Image.open(photo.image_resize)
+            image.rotate(angle, expand=1).save(photo.image.path)
+            image_resize.rotate(angle, expand=1).save(photo.image_resize.path)
+            image.close()
+            image_resize.close()
+            return {
+                'success': True,
+                'image': u'%s?%s' % (photo.image.url, randint(1, 9)),
+                'image_resize': u'%s?%s' % (photo.image_resize.url, randint(1, 9)),
+                # 'id': photo.id,
+                # 'address': photo.porch.surface.__unicode__(),
+                # 'porch_number': photo.porch.number
+            }
+        else:
+            return {
+                'success': False
+            }
+    else:
+        return {
+            'success': False
+        }
 
 
 @ajax_request

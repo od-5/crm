@@ -8,6 +8,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from datetime import date
+from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
@@ -23,6 +24,7 @@ from .models import Client, ClientMaket, ClientOrder, ClientOrderSurface, Client
 __author__ = 'alexy'
 
 
+@login_required
 def client_add(request):
     context = {}
     user = request.user
@@ -157,6 +159,7 @@ class ClientListView(ListView):
         return context
 
 
+@login_required
 def client_update(request, pk):
     context = {}
     client = Client.objects.get(pk=int(pk))
@@ -199,6 +202,7 @@ def client_update(request, pk):
     return render(request, 'client/client_update.html', context)
 
 
+@login_required
 def client_maket(request, pk):
     context = {}
     client = Client.objects.get(pk=int(pk))
@@ -234,6 +238,7 @@ def client_maket(request, pk):
     return render(request, 'client/client_maket.html', context)
 
 
+@login_required
 def client_maket_update(request, pk):
     context = {}
     maket = ClientMaket.objects.get(pk=int(pk))
@@ -263,6 +268,7 @@ def client_maket_update(request, pk):
     return render(request, 'client/client_maket_update.html', context)
 
 
+@login_required
 def client_order(request, pk):
     context = {}
     client = Client.objects.get(pk=int(pk))
@@ -302,6 +308,7 @@ def client_order(request, pk):
     return render(request, 'client/client_order.html', context)
 
 
+@login_required
 def client_order_update(request, pk):
     context = {}
     order = ClientOrder.objects.select_related().get(pk=int(pk))
@@ -402,6 +409,7 @@ def client_order_export(request, pk):
     return response
 
 
+@login_required
 def client_journal(request, pk):
     context = {}
     client = Client.objects.get(pk=int(pk))
@@ -446,11 +454,10 @@ def client_journal(request, pk):
     return render(request, 'client/client_journal.html', context)
 
 
+@login_required
 def clientjournalpayment_list(request, pk):
     context = {}
     client = Client.objects.get(pk=int(pk))
-    success_msg = u''
-    error_msg = u''
     qs = client.clientjournalpayment_set.all()
     paginator = Paginator(qs, 25)
     page = request.GET.get('page')

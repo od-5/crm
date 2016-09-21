@@ -1,6 +1,7 @@
 # coding=utf-8
 from django.conf.urls import patterns, url
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
 from apps.city.ajax import surface_ajax, get_free_area_surface, get_city_area, get_city_adjusters, \
     get_area_surface_list, simple_get_area_streets, get_area_surface_list_with_damage, get_photo_map, \
     get_simple_city_map
@@ -11,7 +12,7 @@ __author__ = 'alexy'
 
 urlpatterns = patterns(
     'apps.city.views',
-    url(r'^$', CityListView.as_view(model=City), name='list'),
+    url(r'^$', login_required(CityListView.as_view(model=City)), name='list'),
     url(r'^report/$', 'city_report', name='report'),
     url(r'^add/$', staff_member_required(CityCreateView.as_view()), name='add'),
     url(r'^(?P<pk>\d+)/$', 'city_update', name='update'),

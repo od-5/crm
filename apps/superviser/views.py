@@ -1,6 +1,7 @@
 # coding=utf-8
 from annoying.functions import get_object_or_None
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
@@ -44,6 +45,7 @@ class SuperviserListView(ListView):
         return context
 
 
+@login_required
 def superviser_add(request):
     context = {}
     if request.method == "POST":
@@ -77,6 +79,7 @@ def superviser_add(request):
     return render(request, 'superviser/superviser_add.html', context)
 
 
+@login_required
 def superviser_update(request, pk):
     context = {}
     user = User.objects.get(pk=int(pk))

@@ -2,6 +2,7 @@
 from datetime import datetime
 from django.conf import settings
 from django.core.mail import send_mail
+from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.db.models import Sum
 from django.http import HttpResponseRedirect
@@ -211,6 +212,7 @@ class CityCreateView(CreateView):
     #     return super(CityCreateView, self).form_valid(form)
 
 
+@login_required
 def city_update(request, pk):
     user = request.user
     city = City.objects.get(pk=int(pk))
@@ -244,6 +246,7 @@ def city_update(request, pk):
     return render(request, 'city/city_update.html', context)
 
 
+@login_required
 def city_area(request, pk):
     context = {}
     city = City.objects.get(pk=int(pk))
@@ -267,6 +270,7 @@ def city_area(request, pk):
     return render(request, 'city/city_area.html', context)
 
 
+@login_required
 def city_area_update(request, pk):
     context = {}
     area = Area.objects.get(pk=int(pk))
@@ -287,6 +291,7 @@ def city_area_update(request, pk):
     return render(request, 'city/city_area_update.html', context)
 
 
+@login_required
 def city_street(request, pk):
     context = {}
     city = City.objects.get(pk=int(pk))
@@ -309,6 +314,7 @@ def city_street(request, pk):
     return render(request, 'city/city_street.html', context)
 
 
+@login_required
 def city_street_update(request, pk):
     context = {}
     street = Street.objects.get(pk=int(pk))
@@ -330,6 +336,7 @@ def city_street_update(request, pk):
     return render(request, 'city/city_street_update.html', context)
 
 
+@login_required
 def management_company_list(request):
     context = {}
     if request.user.type == 1:
@@ -362,6 +369,7 @@ def management_company_list(request):
     return render(request, 'city/management_company_list.html', context)
 
 
+@login_required
 def management_company_add(request):
     context = {}
     if request.method == 'POST':
@@ -382,6 +390,7 @@ def management_company_add(request):
     return render(request, 'city/management_company.html', context)
 
 
+@login_required
 def management_company_update(request, pk):
     context = {}
     m_company = ManagementCompany.objects.get(pk=int(pk))
@@ -403,6 +412,7 @@ def management_company_update(request, pk):
     return render(request, 'city/management_company.html', context)
 
 
+@login_required
 def city_report(request):
     context = {}
     user = request.user

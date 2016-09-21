@@ -1,0 +1,52 @@
+{% extends 'cabinet_index.html' %}
+{#{% block viewport %}#}
+{#    <meta name="viewport" content="width=device-width, initial-scale=1.0">#}
+{#  <meta name="viewport" content="width=1200">#}
+{#{% endblock %}#}
+{% block content %}
+  <div class="container">
+    <div class="col-lg-12">
+      <ol class="breadcrumb">
+{#        <li><a href="{% url 'work:list' %}">Рабочий стол</a></li>#}
+        <li class="active">Список задач</li>
+      </ol>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="lead remove-bottom text-center">Список задач ({{ object_list.count|default:'0' }}шт.)</p>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="task-list-item">
+              <div class="col-lg-12">
+                <table class="table table-bordered table-condensed table-list">
+                  <thead>
+                    <tr>
+                      <th>Дата</th>
+                      <th>Город</th>
+                      <th>Кол-во адресов</th>
+                      <th>Кол-во подъездов</th>
+                      <th>Тип задачи</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for task in object_list %}
+                    <tr>
+                      <td>{{ task.date|date:"d.m.Y"|default:'--' }}</td>
+                      <td>{{ task.adjuster.city.name|default:'--' }}</td>
+                      <td>{{ task.adjustertasksurface_set.all.count|default:'0' }}</td>
+                      <td>{{ task.get_porch_count }}</td>
+                      <td>{{ task.get_type_display|default:'--' }}</td>
+                      <td><a href="{% url 'work:detail' task.id %}" class="btn btn-info btn-sm">Начать работу</a></td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -4,6 +4,7 @@ from datetime import datetime
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView
 from django.utils import timezone
 from apps.city.models import City
@@ -113,6 +114,7 @@ class IncomingClientListView(ListView):
         return context
 
 
+@login_required
 def incomingclient_add(request):
     context = {}
     initial = {}
@@ -164,6 +166,7 @@ def incomingclient_add(request):
     return render(request, 'incoming/incoming_add.html', context)
 
 
+@login_required
 def incomingclient_update(request, pk):
     context = {}
     incomingclient = IncomingClient.objects.get(pk=int(pk))
@@ -219,6 +222,7 @@ def incomingclient_update(request, pk):
     return render(request, 'incoming/incoming_update.html', context)
 
 
+@login_required
 def incomingclientcontact_history(request, pk):
     incomingclient = IncomingClient.objects.get(pk=int(pk))
     try:
@@ -233,6 +237,7 @@ def incomingclientcontact_history(request, pk):
     return render(request, 'incoming/incomingclientcontact_history.html', context)
 
 
+@login_required
 def incomingclientcontact_list(request, pk):
     incomingclient = IncomingClient.objects.get(pk=int(pk))
     try:
@@ -247,6 +252,7 @@ def incomingclientcontact_list(request, pk):
     return render(request, 'incoming/incomingclientcontact_list.html', context)
 
 
+@login_required
 def incomingclientcontact_add(request, pk):
     success_msg = None
     error_msg = None
@@ -278,6 +284,7 @@ def incomingclientcontact_add(request, pk):
     return render(request, 'incoming/incomingclientcontact_add.html', context)
 
 
+@login_required
 def incomingclientcontact_update(request, pk):
     success_msg = None
     error_msg = None
@@ -306,6 +313,7 @@ def incomingclientcontact_update(request, pk):
     return render(request, 'incoming/incomingclientcontact_update.html', context)
 
 
+@login_required
 def incomingtask_list(request):
     context = {}
     if request.GET.get('error') and int(request.GET.get('error')) == 1:
@@ -404,6 +412,7 @@ def incomingtask_list(request):
     return render(request, 'incoming/incomingtask_list.html', context)
 
 
+@login_required
 def incomingtask_add(request):
     context = {}
     initial = {}
@@ -455,6 +464,7 @@ def incomingtask_add(request):
     return render(request, 'incoming/incomingtask_add.html', context)
 
 
+@login_required
 def incomingtask_update(request, pk):
     context = {}
     object = IncomingTask.objects.get(pk=int(pk))

@@ -1,0 +1,72 @@
+{% extends 'cabinet_index.html' %}
+{#{% block viewport %}#}
+{#    <meta name="viewport" content="width=device-width, initial-scale=1.0">#}
+{#  <meta name="viewport" content="width=1200">#}
+{#{% endblock %}#}
+{% block content %}
+  <div class="container">
+    <div class="col-lg-12">
+      <ol class="breadcrumb">
+        <li><a href="{% url 'work:list' %}">Список задач</a></li>
+        <li><a href="{% url 'work:detail' task.id %}">Список адресов задачи</a></li>
+        <li class="active">Список подъездов</li>
+      </ol>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="lead remove-bottom text-center">Список подъездов</p>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="task-list-item">
+              <div class="col-lg-12">
+                <table class="table table-bordered table-condensed table-list">
+                  <thead>
+                    <tr>
+                      <th>Номер подъезда</th>
+                      <th>Щит сломан</th>
+                      <th>Сломана прижимная планка</th>
+                      <th>Отсутствует защитное стекло</th>
+                      <th>Заменить защитное стекло</th>
+                      <th>Жильцы против</th>
+                      <th>Отсутствует соц. информация</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for atsp in object_list %}
+                    <tr>
+                      <td>{{ atsp.porch_number }}</td>
+                      <td class="{% if atsp.broken_shield %}danger{% else %}success{% endif %}">
+                        {% if atsp.broken_shield %}да{% else %}нет{% endif %}
+                      </td>
+                      <td class="{% if atsp.broken_gib %}danger{% else %}success{% endif %}">
+                        {% if atsp.broken_gib %}да{% else %}нет{% endif %}
+                      </td>
+                      <td class="{% if atsp.broken_gib %}danger{% else %}success{% endif %}">
+                        {% if atsp.no_glass %}да{% else %}нет{% endif %}
+                      </td>
+                      <td class="{% if atsp.broken_gib %}danger{% else %}success{% endif %}">
+                        {% if atsp.replace_glass %}да{% else %}нет{% endif %}
+                      </td>
+                      <td class="{% if atsp.broken_gib %}danger{% else %}success{% endif %}">
+                        {% if atsp.against_tenants %}да{% else %}нет{% endif %}
+                      </td>
+                      <td class="{% if atsp.broken_gib %}danger{% else %}success{% endif %}">
+                        {% if atsp.no_social_info %}да{% else %}нет{% endif %}
+                      </td>
+                      <td>
+                        <a href="{% url 'work:porch-detail' atsp.id %}" class="btn btn-info btn-sm">Начать работу</a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

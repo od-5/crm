@@ -47,6 +47,7 @@ class AdministratorListView(ListView):
         return context
 
 
+@login_required
 def administrator_add(request):
     context = {}
     if request.method == "POST":
@@ -71,6 +72,7 @@ def administrator_add(request):
     return render(request, 'administrator/administrator_add.html', context)
 
 
+@login_required
 def administrator_update(request, pk):
     context = {}
     user = User.objects.get(pk=int(pk))

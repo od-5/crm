@@ -2,6 +2,7 @@
 from annoying.functions import get_object_or_None
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.views.generic import ListView
 from apps.city.models import City
@@ -76,6 +77,7 @@ class TicketListView(ListView):
         return context
 
 
+@login_required
 def ticket_detail(request, pk):
     context = {}
     user = request.user

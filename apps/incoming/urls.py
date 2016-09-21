@@ -1,4 +1,5 @@
 # coding=utf-8
+from django.contrib.auth.decorators import login_required
 from django.conf.urls import patterns, url
 from apps.incoming.data_import import client_list_import
 from .views import IncomingClientListView
@@ -9,7 +10,7 @@ __author__ = 'alexy'
 
 urlpatterns = patterns(
     'apps.incoming.views',
-    url(r'^$', IncomingClientListView.as_view(), name='list'),
+    url(r'^$', login_required(IncomingClientListView.as_view()), name='list'),
     url(r'^add/$', 'incomingclient_add', name='add'),
     url(r'^(?P<pk>\d+)/$', 'incomingclient_update', name='update'),
     url(r'^(?P<pk>\d+)/manager/history/$', 'incomingclientcontact_history', name='history'),

@@ -1,6 +1,7 @@
 # coding=utf-8
 from annoying.functions import get_object_or_None
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
@@ -48,6 +49,7 @@ class ModeratorListView(ListView):
         return context
 
 
+@login_required
 def moderator_add(request):
     context = {}
     if request.method == "POST":
@@ -81,6 +83,7 @@ def moderator_add(request):
     return render(request, 'moderator/moderator_add.html', context)
 
 
+@login_required
 def moderator_change(request, pk):
     context = {}
     user = User.objects.get(pk=int(pk))

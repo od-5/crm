@@ -26,6 +26,7 @@ INSTALLED_APPS = (
     'apps.client',
     'apps.adjuster',
     'apps.adjustertask',
+    'apps.adjuster_cabinet',
     'apps.surface',
     'apps.journal',
     'apps.manager',

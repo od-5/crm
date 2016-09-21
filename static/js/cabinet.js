@@ -328,7 +328,13 @@ $(function() {
     }
   });
 
-  $(".js-gallery").fancybox();
+  $(".js-gallery").fancybox({
+    helpers: {
+      overlay: {
+        locked: false
+      }
+    }
+  });
 
 //  фильтрация по городам на странице поверхностей
   var get_url = '/'+location.href.split('/');
@@ -1452,6 +1458,44 @@ $(function() {
   table_report.find('#js-select-all');
   table_report.find('#js-select-all').on('click', function(){
       table_report.find('tbody input[type=checkbox]').prop('checked', $(this).prop('checked'));
+  });
+
+//  поворот фотографий
+  $('.js-photo-rotate__button').click(function(){
+    var block = $(this).parents('.photo-list-block');
+    var image = block.find('img');
+    var button = block.find('.js-photo-save__button');
+    button.show();
+    var angle = parseInt(button.attr('data-angle')) + 90;
+    //console.log(angle);
+    button.attr('data-angle', angle);
+    image.css("transform", "rotate("+angle+"deg)");
+  });
+  $('.js-photo-save__button').click(function(){
+    $('.rotate').show();
+    //$(document).off("click.js-galley");
+    var button = $(this);
+    var link = button.parents('.photo-list-block').find('a');
+    var img = link.find('img');
+    //console.log($(this).attr('data-angle'));
+    $.ajax({
+      type: "POST",
+      url: $(this).data('url'),
+      data: {
+        id: $(this).data('id'),
+        angle: $(this).attr('data-angle')
+      }
+    }).done(function (data) {
+      if (data.success) {
+        $('.rotate').hide();
+        link.attr('href', data.image);
+        img.attr('src', data.image_resize);
+        button.attr('data-angle', 0);
+        img.css("transform", "rotate(0deg)");
+      } else {
+        alert('FAIL');
+      }
+    });
   });
 
 });

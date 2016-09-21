@@ -5,6 +5,10 @@ $(function() {
   $.datepicker.setDefaults(
         $.extend($.datepicker.regional["ru"])
   );
+  $("#js-work-form").find("#id_date").datepicker({
+    defaultDate: 7,
+    dateFormat: "dd.mm.yy"
+  });
   $("#js-surface-photo-add-form #id_date").datepicker({
     defaultDate: 7,
     dateFormat: "dd.mm.yy"

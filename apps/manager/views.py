@@ -6,6 +6,7 @@ from django.db.models import Sum
 import xlwt
 from datetime import date
 from annoying.decorators import ajax_request
+from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
@@ -66,6 +67,7 @@ class ManagerListView(ListView):
         return context
 
 
+@login_required
 def manager_add(request):
     context = {}
     if request.method == "POST":
@@ -117,6 +119,7 @@ def manager_add(request):
     return render(request, 'manager/manager_add.html', context)
 
 
+@login_required
 def manager_update(request, pk):
     context = {}
     manager = Manager.objects.get(pk=int(pk))
@@ -167,6 +170,7 @@ def manager_update(request, pk):
     return render(request, 'manager/manager_update.html', context)
 
 
+@login_required
 def manager_report(request):
     context = {}
     user = request.user

@@ -101,17 +101,27 @@
       <div class="row">
       {% for item in address_list %}
         <div class="col-lg-3">
-          <div>
+          <div class="photo-list-block" id="photo-{{ item.id }}">
             <a href="{{ item.image.url }}" rel="group" class="js-gallery" title="{{ item.address }}, подъезд {{ item.porch.number }}">
               <img src="{{ item.image_resize.url }}" alt="{{ item.address }}, подъезд {{ item.porch.number }}">
             </a>
+            {% if user.is_leader_manager %}
+            <div class="photo-list-block-panel">
+              <button class="btn btn-sm js-photo-rotate__button">
+                <span class="glyphicon glyphicon-repeat"></span> повернуть
+              </button>
+              <button class="btn btn-sm btn-success js-photo-save__button" data-url="{% url 'surface:photo-rotate' %}" data-id="{{ item.id }}" data-angle="0">
+                <span class="glyphicon glyphicon-ok"></span> сохранить
+              </button>
+            </div>
+            {% endif %}
           </div>
           <div>
             <p class="photo_description">
               Адрес: {{ item.address }} <br>
               Подъезд: {{ item.porch.number }}, <br>
               Дата: {{ item.date }}
-              {% if user and user.type == 1 %}<br> id={{ item.id }}{% endif %}
+              {% if user.type == 1 %}<br> id={{ item.id }}{% endif %}
             </p>
           </div>
         </div>

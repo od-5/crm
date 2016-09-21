@@ -1,0 +1,104 @@
+{% extends 'cabinet_index.html' %}
+{#{% block viewport %}#}
+{#    <meta name="viewport" content="width=device-width, initial-scale=1.0">#}
+{#  <meta name="viewport" content="width=1200">#}
+{#{% endblock %}#}
+{% block content %}
+  <div class="container">
+    <div class="col-lg-12">
+      <ol class="breadcrumb">
+        <li><a href="{% url 'work:list' %}">Список задач</a></li>
+        <li><a href="{% url 'work:detail' task.id %}">Список адресов задачи</a></li>
+        <li><a href="{% url 'work:address-detail' object.adjustertasksurface.id %}">Список подъездов адреса</a></li>
+        <li class="active">Детализация подъезда</li>
+      </ol>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="lead remove-bottom text-center">Детализация подъезда №{{ object.porch.number|default:'--' }}</p>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="task-list-item">
+              <div class="col-lg-12">
+                {% load widget_tweaks %}
+                <form action="" role="form" id="js-work-form" method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  {{ porch_form.surface }}
+                  {{ porch_form.number|attr:'type:hidden' }}
+                  {{ porch_form.number.errors }}
+                  <div class="col-lg-4">
+                    <div class="form-group">
+                      <div class="col-lg-8">{{ porch_form.broken_shield.label_tag }}</div>
+                      <div class="col-lg-4">{{ porch_form.broken_shield }}</div>
+                      {{ porch_form.broken_shield.errors }}
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-8">{{ porch_form.broken_gib.label_tag }}</div>
+                      <div class="col-lg-4">{{ porch_form.broken_gib }}</div>
+                      {{ porch_form.broken_gib.errors }}
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-8">{{ porch_form.no_glass.label_tag }}</div>
+                      <div class="col-lg-4">{{ porch_form.no_glass }}</div>
+                      {{ porch_form.no_glass.errors }}
+                      <div class="clearfix"></div>
+                    </div>
+                  </div>
+                  <div class="col-lg-4">
+                    <div class="form-group">
+                      <div class="col-lg-8">{{ porch_form.replace_glass.label_tag }}</div>
+                      <div class="col-lg-4">{{ porch_form.replace_glass }}</div>
+                      {{ porch_form.replace_glass.errors }}
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-8">{{ porch_form.against_tenants.label_tag }}</div>
+                      <div class="col-lg-4">{{ porch_form.against_tenants }}</div>
+                      {{ porch_form.against_tenants.errors }}
+                      <div class="clearfix"></div>
+                    </div>
+                  </div>
+                  <div class="clearfix"></div>
+{#                  {{ photo_form.porch }}#}
+{#                  <div class="col-lg-6">#}
+{#                    <div class="form-group">#}
+{#                      <div class="col-lg-5">{{ photo_form.date.label_tag }}</div>#}
+{#                      <div class="col-lg-7">{{ photo_form.date }}</div>#}
+{#                      {{ photo_form.date.errors }}#}
+{#                      <div class="clearfix"></div>#}
+{#                    </div>#}
+{#                    <div class="form-group hide">#}
+{#                      <div class="col-lg-5">{{ photo_form.is_broken.label_tag }}</div>#}
+{#                      <div class="col-lg-7">{{ photo_form.is_broken }}</div>#}
+{#                      {{ photo_form.is_broken.errors }}#}
+{#                      <div class="clearfix"></div>#}
+{#                    </div>#}
+{#                    <div class="form-group">#}
+{#                      <div class="col-lg-5">{{ photo_form.image.label_tag }}</div>#}
+{#                      <div class="col-lg-7">{{ photo_form.image }}</div>#}
+{#                      {{ photo_form.image.errors }}#}
+{#                      <div class="clearfix"></div>#}
+{#                    </div>#}
+{#                  </div>#}
+                  <div class="clearfix"></div>
+                  <div class="col-lg-12">
+                    <button type="submit" class="btn btn-success add-bottom">Зафиксировать состояние и перейти к загрузке фотографий</button>
+                  </div>
+                  {% if has_photo %}
+                  <div class="col-lg-12">
+                    <a href="{% url 'work:porch-detail' object.id %}?is_closed=1" class="btn btn-lg btn-danger">Закончить работы по подъезду</a>
+                  </div>
+                  {% endif %}
+                </form>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -29,7 +29,7 @@ def cabinet_view(request):
     elif user.type == 3:
         return HttpResponseRedirect(reverse('surface:photo-list'))
     elif user.type == 4:
-        return HttpResponseRedirect(reverse('adjustertask:list'))
+        return HttpResponseRedirect(reverse('work:list'))
     elif user.type == 5:
         manager = user.manager
         if manager.leader:

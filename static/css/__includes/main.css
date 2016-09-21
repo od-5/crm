@@ -159,7 +159,8 @@ a.lead {
 .remove-padding {
   padding: 0;
 }
-.loader {
+.loader,
+.rotate {
   display: none;
   position: fixed;
   text-align: center;
@@ -169,7 +170,8 @@ a.lead {
   height: 100%;
   background: rgba(255, 255, 255, 0.65);
 }
-.loader-content {
+.loader-content,
+.rotate-content {
   position: fixed;
   top: 30%;
   left: 50%;

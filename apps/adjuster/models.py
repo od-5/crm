@@ -73,7 +73,7 @@ class SurfacePhoto(models.Model):
     image_resize = ImageSpecField(
         [SmartResize(*settings.SURFACE_THUMB_SIZE)], source='image', format='JPEG', options={'quality': 94}
     )
-    is_broken = models.BooleanField(default=False)
+    is_broken = models.BooleanField(default=False, verbose_name=u'Поломка')
 
 
 class AdjusterTask(models.Model):

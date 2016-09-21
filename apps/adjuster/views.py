@@ -1,6 +1,7 @@
 # coding=utf-8
 from datetime import datetime
 from annoying.functions import get_object_or_None
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
@@ -75,6 +76,7 @@ class AdjusterListView(ListView):
         return context
 
 
+@login_required
 def adjuster_add(request):
     context = {}
     if request.method == "POST":
@@ -108,6 +110,7 @@ def adjuster_add(request):
     return render(request, 'adjuster/adjuster_add.html', context)
 
 
+@login_required
 def adjuster_update(request, pk):
     context = {}
     adjuster = Adjuster.objects.get(pk=int(pk))
@@ -149,6 +152,7 @@ def adjuster_update(request, pk):
     return render(request, 'adjuster/adjuster_update.html', context)
 
 
+@login_required
 def adjuster_task(request, pk):
     context = {}
     r_date_s = request.GET.get('date_s')
@@ -187,6 +191,7 @@ def adjuster_task(request, pk):
     return render(request, 'adjuster/adjuster_task.html', context)
 
 
+@login_required
 def adjuster_payment(request, pk):
     adjuster = Adjuster.objects.get(pk=int(pk))
     context = {
@@ -210,6 +215,7 @@ def adjuster_payment(request, pk):
     return render(request, 'adjuster/adjuster_payment.html', context)
 
 
+@login_required
 def adjuster_report(request):
     context = {}
     user = request.user

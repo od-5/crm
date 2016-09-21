@@ -18,6 +18,7 @@ urlpatterns = patterns(
     url(r'^city/', include('apps.city.urls', namespace='city'),),
     url(r'^client/', include('apps.client.urls', namespace='client'),),
     url(r'^adjuster/', include('apps.adjuster.urls', namespace='adjuster'),),
+    url(r'^work/', include('apps.adjuster_cabinet.urls', namespace='work'),),
     url(r'^task/', include('apps.adjustertask.urls', namespace='adjustertask'),),
     url(r'^surface/', include('apps.surface.urls', namespace='surface'),),
     url(r'^ticket/', include('apps.ticket.urls', namespace='ticket'),),
