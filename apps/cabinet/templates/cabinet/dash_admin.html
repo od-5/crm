@@ -32,6 +32,12 @@
           </a>
         </div>
         <div class="col-lg-2">
+          <a href="{% url 'superviser:list' %}" class="dashboard__link">
+            <img src="{{ STATIC_URL }}icon/superviser_list.jpg" alt="Список супервайзеров" class="dashboard__link_icon">
+            <span class="dashboard__link_text">Список супервайзеров</span>
+          </a>
+        </div>
+        <div class="col-lg-2">
           <a href="{% url 'city:report' %}" class="dashboard__link">
             <img src="{{ STATIC_URL }}icon/city_report.jpg" alt="Отчёты по городам" class="dashboard__link_icon">
             <span class="dashboard__link_text">Отчёты по городам</span>
@@ -210,6 +216,12 @@
           <a href="{% url 'manager:report' %}" class="dashboard__link">
             <img src="{{ STATIC_URL }}icon/manager_report.jpg" alt="Журнал поступлений" class="dashboard__link_icon">
             <span class="dashboard__link_text">Отчёты по менеджерам</span>
+          </a>
+        </div>
+        <div class="col-lg-2">
+          <a href="{% url 'surface:photo-list' %}" class="dashboard__link">
+            <img src="{{ STATIC_URL }}icon/surface_photo.png" alt="Фотографии поверхностей" class="dashboard__link_icon">
+            <span class="dashboard__link_text">Фотографии поверхностей</span>
           </a>
         </div>
         <div class="clearfix"></div>

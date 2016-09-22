@@ -54,6 +54,14 @@
             <span class="dashboard__link_text">Добавить новую управляющую компанию</span>
           </a>
         </div>
+      {% if user.type == 5 %}
+        <div class="col-lg-2">
+          <a href="{% url 'surface:photo-list' %}" class="dashboard__link">
+            <img src="{{ STATIC_URL }}icon/surface_photo.png" alt="Фотографии поверхностей" class="dashboard__link_icon">
+            <span class="dashboard__link_text">Фотографии поверхностей</span>
+          </a>
+        </div>
+      {% endif %}
         <div class="clearfix"></div>
       </div>
     </div>
@@ -184,6 +192,14 @@
             <span class="dashboard__link_text">Отчёты по менеджерам</span>
           </a>
         </div>
+      {% if user.type == 2 or user.type == 6%}
+        <div class="col-lg-2">
+          <a href="{% url 'surface:photo-list' %}" class="dashboard__link">
+            <img src="{{ STATIC_URL }}icon/surface_photo.png" alt="Фотографии поверхностей" class="dashboard__link_icon">
+            <span class="dashboard__link_text">Фотографии поверхностей</span>
+          </a>
+        </div>
+      {% endif %}
         <div class="clearfix"></div>
       </div>
     </div>
