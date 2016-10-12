@@ -62,12 +62,6 @@ def client_add(request):
             legal_name = IncomingClient.objects.get(id=int(request.GET.get('id'))).name
         user_form = UserAddForm()
         client_form = ClientAddForm(request=request, initial={'legal_name': legal_name})
-    if user.type == 6:
-        client_form.fields['manager'].queryset = Manager.objects.filter(moderator__in=user.superviser.moderator_id_list())
-    elif user.type == 2:
-        client_form.fields['manager'].queryset = Manager.objects.filter(moderator=user)
-    elif user.type == 5 and user.is_leader_manager():
-        client_form.fields['manager'].queryset = Manager.objects.filter(moderator=user.manager.moderator)
     try:
         request.session['client_filtered_list']
     except:

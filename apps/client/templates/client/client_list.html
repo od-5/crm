@@ -13,13 +13,9 @@
         <div class="panel-body">
           <div class="row">
             <div class="col-lg-6">
-              {% if user.is_leader_manager %}
               <a href="{% url 'client:add' %}" class="btn btn-success add-bottom">
                 <span class="glyphicon glyphicon-plus-sign"></span> Добавить новую продажу
               </a>
-              {% else %}
-              &nbsp;
-              {% endif %}
             </div>
             <div class="col-lg-6">
               <p class="text-right">Количество продаж: <strong>{{ page_obj.paginator.count|default:'0' }}</strong></p>

@@ -38,17 +38,19 @@ class ClientUpdateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
         super(ClientUpdateForm, self).__init__(*args, **kwargs)
-        if self.request.user:
-            if self.request.user.type == 6:
-                self.fields['city'].queryset = self.request.user.superviser.city.all()
-                self.fields['manager'].queryset = Manager.objects.filter(moderator__in=self.request.user.superviser.moderator_id_list())
-            elif self.request.user.type == 2:
-                self.fields['city'].queryset = City.objects.filter(moderator=self.request.user)
-                self.fields['manager'].queryset = Manager.objects.filter(moderator=self.request.user)
-            elif self.request.user.type == 5 and self.request.user.is_leader_manager():
-                manager = Manager.objects.get(user=self.request.user)
-                self.fields['city'].queryset = City.objects.filter(moderator=manager.moderator)
-                self.fields['manager'].queryset = Manager.objects.filter(moderator=manager.moderator)
+        user = self.request.user
+        if self.request.user.type == 6:
+            self.fields['city'].queryset = user.superviser.city.all()
+            self.fields['manager'].queryset = Manager.objects.filter(moderator__in=user.superviser.moderator_id_list())
+        elif user.type == 2:
+            self.fields['city'].queryset = City.objects.filter(moderator=user)
+            self.fields['manager'].queryset = Manager.objects.filter(moderator=user)
+        elif user.type == 5:
+            self.fields['city'].queryset = City.objects.filter(moderator=user.manager.moderator)
+            if user.is_leader_manager():
+                self.fields['manager'].queryset = Manager.objects.filter(moderator=user.manager.moderator)
+            else:
+                self.fields['manager'].queryset = Manager.objects.filter(user=user.manager.moderator)
 
 
 class ClientAddForm(forms.ModelForm):
@@ -79,14 +81,20 @@ class ClientAddForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
         super(ClientAddForm, self).__init__(*args, **kwargs)
-        if self.request.user:
-            if self.request.user.type == 6:
-                self.fields['city'].queryset = self.request.user.superviser.city.all()
-            if self.request.user.type == 2:
-                self.fields['city'].queryset = City.objects.filter(moderator=self.request.user)
-            elif self.request.user.type == 5 and self.request.user.is_leader_manager():
-                manager = Manager.objects.get(user=self.request.user)
-                self.fields['city'].queryset = City.objects.filter(moderator=manager.moderator)
+        user = self.request.user
+        if user.type == 6:
+            self.fields['manager'].queryset = Manager.objects.filter(moderator__in=user.superviser.moderator_id_list())
+            self.fields['city'].queryset = user.superviser.city.all()
+        elif user.type == 2:
+            self.fields['manager'].queryset = Manager.objects.filter(moderator=user)
+            self.fields['city'].queryset = City.objects.filter(moderator=user)
+        elif user.type == 5:
+            self.fields['city'].queryset = City.objects.filter(moderator=user.manager.moderator)
+            if user.is_leader_manager():
+                self.fields['manager'].queryset = Manager.objects.filter(moderator=user.manager.moderator)
+            else:
+                self.fields['manager'].queryset = Manager.objects.filter(user=user)
+                self.fields['manager'].initial = user.manager
 
 
 class ClientMaketForm(forms.ModelForm):

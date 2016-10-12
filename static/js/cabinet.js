@@ -1326,6 +1326,14 @@ $(function() {
   });
   // ajax форма редактирования задачи
   $('#js-incomingtask-modal-update-form').ajaxForm({
+    beforeSubmit: function(arr, $form, options) {
+      //alert('hay');
+      $form.find('input[type=submit]').attr('disabled', 'disabled');
+        // The array of form data takes the following form:
+        // [ { name: 'username', value: 'jresig' }, { name: 'password', value: 'secret' } ]
+
+        // return false to cancel submit
+    },
     success: function(data){
       if (data.success) {
         $.notify('Задача по клиенту обновлена', 'success');
@@ -1338,24 +1346,24 @@ $(function() {
   });
 
   $('#js-ajax-sale-add').on('click', function(){
-    console.log('ПРОДАЖА!');
+    //console.log('ПРОДАЖА!');
     var form = $('#js-incomingtask-modal-update-form');
     var manager = form.find('#id_manager').val();
-    console.log(manager);
+    //console.log(manager);
     var incomingclient = form.find('#id_incomingclient').val();
-    console.log(incomingclient);
+    //console.log(incomingclient);
     var comment = form.find('#id_comment').val();
-    console.log(comment);
+    //console.log(comment);
     var date = form.find('#id_date').val();
-    console.log(date);
+    //console.log(date);
     var incomingcontact = form.find('#id_incomingclient_contact').val();
-    console.log(incomingcontact);
+    //console.log(incomingcontact);
     var incomingtask = form.find('#id_incomingtask').val();
-    console.log(incomingtask);
+    //console.log(incomingtask);
     var incomingclient_type = form.find('#id_incomingclient_type').text();
-    console.log(incomingclient_type);
+    //console.log(incomingclient_type);
     var incomingclient_name = form.find('#id_incomingclient_name').text();
-    console.log(incomingclient_name);
+    //console.log(incomingclient_name);
 
     var c_form = $('#js-ajax-client-add');
     c_form.find('#id_incomingclient').val(incomingclient);
