@@ -283,7 +283,12 @@ def photo_add(request):
             # print type(is_broken)
             logger.error(u'request for upload photo user %s' % request.user)
             logger.error(u'request.data %s' % request.data)
-            serializer = SurfacePhotoSerializer(data=request.data)
+            data = request.data
+            if len(data['date'].split(' ')) == 1:
+                date = data['date']
+                time = datetime.datetime.now().strftime('%H:%M')
+                data['date'] = u'%s %s' % (date, time)
+            serializer = SurfacePhotoSerializer(data=data)
             if serializer.is_valid():
                 serializer.save()
                 # item = SurfacePhoto.objects.get(pk=serializer.instance.id)

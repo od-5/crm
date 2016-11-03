@@ -68,7 +68,7 @@ class SurfacePhoto(models.Model):
 
     porch = models.ForeignKey(to=Porch, verbose_name=u'Подъезд')
     adjuster = models.ForeignKey(to=Adjuster, blank=True, null=True, verbose_name=u'Монтажник')
-    date = models.DateField(verbose_name=u'Дата фотографии')
+    date = models.DateTimeField(verbose_name=u'Дата фотографии')
     image = models.ImageField(verbose_name=u'Изображение', upload_to=surfacephoto_upload)
     image_resize = ImageSpecField(
         [SmartResize(*settings.SURFACE_THUMB_SIZE)], source='image', format='JPEG', options={'quality': 94}
