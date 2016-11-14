@@ -34,7 +34,7 @@ def task_list(request, format=None):
         adjuster = user.adjuster
     except Adjuster.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-    qs = AdjusterTask.objects.filter(adjuster=adjuster, is_closed=False)
+    qs = AdjusterTask.objects.select_related().filter(adjuster=adjuster, is_closed=False)
     if not qs:
         return Response(status=status.HTTP_204_NO_CONTENT)
     context = []
