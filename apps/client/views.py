@@ -112,17 +112,16 @@ class ClientListView(ListView):
         user = self.request.user
         if user.type == 1:
             city_qs = City.objects.all()
-            manager_qs = Manager.objects.all()
+            manager_qs = Manager.objects.select_related().all()
         elif user.type == 6:
             city_qs = user.superviser.city.all()
-            manager_qs = Manager.objects.filter(moderator__in=user.superviser.moderator_id_list())
+            manager_qs = Manager.objects.select_related().filter(moderator__in=user.superviser.moderator_id_list())
         elif user.type == 2:
             city_qs = City.objects.filter(moderator=user)
-            manager_qs = Manager.objects.filter(moderator=user)
+            manager_qs = Manager.objects.select_related().filter(moderator=user)
         elif user.type == 5:
-            manager = Manager.objects.get(user=user)
-            city_qs = City.objects.filter(moderator=manager.moderator)
-            manager_qs = Manager.objects.filter(moderator=manager.moderator)
+            city_qs = City.objects.filter(moderator=user.manager.moderator)
+            manager_qs = Manager.objects.select_related().filter(moderator=user.manager.moderator)
         else:
             city_qs = None
             manager_qs = None

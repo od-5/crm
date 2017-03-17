@@ -82,6 +82,7 @@
           </div>
         </div>
       </div>
+    {% block top_content %}
       <div class="header-main">
         <div class="holder">
           <div class="header-main-left">
@@ -142,9 +143,11 @@
           </div>
         </div>
       </div>
+    {% endblock %}
     </header>
     <section class="about">
       <div class="holder">
+      {% block about_content %}
         <h2>Почему реклама на подъездах <span>настолько эффективна</span></h2>
         <div class="about-holder">
         {% if blockeffective_list %}
@@ -164,8 +167,10 @@
           на нём. В верхнем блоке рекламной таблички  отображены: наименование управляющей компании, обслуживающей этот дом,
           название улицы, номер подъезда и номера квартир, а также контакты УК  и телефоны различных служб.</p>
         </article>
+      {% endblock %}
       </div>
     </section>
+  {% block other_content %}
     <section class="garanty">
       <div class="holder">
         <div class="garanty-title"><span>100% ГАРАНТИЯ </span>ЗАЩИТЫ РЕКЛАМЫ<br> И ИСПОЛНЕНИЯ<br> ЗАКАЗА</div>
@@ -371,6 +376,7 @@
         </div>
       </div>
     </section>
+  {% endblock %}
     <footer class="footer">
       <div class="footer-line">
         <div class="holder">
