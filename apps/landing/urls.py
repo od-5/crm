@@ -2,7 +2,7 @@
 from django.conf.urls import patterns, url
 from django.views.generic import TemplateView
 
-from .views import home_view, setup_list, setup_add, setup_update, block_list, blockeffective_list, \
+from .views import LandingView, setup_list, setup_add, setup_update, block_list, blockeffective_list, \
     blockeffective_add, blockeffective_update, blockreview_list, blockreview_add, blockreview_update, \
     blockexample_list, blockexample_add, blockexample_update
 
@@ -11,7 +11,7 @@ __author__ = 'alexy'
 
 urlpatterns = patterns(
     '',
-    url(r'^$', home_view, name='home'),
+    url(r'^$', LandingView.as_view(), name='home'),
     url(r'^confidentiality/$', TemplateView.as_view(template_name='landing/confidentiality.html'),
         name='confidentiality'),
     # настроки лэндинга

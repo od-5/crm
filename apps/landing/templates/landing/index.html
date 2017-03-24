@@ -1,3 +1,5 @@
+{% load cache %}
+{% cache cache_time head current_city %}
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -24,13 +26,11 @@
   <!--[if lt IE 9]><script type="text/javascript" src="{% static 'landing/js/html5.js' %}"></script><![endif]-->
   <!--[if lt IE 9]><script type="text/javascript" src="{% static 'landing/js/placeholder.js' %}"></script><![endif]-->
   <script src="{% static 'landing/js/all.js' %}"></script>
-{#  <script src="{{ STATIC_URL }}js/map.js"></script>#}
-{% load cache %}
-
 {% if setup %}
   {{ setup.top_js|safe }}
 {% endif %}
 </head>
+{% endcache %}
 <body>
   <div id="wrapper">
     <header class="header">
@@ -186,28 +186,23 @@
       <div class="holder">
         <h2>Карта возможностей размещения вашей
         <span>рекламы в городах России</span></h2>
+
         <div id="YMapsID" {% if not current_city %}data-url="{% url 'city:simple-map' %}"{% endif %} data-city="{{ current_city.slug|default:'' }}" style="height: 500px; margin-bottom: 40px;" class="add-bottom"></div>
         <div class="city-button-holder">
           <a href="" class="city-button">Посмотреть возможности по вашему городу</a>
+        {% cache cache_time city_list %}
           <div class="city-hidden">
             <ul class="city-list">
-            {% if city_list_1 %}
-              {% for city in city_list_1 %}
+              {% for city in city_list %}
               <li><a href="http://{{ city.slug }}.{{ request.domain }}">{{ city.name }}</a></li>
               {% endfor %}
-            {% endif %}
-            </ul>
-            <ul class="city-list">
-            {% if city_list_2 %}
-              {% for city in city_list_2 %}
-              <li><a href="http://{{ city.slug }}.{{ request.domain }}">{{ city.name }}</a></li>
-              {% endfor %}
-            {% endif %}
             </ul>
           </div>
+        {% endcache %}
         </div>
       </div>
     </section>
+  {% cache cache_time gallery current_city %}
     <section class="gallery">
       <div class="holder">
         <h2>Наши работы / Примеры <span>размещения рекламы</span></h2>
@@ -305,6 +300,7 @@
         </div>
       </div>
     </section>
+    {% endcache %}
     <section class="review">
       <div class="holder">
         <h2>Отзывы об эффективности <span>нашей рекламы</span></h2>
@@ -499,16 +495,16 @@
     </div>
     <!--   Всплывающие окна end  -->
   </div>
-{% if MAIN_PAGE %}
-  <script src="{% static 'landing/js/city_map.js' %}"></script>
-{#  {% cache 500 main_map %}#}
-{#    {% include 'landing/__include/map.html' %}#}
-{#  {% endcache %}#}
-{% else %}
-  {% include 'landing/__include/surface-map.html' with surface_list=current_city.surface_set.all %}
-{% endif %}
+{% cache cache_time map current_city %}
+  {% if MAIN_PAGE %}
+    <script src="{% static 'landing/js/city_map.js' %}"></script>
+  {% else %}
+    {% include 'landing/__include/surface-map.html' with surface_list=current_city.surface_set.all %}
+  {% endif %}
+{% endcache %}
 {% if setup %}
   {{ setup.bottom_js|safe }}
 {% endif %}
+
 </body>
 </html>

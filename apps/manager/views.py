@@ -1,44 +1,40 @@
 # coding=utf-8
 import datetime
-from annoying.functions import get_object_or_None
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.db.models import Sum
 import xlwt
-from datetime import date
-from annoying.decorators import ajax_request
+from annoying.functions import get_object_or_None
+
+from django.db.models import Sum
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
-from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView
+
 from apps.client.models import ClientJournal
 from apps.client.models import ClientJournalPayment
 from core.forms import UserAddForm, UserUpdateForm
 from core.models import User
+from lib.cbv import PassGetArgsToCtxMixin
 from .models import Manager
 from .forms import ManagerForm
 
 __author__ = 'alexy'
 
 
-class ManagerListView(ListView):
+class ManagerListView(ListView, PassGetArgsToCtxMixin):
     model = Manager
     template_name = 'manager/manager_list.html'
     paginate_by = 25
+    passed_get_args = (
+        'email',
+        'last_name',
+        'first_name',
+        'patronymic',
+        'phone'
+    )
 
     def get_queryset(self):
-        user = self.request.user
-        if user.type == 1:
-            qs = Manager.objects.all()
-        elif user.type == 6:
-            qs = Manager.objects.filter(moderator__in=user.superviser.moderator_id_list())
-        elif self.request.user.type == 2:
-            qs = Manager.objects.filter(moderator=user)
-        elif self.request.user.type == 5:
-            qs = Manager.objects.filter(moderator=user.manager.moderator)
-        else:
-            qs = None
+        qs = self.model.objects.get_qs(self.request.user)
         if self.request.GET.get('email'):
             qs = qs.filter(user__email__icontains=self.request.GET.get('email'))
         if self.request.GET.get('last_name'):
@@ -49,22 +45,12 @@ class ManagerListView(ListView):
             qs = qs.filter(user__patronymic__icontains=self.request.GET.get('patronymic'))
         if self.request.GET.get('phone'):
             qs = qs.filter(user__phone__icontains=self.request.GET.get('phone'))
+
         if self.request.META['QUERY_STRING']:
             self.request.session['manager_filtered_list'] = '%s?%s' % (self.request.path, self.request.META['QUERY_STRING'])
         else:
             self.request.session['manager_filtered_list'] = reverse('manager:list')
         return qs
-
-    def get_context_data(self, **kwargs):
-        context = super(ManagerListView, self).get_context_data()
-        context.update({
-            'r_email': self.request.GET.get('email'),
-            'r_last_name': self.request.GET.get('last_name'),
-            'r_first_name': self.request.GET.get('first_name'),
-            'r_patronymic': self.request.GET.get('patronymic'),
-            'r_phone': self.request.GET.get('phone'),
-        })
-        return context
 
 
 @login_required

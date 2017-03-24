@@ -34,8 +34,7 @@ class IncomingClientListView(ListView):
             qs = IncomingClient.objects.select_related().filter(city__moderator=user)
         elif user.type == 5:
             if user.is_leader_manager():
-                manager = Manager.objects.get(user=user)
-                qs = IncomingClient.objects.select_related().filter(city__moderator=manager.moderator)
+                qs = IncomingClient.objects.select_related().filter(city__moderator=user.manager.moderator)
             else:
                 qs = IncomingClient.objects.select_related().filter(manager__user=user)
         else:
@@ -88,20 +87,10 @@ class IncomingClientListView(ListView):
             'manager_task_count': manager_task_count
         })
         user = self.request.user
-        if user.type == 1:
-            manager_qs = Manager.objects.all()
-        elif user.type == 6:
-            manager_qs = Manager.objects.filter(moderator__in=user.superviser.moderator_id_list())
-        elif user.type == 2:
-            manager_qs = Manager.objects.filter(moderator=user)
-        elif user.type == 5:
-            current_manager = Manager.objects.get(user=user)
+        if user.type == 5:
             context.update({
-                'current_manager': current_manager
+                'current_manager': user.manager
             })
-            manager_qs = Manager.objects.filter(moderator=current_manager.moderator)
-        else:
-            manager_qs = None
         import_form = IncomingClientImportForm()
         if self.request.META['QUERY_STRING']:
             self.request.session['incoming_filtered_list'] = '%s?%s' % (self.request.path, self.request.META['QUERY_STRING'])
@@ -109,7 +98,7 @@ class IncomingClientListView(ListView):
             self.request.session['incoming_filtered_list'] = reverse('incoming:list')
         context.update({
             'import_form': import_form,
-            'manager_list': manager_qs
+            'manager_list': Manager.objects.get_qs(user)
         })
         return context
 

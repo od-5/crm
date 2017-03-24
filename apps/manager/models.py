@@ -6,11 +6,29 @@ from core.models import User
 __author__ = 'alexy'
 
 
+class ManagerModelManager(models.Manager):
+
+    @staticmethod
+    def get_qs(user):
+        qs = Manager.objects.none()
+        if user.type == 1:
+            qs = Manager.objects.select_related().all()
+        elif user.type == 2:
+            qs = Manager.objects.select_related().filter(moderator=user)
+        elif user.type == 5:
+            qs = Manager.objects.select_related().filter(moderator=user.manager.moderator)
+        elif user.type == 6:
+            qs = Manager.objects.select_related().filter(moderator__in=user.superviser.moderator_id_list())
+        return qs
+
+
 class Manager(models.Model):
     class Meta:
         verbose_name = u'Менеджер'
         verbose_name_plural = u'Менеджеры'
         app_label = 'manager'
+
+    objects = ManagerModelManager()
 
     def __unicode__(self):
         return self.user.get_full_name()

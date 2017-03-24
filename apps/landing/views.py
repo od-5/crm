@@ -1,9 +1,9 @@
 # coding=utf-8
 from annoying.functions import get_object_or_None
-from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+from django.views.generic import TemplateView
 from apps.city.models import City
 from .forms import SetupForm, BlockEffectiveForm, BlockExampleForm, BlockReviewForm
 from .models import Setup, BlockEffective, BlockReview, BlockExample
@@ -11,12 +11,53 @@ from .models import Setup, BlockEffective, BlockReview, BlockExample
 __author__ = 'alexy'
 
 
+class LandingView(TemplateView):
+    template_name = 'landing/index.html'
+
+    def get_context_data(self, **kwargs):
+        context = {}
+        city_qs = City.objects.values('id', 'name')
+        # city_qs = City.objects.all()
+        current_city = get_object_or_None(City, slug=self.request.subdomain)
+        if current_city:
+            try:
+                setup = Setup.objects.get(city=current_city)
+            except:
+                setup = Setup.objects.filter(city__isnull=True).first()
+            blockeffective_qs = BlockEffective.objects.filter(city=current_city)
+            if not blockeffective_qs:
+                blockeffective_qs = BlockEffective.objects.filter(city__isnull=True)
+            blockreview_qs = BlockReview.objects.filter(city=current_city)
+            if not blockreview_qs:
+                blockreview_qs = BlockReview.objects.filter(city__isnull=True)
+            blockexample_qs = BlockExample.objects.filter(city=current_city)
+            if not blockexample_qs:
+                blockexample_qs = BlockExample.objects.filter(city__isnull=True)
+        else:
+            setup = Setup.objects.filter(city__isnull=True).first()
+            blockeffective_qs = BlockEffective.objects.filter(city__isnull=True)
+            blockreview_qs = BlockReview.objects.filter(city__isnull=True)
+            blockexample_qs = BlockExample.objects.filter(city__isnull=True)
+        blockexample_qs_1 = blockexample_qs[:15]
+        blockexample_qs_2 = blockexample_qs[15:]
+        context.update({
+            'blockexample_list_1': blockexample_qs_1,
+            'blockexample_list_2': blockexample_qs_2,
+            'blockeffective_list': blockeffective_qs,
+            'blockreview_list': blockreview_qs,
+            'current_city': current_city,
+            'setup': setup,
+            'city_list': city_qs,
+            # 'city_list_1': city_list_1,
+            # 'city_list_2': city_list_2,
+            'cache_time': 1800
+        })
+        return context
+
+
 def home_view(request):
     context = {}
     city_qs = City.objects.all()
-    city_count = city_qs.count()
-    city_list_1 = city_qs[0:(city_count/2)]
-    city_list_2 = city_qs[(city_count/2):]
     current_city = get_object_or_None(City, slug=request.subdomain)
     if current_city:
         try:
@@ -47,8 +88,9 @@ def home_view(request):
         'current_city': current_city,
         'setup': setup,
         'city_list': city_qs,
-        'city_list_1': city_list_1,
-        'city_list_2': city_list_2
+        # 'city_list_1': city_list_1,
+        # 'city_list_2': city_list_2,
+        'cache_time': 1800
     })
     return render(request, 'landing/index.html', context)
 

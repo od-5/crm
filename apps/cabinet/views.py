@@ -53,11 +53,15 @@ def cabinet_login(request):
     if request.method == "POST":
         username = request.POST.get('username')
         password = request.POST.get('password')
+        next_url = request.GET.get('next')
         user = authenticate(username=username, password=password)
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return HttpResponseRedirect(reverse('cabinet:cabinet'))
+                if next_url:
+                    return HttpResponseRedirect(next_url)
+                else:
+                    return HttpResponseRedirect(reverse('cabinet:cabinet'))
             else:
                 error = u'Пользователь заблокирован'
         else:

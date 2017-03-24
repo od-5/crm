@@ -1,3 +1,4 @@
+/cms/settings/local_settings.py
 /apps/superviser/migrations
 /apps/moderator/migrations
 /apps/ticket/migrations

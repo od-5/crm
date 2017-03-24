@@ -554,16 +554,21 @@ pulse
     border-radius: 5px;
     background: url(../images/city.png) 69px 69px no-repeat;
 }
-.city-list {
-    float: left;
-    width: 175px;
-    margin: 0 0 0 100px;
-}
+/*.city-list {*/
+    /*float: left;*/
+    /*width: 175px;*/
+    /*margin: 0 0 0 100px;*/
+/*}*/
 .city-list:first-child {margin: 0;}
 .city-list li {
     padding: 0 0 0 13px;
     margin: 0 0 14px;
     background: url(../images/point.png) 0 9px no-repeat;
+    float: left;
+    width: 50%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 .city-list a {color: #000;}
 /************************* gallery *************************/
