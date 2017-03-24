@@ -16,7 +16,7 @@ class LandingView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = {}
-        city_qs = City.objects.values('id', 'name')
+        city_qs = City.objects.values('id', 'name', 'slug')
         # city_qs = City.objects.all()
         current_city = get_object_or_None(City, slug=self.request.subdomain)
         if current_city:
