@@ -310,6 +310,7 @@ def client_order_update(request, pk):
     success_msg = u''
     error_msg = u''
     release_date = order.date_end
+    today = datetime.date.today()
     if request.method == 'POST':
         form = ClientOrderForm(request.POST, instance=order)
         if form.is_valid():
@@ -318,6 +319,8 @@ def client_order_update(request, pk):
                 for cos in order_instance.clientordersurface_set.all():
                     surface = cos.surface
                     surface.release_date = order_instance.date_end
+                    if order_instance.date_end > today:
+                        surface.free = False
                     surface.save()
     else:
         form = ClientOrderForm(instance=order)
