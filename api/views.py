@@ -80,8 +80,7 @@ def task_list(request, format=None):
         context.append(t_context)
         task.sent = True
         task.save()
-    logger.error(u'user=%s' % request.user)
-    logger.error(u'context=%s' % context)
+    logger.error(u'user=%s task_list' % request.user)
     return Response(context)
 
 
@@ -271,7 +270,7 @@ def porch_update(request, pk):
 @api_view(['POST'])
 @authentication_classes((SessionAuthentication, BasicAuthentication))
 @permission_classes((IsAuthenticated,))
-def photo_add(request):
+def Nphoto_add(request):
     if request.method == 'POST':
         try:
             porch = request.data.get('porch')
