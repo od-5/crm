@@ -270,7 +270,7 @@ def porch_update(request, pk):
 @api_view(['POST'])
 @authentication_classes((SessionAuthentication, BasicAuthentication))
 @permission_classes((IsAuthenticated,))
-def Nphoto_add(request):
+def photo_add(request):
     if request.method == 'POST':
         try:
             porch = request.data.get('porch')
