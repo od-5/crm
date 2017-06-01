@@ -17,16 +17,20 @@ class JournalListView(ListView):
     def get_queryset(self):
         user = self.request.user
         if user.type == 1:
-            qs = ClientJournal.objects.select_related().all()
+            qs = ClientJournal.objects.prefetch_related('client', 'client__manager', 'clientorder').all()
         elif user.type == 6:
-            qs = ClientJournal.objects.select_related().filter(client__city__in=user.superviser.city_id_list())
+            qs = ClientJournal.objects.prefetch_related('client', 'client__manager', 'clientorder').filter(
+                client__city__in=user.superviser.city_id_list())
         elif user.type == 2:
-            qs = ClientJournal.objects.select_related().filter(client__city__moderator=user)
+            qs = ClientJournal.objects.prefetch_related('client', 'client__manager', 'clientorder').filter(
+                client__city__moderator=user)
         elif user.type == 5:
             if user.is_leader_manager():
-                qs = ClientJournal.objects.select_related().filter(client__city__moderator=user.manager.moderator)
+                qs = ClientJournal.objects.prefetch_related('client', 'client__manager', 'clientorder').filter(
+                    client__city__moderator=user.manager.moderator)
             else:
-                qs = ClientJournal.objects.select_related().filter(client__manager=user.manager)
+                qs = ClientJournal.objects.prefetch_related('client', 'client__manager', 'clientorder').filter(
+                    client__manager=user.manager)
         else:
             qs = None
         if self.request.GET.get('city'):
@@ -56,17 +60,17 @@ class JournalListView(ListView):
         user = self.request.user
         if user.type == 1:
             city_qs = City.objects.all()
-            manager_qs = Manager.objects.select_related().all()
+            manager_qs = Manager.objects.select_related('user').all()
         elif user.type == 6:
             city_qs = user.superviser.city.all()
-            manager_qs = Manager.objects.select_related().filter(moderator__in=user.superviser.moderator_id_list())
+            manager_qs = Manager.objects.select_related('user').filter(moderator__in=user.superviser.moderator_id_list())
         elif self.request.user.type == 2:
             city_qs = City.objects.filter(moderator=user)
-            manager_qs = Manager.objects.select_related().filter(moderator=user)
+            manager_qs = Manager.objects.select_related('user').filter(moderator=user)
         elif self.request.user.type == 5:
             manager = Manager.objects.get(user=user)
             city_qs = City.objects.filter(moderator=manager.moderator)
-            manager_qs = Manager.objects.select_related().filter(moderator=manager.moderator)
+            manager_qs = Manager.objects.select_related('user').filter(moderator=manager.moderator)
         else:
             city_qs = None
             manager_qs = None
@@ -123,16 +127,24 @@ class ClientJournalPaymentListView(ListView):
     def get_queryset(self):
         user = self.request.user
         if user.type == 1:
-            qs = ClientJournalPayment.objects.all()
+            qs = ClientJournalPayment.objects.select_related('client', 'client__manager__user', 'clientjournal').all()
         elif user.type == 6:
-            qs = ClientJournalPayment.objects.filter(client__city__in=user.superviser.city_id_list())
+            qs = ClientJournalPayment.objects.select_related(
+                'client', 'client__manager__user', 'clientjournal').filter(
+                client__city__in=user.superviser.city_id_list())
         elif user.type == 2:
-            qs = ClientJournalPayment.objects.filter(client__manager__moderator=user)
+            qs = ClientJournalPayment.objects.select_related(
+                'client', 'client__manager__user', 'clientjournal').filter(
+                client__manager__moderator=user)
         elif user.type == 5:
             if user.is_leader_manager():
-                qs = ClientJournalPayment.objects.filter(client__city__moderator=user.manager.moderator)
+                qs = ClientJournalPayment.objects.select_related(
+                    'client', 'client__manager__user', 'clientjournal').filter(
+                    client__city__moderator=user.manager.moderator)
             else:
-                qs = ClientJournalPayment.objects.filter(client__manager=user.manager)
+                qs = ClientJournalPayment.objects.select_related(
+                    'client', 'client__manager__user', 'clientjournal').filter(
+                    client__manager=user.manager)
         else:
             qs = None
         city = self.request.GET.get('city')
@@ -157,16 +169,17 @@ class ClientJournalPaymentListView(ListView):
         user = self.request.user
         if self.request.user.type == 1:
             city_qs = City.objects.all()
-            manager_qs = Manager.objects.all()
+            manager_qs = Manager.objects.select_related('user').all()
         elif self.request.user.type == 6:
             city_qs = user.superviser.city.all()
-            manager_qs = Manager.objects.filter(moderator__in=user.superviser.moderator_id_list())
+            manager_qs = Manager.objects.select_related('user').filter(
+                moderator__in=user.superviser.moderator_id_list())
         elif self.request.user.type == 2:
             city_qs = City.objects.filter(moderator=user)
-            manager_qs = Manager.objects.filter(moderator=user)
+            manager_qs = Manager.objects.select_related('user').filter(moderator=user)
         elif self.request.user.type == 5:
             city_qs = City.objects.filter(moderator=user.manager.moderator)
-            manager_qs = Manager.objects.filter(moderator=user.manager.moderator)
+            manager_qs = Manager.objects.select_related('user').filter(moderator=user.manager.moderator)
         else:
             city_qs = None
             manager_qs = None

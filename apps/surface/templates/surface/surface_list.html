@@ -27,7 +27,7 @@
                 <span class="glyphicon glyphicon-plus-sign"></span> Добавить новую поверхность
               </a>
             {% endif %}
-              <a href="{% url 'surface:export' %}?city={{ city_id|default:'' }}&area={{ area_id|default:'' }}&street={{ street_id|default:'' }}&management={{ management_id|default:'' }}&releade_date={{ releade_date|default:'' }}" class="btn btn-warning add-bottom">
+              <a href="{% url 'surface:export' %}?city={{ city_id|default:'' }}&area={{ area_id|default:'' }}&street={{ street_id|default:'' }}&management={{ management_id|default:'' }}&release_date={{ release_date|default:'' }}&free={{ free|default:0 }}" class="btn btn-warning add-bottom">
                 <span class="glyphicon glyphicon-download-alt"></span> Скачать в EXCEL
               </a>
             </div>

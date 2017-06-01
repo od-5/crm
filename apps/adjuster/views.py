@@ -24,13 +24,13 @@ class AdjusterListView(ListView):
     def get_queryset(self):
         user = self.request.user
         if user.type == 1:
-            qs = Adjuster.objects.select_related().all()
+            qs = Adjuster.objects.select_related('city', 'user').all()
         elif user.type == 6:
-            qs = Adjuster.objects.select_related().filter(city__in=user.superviser.city.all())
+            qs = Adjuster.objects.select_related('city', 'user').filter(city__in=user.superviser.city.all())
         elif user.type == 2:
-            qs = Adjuster.objects.select_related().filter(city__moderator=user)
+            qs = Adjuster.objects.select_related('city', 'user').filter(city__moderator=user)
         elif user.type == 5:
-            qs = Adjuster.objects.select_related().filter(city__moderator=user.manager.moderator)
+            qs = Adjuster.objects.select_related('city', 'user').filter(city__moderator=user.manager.moderator)
         else:
             qs = None
         if self.request.GET.get('email'):

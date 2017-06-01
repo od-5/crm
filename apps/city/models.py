@@ -32,10 +32,7 @@ class City(models.Model):
         """
         Метод возвращает количество подъездов города
         """
-        count = 0
-        for surface in self.surface_set.all():
-            count += surface.porch_count()
-        return count
+        return Porch.objects.select_related('surface__city').filter(surface__city=self).count()
 
     def surface_count(self):
         """
@@ -43,16 +40,9 @@ class City(models.Model):
         Количество стендов = Количество домов * количество подъездов в доме
         Рекламная поверхность - дом, для которого созданы подъезды.
         """
-        try:
-            count = self.surface_set.all().aggregate(Sum('porch_total_count'))['porch_total_count__sum']
-        except:
-            count = 0
-        if not count:
-            count = 0
-        # count = 0
-        # for surface in self.surface_set.all():
-        #     count += surface.porch_count()
-        return count
+        # count = self.surface_set.all().aggregate(Sum('porch_total_count'))['porch_total_count__sum'] or 0
+        # return count
+        return Porch.objects.select_related('surface__city').filter(surface__city=self).count()
 
     def save(self, *args, **kwargs):
         address = u'город %s' % self.name

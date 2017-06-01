@@ -51,20 +51,7 @@ class SurfacePhoto(models.Model):
         return self.porch.surface
 
     def save(self, *args, **kwargs):
-        # print slugify(self.__unicode__())
-        # if self.porch.damaged():
-        #     self.is_broken = True
-        # else:
-        #     self.is_broken = False
         super(SurfacePhoto, self).save()
-        # if self.image:
-        #     image = Image.open(self.image)
-        #     (width, height) = image.size
-        #     size = (800, 800)
-        #     "Max width and height 200"
-        #     if width > 800:
-        #         image.thumbnail(size, Image.ANTIALIAS)
-        #         image.save(self.image.path, "PNG")
 
     porch = models.ForeignKey(to=Porch, verbose_name=u'Подъезд')
     adjuster = models.ForeignKey(to=Adjuster, blank=True, null=True, verbose_name=u'Монтажник')
@@ -105,19 +92,13 @@ class AdjusterTask(models.Model):
         """
         Метод, возвращающий количество подъездов/стендов, входящих в задачу
         """
-        porch_count = 0
-        for i in self.adjustertasksurface_set.select_related().all():
-            porch_count += i.adjustertasksurfaceporch_set.count()
-        return porch_count
+        return AdjusterTaskSurfacePorch.objects.filter(adjustertasksurface__adjustertask=self).count()
 
     def get_closed_porch_count(self):
         """
         Метод, возвращающий количество выполненных подъездов/стендов, входящих в задачу
         """
-        porch_count = 0
-        for i in self.adjustertasksurface_set.select_related().all():
-            porch_count += i.adjustertasksurfaceporch_set.filter(is_closed=True).count()
-        return porch_count
+        return AdjusterTaskSurfacePorch.objects.filter(adjustertasksurface__adjustertask=self, is_closed=True).count()
 
     def get_actual_cost(self):
         """
@@ -161,15 +142,11 @@ class AdjusterTask(models.Model):
         Кол-во выполненных стендов * 100 / кол-во стендов в задаче
         """
         porch_count = self.get_porch_count()
-        closed_proch_count = 0
-        for i in self.adjustertasksurface_set.all():
-            closed_proch_count += i.get_closed_porch_count()
+        closed_proch_count = self.get_closed_porch_count()
         if porch_count == 0:
             return 0
         else:
             return closed_proch_count * 100 / porch_count
-            # from random import randint
-            # return randint(1, porch_count) * 100 / (porch_count*3)
 
     TYPE_CHOICES = (
         (0, u'Монтаж новой конструкции'),
@@ -229,17 +206,15 @@ class AdjusterTaskSurface(models.Model):
 
     def get_porch_count(self):
         """
-        Метод возвращает количество выполненных подъездов по данному адресу
-        :return:
+        Количество подъездов по данному адресу
         """
         return self.adjustertasksurfaceporch_set.count()
 
     def get_closed_porch_count(self):
-        porch_count = 0
-        for aporch in self.adjustertasksurfaceporch_set.all():
-            if aporch.is_closed:
-                porch_count += 1
-        return porch_count
+        """
+        Количество выполненных подъездов по данному адресу
+        """
+        return self.adjustertasksurfaceporch_set.filter(is_closed=True)
 
     adjustertask = models.ForeignKey(to=AdjusterTask, verbose_name=u'Задача')
     surface = models.ForeignKey(to=Surface, verbose_name=u'Поверхность')

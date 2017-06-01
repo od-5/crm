@@ -30,13 +30,14 @@ class SurfaceListView(ListView):
         """
         user = self.request.user
         if user.type == 1:
-            qs = Surface.objects.select_related().all()
+            qs = Surface.objects.select_related('city', 'street', 'street__area', 'management').all()
         elif user.type == 6:
-            qs = Surface.objects.select_related().filter(city__in=user.superviser.city_id_list())
+            qs = Surface.objects.select_related('city', 'street', 'street__area', 'management').filter(city__in=user.superviser.city_id_list())
         elif user.type == 2:
-            qs = Surface.objects.select_related().filter(city__moderator=user)
+            qs = Surface.objects.select_related('city', 'street', 'street__area', 'management').filter(
+                city__moderator=user)
         elif user.type == 5:
-            qs = Surface.objects.select_related().filter(city__moderator=user.manager.moderator)
+            qs = Surface.objects.select_related('city', 'street', 'street__area', 'management').filter(city__moderator=user.manager.moderator)
         else:
             qs = None
         # фильтрация поверхностей по городам, районам, улицам
@@ -148,7 +149,6 @@ class SurfaceCreateView(CreateView):
         в зависимости от уровня доступа пользователя
         """
         initial = super(SurfaceCreateView, self).get_initial()
-        user = self.request.user
         initial = initial.copy()
         initial['user'] = self.request.user
         return initial
@@ -176,7 +176,6 @@ class SurfaceUpdateView(UpdateView):
         в зависимости от уровня доступа пользователя
         """
         initial = super(SurfaceUpdateView, self).get_initial()
-        user = self.request.user
         initial = initial.copy()
         initial['user'] = self.request.user
         return initial
@@ -503,13 +502,16 @@ def surface_photo_list(request):
 def surface_export(request):
     user = request.user
     if user.type == 1:
-        qs = Surface.objects.select_related().all()
+        qs = Surface.objects.select_related('city', 'street', 'street__area', 'management').all()
     elif user.type == 6:
-        qs = Surface.objects.select_related().filter(city__in=user.superviser.city_id_list())
+        qs = Surface.objects.select_related('city', 'street', 'street__area', 'management').filter(
+            city__in=user.superviser.city_id_list())
     elif user.type == 2:
-        qs = Surface.objects.select_related().filter(city__moderator=user)
+        qs = Surface.objects.select_related('city', 'street', 'street__area', 'management').filter(
+            city__moderator=user)
     elif user.type == 5:
-        qs = Surface.objects.select_related().filter(city__moderator=user.manager.moderator)
+        qs = Surface.objects.select_related('city', 'street', 'street__area', 'management').filter(
+            city__moderator=user.manager.moderator)
     else:
         qs = None
     # фильтрация поверхностей по городам, районам, улицам

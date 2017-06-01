@@ -273,13 +273,6 @@ def porch_update(request, pk):
 def photo_add(request):
     if request.method == 'POST':
         try:
-            porch = request.data.get('porch')
-            adjuster = request.data.get('adjuster')
-            date = datetime.date.today()
-            image = request.data.get('image')
-            is_broken = request.data.get('is_broken')
-            # print is_broken
-            # print type(is_broken)
             logger.error(u'request for upload photo user %s' % request.user)
             logger.error(u'request.data %s' % request.data)
             data = request.data
@@ -290,13 +283,6 @@ def photo_add(request):
             serializer = SurfacePhotoSerializer(data=data)
             if serializer.is_valid():
                 serializer.save()
-                # item = SurfacePhoto.objects.get(pk=serializer.instance.id)
-                # if is_broken == u'true':
-                #     item.is_broken = True
-                #     item.save()
-                #     print 'is_broken'
-                #     n_serializer = SurfacePhotoSerializer(item)
-                #     print n_serializer.instance.is_broken
                 try:
                     logger.error(u'Photo add Success %s' % serializer.instance.id)
                 except:
@@ -305,20 +291,6 @@ def photo_add(request):
             else:
                 logger.error(u'c user %s - RESET CONTENT. request=%s' % (request.user, request.data))
                 return Response(serializer.data, status=status.HTTP_205_RESET_CONTENT)
-            # form = SurfacePhotoForm(
-            #     request.data,
-            #     request.FILES,
-            #     initial={'date': date}
-            # )
-            # photo.save()
-            # print form
-            # if form.is_valid():
-            #     print 'valid'
-            #     print form
-            # else:
-            #     print 'invalid'
-            #     print form
-                # print form
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
     else:

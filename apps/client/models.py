@@ -131,7 +131,7 @@ class ClientJournal(models.Model):
         Показывает текущую сумму поступлений по покупке
         """
         count = 0
-        for payment in self.clientjournalpayment_set.select_related().all():
+        for payment in self.clientjournalpayment_set.all():
             count += payment.sum
         return round(count, 2)
 
