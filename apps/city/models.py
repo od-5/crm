@@ -16,6 +16,23 @@ __author__ = 'alexy'
 api_key = settings.YANDEX_MAPS_API_KEY
 
 
+class CityModelManager(models.Manager):
+    def get_qs(self, user):
+        if user.type == 1:
+            qs = City.objects.all()
+        elif user.type == 2:
+            qs = City.objects.filter(moderator=user)
+        elif user.type == 3:
+            qs = City.objects.filter(id=user.client.city.id)
+        elif user.type == 6:
+            qs = user.superviser.city.all()
+        elif user.type == user.UserType.manager:
+            qs = City.objects.filter(moderator=user.manager.moderator)
+        else:
+            qs = City.objects.none()
+        return qs
+
+
 class City(models.Model):
     class Meta:
         verbose_name = u'Город'
@@ -62,6 +79,8 @@ class City(models.Model):
     coord_y = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=u'Долгота')
     slug = models.SlugField(verbose_name=u'url имя поддомена', blank=True, null=True, max_length=50)
     # stand_total_count = models.IntegerField(blank=True, null=True, default=0)
+
+    objects = CityModelManager()
 
 
 @receiver(post_save, sender=City)
@@ -195,6 +214,7 @@ class Surface(models.Model):
     full_broken = models.BooleanField(default=False, verbose_name=u'Все стенды повреждены')
     release_date = models.DateField(blank=True, null=True, verbose_name=u'Дата освобождения поверхности')
     porch_total_count = models.IntegerField(blank=True, null=True, default=0)
+    has_stand = models.BooleanField(default=False, verbose_name=u'Стенды установлены')
 
 
 class Porch(models.Model):

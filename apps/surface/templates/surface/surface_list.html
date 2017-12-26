@@ -46,50 +46,74 @@
             </div>
           </div>
 {#          {% if object_list %}#}
-            <form action="{% url 'surface:list' %}" id="js-surface-filter-form" class="form-inline add-bottom" method="GET" role="form">
+            <form action="{% url 'surface:list' %}" id="js-surface-filter-form" class="add-bottom" method="GET" role="form">
 {#              {% csrf_token %}#}
 {#              <input type="text" name="city" class="search-form__city" {% if city_id %}value="{{ city_id }}"{% endif %}>#}
 {#              <input type="text" name="area" class="search-form__area" {% if area_id %}value="{{ area_id }}"{% endif %}>#}
 {#              <input type="text" name="street" class="search-form__street" {% if street_id %}value="{{ street_id }}"{% endif %}>#}
-
-              <select name="city" id="city_filter" class="form-control input-sm" data-ajax-url="{% url 'city:get_area_list' %}">
-                <option value="0">--- Город--- </option>
-              {% for city in city_list %}
-                <option value="{{ city.id }}" {% if city.id == city_id %}selected="selected"{% endif %}>{{ city }}</option>
-              {% endfor %}
-              </select>
-              <select name="area" id="area_filter" class="form-control input-sm" data-ajax-url="{% url 'city:simple_get_area_streets' %}">
-                <option value="0">--- Район ---</option>
-                {% if area_list %}
-                  {% for area in area_list %}
-                  <option value="{{ area.id }}" {% if area.id == area_id %}selected="selected"{% endif %}>{{ area }}</option>
-                  {% endfor %}
-                {% endif %}
-              </select>
-              <select name="street" id="street_filter" class="form-control input-sm" >
-                <option value="0">--- Улица ---</option>
-                {% if area_list %}
-                  {% for street in street_list %}
-                  <option value="{{ street.id }}" {% if street.id == street_id %}selected="selected"{% endif %}>{{ street }}</option>
-                  {% endfor %}
-              {% endif %}
-              </select>
-              <select name="management" id="management_filter" class="form-control input-sm" >
-                <option value="0">--- Управляющая компания ---</option>
-                <option value="-1" {% if management_id == -1 %}selected="selected"{% endif %}>УК не указана</option>
-                {% if management_list %}
-                  {% for management in management_list %}
-                  <option value="{{ management.id }}" {% if management.id == management_id %}selected="selected"{% endif %}>{{ management.name }}</option>
-                  {% endfor %}
-              {% endif %}
-              </select>
-              <select name="free" id="free_filter" class="form-control input-sm">
-                <option value="0" {% if free == 0%}selected="selected"{% endif %}>--- Занятость ---</option>
-                <option value="1" {% if free == 1%}selected="selected"{% endif %}>Свободна</option>
-                <option value="2" {% if free == 2%}selected="selected"{% endif %}>Занята</option>
-              </select>
-              <input type="text" name="release_date" class="form-control input-sm" placeholder="свободна от:" id="id_release_date" value="{{ release_date }}">
-              <button type="submit" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-search"></span> Искать</button>
+              <table>
+                <tr>
+                  <td>
+                    <select name="city" id="city_filter" class="form-control input-sm" data-ajax-url="{% url 'city:get_area_list' %}">
+                      <option value="0">--- Город--- </option>
+                    {% for city in city_list %}
+                      <option value="{{ city.id }}" {% if city.id == city_id %}selected="selected"{% endif %}>{{ city }}</option>
+                    {% endfor %}
+                    </select>
+                  </td>
+                  <td>
+                    <select name="area" id="area_filter" class="form-control input-sm" data-ajax-url="{% url 'city:simple_get_area_streets' %}">
+                      <option value="0">--- Район ---</option>
+                      {% if area_list %}
+                        {% for area in area_list %}
+                        <option value="{{ area.id }}" {% if area.id == area_id %}selected="selected"{% endif %}>{{ area }}</option>
+                        {% endfor %}
+                      {% endif %}
+                    </select>
+                  </td>
+                  <td>
+                    <select name="street" id="street_filter" class="form-control input-sm" >
+                      <option value="0">--- Улица ---</option>
+                      {% if area_list %}
+                        {% for street in street_list %}
+                        <option value="{{ street.id }}" {% if street.id == street_id %}selected="selected"{% endif %}>{{ street }}</option>
+                        {% endfor %}
+                    {% endif %}
+                    </select>
+                  </td>
+                  <td>
+                    <select name="management" id="management_filter" class="form-control input-sm" >
+                      <option value="0">--- Управляющая компания ---</option>
+                      <option value="-1" {% if management_id == -1 %}selected="selected"{% endif %}>УК не указана</option>
+                      {% if management_list %}
+                        {% for management in management_list %}
+                        <option value="{{ management.id }}" {% if management.id == management_id %}selected="selected"{% endif %}>{{ management.name }}</option>
+                        {% endfor %}
+                    {% endif %}
+                    </select>
+                  </td>
+                  <td>
+                    <select name="free" id="free_filter" class="form-control input-sm">
+                      <option value="0" {% if free == 0 %}selected="selected"{% endif %}>--- Занятость ---</option>
+                      <option value="1" {% if free == 1 %}selected="selected"{% endif %}>Свободна</option>
+                      <option value="2" {% if free == 2 %}selected="selected"{% endif %}>Занята</option>
+                    </select>
+                  </td>
+                  <td>
+                    <select name="has_stand" id="has_stand" class="form-control input-sm">
+                      <option value="0" {% if has_stand == 0 %}selected="selected"{% endif %}>--- Стенды ---</option>
+                      <option value="1" {% if has_stand == 1 %}selected="selected"{% endif %}>Стенды установлены</option>
+                      <option value="2" {% if has_stand == 2 %}selected="selected"{% endif %}>Стенды отсутствуют</option>
+                    </select>
+                  </td>
+                  <td>
+                    <input type="text" name="release_date" class="form-control input-sm" placeholder="свободна от:" id="id_release_date" value="{{ release_date }}">
+                  </td>
+                  <td>
+                    <button type="submit" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-search"></span> Искать</button>
+                  </td>
+                </tr>
+              </table>
             </form>
           <table class="table table-hover table-condensed table-bordered table-list">
             <thead>
@@ -117,7 +141,7 @@
                   <a href="{% url 'surface:update' object.id %}">{{ object.street.name|default:'Не указано' }}</a>
                 {% endif %}
                 </td>
-                <td>{{ object.house_number|default:'Не указано' }}</td>
+                <td>{{ object.house_number|default:'Не указано' }} {% if object.has_stand %}<span class="glyphicon glyphicon-check text-success pull-right" data-toggle="tooltip" data-placement="top" title="Стенды установлены"></span>{% endif %}</td>
                 <td>{{ object.porch_total_count|default:'Не указано' }}</td>
                 <td>{{ object.management.name|default:'Не указано' }}</td>
                 <td>
@@ -169,4 +193,9 @@
 {% block bottom_js %}
   <script src="http://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
   <script src="{{ STATIC_URL }}surface/js/surface-map.js"></script>
+  <script>
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+  })
+  </script>
 {% endblock %}

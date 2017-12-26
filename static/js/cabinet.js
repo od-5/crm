@@ -356,7 +356,8 @@ $(function() {
 
 
   // валидация формы добвления поверхности
-  $( '#js-surface-add-form' ).validate({
+  var surface_add_form = $('#js-surface-add-form');
+  surface_add_form.validate({
     rules: {
       city: {
         required: true
@@ -369,20 +370,18 @@ $(function() {
       }
     }
   });
-
-  var surface_add_form = $('#js-surface-add-form');
   var surface_city = surface_add_form.find('select#id_city');
   var surface_street = surface_add_form.find('select#id_street');
   surface_city.change(function(){
+    var city;
     if($(this).val() == ''){
-      var city = 0
+      city = 0
     } else {
-      var city = $(this).val();
+      city = $(this).val();
     }
-
     $.ajax({
       type: "GET",
-      url: surface_add_form.data('ajax-url'),
+      url: $(this).data('ajax-url'),
       data: {
         city: city
       }

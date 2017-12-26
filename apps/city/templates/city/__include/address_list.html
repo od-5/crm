@@ -172,7 +172,11 @@
         </tbody>
       </table>
     {% endif %}
+  {% if new %}
+    {% include '__includes/pagination.html' %}
+  {% else %}
     {% include '__includes/pagination.html' with page_obj=address_list%}
+  {% endif %}
     </div>
   </div>
 </div>

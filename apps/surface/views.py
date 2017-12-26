@@ -5,9 +5,9 @@ import xlwt
 from os import path as op
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from apps.adjuster.models import SurfacePhoto
@@ -32,14 +32,16 @@ class SurfaceListView(ListView):
         if user.type == 1:
             qs = Surface.objects.select_related('city', 'street', 'street__area', 'management').all()
         elif user.type == 6:
-            qs = Surface.objects.select_related('city', 'street', 'street__area', 'management').filter(city__in=user.superviser.city_id_list())
+            qs = Surface.objects.select_related('city', 'street', 'street__area', 'management').filter(
+                city__in=user.superviser.city_id_list())
         elif user.type == 2:
             qs = Surface.objects.select_related('city', 'street', 'street__area', 'management').filter(
                 city__moderator=user)
         elif user.type == 5:
-            qs = Surface.objects.select_related('city', 'street', 'street__area', 'management').filter(city__moderator=user.manager.moderator)
+            qs = Surface.objects.select_related('city', 'street', 'street__area', 'management').filter(
+                city__moderator=user.manager.moderator)
         else:
-            qs = None
+            qs = Surface.objects.none()
         # фильтрация поверхностей по городам, районам, улицам
         if self.request.GET.get('management'):
             if int(self.request.GET.get('management')) == 0:
@@ -60,6 +62,10 @@ class SurfaceListView(ListView):
             qs = qs.filter(free=True)
         elif self.request.GET.get('free') and int(self.request.GET.get('free')) == 2:
             qs = qs.filter(free=False)
+        if self.request.GET.get('has_stand') and int(self.request.GET.get('has_stand')) == 1:
+            qs = qs.filter(has_stand=True)
+        elif self.request.GET.get('has_stand') and int(self.request.GET.get('has_stand')) == 2:
+            qs = qs.filter(has_stand=False)
         return qs
 
     def get_context_data(self, **kwargs):
@@ -126,6 +132,10 @@ class SurfaceListView(ListView):
         if self.request.GET.get('free'):
             context.update({
                 'free': int(self.request.GET.get('free'))
+            })
+        if self.request.GET.get('has_stand'):
+            context.update({
+                'has_stand': int(self.request.GET.get('has_stand'))
             })
         if self.request.GET.get('release_date'):
             context.update({
@@ -211,35 +221,32 @@ class SurfacePhotoDeleteView(DeleteView):
         return context
 
 
-@login_required
-def surface_porch(request, pk):
-    context = {}
-    surface = Surface.objects.get(pk=int(pk))
-    context.update({
-        'surface': surface
-    })
-    if request.method == 'POST':
-        form = PorchAddForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('surface:porch', args=(surface.id, )))
-        else:
-            return HttpResponseRedirect(reverse('surface:porch', args=(surface.id, )))
-    else:
-        form = PorchAddForm(
-            initial={
-                'surface': surface
-            }
-        )
-    try:
-        request.session['surface_filtered_list']
-    except:
-        request.session['surface_filtered_list'] = reverse('surface:list')
-    context.update({
-        'porch_form': form,
-        'back_to_list': request.session['surface_filtered_list']
-    })
-    return render(request, 'surface/surface_porch.html', context)
+class PorchView(CreateView):
+    model = Porch
+    template_name = 'surface/surface_porch.html'
+    form_class = PorchAddForm
+
+    def get_initial(self):
+        surface = get_object_or_404(Surface, pk=int(self.kwargs.get('pk')))
+        return {
+            'surface': surface
+        }
+
+    def get_context_data(self, **kwargs):
+        context = super(PorchView, self).get_context_data(**kwargs)
+        try:
+            self.request.session['surface_filtered_list']
+        except:
+            self.request.session['surface_filtered_list'] = reverse_lazy('surface:list')
+        surface = get_object_or_404(Surface, pk=int(self.kwargs.get('pk')))
+        context.update({
+            'back_to_list': self.request.session['surface_filtered_list'],
+            'surface': surface
+        })
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('surface:porch', args=(self.object.surface.id, ))
 
 
 @login_required
@@ -323,180 +330,171 @@ def surface_photo_update(request, pk):
     return render(request, 'surface/surface_photo_update.html', context)
 
 
-@login_required
-def surface_photo_list(request):
+class SurfacePhotoListView(ListView):
     """
-    Фотографии рекламных поверхностей
+    Отображение списка фотографий
     """
-    context = {}
-    user = request.user
-    photo_additional = 0
-    folder = 'surface'
-    template = 'surface_photo_list.html'
-    if user.type == 1:
-        city_qs = City.objects.select_related().all()
-        a_qs = SurfacePhoto.objects.select_related().all()
-    elif user.type == 6:
-        city_qs = user.superviser.city.all()
-        a_qs = SurfacePhoto.objects.select_related().filter(porch__surface__city__in=user.superviser.city_id_list())
-    elif user.type == 2:
-        city_qs = City.objects.select_related().filter(moderator=user)
-        a_qs = SurfacePhoto.objects.select_related().filter(porch__surface__city__moderator=user)
-    elif user.type == 5:
-        # manager = Manager.objects.get(user=user)
-        city_qs = City.objects.filter(moderator=user.manager.moderator)
-        a_qs = SurfacePhoto.objects.filter(porch__surface__city__moderator=user.manager.moderator)
-    elif user.type == 3:
-        try:
-            if request.session['is_mobile']:
-                folder = 'mobile'
-                template = 'photo_list.html'
-        except:
-            request.session['is_mobile'] = False
+    model = SurfacePhoto
+    template_name = 'surface/surface_list.html'
+    paginate_by = 20
+    context_object_name = 'address_list'
 
-        request.session['show_broken'] = False
-        # client = get_object_or_None(Client, user=user)
-        client = user.client
-        if client.photo_additional:
-            photo_additional = client.photo_additional
-        qs_list = []
-        for corder in client.clientorder_set.all():
-            qs = SurfacePhoto.objects.select_related().filter(porch__surface__clientordersurface__clientorder=corder).filter(date__gte=corder.date_start).filter(date__lte=corder.date_end)
-            if qs:
-                qs_list.append(qs)
-        if qs_list:
-            query_string_item = []
-            for i in range(len(qs_list)):
-                query_string_item.append('qs_list[%d]' % i)
-            query_string = ' | '.join(query_string_item)
-            a_qs = eval(query_string)
-        else:
-            a_qs = None
-        city_qs = City.objects.filter(pk=client.city.id)
-
-    else:
-        city_qs = None
-        a_qs = None
-
-    # установка флага отображения - таблица, плитка
-    try:
-        request.session['grid']
-    except:
-        request.session['grid'] = False
-    if request.GET.get('grid'):
-        if int(request.GET.get('grid')) == 1:
-            request.session['grid'] = True
-        else:
-            request.session['grid'] = False
-    # установка флага фильтрации - порвеждённые, целые
-    try:
-        request.session['show_broken']
-    except:
-        request.session['show_broken'] = False
-    if request.GET.get('broken'):
-        if int(request.GET.get('broken')) == 1:
-            request.session['show_broken'] = True
-        else:
-            request.session['show_broken'] = False
-    context.update({
-        'show_broken': request.session['show_broken'],
-        'grid': request.session['grid']
-    })
-    # установка флага города для фильтрации
-    try:
-        a_city = int(request.GET.get('a_city'))
-        area_list = Area.objects.filter(city=a_city)
-    except:
-        a_city = None
-        area_list = None
-    # установка флага района для фильтрации
-    try:
-        a_area = int(request.GET.get('a_area'))
-        street_list = Street.objects.filter(area=a_area)
-    except:
-        a_area = None
-        street_list = None
-    # установка флага улицы для фильтрации
-    try:
-        a_street = int(request.GET.get('a_street'))
-    except:
-        a_street = None
-    # установка флага начальной даты для фильтрации
-    try:
-        a_date_s = request.GET.get('a_date_s')
-    except:
-        a_date_s = None
-    # установка флага начальной даты для фильтрации
-    try:
-        a_date_e = request.GET.get('a_date_e')
-    except:
-        a_date_e = None
-    context.update({
-        'a_city': a_city,
-        'a_area': a_area,
-        'a_street': a_street,
-        'area_list': area_list,
-        'street_list': street_list,
-        'a_date_s': a_date_s,
-        'a_date_e': a_date_e
-    })
-    photo_count = 0
-    if request.GET.get('page_count'):
-        if request.GET.get('page_count') == '0':
-            page_count = 0
-        else:
-            page_count = int(request.GET.get('page_count'))
-    else:
-        try:
-            page_count = int(request.session['page_count'])
-        except:
-            page_count = 20
-    request.session['page_count'] = page_count
-    if a_qs:
-        a_qs = a_qs.filter(is_broken=request.session['show_broken'])
-        if a_city:
-            a_qs = a_qs.filter(porch__surface__city=int(a_city))
-            if a_area:
-                a_qs = a_qs.filter(porch__surface__street__area=int(a_area))
-                if a_street:
-                    a_qs = a_qs.filter(porch__surface__street=int(a_street))
-        if a_date_s:
-            rs_date = datetime.strptime(a_date_s, '%d.%m.%Y')
-            s_date = datetime.date(rs_date)
-            a_qs = a_qs.filter(date__gte=s_date)
-            if a_date_e:
-                re_date = datetime.strptime(a_date_e, '%d.%m.%Y')
-                e_date = datetime.date(re_date)
-                a_qs = a_qs.filter(date__lte=e_date)
-        if user.type == 3:
-            if user.client and user.client.id == 37:
-                # fixme: fix for client with id=37
-                photo_count = 2359
-            else:
-                photo_count = a_qs.count() + photo_additional
-        else:
-            photo_count = a_qs.count() + photo_additional
-        # photo_count = a_qs.count() + photo_additional
-        if page_count != 0:
-            paginator = Paginator(a_qs, page_count)  # Show 25 contacts per page
-            page = request.GET.get('page')
+    def get_template_names(self):
+        """
+        Выбор шаблона в зависимости от уровня доступа
+        """
+        folder = 'surface'
+        template = 'surface_photo_list.html'
+        if self.request.user.type == 3:
             try:
-                address_list = paginator.page(page)
-            except PageNotAnInteger:
-                address_list = paginator.page(1)
-            except EmptyPage:
-                address_list = paginator.page(paginator.num_pages)
+                if self.request.session['is_mobile']:
+                    folder = 'mobile'
+                    template = 'photo_list.html'
+            except:
+                self.request.session['is_mobile'] = False
+        return op.join(folder, template)
+
+    def get_paginate_by(self, queryset):
+        """
+        Получение параметра - сколько показывать элементов на странице
+        """
+        if self.request.GET.get('page_count'):
+            if self.request.GET.get('page_count') == '0':
+                page_count = 0
+            else:
+                page_count = int(self.request.GET.get('page_count'))
         else:
-            address_list = a_qs
-    else:
-        address_list = None
-    context.update({
-        'address_list': address_list,
-        'city_list': city_qs,
-        'photo_count': photo_count,
-        'page_count': page_count
-    })
-    return render(request, op.join(folder, template), context)
+            try:
+                page_count = int(self.request.session['page_count'])
+            except:
+                page_count = self.paginate_by
+        self.paginate_by = self.request.session['page_count'] = page_count
+        return page_count
+
+    def get_queryset(self):
+        """
+        Получение queryset в зависимости от уровня доступа
+        """
+        user = self.request.user
+        if user.type == 1:
+            a_qs = SurfacePhoto.objects.select_related().all()
+        elif user.type == 6:
+            a_qs = SurfacePhoto.objects.select_related().filter(porch__surface__city__in=user.superviser.city_id_list())
+        elif user.type == 2:
+            a_qs = SurfacePhoto.objects.select_related().filter(porch__surface__city__moderator=user)
+        elif user.type == 5:
+            a_qs = SurfacePhoto.objects.filter(porch__surface__city__moderator=user.manager.moderator)
+        elif user.type == 3:
+            """
+            Клиент может видеть только те фотографии, поверхности которых входят в его заказы, и дата фотографии
+            находится в границах дат размещения заказа.
+            """
+            client = user.client
+            qs_list = []
+            for corder in client.clientorder_set.all():
+                qs = SurfacePhoto.objects.select_related().filter(
+                    porch__surface__clientordersurface__clientorder=corder).filter(
+                    date__gte=corder.date_start).filter(date__lte=corder.date_end)
+                if qs:
+                    qs_list.append(qs)
+            if qs_list:
+                query_string_item = []
+                for i in range(len(qs_list)):
+                    query_string_item.append('qs_list[%d]' % i)
+                query_string = ' | '.join(query_string_item)
+                a_qs = eval(query_string)
+            else:
+                a_qs = None
+        else:
+            a_qs = self.model.objects.none()
+        a_qs = a_qs.filter(is_broken=self.show_broken())
+        filter_args = self.get_filter_args()
+        if filter_args['a_city']:
+            a_qs = a_qs.filter(porch__surface__city=filter_args['a_city'])
+        if filter_args['a_area']:
+            a_qs = a_qs.filter(porch__surface__street__area=filter_args['a_area'])
+        if filter_args['a_street']:
+            a_qs = a_qs.filter(porch__surface__street=filter_args['a_street'])
+        if filter_args['a_date_s']:
+            a_qs = a_qs.filter(date__gte=datetime.strptime(filter_args['a_date_s'], '%d.%m.%Y'))
+        if filter_args['a_date_e']:
+            a_qs = a_qs.filter(date__lte=datetime.strptime(filter_args['a_date_e'], '%d.%m.%Y'))
+        return a_qs.select_related('porch', 'porch__surface', 'porch__surface__street',
+                                   'porch__surface__street__area', 'porch__surface__city')
+
+    def grid_display(self):
+        """
+        установка флага отображения - таблица, плитка
+        """
+        try:
+            self.request.session['grid']
+        except:
+            self.request.session['grid'] = False
+        if self.request.GET.get('grid'):
+            if int(self.request.GET.get('grid')) == 1:
+                self.request.session['grid'] = True
+            else:
+                self.request.session['grid'] = False
+        return self.request.session['grid']
+
+    def show_broken(self):
+        """
+        установка флага фильтрации - порвеждённые, целые
+        """
+        try:
+            self.request.session['show_broken']
+        except:
+            self.request.session['show_broken'] = False
+        if self.request.GET.get('broken'):
+            if int(self.request.GET.get('broken')) == 1:
+                self.request.session['show_broken'] = True
+            else:
+                self.request.session['show_broken'] = False
+        return self.request.session['show_broken']
+
+    def get_filter_args(self):
+        """
+        Подготовка данных для формы поискаи и фильтрации queryset
+        """
+        a_city = a_area = a_street = area_list = street_list = None
+        if self.request.GET.get('a_city') and self.request.GET.get('a_city').isdigit():
+            a_city = int(self.request.GET.get('a_city'))
+            area_list = Area.objects.filter(city=a_city)
+        if self.request.GET.get('a_area') and self.request.GET.get('a_area').isdigit():
+            a_area = int(self.request.GET.get('a_area'))
+            street_list = Street.objects.filter(area=a_area)
+        if self.request.GET.get('a_street') and self.request.GET.get('a_street').isdigit():
+            a_street = int(self.request.GET.get('a_street'))
+        a_date_s = self.request.GET.get('a_date_s') or None
+        # установка флага начальной даты для фильтрации
+        a_date_e = self.request.GET.get('a_date_e') or None
+        return {
+            'a_city': a_city,
+            'a_area': a_area,
+            'a_street': a_street,
+            'a_date_s': a_date_s,
+            'a_date_e': a_date_e,
+            'area_list': area_list,
+            'street_list': street_list
+        }
+
+    def get_context_data(self, **kwargs):
+        context = super(SurfacePhotoListView, self).get_context_data(**kwargs)
+        user = self.request.user
+        photo_count = self.object_list.count()
+        if user.type == 3 and user.client.photo_additional:
+            photo_additional = user.client.photo_additional
+            photo_count += photo_additional
+        context.update({
+            'photo_count': photo_count,
+            'new': True,
+            'page_count': self.paginate_by,
+            'city_list': City.objects.get_qs(user),
+            'grid': self.grid_display(),
+            'show_broken': self.show_broken()
+        })
+        context.update(self.get_filter_args())
+        return context
 
 
 def surface_export(request):
@@ -521,6 +519,7 @@ def surface_export(request):
     street = request.GET.get('street')
     release_date = request.GET.get('release_date')
     free = request.GET.get('free')
+    has_stand = request.GET.get('has_stand')
     if management:
         if int(management) == 0:
             qs = qs
@@ -541,8 +540,11 @@ def surface_export(request):
             qs = qs.filter(free=True)
         elif int(free) == 2:
             qs = qs.filter(free=False)
-        else:
-            qs = qs
+    if has_stand:
+        if int(has_stand) == 1:
+            qs = qs.filter(has_stand=True)
+        elif int(has_stand) == 2:
+            qs = qs.filter(has_stand=False)
     # выгрузка в excel
     font0 = xlwt.Font()
     font0.name = 'Times New Roman'

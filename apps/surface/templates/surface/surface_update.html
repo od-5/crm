@@ -15,32 +15,16 @@
           </div>
           <div class="col-lg-6">
             <p class="text-info lead">Адрес</p>
-            <form action="" role="form" class="form-profile" method="post" id="js-surface-add-form" data-ajax-url="{% url 'city:surface-ajax' %}">
+            <form action="" role="form" class="form-profile" method="post" id="js-surface-add-form">
               {% csrf_token %}
-              <div class="form-group">
-                <div class="col-lg-5">{{ form.city.label_tag }}</div>
-                <div class="col-lg-7">{{ form.city }}</div>
-                {{ form.city.errors }}
-                <div class="clearfix"></div>
-              </div>
-              <div class="form-group">
-                <div class="col-lg-5">{{ form.street.label_tag }}</div>
-                <div class="col-lg-7">{{ form.street }}</div>
-                {{ form.street.errors }}
-                <div class="clearfix"></div>
-              </div>
-              <div class="form-group">
-                <div class="col-lg-5">{{ form.house_number.label_tag }}</div>
-                <div class="col-lg-7">{{ form.house_number }}</div>
-                {{ form.house_number.errors }}
-                <div class="clearfix"></div>
-              </div>
-              <div class="form-group">
-                <div class="col-lg-5">{{ form.management.label_tag }}</div>
-                <div class="col-lg-7">{{ form.management }}</div>
-                {{ form.management.errors }}
-                <div class="clearfix"></div>
-              </div>
+              {% for field in form %}
+                <div class="form-group">
+                  <div class="col-lg-5">{{ field.label_tag }}</div>
+                  <div class="col-lg-7">{{ field }}</div>
+                  {{ field.errors }}
+                  <div class="clearfix"></div>
+                </div>
+              {% endfor %}
               <button type="submit" class="btn btn-default">Сохранить</button>
             </form>
           </div>

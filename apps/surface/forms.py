@@ -1,5 +1,6 @@
 # coding=utf-8
 from django import forms
+from django.core.urlresolvers import reverse_lazy
 from apps.adjuster.models import SurfacePhoto
 from apps.city.models import Surface, City, Street, Porch, ManagementCompany
 from apps.manager.models import Manager
@@ -14,9 +15,9 @@ class SurfaceImportForm(forms.Form):
 class SurfaceAddForm(forms.ModelForm):
     class Meta:
         model = Surface
-        fields = ('city', 'street', 'house_number', 'management')
+        fields = ('city', 'street', 'house_number', 'management', 'has_stand')
         widgets = {
-            'city': forms.Select(attrs={'class': 'form-control'}),
+            'city': forms.Select(attrs={'class': 'form-control', 'data-ajax-url': reverse_lazy('city:surface-ajax')}),
             'street': forms.Select(attrs={'class': 'form-control'}),
             'house_number': forms.TextInput(attrs={'class': 'form-control'}),
             'management': forms.Select(attrs={'class': 'form-control'}),
