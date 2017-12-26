@@ -291,7 +291,7 @@ def get_photo_map(request):
             query_string = ' | '.join(query_string_item)
             qs = eval(query_string)
         else:
-            qs = None
+            qs = SurfacePhoto.objects.none()
     elif user.type == 5 and user.is_leader_manager():
         qs = SurfacePhoto.objects.select_related().filter(porch__surface__city__moderator=user.manager.moderator)
 
@@ -301,7 +301,7 @@ def get_photo_map(request):
     date_s = request.POST.get('date_s')
     date_e = request.POST.get('date_e')
     show_broken = request.session['show_broken']
-    if qs:
+    if qs.exists():
         qs = qs.filter(is_broken=show_broken)
         if city:
             qs = qs.filter(porch__surface__city=int(city))
