@@ -404,7 +404,7 @@ class SurfacePhotoListView(ListView):
                 query_string = ' | '.join(query_string_item)
                 a_qs = eval(query_string)
             else:
-                a_qs = None
+                a_qs = self.model.objects.none()
         else:
             a_qs = self.model.objects.none()
         a_qs = a_qs.filter(is_broken=self.show_broken())
