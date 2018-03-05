@@ -41,7 +41,7 @@ class MyUserManager(BaseUserManager):
             last_name=last_name,
             patronymic=patronymic,
         )
-
+        user.type = 1
         user.is_superuser = True
         user.is_staff = True
         user.save(using=self._db)

@@ -26,7 +26,7 @@ class CityModelManager(models.Manager):
             qs = City.objects.filter(id=user.client.city.id)
         elif user.type == 6:
             qs = user.superviser.city.all()
-        elif user.type == user.UserType.manager:
+        elif user.type == 4:
             qs = City.objects.filter(moderator=user.manager.moderator)
         else:
             qs = City.objects.none()
