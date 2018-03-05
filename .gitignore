@@ -1,4 +1,4 @@
-/cms/settings/local_settings.py
+/cms/local_settings.py
 /apps/superviser/migrations
 /apps/moderator/migrations
 /apps/ticket/migrations
@@ -11,3 +11,4 @@
 core/migrations/
 /apps/adjuster/migrations
 /apps/client/migrations
+/cms/db.sqlite3
