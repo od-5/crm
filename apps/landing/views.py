@@ -3,7 +3,7 @@ from annoying.functions import get_object_or_None
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView
 from apps.city.models import City
 from .forms import SetupForm, BlockEffectiveForm, BlockExampleForm, BlockReviewForm
 from .models import Setup, BlockEffective, BlockReview, BlockExample
@@ -17,7 +17,6 @@ class LandingView(TemplateView):
     def get_context_data(self, **kwargs):
         context = {}
         city_qs = City.objects.values('id', 'name', 'slug')
-        # city_qs = City.objects.all()
         current_city = get_object_or_None(City, slug=self.request.subdomain)
         if current_city:
             try:
@@ -38,72 +37,30 @@ class LandingView(TemplateView):
             blockeffective_qs = BlockEffective.objects.filter(city__isnull=True)
             blockreview_qs = BlockReview.objects.filter(city__isnull=True)
             blockexample_qs = BlockExample.objects.filter(city__isnull=True)
-        blockexample_qs_1 = blockexample_qs[:15]
-        blockexample_qs_2 = blockexample_qs[15:]
         context.update({
-            'blockexample_list_1': blockexample_qs_1,
-            'blockexample_list_2': blockexample_qs_2,
+            'blockexample_list': blockexample_qs,
             'blockeffective_list': blockeffective_qs,
             'blockreview_list': blockreview_qs,
             'current_city': current_city,
             'setup': setup,
             'city_list': city_qs,
-            # 'city_list_1': city_list_1,
-            # 'city_list_2': city_list_2,
             'cache_time': 1800
         })
         return context
 
 
-def home_view(request):
-    context = {}
-    city_qs = City.objects.all()
-    current_city = get_object_or_None(City, slug=request.subdomain)
-    if current_city:
-        try:
-            setup = Setup.objects.get(city=current_city)
-        except:
-            setup = Setup.objects.filter(city__isnull=True).first()
-        blockeffective_qs = BlockEffective.objects.filter(city=current_city)
-        if not blockeffective_qs:
-            blockeffective_qs = BlockEffective.objects.filter(city__isnull=True)
-        blockreview_qs = BlockReview.objects.filter(city=current_city)
-        if not blockreview_qs:
-            blockreview_qs = BlockReview.objects.filter(city__isnull=True)
-        blockexample_qs = BlockExample.objects.filter(city=current_city)
-        if not blockexample_qs:
-            blockexample_qs = BlockExample.objects.filter(city__isnull=True)
-    else:
-        setup = Setup.objects.filter(city__isnull=True).first()
-        blockeffective_qs = BlockEffective.objects.filter(city__isnull=True)
-        blockreview_qs = BlockReview.objects.filter(city__isnull=True)
-        blockexample_qs = BlockExample.objects.filter(city__isnull=True)
-    blockexample_qs_1 = blockexample_qs[:15]
-    blockexample_qs_2 = blockexample_qs[15:]
-    context.update({
-        'blockexample_list_1': blockexample_qs_1,
-        'blockexample_list_2': blockexample_qs_2,
-        'blockeffective_list': blockeffective_qs,
-        'blockreview_list': blockreview_qs,
-        'current_city': current_city,
-        'setup': setup,
-        'city_list': city_qs,
-        # 'city_list_1': city_list_1,
-        # 'city_list_2': city_list_2,
-        'cache_time': 1800
-    })
-    return render(request, 'landing/index.html', context)
+class SiteSetupList(ListView):
+    model = Setup
+    template_name = 'landing/setup_list.html'
 
-
-def setup_list(request):
-    user = request.user
-    qs = Setup.objects.all()
-    if user.type == 2:
-        qs = qs.filter(city__moderator=user)
-    context = {
-        'object_list': qs
-    }
-    return render(request, 'landing/setup_list.html', context)
+    def get_queryset(self):
+        if self.request.user.type == 1:
+            qs = self.model.objects.all()
+        elif self.request.user.type == 2:
+            qs = self.model.objects.filter(city__moderator=self.request.user)
+        else:
+            qs = self.model.objects.none()
+        return qs
 
 
 def setup_add(request):

@@ -43,6 +43,12 @@
                 </a>
               </td>
             </tr>
+          {% empty %}
+            <tr>
+              <td colspan="3">
+                <p class="alert alert-info text-center">Настройки ещё не созданы</p>
+              </td>
+            </tr>
           {% endfor %}
           </tbody>
         </table>

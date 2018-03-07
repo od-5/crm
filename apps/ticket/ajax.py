@@ -20,16 +20,28 @@ def ticket(request):
     # email = 'od-5@yandex.ru'
     subdomain = request.subdomain
     email = None
+    base_setup = Setup.objects.filter(city__isnull=True).first()
     if subdomain:
+        print subdomain
+
         city = get_object_or_None(City, slug=subdomain)
-        try:
-            email = Setup.objects.get(city=city).email
-            if not email:
-                email = Setup.objects.filter(city__isnull=True).first().email
-        except:
-            email = Setup.objects.filter(city__isnull=True).first().email
-    else:
-        email = Setup.objects.filter(city__isnull=True).first().email
+        setup = get_object_or_None(Setup, city=city)
+        if setup:
+            email = setup.email
+        # if not email:
+        #     email = Setup.objects.filter(city__isnull=True).first().email
+    #     try:
+    #         setup = Setup.objects.get(city=city)
+    #         email = setup.email
+    #         if not email:
+    #             email = Setup.objects.filter(city__isnull=True).first().email
+    #     except:
+    #         email = Setup.objects.filter(city__isnull=True).first().email
+    # else:
+    #     email = Setup.objects.filter(city__isnull=True).first().email
+    if not email:
+        if base_setup:
+            email = base_setup.email
     if request.method == "POST":
         form = TicketForm(data=request.POST)
         if form.is_valid():

@@ -1,163 +1,138 @@
 {% load cache %}
 {% cache cache_time head current_city %}
+{% load staticfiles %}
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8">
-  <meta name="keywords" content="{% block meta_keys %}{% endblock %}">
-  <meta name="description" content="{% block meta_desc %}{% endblock %}">
-  <meta name="format-detection" content="telephone=no">
-  <link href="favicon.ico" rel="shortcut icon" type="image/x-icon" />
-  <title>{{ setup.meta_title|default:'Рекламное агентство Дружба' }}</title>
-  {% load staticfiles %}
-  <link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/all.css' %}" />
-  <link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/jquery-ui.css' %}" />
-  <link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/jquery.bxslider.css' %}" />
-  <link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/jquery.fancybox.css' %}" />
-  <script src="{% static 'landing/js/jquery-1.9.1.min.js' %}"></script>
-  <script src="http://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
-  <script src="{% static 'landing/js/jquery-ui.min.js' %}"></script>
-  <script src="{% static 'landing/js/jquery.bxslider.min.js' %}"></script>
-  <script src="{% static 'landing/js/jquery.validate.js' %}"></script>
-  <script src="{% static 'landing/js/jquery.form.js' %}"></script>
-  <script src="{% static 'landing/js/jquery.fancybox.js' %}"></script>
-  <script src="{% static 'landing/js/notify-combined.min.js' %}"></script>
-  <script src="{% static 'landing/js/jquery.maskedinput.js' %}"></script>
-  <!--[if lt IE 9]><script type="text/javascript" src="{% static 'landing/js/html5.js' %}"></script><![endif]-->
-  <!--[if lt IE 9]><script type="text/javascript" src="{% static 'landing/js/placeholder.js' %}"></script><![endif]-->
-  <script src="{% static 'landing/js/all.js' %}"></script>
+	<meta charset="utf-8">
+	<meta name="keywords" content="">
+	<meta name="description" content="">
+	<meta name="format-detection" content="telephone=no">
+	
+	<!--********** responsive **********-->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!--********** responsive **********-->
+	
+{#	<link href="favicon.ico" rel="shortcut icon" type="image/x-icon" />#}
+	<title>{{ setup.meta_title|default:'Рекламное агентство Дружба' }}</title>
+	<link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/all.css' %}" />
+
 {% if setup %}
   {{ setup.top_js|safe }}
 {% endif %}
 </head>
 {% endcache %}
 <body>
-  <div id="wrapper">
-    <header class="header">
-      <div class="header-top">
-        <div class="holder">
-          <div class="logo">
-            {% if setup.logotype %}
+	<div id="wrapper">
+		<header class="header">
+			<div class="header-top">
+				<div class="holder">
+				  <div class="logo">
+          {% if setup.logotype %}
               <img src="{{ setup.logotype.url|default:'' }}" alt="{{ setup.meta_title|default:'' }}">
-            {% else %}
+          {% else %}
             <span class="logo-text-black">Рекламные конструкции </span>
             <span class="logo-text-big">на входных дверях</span>
             <span class="logo-text-min">В городах России и СНГ</span>
-            {% endif %}
-            {% if setup.video_find %}
-              <a href="{{ setup.video_find|safe|default:'#' }}" class="video-find" title="Как найти наш офис">Видео: Как найти наш офис</a>
-            {% endif %}
-          </div>
-          <div class="header-phone">
-            <div class="header-number">{{ setup.phone|default:"8 800 250-34-50" }}</div>
-            <div class="header-callback"><a href="#dialog2" class="modal">Заказать обратный звонок</a></div>
-          </div>
-          <div class="header-right">
-            <div class="header-right-text">
-            {% if current_city %}
-              Выбран город: {{ current_city.name }}
-            {% else %}
-              &nbsp;
-            {% endif %}
-            </div>
-            <div class="select-item">
-              <div class="select-top">Выберите ваш город</div>
-              <ul class="select-hidden">
-              {% if city_list %}
-                {% for city in city_list %}
-                <li><a href="http://{{ city.slug }}.{{ request.domain }}">{{ city.name|default:'не указано' }}</a></li>
-                {% endfor %}
-              {% endif %}
-              </ul>
-            </div>
-            <div class="select-item select-item-min">
-              <div class="select-top">Вход</div>
-              <ul class="select-hidden">
-                <li><a href="{% url 'sign:client' %}">Клиентам</a></li>
-                <li><a href="{% url 'sign:moderator' %}">Модераторам</a></li>
-                <li><a href="{% url 'sign:manager' %}">Менеджерам</a></li>
-                <li><a href="{% url 'sign:adjuster' %}">Монтажникам</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
+          {% endif %}
+				  </div>
+				  <div class="header-phone">
+					<div class="header-number">{{ setup.phone|default:"8 800 250-34-50" }}</div>
+					<div class="header-callback"><a href="#dialog2" class="modal">Заказать обратный звонок</a></div>
+				  </div>
+				  <div class="header-right">
+					<div class="header-right-text">	
+					  &nbsp;
+					</div>
+					<div class="select-item">
+					  <a href="#city-popup" class="select-top fancybox">{{ current_city.name|default:'Выберите ваш город' }}</a>
+					</div>
+					<div class="select-item select-item-min">
+					  <div class="select-top">Вход</div>
+					  <ul class="select-hidden" style="display: none;">
+						<li><a href="{% url 'sign:client' %}">Клиентам</a></li>
+						<li><a href="{% url 'sign:moderator' %}">Модераторам</a></li>
+						<li><a href="{% url 'sign:manager' %}">Менеджерам</a></li>
+						<li><a href="{% url 'sign:adjuster' %}">Монтажникам</a></li>
+					  </ul>
+					</div>
+				  </div>
+				</div>
+			</div>
     {% block top_content %}
-      <div class="header-main">
-        <div class="holder">
-          <div class="header-main-left">
-            <div class="header-main-text"><strong>Нужны клиенты?</strong>
-            Закажите эффективную рекламу по цене 10 коп. за показ</div>
-            <div class="form-block">
-              <div class="form-top"></div>
-              <div class="form-frame">
-                <div class="form-title">Заказать <br>рекламу</div>
-                <form action="{% url 'ticket:send' %}" id="js-ticket-form-1" method="post">
-                  {% csrf_token %}
-                  <fieldset>
-                    <input type="text" name="name" class="input required" placeholder="Ваше имя *">
-                    <input type="text" name="phone" class="input no-margin required" placeholder="+7 (___) ___ - __ - __">
-                    <div class="select-block">
-                      <select name="city" class="styled">
-                        <option value="">Выберите ваш город</option>
-                        {% if city_list %}
-                        {% for city in city_list %}
-                        <option value="{{ city.id }}" {% if city.id == current_city.id %}selected='selected'{% endif %}>{{ city.name|default:'не указано' }}</option>
-                        {% endfor %}
-                        {% endif %}
-                      </select>
-                    </div>
-                    <input type="hidden" name="theme" value="Заказать эффективную рекламу">
-                    <button class="submit">Заказать</button>
-                  </fieldset>
-                </form>
-              </div>
-            </div>
-          </div>
-          <div class="header-box">
-            <div class="link link1">
-              <a data-part="part1" class="yellow">Место под Вашу рекламу</a>
-              <img src="{{ STATIC_URL }}landing/images/box/line1.png" alt="" class="link-line">
-            </div>
-            <div class="link link2">
-              <a data-part="part2">Информация о доме</a>
-              <img src="{{ STATIC_URL }}landing/images/box/line2.png" alt="" class="link-line">
-            </div>
-            <div class="link link3">
-              <a data-part="part3" >Защитное стекло<br> <span>(монолитный поликарбонат)</span></a>
-              <img src="{{ STATIC_URL }}landing/images/box/line3.png" alt="" class="link-line">
-            </div>
-            <div class="link link4">
-              <a data-part="part4" >Антивандальные винты</a>
-              <img src="{{ STATIC_URL }}landing/images/box/line4.png" alt="" class="link-line">
-            </div>
-            <div class="link link5">
-              <a data-part="part5" >Металлическая рама</a>
-              <img src="{{ STATIC_URL }}landing/images/box/line5.png" alt="" class="link-line">
-            </div>
-            <img src="{{ STATIC_URL }}landing/images/box/part1.png" alt="" class="part part1">
-            <img src="{{ STATIC_URL }}landing/images/box/part2.png" alt="" class="part part2">
-            <img src="{{ STATIC_URL }}landing/images/box/part3.png" alt="" class="part part3">
-            <img src="{{ STATIC_URL }}landing/images/box/part4.png" alt="" class="part part4">
-            <img src="{{ STATIC_URL }}landing/images/box/part5.png" alt="" class="part part5">
-          </div>
-        </div>
-      </div>
+			<div class="header-main">
+				<div class="holder">
+				  <div class="header-main-left">
+					<div class="header-main-text"><strong>Нужны клиенты?</strong>
+					Закажите эффективную рекламу по цене 10 коп. за показ</div>
+					<div class="form-block">
+					  <div class="form-top"></div>
+					  <div class="form-frame">
+						<div class="form-title">Заказать <br>рекламу</div>
+						<form action="{% url 'ticket:send' %}" id="js-ticket-form-1" method="post">
+						  {%  csrf_token %}
+						  <fieldset>
+                <input type="text" name="name" class="input" placeholder="Ваше имя *">
+                <input type="text" name="phone" class="input no-margin" placeholder="+7 (___) ___ - __ - __">
+                <div class="select-block">
+                  <select name="city" class="styled" id="ui-id-1" style="display: none;">
+                  <option value="">Выберите ваш город</option>
+                  {% for city in city_list %}
+                    <option value="{{ city.id }}">{{ city.name }}</option>
+                  {% endfor %}
+                  </select>
+                </div>
+							  <input type="hidden" name="theme" value="Заказать эффективную рекламу">
+							  <button class="submit">Заказать</button>
+						  </fieldset>
+						</form>
+					  </div>
+					</div>
+				  </div>
+				  <div class="header-box">
+					<div class="link link1">
+					  <a data-part="part1" class="yellow">Место под Вашу рекламу</a>
+					  <img src="{% static 'landing/images/box/line1.png' %}" alt="" class="link-line">
+					</div>
+					<div class="link link2">
+					  <a data-part="part2">Информация о доме</a>
+					  <img src="{% static 'landing/images/box/line2.png' %}" alt="" class="link-line">
+					</div>
+					<div class="link link3">
+					  <a data-part="part3">Защитное стекло<br> <span>(монолитный поликарбонат)</span></a>
+					  <img src="{% static 'landing/images/box/line3.png' %}" alt="" class="link-line">
+					</div>
+					<div class="link link4">
+					  <a data-part="part4">Антивандальные винты</a>
+					  <img src="{% static 'landing/images/box/line4.png' %}" alt="" class="link-line">
+					</div>
+					<div class="link link5">
+					  <a data-part="part5">Металлическая рама</a>
+					  <img src="{% static 'landing/images/box/line5.png' %}" alt="" class="link-line">
+					</div>
+					<img src="{% static 'landing/images/box/part1.png' %}" alt="" class="part part1">
+					<img src="{% static 'landing/images/box/part2.png' %}" alt="" class="part part2">
+					<img src="{% static 'landing/images/box/part3.png' %}" alt="" class="part part3">
+					<img src="{% static 'landing/images/box/part4.png' %}" alt="" class="part part4">
+					<img src="{% static 'landing/images/box/part5.png' %}" alt="" class="part part5">
+				  </div>
+				</div>
+			</div>
     {% endblock %}
-    </header>
-    <section class="about">
-      <div class="holder">
+		</header>	
+		<section class="about">
+		  <div class="holder">
       {% block about_content %}
-        <h2>Почему реклама на подъездах <span>настолько эффективна</span></h2>
+			  <h2>Почему реклама на подъездах <span>настолько эффективна</span></h2>
         <div class="about-holder">
-        {% if blockeffective_list %}
-          {% for object in blockeffective_list %}
-          <div class="about-item{% if forloop.first %} clear{% endif %}{% if forloop.counter == 4 %} clear{% endif %}">
-            <div class="about-icon"><img src="{{ object.image.url }}" alt=""></div>
-            <div class="about-text">{{ object.text|safe|default:'' }}</div>
-          </div>
-          {% endfor %}
-        {% endif %}
+          {% if blockeffective_list %}
+            {% for object in blockeffective_list %}
+            <div class="about-item{% if forloop.first %} clear{% endif %}{% if forloop.counter == 4 %} clear{% endif %}">
+              <div class="about-icon"><img src="{{ object.image.url }}" alt=""></div>
+              <div class="about-text">{{ object.text|safe|default:'' }}</div>
+            </div>
+            {% endfor %}
+          {% endif %}
         </div>
         <article class="article">
           <p>Адресная программа формируется в зависимости от пожеланий каждого конкретного рекламодателя. Вы выбираете только те
@@ -168,147 +143,66 @@
           название улицы, номер подъезда и номера квартир, а также контакты УК  и телефоны различных служб.</p>
         </article>
       {% endblock %}
-      </div>
-    </section>
+		  </div>
+		</section>
   {% block other_content %}
-    <section class="garanty">
-      <div class="holder">
-        <div class="garanty-title"><span>100% ГАРАНТИЯ </span>ЗАЩИТЫ РЕКЛАМЫ<br> И ИСПОЛНЕНИЯ<br> ЗАКАЗА</div>
-        <div class="video-tablet">
-          <a href="#dialog" class="tablet-link modal">
-            <img src="{{ STATIC_URL }}landing/images/play2.png" alt="" class="tablet-play pulsing">
-            <img src="{{ STATIC_URL }}landing/images/tablet-text.png" alt="" class="tablet-text">
-          </a>
-        </div>
-      </div>
-    </section>
-    <section class="map">
-      <div class="holder">
-        <h2>Карта возможностей размещения вашей
-        <span>рекламы в городах России</span></h2>
-
-        <div id="YMapsID" {% if not current_city %}data-url="{% url 'city:simple-map' %}"{% endif %} data-city="{{ current_city.slug|default:'' }}" style="height: 500px; margin-bottom: 40px;" class="add-bottom"></div>
-        <div class="city-button-holder">
-          <a href="" class="city-button">Посмотреть возможности по вашему городу</a>
-        {% cache cache_time city_list %}
-          <div class="city-hidden">
-            <ul class="city-list">
-              {% for city in city_list %}
-              <li><a href="http://{{ city.slug }}.{{ request.domain }}">{{ city.name }}</a></li>
-              {% endfor %}
-            </ul>
-          </div>
-        {% endcache %}
-        </div>
-      </div>
-    </section>
-  {% cache cache_time gallery current_city %}
-    <section class="gallery">
-      <div class="holder">
-        <h2>Наши работы / Примеры <span>размещения рекламы</span></h2>
-        <div class="gallery-holder">
-          <div class="gallery-block">
-          {% if blockexample_list_1 %}
-            <div class="gallery-item">
-            {% for object in blockexample_list_1 %}
-              <a href="{{ object.image.url }}" class="g-mid fancybox" data-fancybox-group="gal">
-                <img src="{{ object.image_resize.url }}" alt="">
-              </a>
+		<section class="garanty">
+			<div class="holder">
+				<div class="garanty-title"><span>100% ГАРАНТИЯ </span>ЗАЩИТЫ РЕКЛАМЫ<br> И ИСПОЛНЕНИЯ<br> ЗАКАЗА</div>
+				<div class="video-tablet">
+					<a href="#dialog" class="tablet-link modal">
+						<img src="{% static 'landing/images/play2.png' %}" alt="" class="tablet-play pulsing">
+						<img src="{% static 'landing/images/tablet-text.png' %}" alt="" class="tablet-text">
+					</a>
+				</div>
+			</div>
+		</section>
+		<section class="map">
+			<div class="holder">
+				<h2>Карта возможностей размещения вашей
+				<span>рекламы в городах России</span></h2>
+				<div id="YMapsID" {% if not current_city %}data-url="{% url 'city:simple-map' %}"{% endif %} data-city="{{ current_city.slug|default:'' }}" style="height: 500px; margin-bottom: 40px; background: #ccc" class="add-bottom">
+					
+				</div>
+				<div class="city-button-holder">
+					<a href="" class="city-button">Посмотреть возможности по вашему городу</a>
+					<div class="city-hidden">
+						<ul class="city-list">
+            {% for city in city_list %}
+              <li><a href="http://{{ city.slug }}.{{ request.domain }}">{{ city.name|default:'не указано' }}</a></li>
             {% endfor %}
-            {% if blockexample_list_2 %}
-              <a href="" class="gallery-more">Больше<br> проектов</a>
-            {% endif %}
-            </div>
-          {% endif %}
-          </div>
-{#            <div class="gallery-item g1">#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/1.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/1.jpg" alt=""></a>#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/2.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/2.jpg" alt=""></a>#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/3.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/3.jpg" alt=""></a>#}
-{#            </div>#}
-{#            <div class="gallery-item g2">#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/4.jpg" class="g-big fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/4.jpg" alt=""></a>#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/5.jpg" class="g-big fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/5.jpg" alt=""></a>#}
-{#            </div>#}
-{#            <div class="gallery-item g3">#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/6.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/6.jpg" alt=""></a>#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/7.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/7.jpg" alt=""></a>#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/8.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/8.jpg" alt=""></a>#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/9.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/9.jpg" alt=""></a>#}
-{#            </div>#}
-{#            <div class="gallery-item g4">#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/10.jpg" class="g-big fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/10.jpg" alt=""></a>#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/11.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/11.jpg" alt=""></a>#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/12.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/12.jpg" alt=""></a>#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/13.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/13.jpg" alt=""></a>#}
-{#            </div>#}
-{#            <div class="gallery-item g5">#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/14.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/14.jpg" alt=""></a>#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/15.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/15.jpg" alt=""></a>#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/16.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/16.jpg" alt=""></a>#}
-{#            </div>#}
-{#            <div class="gallery-item g6">#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/17.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/17.jpg" alt=""></a>#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/18.jpg" class="g-mid fancybox last" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/18.jpg" alt=""></a>#}
-{#              <a href="" class="gallery-more">Больше<br> проектов</a>#}
-{#            </div>#}
-{#          </div>#}
-        {% if blockexample_list_2 %}
-          <div class="gallery-block gallery-hidden">
-          {% for object in blockexample_list_2 %}
-            <div class="gallery-item">
-              <a href="{{ object.image.url }}" class="g-mid fancybox" data-fancybox-group="gal">
-                <img src="{{ object.image_resize.url }}" alt="">
-              </a>
-            </div>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</section>
+    {% cache cache_time gallery current_city %}
+		<section class="gallery">
+		  <div class="holder">
+			<h2>Наши работы / Примеры <span>размещения рекламы</span></h2>
+			<div class="gallery-holder">
+			  <div class="gallery-block">
+          <div class="gallery-item">
+          {% for object in blockexample_list %}
+            <a href="{{ object.image.url }}" class="g-mid fancybox" data-fancybox-group="gal">
+              <img src="{{ object.image_resize.url }}" alt="">
+            </a>
           {% endfor %}
-{#            <div class="gallery-item g1">#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/1.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/1.jpg" alt=""></a>#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/2.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/2.jpg" alt=""></a>#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/3.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/3.jpg" alt=""></a>#}
-{#            </div>#}
-{#            <div class="gallery-item g2">#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/4.jpg" class="g-big fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/4.jpg" alt=""></a>#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/5.jpg" class="g-big fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/5.jpg" alt=""></a>#}
-{#            </div>#}
-{#            <div class="gallery-item g3">#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/6.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/6.jpg" alt=""></a>#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/7.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/7.jpg" alt=""></a>#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/8.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/8.jpg" alt=""></a>#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/9.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/9.jpg" alt=""></a>#}
-{#            </div>#}
-{#            <div class="gallery-item g4">#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/10.jpg" class="g-big fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/10.jpg" alt=""></a>#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/11.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/11.jpg" alt=""></a>#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/12.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/12.jpg" alt=""></a>#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/13.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/13.jpg" alt=""></a>#}
-{#            </div>#}
-{#            <div class="gallery-item g5">#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/14.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/14.jpg" alt=""></a>#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/15.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/15.jpg" alt=""></a>#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/16.jpg" class="g-min fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/16.jpg" alt=""></a>#}
-{#            </div>#}
-{#            <div class="gallery-item g6">#}
-{#              <a href="{{ STATIC_URL }}landing/images/gallery-big/17.jpg" class="g-mid fancybox" data-fancybox-group="gal"><img src="{{ STATIC_URL }}landing/images/gallery/17.jpg" alt=""></a>#}
-{#              <a href="" class="gallery-hide">Свернуть<br> проекты</a>#}
-{#            </div>#}
           </div>
-        {% endif %}
-        </div>
-        <div class="button-holder">
-          <a href="#dialog3" class="button modal">Заказать рекламу</a>
-        </div>
-      </div>
-    </section>
+			  </div> 
+			</div>
+			<div class="button-holder">
+			  <a href="#dialog3" class="button modal">Заказать рекламу</a>
+			</div>
+		  </div>
+		</section>
     {% endcache %}
-    <section class="review">
-      <div class="holder">
-        <h2>Отзывы об эффективности <span>нашей рекламы</span></h2>
+		<section class="review">
+		  <div class="holder">
+			  <h2>Отзывы об эффективности <span>нашей рекламы</span></h2>
         <div class="review-holder">
           <ul class="slider">
-<!--   Отзыв 1  -->
-          {% if blockreview_list %}
-            {% for object in blockreview_list %}
+          {% for object in blockreview_list %}
             <li>
               <div class="review-item">
                 <div class="review-top">
@@ -317,119 +211,102 @@
                   </div>
                   <div class="review-name">{{ object.name|default:'не указано' }}</div>
                   <div class="review-status">
-                    {% if object.link %}<a href="http://{{ object.link }}" target="_blank">{{ object.link }}</a>{% endif %} / Директор сети магазинов спортивного питания "Мастер Спорта"</div>
+                  {% if object.link %}
+                    <a href="{{ object.link }}" target="_blank">{{ object.link }}</a> / {{ object.description|default:'' }}
+                  {% endif %}
+                  </div>
                 </div>
-                <div class="review-text">{{ object.text|safe|default:'Не указано' }}</div>
+                <div class="review-text">
+                  {{ object.text|safe|default:'Не указано' }}
+                </div>
               </div>
             </li>
-            {% endfor %}
-          {% endif %}
-<!--   Отзыв 2  -->
-{#            <li>#}
-{#              <div class="review-item">#}
-{#                <div class="review-top">#}
-{#                  <div class="review-img">#}
-{#                    <img src="{{ STATIC_URL }}landing/images/review.jpg" alt="">#}
-{#                  </div>#}
-{#                  <div class="review-name"><span>Неткач</span> Максим </div>#}
-{#                  <div class="review-status"><a href="">Vk.com/id186111122</a> / Директор сети магазинов спортивного питания "Мастер Спорта"</div>#}
-{#                </div>#}
-{#                <div class="review-text">На рынке мы уже более 6 лет, занимаемся розничной торговлей спортивным питанием. Первые#}
-{#                годы работы, к рекламе практически не прибегали, потому как не чувствовали в этом надобности. Но когда встал вопрос#}
-{#                о расширении бизнеса и открытия новых магазинов, мы решили воспользоваться данным инструментом продаж. Результат#}
-{#                не заставил себя долго ждать. </div>#}
-{#              </div>#}
-{#            </li>#}
-
+          {% endfor %}
           </ul>
-        </div>
-      </div>
-    </section>
-    <section class="ask">
-      <div class="holder">
-        <div class="form-block">
-          <div class="form-top"></div>
-          <div class="form-frame">
-            <div class="form-title">у Вас есть какой-либо вопрос, Вы можете задать его в форме ниже:</div>
-            <form action="{% url 'ticket:send' %}" method="post">
+			  </div>
+		  </div>
+		</section>
+		<section class="ask">
+			<div class="holder">
+				<div class="form-block">
+					<div class="form-top"></div>
+					<div class="form-frame">
+						<div class="form-title">у Вас есть какой-либо вопрос, Вы можете задать его в форме ниже:</div>
+						<form action="{% url 'ticket:send' %}" method="post">
               {% csrf_token %}
-              <fieldset>
-                <div class="form-right">
-                  <textarea name="text" cols="30" rows="10" class="textarea" placeholder="Ваш вопрос *"></textarea>
-                </div>
-                <div class="form-left">
-                  <input type="text" name="name" class="input required" placeholder="Ваше имя *">
-                  <input type="text" name="phone" class="input no-margin required" placeholder="+7 (___) ___ - __ - __">
-                </div>
-                {% if current_city %}
-                <input type="hidden" name="city" value="{{ current_city.id }}">
-                {% endif %}
-                <input type="hidden" name="theme" value="Задать вопрос">
-                <button class="submit">Отправить</button>
-              </fieldset>
-            </form>
-          </div>
-        </div>
-      </div>
-    </section>
+							<fieldset>
+								<div class="form-right">
+									<textarea name="text" cols="30" rows="10" class="textarea" placeholder="Ваш вопрос *"></textarea>
+								</div>
+								<div class="form-left">
+									<input type="text" name="name" class="input" placeholder="Ваше имя *">
+									<input type="text" name="phone" class="input no-margin" placeholder="+7 (___) ___ - __ - __">
+								</div>
+								<input type="hidden" name="theme" value="Задать вопрос">
+								<button class="submit">Отправить</button>
+							</fieldset>
+						</form>
+					</div>
+				</div>
+			</div>	
+		</section>
   {% endblock %}
-    <footer class="footer">
-      <div class="footer-line">
-        <div class="holder">
-          <ul>
-            <li><a href="{% url 'sign:client' %}">Клиентам</a></li>
-            <li><a href="{% url 'sign:moderator' %}">Модераторам</a></li>
-            <li><a href="{% url 'sign:manager' %}">Менеджерам</a></li>
-            <li><a href="{% url 'sign:adjuster' %}">Монтажникам</a></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="holder">
-        <div class="logo">
-          {% if setup.logotype %}
-            <img src="{{ setup.logotype.url|default:'' }}" alt="{{ setup.meta_title|default:'' }}">
-          {% else %}
-          <span class="logo-text-black">Рекламные конструкции </span>
-          <span class="logo-text-big">на входных дверях</span>
-          <span class="logo-text-min">В городах России и СНГ</span>
-          {% endif %}
-        </div>
-        <div class="google-play">
-          <a href="https://play.google.com/store/apps/details?id=com.gw.porches" class="google-play-link">
-            Скачайте приложение
-            <br>
-            <img src="{% static 'landing/images/googleplay.png' %}" alt="Скачайте приложение" class="google-play-link__img">
-          </a>
-        </div>
-        <a href="http://5lands.ru/" target="_blank" class="studio">
-          Дизайн сайта<br>
-          <img src="{{ STATIC_URL }}landing/images/studio.png" alt="">
-        </a>
-        <div class="header-phone">
-          <div class="header-number">{{ setup.phone|default:'8 800 250-34-50' }}</div>
-          <div class="header-callback"><a href="#dialog2" class="modal">Заказать обратный звонок</a></div>
-        </div>
-        <div style="clear: both;"></div>
-        <div>
-          <div class="copy"><a href="#hidden-block" class="fancybox">Политика конфиденциальности</a>
-           Все права защищены &copy; 2015</div>
-        </div>
-        <div id="hidden-block">
-          <h2>Политика конфиденциальности</h2>
-          <p>Мы не собираем личную информацию о Вас, когда Вы заходите на наш сайт.
-          Вы можете анонимно просматривать сайт. Тем не менее, Ваш браузер все же автоматически сообщает нам тип компьютера и операционной системы, которые Вы используете. Единственная личная информация о Вас, которую мы получаем, это те данные, которые Вы добровольно предоставляете при заполнении форм.
-          При заполнении форм на сайте у Вас запросят персональную информацию, такую как имя, номер телефона. Предоставление такой информации в ответ на запрос осуществляется Вами исключительно добровольно.
-          Предоставленная Вами информация используется чтобы оказать те услуги, которые Вы сами запрашиваете.
-          </p>
-        </div>
-      </div>
-    </footer>
-    <!--   Всплывающие окна  -->
-    <div id="boxes">
-      <div id="dialog" class="window">
-        <div class="tablet-popup">
-          <div class="tablet-video">
+		<footer class="footer">
+		  <div class="footer-line">
+			<div class="holder">
+			  <ul>
+				<li><a href="{% url 'sign:client' %}">Клиентам</a></li>
+				<li><a href="{% url 'sign:moderator' %}">Модераторам</a></li>
+				<li><a href="{% url 'sign:manager' %}">Менеджерам</a></li>
+				<li><a href="{% url 'sign:adjuster' %}">Монтажникам</a></li>
+			  </ul>
+			</div>
+		  </div>
+		  <div class="holder">
+			<div class="logo">
+      {% if setup.logotype %}
+        <img src="{{ setup.logotype.url|default:'' }}" alt="{{ setup.meta_title|default:'' }}">
+      {% else %}
+			  <span class="logo-text-black">Рекламные конструкции </span>
+			  <span class="logo-text-big">на входных дверях</span>
+			  <span class="logo-text-min">В городах России и СНГ</span>
+      {% endif %}
+			</div>
+			<div class="google-play">
+			  <a href="https://play.google.com/store/apps/details?id=com.gw.porches" class="google-play-link">
+				Скачайте приложение
+				<br>
+				<img src="{% static 'landing/images/googleplay.png' %}" alt="Скачайте приложение" class="google-play-link__img">
+			  </a>
+			</div>
+			<a href="http://5lands.ru/" target="_blank" class="studio">
+			  Дизайн сайта<br>
+			  <img src="{% static 'landing/images/studio.png' %}" alt="">
+			</a>
+			<div class="header-phone">
+			  <div class="header-number">{{ setup.phone|default:'8 800 250-34-50' }}</div>
+			  <div class="header-callback"><a href="#dialog2" class="modal">Заказать обратный звонок</a></div>
+			</div>
+			<div style="clear: both;"></div>
+			<div>
+			  <div class="copy"><a href="#hidden-block" class="fancybox">Политика конфиденциальности</a>
+			   Все права защищены © 2015</div>
+			</div>
+			<div id="hidden-block">
+			  <h2>Политика конфиденциальности</h2>
+			  <p>Мы не собираем личную информацию о Вас, когда Вы заходите на наш сайт.
+			  Вы можете анонимно просматривать сайт. Тем не менее, Ваш браузер все же автоматически сообщает нам тип компьютера и операционной системы, которые Вы используете. Единственная личная информация о Вас, которую мы получаем, это те данные, которые Вы добровольно предоставляете при заполнении форм.
+			  При заполнении форм на сайте у Вас запросят персональную информацию, такую как имя, номер телефона. Предоставление такой информации в ответ на запрос осуществляется Вами исключительно добровольно.
+			  Предоставленная Вами информация используется чтобы оказать те услуги, которые Вы сами запрашиваете.
+			  </p>
+			</div>
+		  </div>
+		</footer>
+		<!--   Всплывающие окна  -->
+		<div id="boxes">
+			<div id="dialog" class="window">
+				<div class="tablet-popup">
+					<div class="tablet-video">
             <style>
               .tablet-video iframe {
                 width: 695px !important;
@@ -437,64 +314,138 @@
               }
 
             </style>
-            {{ setup.video|safe|default:'<iframe width="695" height="522" src="https://www.youtube.com/embed/Y1wWqG4UiTY" frameborder="0" allowfullscreen></iframe>' }}
-          </div>
-        </div>
-        <a href="" class="close">X</a>
-      </div>
-      <div id="dialog2" class="window">
-        <div class="form-block">
-          <div class="form-top"></div>
-          <div class="form-frame">
-            <div class="form-title">Заказать <br>обратный звонок</div>
-            <form action="{% url 'ticket:send' %}" method="post">
+            {{ setup.video|safe|default:'<iframe width="695" height="522" src="https://www.youtube.com/embed/HsLoyu0LeM4" frameborder="0" allowfullscreen></iframe>' }}
+					</div>
+				</div>
+			</div>
+			<div id="dialog2" class="window">
+				<div class="form-block">
+					<div class="form-top"></div>
+					<div class="form-frame">
+						<div class="form-title">Заказать <br>обратный звонок</div>
+						<form action="{% url 'ticket:send' %}" method="post">
               {% csrf_token %}
-              <fieldset>
-                <input type="text" name="name" class="input required" placeholder="Ваше имя *">
-                <input type="text" name="phone" class="input no-margin required" placeholder="+7 (___) ___ - __ - __">
+							<fieldset>
+								<input type="text" name="name" class="input" placeholder="Ваше имя *">
+								<input type="text" name="phone" class="input no-margin" placeholder="+7 (___) ___ - __ - __">
+								<input type="hidden" name="theme" value="Заказать обратный звонок">
                 {% if current_city %}
                 <input type="hidden" name="city" value="{{ current_city.id }}">
                 {% endif %}
-                <input type="hidden" name="theme" value="Заказать обратный звонок">
-                <button class="submit">Заказать</button>
-              </fieldset>
-            </form>
-          </div>
-        </div>
-        <a href="" class="close">X</a>
-      </div>
-      <div id="dialog3" class="window">
-        <div class="form-block">
-          <div class="form-top"></div>
-          <div class="form-frame">
-            <div class="form-title">Заказать <br>рекламу</div>
-            <form action="{% url 'ticket:send' %}" method="post">
+								<button class="submit">Заказать</button>
+							</fieldset>
+						</form>
+					</div>
+				</div>
+			</div>
+			<div id="dialog3" class="window">
+				<div class="form-block">
+					<div class="form-top"></div>
+					<div class="form-frame">
+						<div class="form-title">Заказать <br>рекламу</div>
+						<form action="{% url 'ticket:send' %}" method="post">
               {% csrf_token %}
-              <fieldset>
-                <input type="text" name="name" class="input required" placeholder="Ваше имя *">
-                <input type="text" name="phone" class="input no-margin required" placeholder="+7 (___) ___ - __ - __">
-                <div class="select-block">
-                  <select name="city" class="styled">
-                    <option value="">Выберите ваш город</option>
-                    {% if city_list %}
-                    {% for city in city_list %}
+							<fieldset>
+								<input type="text" name="name" class="input" placeholder="Ваше имя *">
+								<input type="text" name="phone" class="input no-margin" placeholder="+7 (___) ___ - __ - __">
+								<div class="select-block">
+									<select name="city" class="styled">
+										<option value="">Выберите ваш город</option>
+                  {% for city in city_list %}
                     <option value="{{ city.id }}" {% if city.id == current_city.id %}selected='selected'{% endif %}>{{ city.name }}</option>
-                    {% endfor %}
-                    {% endif %}
-                  </select>
-                </div>
-                <input type="hidden" name="theme" value="Заказать рекламу">
-                <button class="submit">Заказать</button>
-              </fieldset>
-            </form>
-          </div>
-        </div>
-        <a href="" class="close">X</a>
-      </div>
-      <div id="mask"></div>
-    </div>
-    <!--   Всплывающие окна end  -->
-  </div>
+                  {% endfor %}
+									</select>
+								</div>
+								<input type="hidden" name="theme" value="Заказать рекламу">
+								<button class="submit">Заказать</button>
+							</fieldset>
+						</form>
+					</div>
+				</div>
+			</div>
+			<div id="mask"></div>
+		</div>
+		<!--   Всплывающие окна end  -->
+		
+		
+		<div id="city-popup" class="cp-popup">
+{#		  <div class="cp-top">#}
+{#        <div class="cp-country">#}
+{#          <div class="country-flag"><img src="{% static 'landing/images/flag_ru.png' %}" alt=""></div>#}
+{#          <div class="country-name">Россия</div>#}
+{#        </div>#}
+{#			  <div class="cp-title-mob">Выберите Ваш город:</div>#}
+{#        <div class="cp-search">#}
+{#          <form action="/set_current_city_from_input/" id="#js-form-set-current-city" method="post" novalidate="novalidate"><input type="hidden" name="csrfmiddlewaretoken" value="9dZ3TGZko227nDeNhPM5RXyuqajgecUG">#}
+{#          <fieldset>#}
+{#            <input name="city" type="text" class="input input_city ui-autocomplete-input" data-url="/city/find/" placeholder="Найти город..." autocomplete="off">#}
+{#            <button class="loupe"></button>#}
+{#          </fieldset>#}
+{#          </form>#}
+{#          <div class="cp-input-text">В этом городе нет пока представительства</div>#}
+{#        </div>#}
+{#		  </div>#}
+		  <div class="cp-main">
+{#			<div class="cp-column">#}
+{#			  <div class="cp-title">Выберите регион</div>#}
+{#			  <a href="" class="cp-region-link">Выберите регион</a>#}
+{#			  <div class="cp-region-block" data-url="/api_promo/city/">#}
+{#				<ul class="cp-list">#}
+{#				  <li><a href="">Все регионы</a></li>#}
+{#				  #}
+{#					<li><a data-id="1">Северо-Западный федеральный округ</a></li>#}
+{#				  #}
+{#					<li><a data-id="2">Центральный федеральный округ</a></li>#}
+{#				  #}
+{#					<li><a data-id="3">Приволжский федеральный округ</a></li>#}
+{#				  #}
+{#					<li><a data-id="4">Южный федеральный округ</a></li>#}
+{#				  #}
+{#					<li><a data-id="5">Северо-Кавказский федеральный округ</a></li>#}
+{#				  #}
+{#					<li><a data-id="6">Сибирский федеральный округ</a></li>#}
+{#				  #}
+{#					<li><a data-id="7">Уральский федеральный округ</a></li>#}
+{#				  #}
+{#					<li><a data-id="8">Дальневосточный федеральный округ</a></li>#}
+{#				  #}
+{#					<li><a data-id="9">Крымский федеральный округ</a></li>#}
+{#				  #}
+{#				</ul>#}
+{#			  </div>#}
+{#			</div>#}
+			<div class="cp-column-big">
+			  <div class="cp-title">Выберите Ваш город:</div>
+			  <div class="cp-hidden">
+				<ul class="cp-list" id="js-city-list">
+        {% for city in city_list %}
+          <li><a href="http://{{ city.slug }}.{{ request.domain }}" data-id="{{ city.id }}">{{ city.name|default:'не указано' }}</a></li>
+        {% endfor %}
+
+				</ul>
+			  </div>
+			</div>
+		  </div>
+		</div>
+		
+	</div>
+  <link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/jquery-ui.css' %}" />
+	<link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/jquery.bxslider.css' %}" />
+	<link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/jquery.fancybox.css' %}" />
+	<script src="{% static 'landing/js/jquery-1.9.1.min.js' %}"></script>
+  <script src="http://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+	<script src="{% static 'landing/js/jquery-ui.min.js' %}"></script>
+	<script src="{% static 'landing/js/jquery.bxslider.min.js' %}"></script>
+	<script src="{% static 'landing/js/jquery.validate.js' %}"></script>
+  <script src="{% static 'landing/js/jquery.form.js' %}"></script>
+	<script src="{% static 'landing/js/jquery.fancybox.js' %}"></script>
+  <script src="{% static 'landing/js/notify-combined.min.js' %}"></script>
+	<script src="{% static 'landing/js/jquery.maskedinput.js' %}"></script>
+	<!--[if lt IE 9]><script type="text/javascript" src="{% static 'landing/js/html5.js' %}"></script><![endif]-->
+	<!--[if lt IE 9]><script type="text/javascript" src="{% static 'landing/js/placeholder.js' %}"></script><![endif]-->
+	<script src="{% static 'landing/js/all.js' %}?v=2"></script>
+
+
 {% cache cache_time map current_city %}
   {% if MAIN_PAGE %}
     <script src="{% static 'landing/js/city_map.js' %}"></script>
@@ -505,6 +456,5 @@
 {% if setup %}
   {{ setup.bottom_js|safe }}
 {% endif %}
-
 </body>
 </html>
