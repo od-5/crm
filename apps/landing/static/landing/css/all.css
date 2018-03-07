@@ -706,6 +706,14 @@ pulse
     border-radius: 5px;
 }
 /************************* form-block *************************/
+label.terms {
+    font-size: 14px;
+    color: #fff;
+}
+label.terms a {
+    font-size: 14px;
+    color: #99CCFF;
+}
 .form-block {
     position: relative;
     width: 320px;
@@ -805,9 +813,10 @@ pulse
     background-color: rgb(255, 206, 202);
 }
 label.error {
-    position: absolute;
-    left: -9999px;
+    font-size: 14px;
+    color: rgb(255, 86, 71);
 }
+label[for=terms].error
 /************************* ask *************************/
 .ask {
     padding: 158px 0 161px;

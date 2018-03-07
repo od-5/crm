@@ -82,6 +82,7 @@
                   {% endfor %}
                   </select>
                 </div>
+                <input type="checkbox" name="terms" id="id_terms"><label for="id_terms" class="terms"> Я согласен на <a href="#hidden-block" class="fancybox">обработку персональных данных</a></label>
 							  <input type="hidden" name="theme" value="Заказать эффективную рекламу">
 							  <button class="submit">Заказать</button>
 						  </fieldset>
@@ -242,6 +243,7 @@
 									<input type="text" name="name" class="input" placeholder="Ваше имя *">
 									<input type="text" name="phone" class="input no-margin" placeholder="+7 (___) ___ - __ - __">
 								</div>
+                <input type="checkbox" name="terms" id="id_terms"><label for="id_terms" class="terms"> Я согласен на <a href="#hidden-block" class="fancybox">обработку персональных данных</a></label>
 								<input type="hidden" name="theme" value="Задать вопрос">
 								<button class="submit">Отправить</button>
 							</fieldset>
@@ -289,11 +291,11 @@
 			</div>
 			<div style="clear: both;"></div>
 			<div>
-			  <div class="copy"><a href="#hidden-block" class="fancybox">Политика конфиденциальности</a>
+			  <div class="copy"><a href="#hidden-block" class="fancybox">Согласие на обрабокту персональных данных</a>
 			   Все права защищены © 2015</div>
 			</div>
 			<div id="hidden-block">
-			  <h2>Политика конфиденциальности</h2>
+			  <h2>Согласие на обрабокту персональных данных</h2>
 			  <p>Мы не собираем личную информацию о Вас, когда Вы заходите на наш сайт.
 			  Вы можете анонимно просматривать сайт. Тем не менее, Ваш браузер все же автоматически сообщает нам тип компьютера и операционной системы, которые Вы используете. Единственная личная информация о Вас, которую мы получаем, это те данные, которые Вы добровольно предоставляете при заполнении форм.
 			  При заполнении форм на сайте у Вас запросят персональную информацию, такую как имя, номер телефона. Предоставление такой информации в ответ на запрос осуществляется Вами исключительно добровольно.
@@ -332,6 +334,7 @@
                 {% if current_city %}
                 <input type="hidden" name="city" value="{{ current_city.id }}">
                 {% endif %}
+                <input type="checkbox" name="terms" id="id_terms"><label for="id_terms" class="terms"> Я согласен на <a href="#hidden-block" class="fancybox">обработку персональных данных</a></label>
 								<button class="submit">Заказать</button>
 							</fieldset>
 						</form>
@@ -357,6 +360,7 @@
 									</select>
 								</div>
 								<input type="hidden" name="theme" value="Заказать рекламу">
+                <input type="checkbox" name="terms" id="id_terms"><label for="id_terms" class="terms"> Я согласен на <a href="#hidden-block" class="fancybox">обработку персональных данных</a></label>
 								<button class="submit">Заказать</button>
 							</fieldset>
 						</form>

@@ -7,20 +7,30 @@ $(document).ready(function () {
   $('form').each(function(){
     $(this).validate({
       rules: {
-          name: {
-              required: true
-          },
-          text: {
-              required: true
-          },
-          mail: {
-              required: true,
-              email: true
-          },
-          phone: {
-              required: true,
-              minlength: 6
-          }
+         name: {
+           required: true
+         },
+         text: {
+           required: true
+         },
+         mail: {
+           required: true,
+           email: true
+         },
+         phone: {
+           required: true,
+           minlength: 6
+         },
+         terms: {
+           required: true
+         }
+      },
+      messages: {
+        name: false,
+        phone: false,
+        text: false,
+        mail: false,
+        terms: 'Вы не можете оставить заявку без согласия на обработку персональных данных'
       }
     });
   });
