@@ -2,9 +2,9 @@
 from django.conf.urls import patterns, url
 from django.views.generic import TemplateView
 
-from .views import LandingView, setup_list, setup_add, setup_update, block_list, blockeffective_list, \
+from .views import LandingView, setup_add, setup_update, block_list, blockeffective_list, \
     blockeffective_add, blockeffective_update, blockreview_list, blockreview_add, blockreview_update, \
-    blockexample_list, blockexample_add, blockexample_update
+    blockexample_list, blockexample_add, blockexample_update, SiteSetupList
 
 __author__ = 'alexy'
 
@@ -15,7 +15,7 @@ urlpatterns = patterns(
     url(r'^confidentiality/$', TemplateView.as_view(template_name='landing/confidentiality.html'),
         name='confidentiality'),
     # настроки лэндинга
-    url(r'^setup/$', setup_list, name='setup-list'),
+    url(r'^setup/$', SiteSetupList.as_view(), name='setup-list'),
     url(r'^setup/add/$', setup_add, name='setup-add'),
     url(r'^setup/(?P<pk>\d+)/$', setup_update, name='setup-update'),
     # Список блоков для редактирования

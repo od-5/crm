@@ -3,44 +3,24 @@ $(document).ready(function () {
   $('.styled').selectmenu();
   // fancybox
   $('.fancybox').fancybox();
-  $("a.video-find").click(function() {
-	  $.fancybox({
-        'padding'		: 0,
-        'autoScale'		: false,
-        'transitionIn'	: 'none',
-        'transitionOut'	: 'none',
-        'title'			: this.title,
-        'width'		: 680,
-        'height'		: 495,
-        'href'			: this.href.replace(new RegExp("watch\\?v=", "i"), 'v/'),
-        'type'			: 'swf',
-        'swf'			: {
-             'wmode'		: 'transparent',
-          'allowfullscreen'	: 'true'
-        }
-      });
-
-    return false;
-  });
-
   $(".input[name='phone']").mask("+7 (999) 999-99-99");
   $('form').each(function(){
     $(this).validate({
       rules: {
-        name: {
-          required: true
-        },
-        text: {
-          required: true
-        },
-        mail: {
-          required: true,
-          email: true
-        },
-        phone: {
-          required: true,
-          minlength: 6
-        }
+          name: {
+              required: true
+          },
+          text: {
+              required: true
+          },
+          mail: {
+              required: true,
+              email: true
+          },
+          phone: {
+              required: true,
+              minlength: 6
+          }
       }
     });
   });
