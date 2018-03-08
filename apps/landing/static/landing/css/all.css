@@ -857,6 +857,9 @@ label.error {
 .footer-line li:first-child:before {display: none;}
 .footer-line li a {color: #848484;}
 .footer .logo {margin: 39px 34px 0 0;}
+.footer .logo img {
+    max-height: 70px;
+}
 .google-play {
     text-align: right;
     float: left;
