@@ -17,8 +17,8 @@
 	<title>{{ setup.meta_title|default:'Рекламное агентство Дружба' }}</title>
 	<link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/all.css' %}" />
 
-{% if setup %}
-  {{ setup.top_js|safe }}
+{% if main_setup %}
+  {{ main_setup.top_js|safe }}
 {% endif %}
 </head>
 {% endcache %}
@@ -457,8 +457,8 @@
     {% include 'landing/__include/surface-map.html' with surface_list=current_city.surface_set.all %}
   {% endif %}
 {% endcache %}
-{% if setup %}
-  {{ setup.bottom_js|safe }}
+{% if main_setup %}
+  {{ main_setup.bottom_js|safe }}
 {% endif %}
 </body>
 </html>

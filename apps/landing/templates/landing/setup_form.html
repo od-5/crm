@@ -17,14 +17,12 @@
         </p>
       </div>
       <div class="panel-body">
-        {% if error %}
-          <p class="alert alert-warning">
-          {{ error }}
-          </p>
-        {% endif %}
         <form action="" role="form" method="post" id="js-setup-form" enctype="multipart/form-data">
         {% csrf_token %}
-        {% for field in form %}
+        {% for field in form.hidden_fields %}
+          {{ field }}
+        {% endfor %}
+        {% for field in form.visible_fields %}
           <div class="form-group">
             <div class="form-group">
               <div class="col-lg-3">{{ field.label_tag }}</div>

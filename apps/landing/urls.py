@@ -2,9 +2,9 @@
 from django.conf.urls import patterns, url
 from django.views.generic import TemplateView
 
-from .views import LandingView, setup_add, setup_update, block_list, blockeffective_list, \
-    blockeffective_add, blockeffective_update, blockreview_list, blockreview_add, blockreview_update, \
-    blockexample_list, blockexample_add, blockexample_update, SiteSetupList
+from .views import LandingView, block_list, blockeffective_list, blockeffective_add, blockeffective_update, \
+    blockreview_list, blockreview_add, blockreview_update, blockexample_list, blockexample_add, blockexample_update, \
+    SiteSetupList, SetupCreateView, SetupUpdateView, OkView
 
 __author__ = 'alexy'
 
@@ -12,12 +12,13 @@ __author__ = 'alexy'
 urlpatterns = patterns(
     '',
     url(r'^$', LandingView.as_view(), name='home'),
+    url(r'^ok/$', OkView.as_view(), name='ok'),
     url(r'^confidentiality/$', TemplateView.as_view(template_name='landing/confidentiality.html'),
         name='confidentiality'),
     # настроки лэндинга
     url(r'^setup/$', SiteSetupList.as_view(), name='setup-list'),
-    url(r'^setup/add/$', setup_add, name='setup-add'),
-    url(r'^setup/(?P<pk>\d+)/$', setup_update, name='setup-update'),
+    url(r'^setup/add/$', SetupCreateView.as_view(), name='setup-add'),
+    url(r'^setup/(?P<pk>\d+)/$', SetupUpdateView.as_view(), name='setup-update'),
     # Список блоков для редактирования
     url(r'^block/$', block_list, name='block-list'),
     # блок "почему реклама на подъездах так эффективна"

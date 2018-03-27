@@ -1,0 +1,17 @@
+{% extends 'landing/index.html' %}
+
+{% block top_content %}
+{% endblock %}
+{% block about_content %}
+  <style>
+    .footer-line {
+      background: #fff !important;
+    }
+  </style>
+  <script type="text/javascript">
+		setTimeout('location.replace("{% url 'home' %}")', 3000);
+	</script>
+  <div class="thnx-text">Ваша заявка принята <br> Наш менеджер свяжется с вами в ближайшее время</div>
+{% endblock %}
+{% block other_content %}
+{% endblock %}

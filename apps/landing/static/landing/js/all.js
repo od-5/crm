@@ -34,21 +34,21 @@ $(document).ready(function () {
       }
     });
   });
-  $('form').ajaxForm({
-    success: function(data){
-      var error = data.error;
-      if (error) {
-        $('form').resetForm();
-        $.notify('Сообщение не было отправлено. Проверьте правильность ввода данных!', 'error');
-        console.log(error);
-      } else {
-        $('form').resetForm();
-        $('#mask, .window').hide();
-        $.notify('Ваше сообщение успешно отправлено!', 'success');
-        console.log('not error');
-      }
-    }
-  });
+  // $('form').ajaxForm({
+  //   success: function(data){
+  //     var error = data.error;
+  //     if (error) {
+  //       $('form').resetForm();
+  //       $.notify('Сообщение не было отправлено. Проверьте правильность ввода данных!', 'error');
+  //       console.log(error);
+  //     } else {
+  //       $('form').resetForm();
+  //       $('#mask, .window').hide();
+  //       $.notify('Ваше сообщение успешно отправлено!', 'success');
+  //       console.log('not error');
+  //     }
+  //   }
+  // });
 
   // slider
   $('.slider').bxSlider({

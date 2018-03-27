@@ -1,5 +1,7 @@
 # coding=utf-8
 from django import forms
+
+from apps.city.models import City
 from .models import Setup, BlockExample, BlockReview, BlockEffective
 
 __author__ = 'alexy'
@@ -23,6 +25,16 @@ class SetupForm(forms.ModelForm):
             'robots_txt': forms.Textarea(attrs={'class': 'form-control'}),
             'video': forms.Textarea(attrs={'class': 'form-control'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')
+        super(SetupForm, self).__init__(*args, **kwargs)
+        if user:
+            self.fields['city'].queryset = City.objects.get_qs(user)
+            if user.type != 1 or self.instance.city_id:
+                self.fields['top_js'].widget = forms.HiddenInput()
+                self.fields['bottom_js'].widget = forms.HiddenInput()
+                self.fields['robots_txt'].widget = forms.HiddenInput()
 
 
 class BlockEffectiveForm(forms.ModelForm):

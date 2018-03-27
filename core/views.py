@@ -11,22 +11,10 @@ def get_robots_txt(request):
     """
     Функция отображения robots.txt
     """
-    if request.subdomain:
-        try:
-            setup = Setup.objects.get(city__slug=request.subdomain)
-        except:
-            try:
-                setup = Setup.objects.filter(city__isnull=True).first()
-            except:
-                setup = Setup.objects.all().first()
-    else:
-        try:
-            setup = Setup.objects.filter(city__isnull=True).first()
-        except:
-            setup = Setup.objects.all().first()
-    try:
+    setup = Setup.objects.filter(city__isnull=True).first()
+    if setup:
         content = setup.robots_txt
-    except:
+    else:
         content = u'User-agent: *'
     robots_response = HttpResponse(content, content_type='text/plain')
     return robots_response

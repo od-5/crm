@@ -961,13 +961,13 @@ label.error {
     width: 800px;
     height: 600px;
 }
+
 .thnx-text {
     width: 600px;
-    padding: 100px 0 0;
+    padding: 80px 0 100px;
     margin: 0 auto;
     color: #000;
     font-size: 40px;
-    font-family: 'agavalanchecbold';
     line-height: 48px;
     text-align: center;
     text-transform: uppercase;

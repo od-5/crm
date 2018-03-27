@@ -1,5 +1,7 @@
 # coding=utf-8
 from django import forms
+
+from apps.city.models import City
 from .models import Ticket
 
 __author__ = 'Rylcev Alexy'
@@ -23,3 +25,9 @@ class TicketChangeForm(forms.ModelForm):
             'type': forms.Select(attrs={'class': 'form-control'}),
             'comment': forms.Textarea(attrs={'class': 'form-control'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')
+        super(TicketChangeForm, self).__init__(*args, **kwargs)
+        if user:
+            self.fields['city'].queryset = City.objects.get_qs(user)

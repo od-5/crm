@@ -1,9 +1,9 @@
 # coding=utf-8
 from annoying.functions import get_object_or_None
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
-from django.views.generic import TemplateView, ListView
+from django.views.generic import TemplateView, ListView, CreateView, UpdateView
 from apps.city.models import City
 from .forms import SetupForm, BlockEffectiveForm, BlockExampleForm, BlockReviewForm
 from .models import Setup, BlockEffective, BlockReview, BlockExample
@@ -44,7 +44,30 @@ class LandingView(TemplateView):
             'current_city': current_city,
             'setup': setup,
             'city_list': city_qs,
-            'cache_time': 1800
+            'cache_time': 1800,
+            'main_setup': Setup.objects.filter(city__isnull=True).values('top_js', 'bottom_js').first()
+        })
+        return context
+
+
+class OkView(TemplateView):
+    template_name = 'landing/ok.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(OkView, self).get_context_data(**kwargs)
+        city_qs = City.objects.values('id', 'name', 'slug')
+        current_city = get_object_or_None(City, slug=self.request.subdomain)
+        if current_city:
+            try:
+                setup = Setup.objects.get(city=current_city)
+            except:
+                setup = Setup.objects.filter(city__isnull=True).first()
+        else:
+            setup = Setup.objects.filter(city__isnull=True).first()
+        context.update({
+            'setup': setup,
+            'city_list': city_qs,
+            'cache_time': 1800,
         })
         return context
 
@@ -63,56 +86,28 @@ class SiteSetupList(ListView):
         return qs
 
 
-def setup_add(request):
-    """
-    Добавление настроек сайта
-    """
-    context = {}
-    user = request.user
-    if request.method == 'POST':
-        form = SetupForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('setup-list'))
-        else:
-            context.update({
-                'error': u'Проверьте правильность ввода полей'
-            })
-    else:
-        form = SetupForm()
-    if user.type == 2:
-        form.fields['city'].queryset = City.objects.filter(moderator=user)
-    context = {
-        'form': form
-    }
-    return render(request, 'landing/setup_form.html', context)
+class SetupCreateView(CreateView):
+    model = Setup
+    form_class = SetupForm
+    template_name = 'landing/setup_form.html'
+    success_url = reverse_lazy('setup-list')
+
+    def get_form_kwargs(self):
+        kwargs = super(SetupCreateView, self).get_form_kwargs()
+        kwargs.update({'user': self.request.user})
+        return kwargs
 
 
-def setup_update(request, pk):
-    """
-    Редактирование настроек сайта
-    """
-    context = {}
-    instance = Setup.objects.get(pk=int(pk))
-    user = request.user
-    if request.method == 'POST':
-        form = SetupForm(request.POST, request.FILES, instance=instance)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('setup-list'))
-        else:
-            context.update({
-                'error': u'Проверьте правильность ввода полей'
-            })
-    else:
-        form = SetupForm(instance=instance)
-    if user.type == 2:
-        form.fields['city'].queryset = City.objects.filter(moderator=user)
-    context.update({
-        'object': instance,
-        'form': form
-    })
-    return render(request, 'landing/setup_form.html', context)
+class SetupUpdateView(UpdateView):
+    model = Setup
+    form_class = SetupForm
+    template_name = 'landing/setup_form.html'
+    success_url = reverse_lazy('setup-list')
+
+    def get_form_kwargs(self):
+        kwargs = super(SetupUpdateView, self).get_form_kwargs()
+        kwargs.update({'user': self.request.user})
+        return kwargs
 
 
 def block_list(request):
