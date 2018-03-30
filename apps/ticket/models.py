@@ -49,6 +49,7 @@ class Ticket(Common):
         verbose_name = u'Заявка'
         verbose_name_plural = u'Заявки'
         app_label = 'ticket'
+        ordering = ['-created', ]
 
     def __unicode__(self):
         return u'Заявка на имя: %s, телефон: %s' % (self.name, self.phone)

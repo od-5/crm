@@ -19,7 +19,7 @@
               {% endfor %}
             </select>
             <select name="type" class="form-control">
-              <option>---- Статус ----</option>
+              <option value="">---- Статус ----</option>
               <option value="0" {% if r_type == 0 %}selected="selected"{% endif %}>Новая заявка</option>
               <option value="1" {% if r_type == 1 %}selected="selected"{% endif %}>В обработке</option>
               <option value="2" {% if r_type == 2 %}selected="selected"{% endif %}>Отклонена</option>
