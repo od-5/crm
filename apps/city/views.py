@@ -3,15 +3,15 @@ from datetime import datetime
 from django.conf import settings
 from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse
-from django.db.models import Sum
-from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse, reverse_lazy
+from django.db.models import Sum, Count
+from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView, CreateView, UpdateView
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from apps.adjuster.models import SurfacePhoto
-from apps.city.forms import CityAddForm, StreetForm, AreaAddForm, ManagementCompanyForm
+from apps.city.forms import CityForm, StreetForm, AreaForm, ManagementCompanyForm
 from apps.city.models import City, Area, Street, ManagementCompany
 from apps.client.models import ClientJournal
 from apps.client.models import ClientJournalPayment
@@ -21,21 +21,17 @@ __author__ = 'alexy'
 
 
 class CityListView(ListView):
+    """
+    Список городов
+    """
+
     model = City
     template_name = 'city/city_list.html'
 
     def get_queryset(self):
         user = self.request.user
-        if user.type == 1:
-            qs = City.objects.select_related('moderator').all()
-        elif user.type == 2:
-            qs = City.objects.select_related('moderator').filter(moderator=user)
-        elif user.type == 6:
-            qs = user.superviser.city.all()
-        elif user.type == 5 and user.is_leader_manager():
-            qs = City.objects.select_related('moderator').filter(moderator=user.manager.moderator)
-        else:
-            qs = None
+        qs = self.model.objects.get_qs(user).select_related('moderator').annotate(
+            num_porch=Count('surface__porch'), num_client=Count('client'))
         if self.request.GET.get('moderator'):
             qs = qs.filter(moderator__email=self.request.GET.get('moderator'))
         if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
@@ -56,133 +52,126 @@ class CityListView(ListView):
 
 
 class CityCreateView(CreateView):
+    """
+    Создание города
+    """
     model = City
-    form_class = CityAddForm
+    form_class = CityForm
     template_name = 'city/city_add.html'
 
 
-@login_required
-def city_update(request, pk):
-    user = request.user
-    city = City.objects.get(pk=int(pk))
-    if city.moderator == user or user.type == 1:
-        # Если пользователь не является модератором города или администратором:
-        # перенаправить его на страницу со списком своих городов
-        pass
-    else:
-        if user.type == 5 and user.is_leader_manager():
-            pass
+class CityUpdateView(UpdateView):
+    """
+    Реактирование города
+    """
+    model = City
+    form_class = CityForm
+    template_name = 'city/city_update.html'
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        city = self.get_object()
+        if user.type == 1 or city.moderator == user or \
+                user.type == 5 and user.is_leader_manager() and city.moderator == user.manager.moderator:
+            return super(CityUpdateView, self).get(request, *args, **kwargs)
         else:
-            return HttpResponseRedirect(reverse('city:list'))
+            return HttpResponseRedirect(reverse_lazy('city:list'))
 
-    if request.method == 'POST':
-        form = CityAddForm(request.POST, instance=city)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(city.get_absolute_url())
-    else:
-        form = CityAddForm(instance=city)
-        if user.type == 2:
-            form.fields['name'].widget.attrs['readonly'] = True
-            form.fields['moderator'].widget.attrs['readonly'] = True
-        elif user.type == 5 and user.is_leader_manager():
-            form.fields['name'].widget.attrs['readonly'] = True
-            form.fields['moderator'].widget.attrs['readonly'] = True
-    context = {
-        'form': form,
-        'city': city
-    }
-    return render(request, 'city/city_update.html', context)
+    def get_form_kwargs(self):
+        kwargs = super(CityUpdateView, self).get_form_kwargs()
+        kwargs.update({'user': self.request.user})
+        return kwargs
 
-
-@login_required
-def city_area(request, pk):
-    context = {}
-    city = City.objects.get(pk=int(pk))
-    if request.method == 'POST':
-        form = AreaAddForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('city:area', args=(city.id, )))
+    def form_valid(self, form):
+        if self.request.user == 1:
+            return super(CityUpdateView, self).form_valid(form)
         else:
-            return HttpResponseRedirect(reverse('city:area', args=(city.id, )))
-    else:
-        form = AreaAddForm(
-            initial={
-                'city': city
-            }
-        )
-    context.update({
-        'city': city,
-        'area_form': form
-    })
-    return render(request, 'city/city_area.html', context)
+            return HttpResponseRedirect(self.object.get_absolute_url())
 
-
-@login_required
-def city_area_update(request, pk):
-    context = {}
-    area = Area.objects.get(pk=int(pk))
-    if request.method == 'POST':
-        form = AreaAddForm(request.POST, instance=area)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('city:area', args=(area.city.id, )))
+    def form_invalid(self, form):
+        if self.request.user == 1:
+            return super(CityUpdateView, self).form_invalid(form)
         else:
-            return HttpResponseRedirect(reverse('city:area-update', args=(area.id, )))
-    else:
-        form = AreaAddForm(instance=area)
-    context.update({
-        'city': area.city,
-        'area': area,
-        'area_form': form
-    })
-    return render(request, 'city/city_area_update.html', context)
+            return HttpResponseRedirect(self.object.get_absolute_url())
 
 
-@login_required
-def city_street(request, pk):
-    context = {}
-    city = City.objects.get(pk=int(pk))
-    if request.method == 'POST':
-        form = StreetForm(request.POST)
-        if form.is_valid():
-            form.save()
-        return HttpResponseRedirect(reverse('city:street', args=(city.id, )))
-    else:
-        form = StreetForm(
-            initial={
-                'city': city
-            }
-        )
-        form.fields['area'].queryset = city.area_set.all()
-    context.update({
-        'city': city,
-        'street_form': form
-    })
-    return render(request, 'city/city_street.html', context)
+class AreaAddView(CreateView):
+    model = Area
+    form_class = AreaForm
+    template_name = 'city/city_area.html'
 
-
-@login_required
-def city_street_update(request, pk):
-    context = {}
-    street = Street.objects.get(pk=int(pk))
-    if request.method == 'POST':
-        form = StreetForm(request.POST, instance=street)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('city:street', args=(street.city.id, )))
+    def get_city(self):
+        if 'pk' in self.kwargs:
+            city = City.objects.get(pk=self.kwargs['pk'])
+            return city
         else:
-            return HttpResponseRedirect(reverse('city:street-update', args=(street.id, )))
-    else:
-        form = StreetForm(instance=street)
-        form.fields['area'].queryset = street.city.area_set.all()
-    context.update({
-        'city': street.city,
-        'street': street,
-        'street_form': form
-    })
-    return render(request, 'city/city_street_update.html', context)
+            raise Http404
+
+    def get_initial(self):
+        return {
+            'city': self.get_city()
+        }
+
+    def get_context_data(self, **kwargs):
+        context = super(AreaAddView, self).get_context_data(**kwargs)
+        city = self.get_city()
+        context.update({
+            'city': city,
+            'area_list': city.area_set.annotate(num_street=Count('street'))
+        })
+        return context
+
+
+class AreaUpdateView(UpdateView):
+    model = Area
+    form_class = AreaForm
+    template_name = 'city/city_area_update.html'
+
+    def get_city(self):
+        if 'pk' in self.kwargs:
+            city = City.objects.get(pk=self.kwargs['pk'])
+            return city
+        else:
+            raise Http404
+
+    def get_context_data(self, **kwargs):
+        context = super(AreaUpdateView, self).get_context_data(**kwargs)
+        context.update({
+            'city': self.object.city
+        })
+        return context
+
+
+class StreetAddView(CreateView):
+    model = Street
+    form_class = StreetForm
+    template_name = 'city/city_street.html'
+
+    def get_city(self):
+        if 'pk' in self.kwargs:
+            city = City.objects.get(pk=self.kwargs['pk'])
+            return city
+        else:
+            raise Http404
+
+    def get_initial(self):
+        return {
+            'city': self.get_city()
+        }
+
+    def get_context_data(self, **kwargs):
+        context = super(StreetAddView, self).get_context_data(**kwargs)
+        city = self.get_city()
+        context.update({
+            'city': city,
+        })
+        return context
+
+
+class StreetUpdateView(UpdateView):
+    model = Street
+    form_class = StreetForm
+    template_name = 'city/city_street_update.html'
 
 
 @login_required

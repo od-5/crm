@@ -6,7 +6,7 @@
       <div class="panel panel-default">
         <div class="panel-heading">
           <p class="lead text-center remove-bottom">
-            Редактирование района {{ area }}
+            Редактирование района {{ object }}
           </p>
         </div>
         <div class="panel-body">
@@ -14,13 +14,17 @@
             <div class="col-lg-6">
               <form action="" role="form" class="form-profile" id="js-area-add-form" method="post">
                 {% csrf_token %}
-                {{ area_form.city }}
+                {% for field in form.hidden_fields %}
+                  {{ field }}
+                {% endfor %}
+                {% for field in form.visible_fields %}
                 <div class="form-group">
-                  <div class="col-lg-5">{{ area_form.name.label_tag }}</div>
-                  <div class="col-lg-7">{{ area_form.name }}</div>
-                  {{ area_form.name.errors }}
+                  <div class="col-lg-5">{{ field.label_tag }}</div>
+                  <div class="col-lg-7">{{ field }}</div>
+                  {{ field.errors }}
                   <div class="clearfix"></div>
                 </div>
+                {% endfor %}
                 <button type="submit" class="btn btn-default">Сохранить изменения</button>
               </form>
             </div>

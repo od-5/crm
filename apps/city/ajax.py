@@ -3,7 +3,6 @@ from annoying.decorators import ajax_request
 from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt
 from apps.adjuster.models import Adjuster, AdjusterTaskSurface, SurfacePhoto
-from apps.city.forms import AreaAddForm, StreetForm
 from apps.city.models import Area, City, Street, Surface, Porch
 from apps.client.models import Client, ClientOrder
 from apps.surface.forms import PorchAddForm

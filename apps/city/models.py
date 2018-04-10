@@ -5,7 +5,7 @@ from django.core.mail import send_mail
 from django.db.models import Sum
 from django.db.models.signals import post_save, post_delete, pre_save
 from django.dispatch import receiver
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.db import models
 from pytils.translit import slugify
 import core.geotagging as api
@@ -19,21 +19,34 @@ api_key = settings.YANDEX_MAPS_API_KEY
 class CityModelManager(models.Manager):
     def get_qs(self, user):
         if user.type == 1:
-            qs = City.objects.all()
+            qs = self.model.objects.all()
         elif user.type == 2:
-            qs = City.objects.filter(moderator=user)
+            qs = user.city_set.all()
         elif user.type == 3:
-            qs = City.objects.filter(id=user.client.city.id)
+            qs = self.model.objects.filter(id=user.client.city.id)
         elif user.type == 6:
             qs = user.superviser.city.all()
         elif user.type == 4:
-            qs = City.objects.filter(moderator=user.manager.moderator)
+            qs = self.model.objects.filter(moderator=user.manager.moderator)
+            qs = user.manager.moderator.city_set.al()
         else:
-            qs = City.objects.none()
+            qs = self.model.objects.none()
         return qs
 
 
 class City(models.Model):
+    name = models.CharField(max_length=100, verbose_name=u'Город')
+    moderator = models.ForeignKey(to=User, limit_choices_to={'type': 2}, blank=True, null=True,
+                                  verbose_name=u'Модератор')
+    contract_number = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'Номер договора')
+    contract_date = models.DateField(blank=True, null=True, verbose_name=u'Договор от')
+    coord_x = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=u'Ширина')
+    coord_y = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=u'Долгота')
+    slug = models.SlugField(verbose_name=u'url имя поддомена', blank=True, null=True, max_length=50)
+    # stand_total_count = models.IntegerField(blank=True, null=True, default=0)
+
+    objects = CityModelManager()
+
     class Meta:
         verbose_name = u'Город'
         verbose_name_plural = u'Города'
@@ -71,17 +84,6 @@ class City(models.Model):
         # self.surfaces = self.surface_count()
         super(City, self).save()
 
-    name = models.CharField(max_length=100, verbose_name=u'Город')
-    moderator = models.ForeignKey(to=User, blank=True, null=True, verbose_name=u'Модератор')
-    contract_number = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'Номер договора')
-    contract_date = models.DateField(blank=True, null=True, verbose_name=u'Договор от')
-    coord_x = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=u'Ширина')
-    coord_y = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=u'Долгота')
-    slug = models.SlugField(verbose_name=u'url имя поддомена', blank=True, null=True, max_length=50)
-    # stand_total_count = models.IntegerField(blank=True, null=True, default=0)
-
-    objects = CityModelManager()
-
 
 @receiver(post_save, sender=City)
 def send_notify_to_admin(sender, created, **kwargs):
@@ -101,6 +103,9 @@ def send_notify_to_admin(sender, created, **kwargs):
 
 
 class Area(models.Model):
+    city = models.ForeignKey(to=City, verbose_name=u'Город')
+    name = models.CharField(max_length=100, verbose_name=u'Название')
+
     class Meta:
         verbose_name = u'Район'
         verbose_name_plural = u'Районы'
@@ -109,11 +114,15 @@ class Area(models.Model):
     def __unicode__(self):
         return self.name
 
-    city = models.ForeignKey(to=City, verbose_name=u'Город')
-    name = models.CharField(max_length=100, verbose_name=u'Название')
+    def get_absolute_url(self):
+        return reverse_lazy('city:area', args=(self.city.id,))
 
 
 class Street(models.Model):
+    city = models.ForeignKey(to=City, verbose_name=u'Город')
+    area = models.ForeignKey(to=Area, verbose_name=u'Район')
+    name = models.CharField(max_length=256, verbose_name=u'Название улицы')
+
     class Meta:
         verbose_name = u'Улица'
         verbose_name_plural = u'Улицы'
@@ -124,9 +133,8 @@ class Street(models.Model):
             return u'%s (%s)' % (self.name, self.area.name)
         return self.name
 
-    city = models.ForeignKey(to=City, verbose_name=u'Город')
-    area = models.ForeignKey(to=Area, verbose_name=u'Район')
-    name = models.CharField(max_length=256, verbose_name=u'Название улицы')
+    def get_absolute_url(self):
+        return reverse_lazy('city:street', args=(self.city_id,))
 
 
 class ManagementCompany(models.Model):

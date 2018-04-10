@@ -1,59 +1,71 @@
 # coding=utf-8
-from django.forms import ModelForm, TextInput, Select, DateInput, HiddenInput
-from core.models import User
+from django import forms
 from .models import City, Street, Area, ManagementCompany
 
 __author__ = 'alexy'
 
 
-class CityAddForm(ModelForm):
+class CityForm(forms.ModelForm):
     class Meta:
         model = City
         fields = ('name', 'moderator', 'contract_number', 'contract_date', 'slug')
         widgets = {
-            'name': TextInput(attrs={'class': 'form-control'}),
-            'moderator': Select(attrs={'class': 'form-control'}),
-            'contract_number': TextInput(attrs={'class': 'form-control'}),
-            'contract_date': DateInput(attrs={'class': 'form-control'}),
-            'slug': TextInput(attrs={'class': 'form-control'}),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'moderator': forms.Select(attrs={'class': 'form-control'}),
+            'contract_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'contract_date': forms.DateInput(attrs={'class': 'form-control'}),
+            'slug': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
     def __init__(self, *args, **kwargs):
-        super(CityAddForm, self).__init__(*args, **kwargs)
-        self.fields['moderator'].queryset = User.objects.filter(type=2)
+        user = None
+        if 'user' in kwargs:
+            user = kwargs.pop('user')
+        super(CityForm, self).__init__(*args, **kwargs)
+        if user and user.type != 1:
+            for field in self.fields:
+                self.fields[field].widget.attrs['disabled'] = True
 
 
-class AreaAddForm(ModelForm):
+class AreaForm(forms.ModelForm):
     class Meta:
         model = Area
         fields = ('city', 'name', )
         widgets = {
-            'city': HiddenInput(attrs={'class': 'form-control'}),
-            'name': TextInput(attrs={'class': 'form-control'}),
+            'city': forms.HiddenInput(attrs={'class': 'form-control'}),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
 
-class StreetForm(ModelForm):
+class StreetForm(forms.ModelForm):
     class Meta:
         model = Street
         fields = ('city', 'area', 'name')
         widgets = {
-            'city': HiddenInput(attrs={'class': 'form-control'}),
-            'area': Select(attrs={'class': 'form-control'}),
-            'name': TextInput(attrs={'class': 'form-control'}),
+            'city': forms.HiddenInput(attrs={'class': 'form-control'}),
+            'area': forms.Select(attrs={'class': 'form-control'}),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
+    def __init__(self, *args, **kwargs):
+        # self.request = kwargs.pop("request")
+        super(StreetForm, self).__init__(*args, **kwargs)
+        if self.instance and self.instance.pk:
+            self.fields['area'].queryset = self.instance.city.area_set.all()
+        else:
+            self.fields['area'].queryset = self.initial['city'].area_set.all()
 
-class ManagementCompanyForm(ModelForm):
+
+class ManagementCompanyForm(forms.ModelForm):
     class Meta:
         model = ManagementCompany
         fields = '__all__'
         widgets = {
-            'city': Select(attrs={'class': 'form-control'}),
-            'name': TextInput(attrs={'class': 'form-control'}),
-            'leader_function': TextInput(attrs={'class': 'form-control'}),
-            'leader_name': TextInput(attrs={'class': 'form-control'}),
-            'phone': TextInput(attrs={'class': 'form-control'}),
+            'city': forms.Select(attrs={'class': 'form-control'}),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'leader_function': forms.TextInput(attrs={'class': 'form-control'}),
+            'leader_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
     def __init__(self, *args, **kwargs):

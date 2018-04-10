@@ -5,23 +5,23 @@ from django.contrib.auth.decorators import login_required
 from apps.city.ajax import surface_ajax, get_free_area_surface, get_city_area, get_city_adjusters, \
     get_area_surface_list, simple_get_area_streets, get_area_surface_list_with_damage, get_photo_map, \
     get_simple_city_map
-from .models import City
-from .views import CityCreateView, CityListView
+from .views import CityCreateView, CityListView, CityUpdateView, AreaAddView, AreaUpdateView, StreetAddView, \
+    StreetUpdateView
 
 __author__ = 'alexy'
 
 urlpatterns = patterns(
     'apps.city.views',
-    url(r'^$', login_required(CityListView.as_view(model=City)), name='list'),
+    url(r'^$', login_required(CityListView.as_view()), name='list'),
     url(r'^report/$', 'city_report', name='report'),
     url(r'^add/$', staff_member_required(CityCreateView.as_view()), name='add'),
-    url(r'^(?P<pk>\d+)/$', 'city_update', name='update'),
+    url(r'^(?P<pk>\d+)/$', login_required(CityUpdateView.as_view()), name='update'),
 
-    url(r'^(?P<pk>\d+)/area/$', 'city_area', name='area'),
-    url(r'^area/(?P<pk>\d+)/$', 'city_area_update', name='area-update'),
+    url(r'^(?P<pk>\d+)/area/$', login_required(AreaAddView.as_view()), name='area'),
+    url(r'^area/(?P<pk>\d+)/$', login_required(AreaUpdateView.as_view()), name='area-update'),
 
-    url(r'^(?P<pk>\d+)/street/$', 'city_street', name='street'),
-    url(r'^street/(?P<pk>\d+)/$', 'city_street_update', name='street-update'),
+    url(r'^(?P<pk>\d+)/street/$', login_required(StreetAddView.as_view()), name='street'),
+    url(r'^street/(?P<pk>\d+)/$', login_required(StreetUpdateView.as_view()), name='street-update'),
 
     # url(r'^$', CityListView.as_view(model=City), name='management-company'),
     url(r'^management_company/$', 'management_company_list', name='management-company'),

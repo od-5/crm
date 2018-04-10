@@ -15,50 +15,60 @@
               <p class="text-info lead">Город</p>
               <form action="" role="form" class="form-profile" id="js-city-form" method="post">
                 {% csrf_token %}
-                {% load widget_tweaks %}
+                {% for field in form %}
                 <div class="form-group">
-                  <div class="col-lg-5">{{ form.name.label_tag }}</div>
-                  <div class="col-lg-7">{{ form.name }}</div>
-                  {{ form.name.errors }}
+                  <div class="col-lg-5">{{ field.label_tag }}</div>
+                  <div class="col-lg-7">{{ field }}</div>
+                  {{ field.errors }}
                   <div class="clearfix"></div>
                 </div>
-                <div class="form-group">
-                  <div class="col-lg-5">{{ form.moderator.label_tag }}</div>
-                  <div class="col-lg-7">
-                  {% if user.type == 1 %}
-                    {{ form.moderator }}
-                  {% else %}
-                    {{ form.moderator|attr:'disabled:disabled' }}
-                  {% endif %}
-                  </div>
-                  {{ form.moderator.errors }}
-                  <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                  <div class="col-lg-5">{{ form.contract_number.label_tag }}</div>
-                  <div class="col-lg-7">{{ form.contract_number }}</div>
-                  {{ form.contract_number.errors }}
-                  <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                  <div class="col-lg-5">{{ form.contract_date.label_tag }}</div>
-                  <div class="col-lg-7">{{ form.contract_date }}</div>
-                  {{ form.contract_date.errors }}
-                  <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                  <div class="col-lg-5">{{ form.slug.label_tag }}</div>
-                  <div class="col-lg-7">
-                  {% if user.type == 1 %}
-                    {{ form.slug }}
-                  {% else %}
-                    {{ form.slug|attr:'disabled:disabled' }}
-                  {% endif %}
-                  </div>
-                  {{ form.slug.errors }}
-                  <div class="clearfix"></div>
-                </div>
+                {% endfor %}
+{#                {% load widget_tweaks %}#}
+{#                <div class="form-group">#}
+{#                  <div class="col-lg-5">{{ form.name.label_tag }}</div>#}
+{#                  <div class="col-lg-7">{{ form.name }}</div>#}
+{#                  {{ form.name.errors }}#}
+{#                  <div class="clearfix"></div>#}
+{#                </div>#}
+{#                <div class="form-group">#}
+{#                  <div class="col-lg-5">{{ form.moderator.label_tag }}</div>#}
+{#                  <div class="col-lg-7">#}
+{#                  {% if user.type == 1 %}#}
+{#                    {{ form.moderator }}#}
+{#                  {% else %}#}
+{#                    {{ form.moderator|attr:'disabled:disabled' }}#}
+{#                  {% endif %}#}
+{#                  </div>#}
+{#                  {{ form.moderator.errors }}#}
+{#                  <div class="clearfix"></div>#}
+{#                </div>#}
+{#                <div class="form-group">#}
+{#                  <div class="col-lg-5">{{ form.contract_number.label_tag }}</div>#}
+{#                  <div class="col-lg-7">{{ form.contract_number }}</div>#}
+{#                  {{ form.contract_number.errors }}#}
+{#                  <div class="clearfix"></div>#}
+{#                </div>#}
+{#                <div class="form-group">#}
+{#                  <div class="col-lg-5">{{ form.contract_date.label_tag }}</div>#}
+{#                  <div class="col-lg-7">{{ form.contract_date }}</div>#}
+{#                  {{ form.contract_date.errors }}#}
+{#                  <div class="clearfix"></div>#}
+{#                </div>#}
+{#                <div class="form-group">#}
+{#                  <div class="col-lg-5">{{ form.slug.label_tag }}</div>#}
+{#                  <div class="col-lg-7">#}
+{#                  {% if user.type == 1 %}#}
+{#                    {{ form.slug }}#}
+{#                  {% else %}#}
+{#                    {{ form.slug|attr:'disabled:disabled' }}#}
+{#                  {% endif %}#}
+{#                  </div>#}
+{#                  {{ form.slug.errors }}#}
+{#                  <div class="clearfix"></div>#}
+{#                </div>#}
+{#              {% if user.type == 1 %}#}
                 <button type="submit" class="btn btn-default">Сохранить</button>
+{#              {% endif %}#}
               </form>
             </div>
           </div>
