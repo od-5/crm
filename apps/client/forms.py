@@ -132,3 +132,9 @@ class ClientJournalForm(forms.ModelForm):
             'discount': forms.NumberInput(attrs={'class': 'form-control'}),
         }
 
+    def __init__(self, *args, **kwargs):
+        super(ClientJournalForm, self).__init__(*args, **kwargs)
+        if self.initial:
+            if 'client' in self.initial:
+                client = self.initial['client']
+                self.fields['clientorder'].queryset = client.clientorder_set.filter(is_closed=False)

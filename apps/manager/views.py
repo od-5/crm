@@ -34,7 +34,7 @@ class ManagerListView(ListView, PassGetArgsToCtxMixin):
     )
 
     def get_queryset(self):
-        qs = self.model.objects.get_qs(self.request.user)
+        qs = self.model.objects.get_qs(self.request.user).select_related('user')
         if self.request.GET.get('email'):
             qs = qs.filter(user__email__icontains=self.request.GET.get('email'))
         if self.request.GET.get('last_name'):
@@ -160,24 +160,12 @@ def manager_update(request, pk):
 def manager_report(request):
     context = {}
     user = request.user
-    moderator_qs = None
-    if user.type == 1:
-        manager_qs = Manager.objects.all()
-        moderator_qs = User.objects.filter(type=2)
-    elif user.type == 6:
-        manager_qs = Manager.objects.filter(moderator__in=user.superviser.moderator_id_list())
-        moderator_qs = User.objects.filter(pk__in=user.superviser.moderator_id_list())
-    elif user.type == 2:
-        manager_qs = Manager.objects.filter(moderator=user)
-    elif user.type == 5:
-        manager_qs = Manager.objects.filter(moderator=user.manager.moderator)
-    else:
-        manager_qs = None
+    manager_qs = Manager.objects.get_qs(user)
+    moderator_qs = User.get_moderator_qs(user)
     r_email = request.GET.get('email')
     r_moderator = request.GET.get('moderator')
     r_last_name = request.GET.get('last_name')
     r_first_name = request.GET.get('first_name')
-    # r_patronymic = request.GET.get('patronymic')
     r_phone = request.GET.get('phone')
     r_date_s = request.GET.get('date_s')
     r_date_e = request.GET.get('date_e')
@@ -209,11 +197,6 @@ def manager_report(request):
         context.update({
             'r_date_e': r_date_e
         })
-    # if r_patronymic:
-    #     manager_qs = manager_qs.filter(user__patronymic__icontains=r_patronymic)
-    #     context.update({
-    #         'r_patronymic': r_patronymic
-    #     })
     for manager in manager_qs:
         manager.client_count = manager.incomingclient_set.count()
         task_qs = manager.incomingtask_set.all()

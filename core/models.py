@@ -99,6 +99,16 @@ class User(AbstractBaseUser, PermissionsMixin):
     #         self.is_superuser = False
     #     super(User, self).save()
 
+    @classmethod
+    def get_moderator_qs(cls, user):
+        if user.type == 1:
+            qs = cls.objects.filter(type=2)
+        elif user.type == 6:
+            qs = cls.objects.filter(pk__in=user.superviser.moderator_id_list())
+        else:
+            qs = cls.objects.none()
+        return qs
+
     def is_leader_manager(self):
         if self.type == 1 or self.type == 2 or self.type == 6:
             return True

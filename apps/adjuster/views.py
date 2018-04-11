@@ -9,6 +9,7 @@ from django.shortcuts import render
 from django.views.generic import ListView
 import xlwt
 from apps.adjuster.forms import AdjusterAddForm, AdjusterUpdateForm, AdjusterPaymentForm
+from apps.city.mixin import CityListMixin
 from apps.city.models import City
 from apps.manager.models import Manager
 from core.forms import UserAddForm, UserUpdateForm
@@ -17,22 +18,12 @@ from .models import Adjuster
 __author__ = 'alexy'
 
 
-class AdjusterListView(ListView):
+class AdjusterListView(ListView, CityListMixin):
     model = Adjuster
     paginate_by = 25
 
     def get_queryset(self):
-        user = self.request.user
-        if user.type == 1:
-            qs = Adjuster.objects.select_related('city', 'user').all()
-        elif user.type == 6:
-            qs = Adjuster.objects.select_related('city', 'user').filter(city__in=user.superviser.city.all())
-        elif user.type == 2:
-            qs = Adjuster.objects.select_related('city', 'user').filter(city__moderator=user)
-        elif user.type == 5:
-            qs = Adjuster.objects.select_related('city', 'user').filter(city__moderator=user.manager.moderator)
-        else:
-            qs = None
+        qs = self.model.objects.get_qs(self.request.user).select_related('city', 'user')
         if self.request.GET.get('email'):
             qs = qs.filter(user__email__icontains=self.request.GET.get('email'))
         if self.request.GET.get('last_name'):
@@ -43,20 +34,6 @@ class AdjusterListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(AdjusterListView, self).get_context_data()
-        user = self.request.user
-        if user.type == 1:
-            city_qs = City.objects.all()
-        elif user.type == 6:
-            city_qs = user.superviser.city.all()
-        elif user.type == 2:
-            city_qs = City.objects.filter(moderator=user)
-        elif user.type == 5:
-            city_qs = City.objects.filter(moderator=user.manager.moderator)
-        else:
-            city_qs = None
-        context.update({
-            'city_list': city_qs
-        })
         if self.request.GET.get('city'):
             context.update({
                 'city_id': int(self.request.GET.get('city'))
@@ -219,27 +196,15 @@ def adjuster_payment(request, pk):
 def adjuster_report(request):
     context = {}
     user = request.user
-    if user.type == 1:
-        qs = Adjuster.objects.select_related().all()
-        city_qs = City.objects.all()
-    elif user.type == 6:
-        qs = Adjuster.objects.select_related().filter(city__in=user.superviser.city_id_list())
-        city_qs = user.superviser.city.all()
-    elif user.type == 2:
-        qs = Adjuster.objects.select_related().filter(city__moderator=user)
-        city_qs = City.objects.filter(moderator=user)
-    elif user.type == 5:
-        qs = Adjuster.objects.select_related().filter(city__moderator=user.manager.moderator)
-        city_qs = City.objects.filter(moderator=user.manager.moderator)
-    else:
-        qs = city_qs = None
+    city_qs = City.objects.get_qs(user)
+    qs = Adjuster.objects.get_qs(user).select_related('city', 'user')
     r_email = request.GET.get('email')
     r_last_name = request.GET.get('last_name')
     r_city = request.GET.get('city')
     r_date_s = request.GET.get('date_s')
     r_date_e = request.GET.get('date_e')
     if not r_email and not r_last_name and not r_city and not r_date_e and not r_date_s:
-        qs = None
+        qs = Adjuster.objects.none()
     context.update({
         'city_list': city_qs
     })

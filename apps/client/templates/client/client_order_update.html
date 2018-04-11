@@ -94,12 +94,12 @@
                 </tr>
               </thead>
               <tbody class="js-list">
-                {% for item in object.clientordersurface_set.all %}
+                {% for item in object.clientordersurface_list %}
                 <tr data-id="{{ item.id }}" data-name="{{ item }}" data-model="ClientOrderSurface" id="id_ClientOrderSurface_{{ item.id }}">
                   <td>{{ item.surface.street.area.name|default:'Не указано' }}</td>
                   <td>{{ item.surface.street.name|default:'Не указано' }}</td>
                   <td>{{ item.surface.house_number|default:'Не указано' }}</td>
-                  <td>{{ item.surface.porch_set.all.count|default:'0' }}</td>
+                  <td>{{ item.num_porch|default:'0' }}</td>
                   <td>
                     <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-ClientOrderSurface-{{ item.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn" {% if object.is_closed %}disabled="disabled" {% endif %}>
                       <span class="glyphicon glyphicon-remove"></span> Удалить

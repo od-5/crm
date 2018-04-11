@@ -12,23 +12,27 @@ class ManagerModelManager(models.Manager):
     def get_qs(user):
         qs = Manager.objects.none()
         if user.type == 1:
-            qs = Manager.objects.select_related().all()
+            qs = Manager.objects.all()
         elif user.type == 2:
-            qs = Manager.objects.select_related().filter(moderator=user)
+            qs = Manager.objects.filter(moderator=user)
         elif user.type == 5:
-            qs = Manager.objects.select_related().filter(moderator=user.manager.moderator)
+            qs = Manager.objects.filter(moderator=user.manager.moderator)
         elif user.type == 6:
-            qs = Manager.objects.select_related().filter(moderator__in=user.superviser.moderator_id_list())
+            qs = Manager.objects.filter(moderator__in=user.superviser.moderator_id_list())
         return qs
 
 
 class Manager(models.Model):
+    user = models.OneToOneField(to=User, verbose_name=u'Пользователь')
+    moderator = models.ForeignKey(to=User, verbose_name=u'Модератор', related_name='moderator')
+    leader = models.BooleanField(verbose_name=u'Руководитель группы', default=False)
+
+    objects = ManagerModelManager()
+
     class Meta:
         verbose_name = u'Менеджер'
         verbose_name_plural = u'Менеджеры'
         app_label = 'manager'
-
-    objects = ManagerModelManager()
 
     def __unicode__(self):
         return self.user.get_full_name()
@@ -36,6 +40,4 @@ class Manager(models.Model):
     def get_absolute_url(self):
         return reverse('manager:update', args=(self.pk, ))
 
-    user = models.OneToOneField(to=User, verbose_name=u'Пользователь')
-    moderator = models.ForeignKey(to=User, verbose_name=u'Модератор', related_name='moderator')
-    leader = models.BooleanField(verbose_name=u'Руководитель группы', default=False)
+

@@ -2,12 +2,14 @@
 import datetime
 from django.conf import settings
 import datetime
+
+from django.db.models import Count
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 from django.utils.timezone import utc
 from django.core.urlresolvers import reverse
 from django.db import models
-from apps.city.models import City, Surface
+from apps.city.models import City, Surface, Porch
 from core.files import upload_to
 from core.models import User
 from apps.manager.models import Manager
@@ -16,14 +18,6 @@ __author__ = 'alexy'
 
 
 class Client(models.Model):
-    class Meta:
-        verbose_name = u'Клиент'
-        verbose_name_plural = u'Клиенты'
-        app_label = 'client'
-
-    def __unicode__(self):
-        return self.legal_name
-
     user = models.OneToOneField(to=User, verbose_name=u'Пользователь')
     city = models.ForeignKey(to=City, verbose_name=u'Город')
     manager = models.ForeignKey(to=Manager, verbose_name=u'Менеджер', blank=True, null=True)
@@ -45,10 +39,24 @@ class Client(models.Model):
     leader = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'Руководитель')
     leader_function = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'Должность руководителя')
     work_basis = models.CharField(max_length=256, blank=True, null=True, verbose_name=u'Основание для работы')
-    photo_additional = models.PositiveIntegerField(default=0, blank=True, null=True, verbose_name=u'накрутка к кол-ву фотографий')
+    photo_additional = models.PositiveIntegerField(default=0, blank=True, null=True,
+                                                   verbose_name=u'накрутка к кол-ву фотографий')
+
+    class Meta:
+        verbose_name = u'Клиент'
+        verbose_name_plural = u'Клиенты'
+        app_label = 'client'
+
+    def __unicode__(self):
+        return self.legal_name
 
 
 class ClientOrder(models.Model):
+    client = models.ForeignKey(to=Client, verbose_name=u'Клиент')
+    date_start = models.DateField(verbose_name=u'Дата начала размещения')
+    date_end = models.DateField(verbose_name=u'Дата окончания размещения')
+    is_closed = models.BooleanField(verbose_name=u'Заказ закрыт', default=False)
+
     class Meta:
         verbose_name = u'Заказ'
         verbose_name_plural = u'Заказы'
@@ -76,21 +84,18 @@ class ClientOrder(models.Model):
         super(ClientOrder, self).delete()
 
     def stand_count(self):
-        if self.clientordersurface_set.select_related().all():
-            total = 0
-            for i in self.clientordersurface_set.select_related().all():
-                total += i.porch_count()
-            return total
-        else:
-            return 0
+        return Porch.objects.filter(surface__clientordersurface__clientorder=self).count()
 
-    client = models.ForeignKey(to=Client, verbose_name=u'Клиент')
-    date_start = models.DateField(verbose_name=u'Дата начала размещения')
-    date_end = models.DateField(verbose_name=u'Дата окончания размещения')
-    is_closed = models.BooleanField(verbose_name=u'Заказ закрыт', default=False)
+    def clientordersurface_list(self):
+        return self.clientordersurface_set.select_related(
+            'surface', 'surface__street', 'surface__street__area').annotate(
+            num_porch=Count('surface__porch'))
 
 
 class ClientOrderSurface(models.Model):
+    clientorder = models.ForeignKey(to=ClientOrder, verbose_name=u'Заказ')
+    surface = models.ForeignKey(to=Surface, verbose_name=u'Рекламная поверхность')
+
     class Meta:
         verbose_name = u'Пункт заказа'
         verbose_name_plural = u'Пункты заказа'
@@ -113,11 +118,40 @@ class ClientOrderSurface(models.Model):
         surface.save()
         super(ClientOrderSurface, self).delete()
 
-    clientorder = models.ForeignKey(to=ClientOrder, verbose_name=u'Заказ')
-    surface = models.ForeignKey(to=Surface, verbose_name=u'Рекламная поверхность')
+
+class ClientJournalModelManager(models.Manager):
+    def get_qs(self, user):
+        if user.type == 1:
+            qs = self.model.objects.all()
+        elif user.type == 6:
+            qs = self.model.objects.filter(client__city__in=user.superviser.city_id_list())
+        elif user.type == 2:
+            qs = self.model.objects.filter(client__city__moderator=user)
+        elif user.type == 5:
+            if user.is_leader_manager():
+                qs = self.model.objects.filter(client__city__moderator=user.manager.moderator)
+            else:
+                qs = self.model.objects.filter(client__manager=user.manager)
+        else:
+            qs = self.model.objects.none()
+        return qs
 
 
 class ClientJournal(models.Model):
+    client = models.ForeignKey(to=Client, verbose_name=u'клиент')
+    clientorder = models.ManyToManyField(to=ClientOrder, verbose_name=u'заказ клиента')
+    cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Цена за стенд, руб')
+    add_cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Наценка, %', blank=True, null=True)
+    discount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Скидка, %', blank=True, null=True)
+    created = models.DateField(auto_now_add=True, verbose_name=u'Дата создания')
+    has_payment = models.BooleanField(default=False, verbose_name=u'Есть поступления')
+    full_payment = models.BooleanField(default=False, verbose_name=u'Оплачено')
+    total_stand_count = models.IntegerField(blank=True, null=True, default=0)
+    full_cost = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True, default=0)
+    total_payment = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True, default=0)
+
+    objects = ClientJournalModelManager()
+
     class Meta:
         verbose_name = u'Покупка'
         verbose_name_plural = u'Покупки'
@@ -183,20 +217,33 @@ class ClientJournal(models.Model):
     #     self.full_cost = self.total_cost()
     #     self.save()
 
-    client = models.ForeignKey(to=Client, verbose_name=u'клиент')
-    clientorder = models.ManyToManyField(to=ClientOrder, verbose_name=u'заказ клиента')
-    cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Цена за стенд, руб')
-    add_cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Наценка, %', blank=True, null=True)
-    discount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Скидка, %', blank=True, null=True)
-    created = models.DateField(auto_now_add=True, verbose_name=u'Дата создания')
-    has_payment = models.BooleanField(default=False, verbose_name=u'Есть поступления')
-    full_payment = models.BooleanField(default=False, verbose_name=u'Оплачено')
-    total_stand_count = models.IntegerField(blank=True, null=True, default=0)
-    full_cost = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True, default=0)
-    total_payment = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True, default=0)
+
+class ClientJournalPaymentModelManager(models.Manager):
+    def get_qs(self, user):
+        if user.type == 1:
+            qs = self.model.objects.all()
+        elif user.type == 6:
+            qs = self.model.objects.filter(client__city__in=user.superviser.city_id_list())
+        elif user.type == 2:
+            qs = self.model.objects.filter(client__manager__moderator=user)
+        elif user.type == 5:
+            if user.is_leader_manager():
+                qs = self.model.objects.filter(client__city__moderator=user.manager.moderator)
+            else:
+                qs = self.model.objects.filter(client__manager=user.manager)
+        else:
+            qs = self.model.objects.none()
+        return qs
 
 
 class ClientJournalPayment(models.Model):
+    client = models.ForeignKey(to=Client, verbose_name=u'Клиент')
+    clientjournal = models.ForeignKey(to=ClientJournal, verbose_name=u'Покупка')
+    sum = models.DecimalField(max_digits=11, decimal_places=2, verbose_name=u'Сумма')
+    created = models.DateField(auto_now_add=True, verbose_name=u'Дата создания')
+
+    objects = ClientJournalModelManager()
+
     class Meta:
         verbose_name = u'Поступление'
         verbose_name_plural = u'Поступления'
@@ -216,15 +263,12 @@ class ClientJournalPayment(models.Model):
             clientjournal.full_payment = False
         clientjournal.save()
 
-    client = models.ForeignKey(to=Client, verbose_name=u'Клиент')
-    clientjournal = models.ForeignKey(to=ClientJournal, verbose_name=u'Покупка')
-    sum = models.DecimalField(max_digits=11, decimal_places=2, verbose_name=u'Сумма')
-    created = models.DateField(auto_now_add=True, verbose_name=u'Дата создания')
-#     todo: добавить post_save сигнал для перерасчёта полной суммы поступлений по покупке
-
 
 @receiver(post_save, sender=ClientJournalPayment)
 def increment_payment_for_clientjournal(sender, created, **kwargs):
+    """
+    Увеличение суммы поступлений в журнале продажи
+    """
     instance = kwargs['instance']
     clientjournal = instance.clientjournal
     if created:
@@ -237,6 +281,9 @@ def increment_payment_for_clientjournal(sender, created, **kwargs):
 
 @receiver(post_delete, sender=ClientJournalPayment)
 def decrement_payment_for_clientjournal(sender, **kwargs):
+    """
+    Уменшение суммы поступлений в журнале продажи
+    """
     instance = kwargs['instance']
     clientjournal = instance.clientjournal
     clientjournal.total_payment -= instance.sum
@@ -244,6 +291,11 @@ def decrement_payment_for_clientjournal(sender, **kwargs):
 
 
 class ClientMaket(models.Model):
+    client = models.ForeignKey(to=Client, verbose_name=u'Клиент')
+    name = models.CharField(max_length=256, verbose_name=u'Название')
+    file = models.FileField(verbose_name=u'Файл макета', upload_to=upload_to)
+    date = models.DateField(verbose_name=u'Дата размещения макета')
+
     class Meta:
         verbose_name = u'Макет'
         verbose_name_plural = u'Макеты'
@@ -252,8 +304,3 @@ class ClientMaket(models.Model):
 
     def __unicode__(self):
         return self.name
-
-    client = models.ForeignKey(to=Client, verbose_name=u'Клиент')
-    name = models.CharField(max_length=256, verbose_name=u'Название')
-    file = models.FileField(verbose_name=u'Файл макета', upload_to=upload_to)
-    date = models.DateField(verbose_name=u'Дата размещения макета')

@@ -60,7 +60,7 @@
               {% for object in object_list %}
               <tr data-id="{{ object.id }}" data-name="{{ object.legal_name }}" data-model="Client" id="id_Client_{{ object.id }}">
                 <td>{{ object.id|default:'Не указано' }}</td>
-                <td><a href="{% url 'client:change' object.pk %}">{{ object.legal_name|default:'Не указано' }}</a></td>
+                <td><a href="{% url 'client:change' object.id %}">{{ object.legal_name|default:'Не указано' }}</a></td>
                 <td>{{ object.actual_name|default:'Не указано' }}</td>
                 <td>{{ object.city|default:'Не указано' }}</td>
                 <td>{{ object.manager|default:'Не указано' }}</td>

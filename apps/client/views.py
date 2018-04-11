@@ -4,16 +4,20 @@ import os
 import zipfile
 import StringIO
 import xlwt
+from datetime import date
+
 from django.conf import settings
 from django.core.mail import send_mail
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from datetime import date
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
+from django.db.models import Count, Sum
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.views.generic import ListView
+
 from apps.adjuster.models import SurfacePhoto
+from apps.city.mixin import CityListMixin
 from apps.city.models import City, Surface
 from apps.client.forms import ClientUpdateForm, ClientAddForm, ClientMaketForm, ClientOrderForm, ClientJournalForm
 from apps.incoming.models import IncomingClient
@@ -74,7 +78,7 @@ def client_add(request):
     return render(request, 'client/client_add.html', context)
 
 
-class ClientListView(ListView):
+class ClientListView(ListView, CityListMixin):
     model = Client
     paginate_by = 25
 
@@ -115,23 +119,17 @@ class ClientListView(ListView):
         context = super(ClientListView, self).get_context_data(**kwargs)
         user = self.request.user
         if user.type == 1:
-            city_qs = City.objects.all()
-            manager_qs = Manager.objects.select_related().all()
+            manager_qs = Manager.objects.select_related('user').all()
         elif user.type == 6:
-            city_qs = user.superviser.city.all()
             manager_qs = Manager.objects.select_related().filter(moderator__in=user.superviser.moderator_id_list())
         elif user.type == 2:
-            city_qs = City.objects.filter(moderator=user)
             manager_qs = Manager.objects.select_related().filter(moderator=user)
         elif user.type == 5:
-            city_qs = City.objects.filter(moderator=user.manager.moderator)
             manager_qs = Manager.objects.select_related().filter(moderator=user.manager.moderator)
         else:
-            city_qs = None
             manager_qs = None
         context.update({
-            'city_list': city_qs,
-            'manager_list': manager_qs
+            'manager_list': manager_qs.values('id', 'user')
         })
         if self.request.GET.get('city'):
             context.update({
@@ -308,7 +306,7 @@ def client_order(request, pk):
 @login_required
 def client_order_update(request, pk):
     context = {}
-    order = ClientOrder.objects.select_related().get(pk=int(pk))
+    order = ClientOrder.objects.get(pk=int(pk))
     client = order.client
     area_list = client.city.area_set.all()
     success_msg = u''
@@ -383,15 +381,15 @@ def client_order_export(request, pk):
 
     i = 6
     porch_total = 0
-    for item in order.clientordersurface_set.all():
+    for item in order.clientordersurface_list():
         ws.write(i, 0, item.surface.city.name, style1)
         ws.write(i, 1, item.surface.street.area.name, style1)
         ws.write(i, 2, item.surface.street.name, style1)
         ws.write(i, 3, item.surface.house_number, style1)
-        ws.write(i, 4, item.surface.porch_count(), style1)
+        ws.write(i, 4, item.num_porch, style1)
         i += 1
-        porch_total += item.surface.porch_count()
-    ws.write(i + 1, 0, u'Кол-во домов: %d' % order.clientordersurface_set.all().count(), style0)
+        porch_total += item.num_porch
+    ws.write(i + 1, 0, u'Кол-во домов: %d' % order.clientordersurface_set.count(), style0)
     ws.write(i + 2, 0, u'Кол-во стендов: %d' % porch_total, style0)
 
     ws.col(0).width = 6000
@@ -412,10 +410,12 @@ def client_order_export(request, pk):
 @login_required
 def client_journal(request, pk):
     context = {}
-    client = Client.objects.get(pk=int(pk))
-    success_msg = u''
-    error_msg = u''
-    journal_list_qs = client.clientjournal_set.all()
+    client = Client.objects.select_related('clientorder').get(pk=int(pk))
+    # journal_list_qs = client.clientjournal_set.prefetch_related('clientorder').all()
+    journal_list_qs = client.clientjournal_set.prefetch_related('clientorder').annotate(
+        num_stand=Count('clientorder__clientordersurface__surface__porch'),
+        sum_payment=Sum('clientjournalpayment__sum')
+    )
     paginator = Paginator(journal_list_qs, 25)
     page = request.GET.get('page')
     try:
@@ -437,17 +437,14 @@ def client_journal(request, pk):
         form = ClientJournalForm(initial={
             'client': client
         })
-    form.fields['clientorder'].queryset = client.clientorder_set.filter(is_closed=False)
     try:
         request.session['client_filtered_list']
     except:
         request.session['client_filtered_list'] = reverse('client:list')
     context.update({
-        'success': success_msg,
-        'error': error_msg,
         'clientjournal_form': form,
         'object': client,
-        'client': client,
+        # 'client': client,
         'journal_list': journal_list,
         'back_to_list': request.session['client_filtered_list']
     })
@@ -683,16 +680,23 @@ def add_client_surface(request):
         # print 'client %s' % int(request.POST.get('cos_client'))
         order = ClientOrder.objects.get(pk=int(request.POST.get('cos_order')))
         surfaces = request.POST.getlist('chk_group[]')
-        for item in surfaces:
-            surface = Surface.objects.get(pk=int(item))
-            surface.free = False
-            surface.release_date = order.date_end
-            surface.save()
-            c_surface = ClientOrderSurface(
-                clientorder=order,
-                surface=surface
-            )
-            c_surface.save()
+        # import pdb
+        # pdb.set_trace()
+        surface_qs = Surface.objects.filter(pk__in=surfaces)
+        surface_qs.update(free=False, release_date=order.date_end)
+        ClientOrderSurface.objects.bulk_create(
+            [ClientOrderSurface(clientorder=order, surface=surface) for surface in surface_qs]
+        )
+        # for item in surfaces:
+        #     surface = Surface.objects.get(pk=int(item))
+        #     surface.free = False
+        #     surface.release_date = order.date_end
+        #     surface.save()
+        #     c_surface = ClientOrderSurface(
+        #         clientorder=order,
+        #         surface=surface
+        #     )
+        #     c_surface.save()
         return HttpResponseRedirect(reverse('client:order-update', args=(int(request.POST.get('cos_order')),)))
     else:
         return HttpResponseRedirect(reverse('client:order', args=(int(request.POST.get('cos_order')),)))

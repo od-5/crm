@@ -9,7 +9,8 @@ __author__ = 'alexy'
 class ModeratorAddForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ('email', 'last_name', 'first_name', 'patronymic', 'phone', 'company', 'leader', 'leader_function', 'work_basis')
+        fields = ('email', 'last_name', 'first_name', 'patronymic', 'phone', 'company', 'leader', 'leader_function',
+                  'work_basis')
         widgets = {
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -51,7 +52,8 @@ class ModeratorAddForm(forms.ModelForm):
 class ModeratorUpdateForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ('email', 'last_name', 'first_name', 'patronymic', 'phone', 'company', 'leader', 'leader_function', 'work_basis')
+        fields = ('email', 'last_name', 'first_name', 'patronymic', 'phone', 'company', 'leader', 'leader_function',
+                  'work_basis')
         widgets = {
             'email': forms.TextInput(attrs={'class': 'form-control'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control'}),

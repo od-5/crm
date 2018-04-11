@@ -2,7 +2,7 @@
 {% block content %}
   <div class="container">
     <div class="col-lg-12">
-      {% include 'client/__include/client_menu.html' %}
+      {% include 'client/__include/client_menu.html' with client=object %}
       <div class="panel panel-default">
         <div class="panel-heading">
           <p class="lead text-center remove-bottom">Журнал продаж</p>
@@ -76,10 +76,10 @@
                 <td>{{ item.cost|default:'Не указано' }}</td>
                 <td>{{ item.add_cost|default:'Не указано' }}</td>
                 <td>{{ item.discount|default:'Не указано' }}</td>
-                <td>{{ item.total_stand_count|default:'Не указано' }}</td>
+                <td>{{ item.num_stand|default:'Не указано' }}</td>
                 <td>{{ item.full_cost|default:'Не указано' }}</td>
                 <td style="width: 120px;">
-                  {{ item.total_payment|default:'0' }}
+                  {{ item.sum_payment|default:'0' }}
                   <a href="#js-modal-payment-add" id="js-payment-btn-{{ item.id }}" class="btn btn-sm btn-info js-payment-add-btn hide" data-client="{{ item.client.id }}" data-clientjournal="{{ item.id }}">
                     <span class="glyphicon glyphicon-plus-sign"></span> Добавить
                   </a>

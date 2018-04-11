@@ -16,15 +16,12 @@ __author__ = 'alexy'
 
 
 class ModeratorListView(ListView):
-    queryset = User.objects.filter(type=2)
+    model = User
     template_name='moderator/moderator_list.html'
     paginate_by = 50
 
     def get_queryset(self):
-        qs = User.objects.filter(type=2)
-        user = self.request.user
-        if user.type == 6:
-            qs = qs.filter(pk__in=user.superviser.moderator_id_list())
+        qs = User.get_moderator_qs(self.request.user)
         if self.request.GET.get('email'):
             qs = qs.filter(email=self.request.GET.get('email'))
         if self.request.GET.get('last_name'):
@@ -60,7 +57,8 @@ def moderator_add(request):
             user.save()
             try:
                 subject = u'Создана учётная запись nadomofone.ru'
-                message = u'Для вас создана учётная запись на сайте http://nadomofone.ru\n email: %s, \n пароль: %s' % (request.POST.get('email'), request.POST.get('password1'))
+                message = u'Для вас создана учётная запись на сайте http://nadomofone.ru\n email: %s, \n пароль: %s' % \
+                          (request.POST.get('email'), request.POST.get('password1'))
                 email = request.POST.get('email')
                 send_mail(
                     subject,

@@ -83,13 +83,13 @@ class CityUpdateView(UpdateView):
         return kwargs
 
     def form_valid(self, form):
-        if self.request.user == 1:
+        if self.request.user.type == 1:
             return super(CityUpdateView, self).form_valid(form)
         else:
             return HttpResponseRedirect(self.object.get_absolute_url())
 
     def form_invalid(self, form):
-        if self.request.user == 1:
+        if self.request.user.type == 1:
             return super(CityUpdateView, self).form_invalid(form)
         else:
             return HttpResponseRedirect(self.object.get_absolute_url())

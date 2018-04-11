@@ -72,10 +72,12 @@ def ymap_surface(request):
 @ajax_request
 def ajax_remove_item(request):
     if request.method == 'GET':
+        print request.GET
         if request.GET.get('item_id') and request.GET.get('item_model'):
             model = request.GET.get('item_model')
             item_id = request.GET.get('item_id')
             item = get_object_or_404(eval(model), pk=int(item_id))
+            print model, item_id, item
             if model == 'Client':
                 for order in item.clientorder_set.all():
                     order.delete()
