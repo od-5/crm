@@ -17,28 +17,14 @@
   <div class="sign text-center">
     <div class="sign-container">
       <p class="sign-container_text">Добро пожаловать в информационно программный комплекс</p>
-      <p class="sign-container_title">"Контроль <br> рекламных поверхностей"</p>
+      <p class="sign-container_title">"Контроль рекламных поверхностей"</p>
       <p class="sign-container_slogan">"Прозрачная схема взаимодействия - наше главное преимущество!"</p>
       <form action="" role="form" method="post" id="js-sign-form" class="sign-form">{% csrf_token %}
-        <div class="form-group">
-          <label for="id_username">Введите ваш email</label>
-          <input type="email" name="username" id="id_username" class="form-control">
-        </div>
-        <div class="form-group add-bottom">
-          <label for="id_password">Введите пароль</label>
-          <input type="password" name="password" id="id_password" class="form-control">
-        </div>
-        <input type="submit" value="Войти" class="btn btn-danger">
+        <input type="email" name="username" id="id_username" class="form-control sign-form__input" placeholder="Введите ваш email">
+        <input type="password" name="password" id="id_password" class="form-control sign-form__input" placeholder="Введите пароль">
+        <input type="submit" value="Войти" class="btn btn-warning sign-form__button form-control">
       </form>
     </div>
   </div>
-{#  <div class="login">#}
-{#    <p class="login_title">Введите ваш email и пароль</p>#}
-{#    <form action="" role="form" method="post" class="login_form">{% csrf_token %}#}
-{#      <input type="email" name="username" placeholder="e-mail" class="form-control">#}
-{#      <input type="password" name="password" placeholder="Ваш email" class="form-control">#}
-{#      <input type="submit" value="Войти" class="btn btn-info">#}
-{#    </form>#}
-{#  </div>#}
 {% endif %}
 {% endblock %}

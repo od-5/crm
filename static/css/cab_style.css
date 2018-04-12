@@ -6270,7 +6270,7 @@ a.lead {
   background: #fff;
 }
 body {
-  background-color: #f1f1f1;
+  background-color: #d1f1f8;
 }
 .form-horizontal .control-label {
   text-align: left;
@@ -6365,21 +6365,28 @@ body {
   font-size: 12px;
 }
 .sign {
-  width: 400px;
-  height: 427px;
+  background-color: #fff;
+  width: 380px;
+  height: 538px;
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
   margin: auto;
-  border-radius: 10px;
-  background-color: #aaaaaa;
-  padding: 10px;
+  -webkit-box-shadow: 0 0 50px #eee;
+  -moz-box-shadow: 0 0 50px #eee;
+  box-shadow: 0 0 50px #eee;
 }
 @media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
   .sign {
-    width: auto;
+    width: 276px;
+    height: 478px;
+  }
+}
+@media only screen and (max-device-height: 538px) {
+  .sign {
+    position: relative;
   }
 }
 .sign label.error {
@@ -6388,57 +6395,58 @@ body {
 .sign-error {
   position: absolute;
   width: 100%;
+  z-index: 1;
+}
+.sign-form input {
+  border: none;
+  box-shadow: none;
+  height: 46px;
+}
+.sign-form__input {
+  background-color: #cff1ff;
+  margin-bottom: 20px;
 }
 .sign-container {
-  background-color: #fff;
-  padding: 20px;
+  padding: 52px;
+}
+@media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
+  .sign-container {
+    padding: 22px;
+  }
 }
 .sign-container_text {
-  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 30px;
+}
+@media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
+  .sign-container_text {
+    margin-bottom: 25px;
+  }
 }
 .sign-container_title {
-  font-weight: bold;
-  font-size: 1.8em;
+  font-size: 24px;
+  margin-bottom: 24px;
+  color: #e35f13;
 }
 @media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
   .sign-container_title {
-    font-size: 1.7em;
+    font-size: 20px;
+    margin-bottom: 20px;
+    line-height: 1.2em;
   }
 }
 .sign-container_slogan {
+  background-color: #ffeeb5;
   font-style: italic;
-  color: #d9534f;
+  font-size: 14px;
+  color: #6d6035;
+  padding: 10px 17px;
+  margin-bottom: 39px;
 }
-.login {
-  width: 300px;
-  height: 220px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-left: -150px;
-  margin-top: -110px;
-  background-color: #fff;
-  border: 1px solid #ccc;
-}
-.login_title {
-  padding: 10px 20px;
-  background-color: #5295b0;
-  background-repeat: no-repeat;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#83b3c3), to(#5295b0));
-  background-image: -webkit-linear-gradient(#83b3c3, #5295b0);
-  background-image: -moz-linear-gradient(#83b3c3, #5295b0);
-  background-image: -o-linear-gradient(top, #83b3c3, #5295b0);
-  background-image: -khtml-gradient(linear, left top, left bottom, from(#83b3c3), to(#5295b0));
-  filter: progid:DXImageTransform.Microsoft.Gradient(StartColorStr='#83b3c3', EndColorStr='#5295b0', GradientType=0);
-  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#83b3c3', EndColorStr='#5295b0', GradientType=0))";
-  color: #fff;
-  text-shadow: 0 1px #4f7f92;
-}
-.login_form {
-  margin: 20px 20px 0 20px;
-}
-.login_form input {
-  margin-bottom: 20px;
+@media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
+  .sign-container_slogan {
+    margin-bottom: 25px;
+  }
 }
 input.error {
   background-color: #fffde0;
