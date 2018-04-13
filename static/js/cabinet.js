@@ -18,6 +18,25 @@ $(function() {
       }
     }
   });
+  // Показать\скрыть поиск
+  $('#js-show-filter-btn').click(function(){
+    $('.form-filter').slideToggle();
+    $('#js-show-filter-btn').find('span').toggleClass('hide');
+  });
+  // Мобильные меню
+  // Закрыть меню
+  $('.js-dashboard-modal-close').click(function(){
+    $('.dashboard-modal-profile').fadeOut();
+    $('.dashboard-modal-menu').fadeOut();
+  });
+  // Открыть меню пользователя
+  $('.js-dashboard-mobile-profile__btn').click(function(){
+    $('.dashboard-modal-profile').fadeIn();
+  });
+  // Открыть меню навигации
+  $('.js-dashboard-mobile-menu__btn').click(function(){
+    $('.dashboard-modal-menu').fadeIn();
+  });
   // валидация модераторской формы блока "почему реклама так эффективна"
   $( '#js-block-effective-form-moderator' ).validate({
     rules: {

@@ -1,14 +1,24 @@
 {% extends 'cabinet_index.html' %}
+{% block breadcrumbs_item %}
+  <li><a href="{% url 'adjuster:list' %}">Список монтажников</a></li>
+  <li class="active">Редактирование монтажника</li>
+{% endblock %}
 {% block content %}
   <div class="container">
-    <div class="col-lg-12">
+    <div class="col-md-12">
       {% include 'adjuster/__include/adjuster_menu.html' %}
       <div class="panel panel-default">
         <div class="panel-heading">
-          <p class="lead text-center remove-bottom">Редактирование монтажника {{ adjuster }}</p>
+          <div class="row page-top">
+            <div class="col-md-12">
+              Редактирование монтажника {{ adjuster }}
+            </div>
+            <div class="clearfix"></div>
+          </div>
+
         </div>
         <div class="panel-body">
-          <div class="col-lg-12">
+          <div class="col-md-12">
           {% if error %}
             <div class="alert alert-danger">
               {{ error }}
@@ -19,85 +29,64 @@
               {{ success }}
             </div>
           {% endif %}
-            <div class="col-lg-6">
-              <form action="." role="form" class="js-form-adjuster-update" method="post">
-                {% csrf_token %}
-                {{ adjuster_form.user }}
-                <p class="lead text-center">ФИО монтажника</p>
+            <form action="." role="form" class="js-form-adjuster-update form" method="post">
+              {% csrf_token %}
+              {{ adjuster_form.user }}
+              <div class="col-md-6">
+                <p class="lead text-info">Контактная информация</p>
                 <div class="form-group">
-                  <div class="col-lg-5">
-                    {{ adjuster_form.city.label_tag }}
-                  </div>
-                  <div class="col-lg-7">
-                    {{ adjuster_form.city }}
-                  </div>
+                  {{ adjuster_form.city.label_tag }}
+                  {{ adjuster_form.city }}
                   {{ adjuster_form.city.errors }}
-                  <div class="clearfix"></div>
                 </div>
                 <div class="form-group">
-                  <div class="col-lg-5">
-                    {{ user_form.email.label_tag }}
-                  </div>
-                  <div class="col-lg-7">
-                    {{ user_form.email }}
-                  </div>
+                  {{ user_form.email.label_tag }}
+                  {{ user_form.email }}
                   {{ user_form.email.errors }}
-                  <div class="clearfix"></div>
                 </div>
+                <div class="form-group add-bottom">
+                  {{ user_form.phone.label_tag }}
+                  {{ user_form.phone }}
+                  {{ user_form.phone.errors }}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <p class="lead text-info">Контактная информация</p>
                 <div class="form-group">
-                  <div class="col-lg-5">
-                    {{ user_form.last_name.label_tag }}
-                  </div>
-                  <div class="col-lg-7">
-                    {{ user_form.last_name }}
-                  </div>
+                  {{ user_form.last_name.label_tag }}
+                  {{ user_form.last_name }}
                   {{ user_form.last_name.errors }}
-                  <div class="clearfix"></div>
                 </div>
                 <div class="form-group">
-                  <div class="col-lg-5">
-                    {{ user_form.first_name.label_tag }}
-                  </div>
-                  <div class="col-lg-7">
-                    {{ user_form.first_name }}
-                  </div>
+                  {{ user_form.first_name.label_tag }}
+                  {{ user_form.first_name }}
                   {{ user_form.first_name.errors }}
                   <div class="clearfix"></div>
                 </div>
                 <div class="form-group">
-                  <div class="col-lg-5">
-                    {{ user_form.patronymic.label_tag }}
-                  </div>
-                  <div class="col-lg-7">
-                    {{ user_form.patronymic }}
-                  </div>
+                  {{ user_form.patronymic.label_tag }}
+                  {{ user_form.patronymic }}
                   {{ user_form.patronymic.errors }}
-                  <div class="clearfix"></div>
                 </div>
-                <div class="form-group add-bottom">
-                  <div class="col-lg-5">
-                    {{ user_form.phone.label_tag }}
-                  </div>
-                  <div class="col-lg-7">
-                    {{ user_form.phone }}
-                  </div>
-                  {{ user_form.phone.errors }}
-                  <div class="clearfix"></div>
+              </div>
+              <div class="clearfix"></div>
+              <div class="col-md-6">
+                <p class="lead text-info">Смена пароля</p>
+                <div class="form-group">
+                  <label for="password1">Новый пароль</label>
+                  <input type="password" name="password1" class="form-control">
                 </div>
-                  <p class="lead text-center">Смена пароля</p>
-                  <div class="form-group">
-                    <div class="col-lg-5"><label for="password1">Новый пароль</label></div>
-                    <div class="col-lg-7"><input type="password" name="password1" class="form-control"></div>
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="form-group">
-                    <div class="col-lg-5"><label for="password2">Повторите пароль</label></div>
-                    <div class="col-lg-7"><input type="password" name="password2" class="form-control"></div>
-                    <div class="clearfix"></div>
-                  </div>
-                <button type="submit" class="btn btn-default">Сохранить</button>
-              </form>
-            </div>
+                <div class="form-group">
+                  <label for="password2">Повторите пароль</label>
+                  <input type="password" name="password2" class="form-control">
+                </div>
+              </div>
+              <div class="clearfix"></div>
+              <div class="col-md-6">
+                <button type="submit" class="btn btn-save">Сохранить</button>
+              </div>
+              <div class="clearfix"></div>
+            </form>
           </div>
         </div>
       </div>

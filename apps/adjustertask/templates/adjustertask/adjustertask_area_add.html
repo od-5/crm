@@ -2,58 +2,62 @@
 {% block extra_js %}
   <script src="{{ STATIC_URL }}adjustertask/js/adjustertask.js"></script>
 {% endblock %}
+{% block breadcrumbs_item %}
+  <li><a href="{% url 'adjustertask:list' %}">Список задач монтажников</a></li>
+  <li class="active">Добавление задачи для монтажника</li>
+{% endblock %}
 {% block content %}
   <div class="container">
-    <div class="col-lg-12">
+    <div class="col-md-12">
       {% include 'adjustertask/__include/adjustertask_menu.html' %}
       <div class="panel panel-default">
         <div class="panel-heading">
-          <p class="lead text-center remove-bottom">Добавление задачи по адресам</p>
+          <div class="row page-top">
+            <div class="col-md-12">Добавление задачи по адресам</div>
+            <div class="clearfix"></div>
+          </div>
         </div>
         <div class="panel-body">
-          <div class="col-lg-12">
-            <form action="" role="form" id="js-adjustertask-area-add" class="add-bottom" method="post">
+          <div class="col-md-12">
+            <form action="" role="form" id="js-adjustertask-area-add" class="form" method="post">
               {% csrf_token %}
-              <div class="col-lg-12">
-                <p class="lead">Форма добавления задачи</p>
+              <div class="col-md-12">
+                <p class="lead text-info">Форма добавления задачи</p>
               </div>
-              <div class="col-lg-6">
+              <div class="col-md-6">
                 <div class="form-group" data-ajax-url="{% url 'city:get_area_list' %}">
-                  <div class="col-lg-5">{{ form.city.label_tag }}</div>
-                  <div class="col-lg-7">{{ form.city }}</div>
+                  {{ form.city.label_tag }}
+                  {{ form.city }}
                   {{ form.city.errors }}
-                  <div class="clearfix"></div>
                 </div>
                 <div class="form-group hide">
-                  <div class="col-lg-5">{{ form.adjuster.label_tag }}</div>
-                  <div class="col-lg-7">{{ form.adjuster }}</div>
+                  {{ form.adjuster.label_tag }}
+                  {{ form.adjuster }}
                   {{ form.adjuster.errors }}
-                  <div class="clearfix"></div>
                 </div>
                 <div class="form-group">
-                  <div class="col-lg-5">{{ form.type.label_tag }}</div>
-                  <div class="col-lg-7">{{ form.type }}</div>
+                  {{ form.type.label_tag }}
+                  {{ form.type }}
                   {{ form.type.errors }}
-                  <div class="clearfix"></div>
                 </div>
                 <div class="form-group">
-                  <div class="col-lg-5">{{ form.date.label_tag }}</div>
-                  <div class="col-lg-7">{{ form.date }}</div>
+                  {{ form.date.label_tag }}
+                  {{ form.date }}
                   {{ form.date.errors }}
-                  <div class="clearfix"></div>
                 </div>
                 <div class="form-group hide" data-surface-url="{% url 'city:get_area_surface_list' %}" data-damaged="0">
-                  <div class="col-lg-5">{{ form.area.label_tag }}</div>
-                  <div class="col-lg-7">{{ form.area }}</div>
+                  {{ form.area.label_tag }}
+                  {{ form.area }}
                   {{ form.area.errors }}
-                  <div class="clearfix"></div>
                 </div>
               </div>
-              <div class="col-lg-6">
+              <div class="col-md-6">
+                {{ form.comment.label_tag }}
                 {{ form.comment }}
                 {{ form.comment.errors }}
               </div>
-              <div class="col-lg-12">
+              <div class="clearfix"></div>
+              <div class="col-md-12">
                 <table class="table">
                   <thead>
                     <tr>
@@ -72,7 +76,10 @@
                 </table>
               </div>
               <div class="clearfix"></div>
-              <input type="submit" value="Добавить задачу" class="btn btn-default">
+              <div class="col-md-6">
+                <input type="submit" value="Добавить задачу" class="btn btn-save">
+              </div>
+              <div class="clearfix"></div>
             </form>
           </div>
         </div>

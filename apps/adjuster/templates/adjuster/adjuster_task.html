@@ -10,24 +10,45 @@
   });
 </script>
 {% endblock %}
+{% block breadcrumbs_item %}
+  <li><a href="{% url 'adjuster:list' %}">Список монтажников</a></li>
+  <li class="active">Редактирование монтажника</li>
+{% endblock %}
 {% block content %}
   <div class="container">
-    <div class="col-lg-12">
+    <div class="col-md-12">
       {% include 'adjuster/__include/adjuster_menu.html' %}
       <div class="panel panel-default">
         <div class="panel-heading">
-          <p class="lead text-center remove-bottom">Задачи монтажника {{ adjuster }}</p>
+          <div class="row page-top">
+            <div class="col-md-12">
+              Задачи монтажника {{ adjuster }}
+            </div>
+            <div class="clearfix"></div>
+          </div>
+          <button class="btn btn-show-filter" id="js-show-filter-btn">
+            <span>Развернуть поиск <strong>+</strong></span>
+            <span class="hide">Свернуть поиск <strong>-</strong></span>
+          </button>
+          <form action="" role="form" method="get" class="form form-filter" id="js-adjuster-task-filter-form">
+            <div class="col-md-12">
+              <div class="five-col-1">
+                <input type="text" id="id_date_s" name="date_s" class="form-control input-sm" placeholder="дата от:" value="{{ r_date_s|default:'' }}">
+              </div>
+              <div class="five-col-1">
+                <input type="text" id="id_date_e" name="date_e" class="form-control input-sm" placeholder="дата до:" value="{{ r_date_e|default:'' }}">
+              </div>
+              <div class="five-col-1">
+                <input type="submit" class="btn btn-search" value="Искать">
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+          </form>
         </div>
         <div class="panel-body">
-          <div class="col-lg-12">
+          <div class="col-md-12">
             <p class="lead">Общая сумма выплат монтажнику составляет: <strong>{{ total_sum|default:'0' }} руб.</strong> </p>
-            <form action="" role="form" method="get" class="form-inline add-bottom" id="js-adjuster-task-filter-form">
-              <input type="text" id="id_date_s" name="date_s" class="form-control input-sm" placeholder="дата от:" value="{{ r_date_s|default:'' }}">
-              <input type="text" id="id_date_e" name="date_e" class="form-control input-sm" placeholder="дата до:" value="{{ r_date_e|default:'' }}">
-              <button type="submit" class="btn btn-info btn-sm">
-                <span class="glyphicon glyphicon-search"></span> Искать
-              </button>
-            </form>
             <table class="table table-condensed table-bordered table-list">
               <thead>
               <tr>

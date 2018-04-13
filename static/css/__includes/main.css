@@ -2,6 +2,11 @@ html,
 body {
   height: 100%;
 }
+@media only screen and (max-width: 991px) {
+  .desktop-only {
+    display: none;
+  }
+}
 a,
 h2 {
   -webkit-transition: color 0.5s ease;
@@ -50,6 +55,25 @@ h2 {
 .content {
   padding-bottom: 100px;
   background-color: #fff;
+}
+@media only screen and (max-width: 767px) {
+  .page-info {
+    text-align: left !important;
+  }
+}
+.page-top {
+  padding: 25px 0;
+}
+@media only screen and (min-width: 768px) {
+  .page-top__btn {
+    float: right;
+  }
+}
+@media only screen and (max-width: 767px) {
+  .page-top__btn {
+    width: 100%;
+    margin-top: 20px;
+  }
 }
 .table-list {
   font-size: 12px;
@@ -181,4 +205,85 @@ a.lead {
   -moz-box-shadow: 0 0 5px #ccc;
   box-shadow: 0 0 5px #ccc;
   background: #fff;
+}
+@media only screen and (max-width: 360px) {
+  .container {
+    padding: 0;
+  }
+}
+.breadcrumb {
+  margin-bottom: 0;
+}
+.breadcrumb-container {
+  background-color: #c4ecf5;
+  margin-bottom: 20px;
+}
+@media only screen and (max-width: 360px) {
+  .breadcrumb-container {
+    margin-bottom: 20px;
+  }
+}
+.breadcrumb a {
+  color: #318396;
+}
+.dropdown-menu {
+  padding: 0;
+  min-width: 100%;
+}
+.dropdown-menu li {
+  text-align: left;
+}
+.dropdown-menu li a {
+  line-height: 30px !important;
+}
+.dropdown-menu .divider {
+  margin: 0;
+}
+.navbar {
+  border: none;
+}
+@media only screen and (max-width: 991px) {
+  .navbar-header {
+    float: none;
+    width: 100%;
+    text-align: center;
+  }
+}
+.navbar-brand {
+  height: 74px;
+  background-color: #057ab0;
+  font-weight: bold;
+}
+@media only screen and (min-width: 992px) {
+  .navbar-brand {
+    box-shadow: 12px 0 15px -4px #333, -12px 0 8px -4px #333;
+  }
+}
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+  .navbar-brand {
+    float: none;
+  }
+}
+@media only screen and (max-width: 991px) {
+  .navbar-brand {
+    height: 50px;
+    font-size: 16px;
+    display: block;
+    width: 100%;
+  }
+}
+@media only screen and (max-width: 767px) {
+  .navbar-brand {
+    font-size: 14px;
+    padding: 5px 0;
+  }
+}
+.navbar-brand__small {
+  font-size: 10px;
+  letter-spacing: 0.4em;
+}
+@media only screen and (max-width: 1200px) {
+  .navbar-brand__small {
+    display: none;
+  }
 }

@@ -3,22 +3,26 @@
 {% block extra_js %}
   <script src="http://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
 {% endblock %}
+{% block breadcrumbs_item %}
+  <li><a href="{% url 'adjuster:list' %}">Список монтажников</a></li>
+  <li class="active">Отчёт по монтажникам</li>
+{% endblock %}
 {% block content %}
   <div class="container">
-    <div class="col-lg-12">
-      <ol class="breadcrumb">
-        <li><a href="{% url 'cabinet:cabinet' %}">Рабочий стол</a></li>
-        <li><a href="{% url 'adjuster:list' %}">Список монтажников</a></li>
-        <li class="active">Отчёт по монтажникам</li>
-      </ol>
+    <div class="col-md-12">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <p class="lead remove-bottom text-center">Отчёт по монтажникам</p>
-        </div>
-        <div class="panel-body">
           <div class="row">
-            <div class="col-lg-10">
-              <form action="" class="js-adjuster-report-form form-inline add-bottom" method="GET">
+            <div class="col-md-12">Отчёт по монтажникам <span>/ {{ object_list.count|default:'0' }}</span></div>
+            <div class="clearfix"></div>
+          </div>
+          <button class="btn btn-show-filter" id="js-show-filter-btn">
+            <span>Развернуть поиск <strong>+</strong></span>
+            <span class="hide">Свернуть поиск <strong>-</strong></span>
+          </button>
+          <form action="" class="js-adjuster-report-form form form-filter" method="GET">
+            <div class="col-md-12">
+              <div class="five-col-1">
                 <select name="city" id="id_city" class="form-control input-sm">
                   <option value="">Выберите город</option>
                   <option value="0" {% if r_city == 0 %}selected="selected"{% endif %}>Все города</option>
@@ -26,19 +30,28 @@
                     <option value="{{ city.id }}" {% if city.id == r_city %}selected="selected"{% endif %}>{{ city }}</option>
                   {% endfor %}
                 </select>
+              </div>
+              <div class="five-col-1">
                 <input type="text" name="email" id="id_email" class="form-control input-sm" placeholder="email" value="{{ r_email }}">
+              </div>
+              <div class="five-col-1">
                 <input type="text" name="last_name" id="id_last_name" class="form-control input-sm" placeholder="Фамилия" value="{{ r_last_name }}">
+              </div>
+              <div class="five-col-1">
                 <input type="text" name="date_s" id="id_date_s" class="form-control input-sm" placeholder="Дата от" value="{{ r_date_s|default:'' }}">
+              </div>
+              <div class="five-col-1">
                 <input type="text" name="date_e" id="id_date_e" class="form-control input-sm" placeholder="Дата до" value="{{ r_date_e|default:'' }}">
-                <button class="btn btn-info btn-sm" type="submit"><span class="glyphicon glyphicon-search"></span> Искать</button>
-              </form>
-            </div>
-            <div class="col-lg-2">
-              <p class="text-right">Всего монтажников: <strong>{{ object_list.count|default:'0' }}</strong></p>
+              </div>
+              <div class="five-col-1">
+                <input type="submit" class="btn btn-search" value="Искать">
+              </div>
+              <div class="clearfix"></div>
             </div>
             <div class="clearfix"></div>
-          </div>
-
+          </form>
+        </div>
+        <div class="panel-body">
           <form action="{% url 'adjuster:report-excel' %}" method="post" target="_blank">{% csrf_token %}
             <input type="hidden" name="date_from" value="{{ r_date_s|default:'' }}">
             <input type="hidden" name="date_to" value="{{ r_date_e|default:'' }}">

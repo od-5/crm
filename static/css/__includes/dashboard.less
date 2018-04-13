@@ -1,19 +1,159 @@
 .dashboard {
+  &__link {
+      color: #6e8c99;
+      font-size: 13px;
+      background-color: #fff;
+      text-align: center;
+      display: block;
+      -webkit-border-radius: 3px;
+      -moz-border-radius: 3px;
+      border-radius: 3px;
+      height: 160px;
+      padding: 0 10px;
+      &_conf {
+        background-color: transparent;
+        -webkit-box-shadow: 0 0 1px #999;
+        -moz-box-shadow: 0 0 1px #999;
+        box-shadow: 0 0 1px #999;
+      }
+      @media only screen and (max-width: 768px) {
+        height: 130px;
+        margin-bottom: 14px;
+        line-height: 1em;
+        font-size: 12px;
+        padding: 0 5px;
+      }
+      @media only screen and (max-width: 991px) {
+        margin-bottom: 29px;
+      }
+      &:hover {
+        color: #0f9bdb;
+        -webkit-box-shadow: 0 0 10px #666;
+        -moz-box-shadow: 0 0 10px #666;
+        box-shadow: 0 0 10px #666;
+      }
+      &-icon {
+        padding-top: 30px;
+        //padding-bottom: 20px;
+        height: 105px;
+        img {
+          max-height: 50px;
+        }
+        @media only screen and (max-width: 768px) {
+          padding-top: 20px;
+          height: 80px;
+          //padding-bottom: 15px;
+        }
+      }
+      &_text {
+
+      }
+    }
   .panel {
     &-body {
       min-height: 130px;
     }
   }
-  &__link {
-    display: block;
-    text-align: center;
-    &_icon {
-      height: 60px;
-      display: block;
-      margin: 0 auto;
+  &-modal {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    background-color: #057ab0;
+    overflow-y: scroll;
+    .row {
+      margin: 0;
     }
-    &_text {
-      font-size: 12px;
+    &-nav {
+      list-style: none;
+      padding-left: 0;
+      margin-top: 30px;
+      li {
+        color: #fff;
+        font-size: 18px;
+        //padding: 12px;
+        &.active {
+          background-color: #0d8ac2;
+        }
+        a {
+          display: inline-block;
+          color: #fff;
+          font-size: 18px;
+          padding-left: 40px;
+          padding-top: 15px;
+          padding-bottom: 15px;
+        }
+      }
+      .dropdown {
+        &.open {
+          .dropdown-toggle {
+            color: #f6dd04;
+            text-decoration: none;
+          }
+        }
+        &-menu {
+          position: relative;
+          border: none;
+          -webkit-border-radius: 0;
+          -moz-border-radius: 0;
+          border-radius: 0;
+          -webkit-box-shadow: none;
+          -moz-box-shadow: none;
+          box-shadow: none;
+          background-color: #0e8ac3;
+          li {
+            &:hover {
+              background-color: transparent;
+            }
+            a {
+              padding-left: 50px;
+              white-space: normal;
+              position: relative;
+              &:before {
+                content: '>';
+                position: absolute;
+                font-size: 12px;
+                vertical-align: top;
+                left: 40px;
+                font-weight: bold;
+              }
+              &:hover {
+                background-color: transparent;
+                color: #fff;
+              }
+            }
+          }
+
+          .divider {
+            display: none;
+          }
+        }
+      }
+    }
+    &-close {
+      width: 22px;
+      height: 22px;
+      float: right;
+      margin-top: 50px;
+      margin-right: 25px;
+    }
+    &-profile {
+      display: none;
+    }
+    &-menu {
+      display: none;
+    }
+  }
+  &-mobile {
+    cursor: pointer;
+    &:hover {
+      opacity: .8;
+    }
+    &-profile {
+
+    }
+    &-menu {
+
     }
   }
 }

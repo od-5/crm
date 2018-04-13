@@ -1,32 +1,99 @@
 {% extends 'cabinet_index.html' %}
-
+{% block breadcrumbs_item %}
+  <li class="active">Список поверхностей</li>
+{% endblock %}
 {% block content %}
   <div class="container">
     <div class="col-lg-12">
-      <ol class="breadcrumb">
-        <li><a href="{% url 'cabinet:cabinet' %}">Рабочий стол</a></li>
-        <li class="active">Список поверхностей</li>
-      </ol>
       <div class="panel panel-default">
         <div class="panel-heading">
-          <p class="lead remove-bottom text-center">Список поверхностей</p>
+          <div class="row page-top">
+            <div class="col-md-8">
+             Список поверхностей <span>/ адресов {{ surface_count|default:'0' }} / подъездов {{ porch_count|default:'0' }} </span>
+            </div>
+            <div class="col-md-4">
+              {% if user.type == 1 or user.type == 2 or user.is_leader_manager %}
+              <a href="{% url 'surface:add' %}" class="btn btn-add page-top__btn">
+                <span class="glyphicon glyphicon-plus-sign"></span> Добавить новую поверхность
+              </a>
+            {% endif %}
+            </div>
+            <div class="clearfix"></div>
+          </div>
+
+          <button class="btn btn-show-filter" id="js-show-filter-btn">
+            <span>Развернуть поиск <strong>+</strong></span>
+            <span class="hide">Свернуть поиск <strong>-</strong></span>
+          </button>
+          <form action="" class="form form-filter" id="js-surface-filter-form" role="form" method="GET">
+            <div class="col-md-12">
+              <div class="five-col-1">
+                <select name="city" id="city_filter" class="form-control input-sm" data-ajax-url="{% url 'city:get_area_list' %}">
+                  <option value="0">--- Город--- </option>
+                {% for city in city_list %}
+                  <option value="{{ city.id }}" {% if city.id == city_id %}selected="selected"{% endif %}>{{ city }}</option>
+                {% endfor %}
+                </select>
+              </div>
+              <div class="five-col-1">
+                <select name="area" id="area_filter" class="form-control input-sm" data-ajax-url="{% url 'city:simple_get_area_streets' %}">
+                  <option value="0">--- Район ---</option>
+                  {% if area_list %}
+                    {% for area in area_list %}
+                    <option value="{{ area.id }}" {% if area.id == area_id %}selected="selected"{% endif %}>{{ area }}</option>
+                    {% endfor %}
+                  {% endif %}
+                </select>
+              </div>
+              <div class="five-col-1">
+                <select name="street" id="street_filter" class="form-control input-sm" >
+                  <option value="0">--- Улица ---</option>
+                  {% if area_list %}
+                    {% for street in street_list %}
+                    <option value="{{ street.id }}" {% if street.id == street_id %}selected="selected"{% endif %}>{{ street }}</option>
+                    {% endfor %}
+                {% endif %}
+                </select>
+              </div>
+              <div class="five-col-2">
+                <select name="management" id="management_filter" class="form-control input-sm" >
+                  <option value="0">--- Управляющая компания ---</option>
+                  <option value="-1" {% if management_id == -1 %}selected="selected"{% endif %}>УК не указана</option>
+                  {% if management_list %}
+                    {% for management in management_list %}
+                    <option value="{{ management.id }}" {% if management.id == management_id %}selected="selected"{% endif %}>{{ management.name }}</option>
+                    {% endfor %}
+                  {% endif %}
+                </select>
+              </div>
+              <div class="five-col-1">
+                <select name="free" id="free_filter" class="form-control input-sm">
+                  <option value="0" {% if free == 0 %}selected="selected"{% endif %}>--- Занятость ---</option>
+                  <option value="1" {% if free == 1 %}selected="selected"{% endif %}>Свободна</option>
+                  <option value="2" {% if free == 2 %}selected="selected"{% endif %}>Занята</option>
+                </select>
+              </div>
+              <div class="five-col-1">
+                <select name="has_stand" id="has_stand" class="form-control input-sm">
+                  <option value="0" {% if has_stand == 0 %}selected="selected"{% endif %}>--- Стенды ---</option>
+                  <option value="1" {% if has_stand == 1 %}selected="selected"{% endif %}>Стенды установлены</option>
+                  <option value="2" {% if has_stand == 2 %}selected="selected"{% endif %}>Стенды отсутствуют</option>
+                </select>
+              </div>
+              <div class="five-col-1">
+                <input type="text" name="release_date" class="form-control input-sm" placeholder="свободна от:" id="id_release_date" value="{{ release_date }}">
+              </div>
+              <div class="five-col-2">
+                <input type="submit" class="btn btn-search" value="Искать поверхности">
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+          </form>
         </div>
         <div class="panel-body">
           <div class="row">
             <div class="col-lg-6">
-              <p>Количество адресов: <strong>{{ surface_count|default:'0' }}</strong></p>
-            </div>
-            <div class="col-lg-6">
-              <p class="text-right">Количество подъездов: <strong>{{ porch_count|default:'0' }}</strong></p>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-lg-6">
-            {% if user.type == 1 or user.type == 2 or user.is_leader_manager %}
-              <a href="{% url 'surface:add' %}" class="btn btn-success add-bottom">
-                <span class="glyphicon glyphicon-plus-sign"></span> Добавить новую поверхность
-              </a>
-            {% endif %}
               <a href="{% url 'surface:export' %}?city={{ city_id|default:'' }}&area={{ area_id|default:'' }}&street={{ street_id|default:'' }}&management={{ management_id|default:'' }}&release_date={{ release_date|default:'' }}&free={{ free|default:0 }}" class="btn btn-warning add-bottom">
                 <span class="glyphicon glyphicon-download-alt"></span> Скачать в EXCEL
               </a>
@@ -46,75 +113,40 @@
             </div>
           </div>
 {#          {% if object_list %}#}
-            <form action="{% url 'surface:list' %}" id="js-surface-filter-form" class="add-bottom" method="GET" role="form">
+{#            <form action="{% url 'surface:list' %}" id="js-surface-filter-form" class="add-bottom" method="GET" role="form">#}
 {#              {% csrf_token %}#}
 {#              <input type="text" name="city" class="search-form__city" {% if city_id %}value="{{ city_id }}"{% endif %}>#}
 {#              <input type="text" name="area" class="search-form__area" {% if area_id %}value="{{ area_id }}"{% endif %}>#}
 {#              <input type="text" name="street" class="search-form__street" {% if street_id %}value="{{ street_id }}"{% endif %}>#}
-              <table>
-                <tr>
-                  <td>
-                    <select name="city" id="city_filter" class="form-control input-sm" data-ajax-url="{% url 'city:get_area_list' %}">
-                      <option value="0">--- Город--- </option>
-                    {% for city in city_list %}
-                      <option value="{{ city.id }}" {% if city.id == city_id %}selected="selected"{% endif %}>{{ city }}</option>
-                    {% endfor %}
-                    </select>
-                  </td>
-                  <td>
-                    <select name="area" id="area_filter" class="form-control input-sm" data-ajax-url="{% url 'city:simple_get_area_streets' %}">
-                      <option value="0">--- Район ---</option>
-                      {% if area_list %}
-                        {% for area in area_list %}
-                        <option value="{{ area.id }}" {% if area.id == area_id %}selected="selected"{% endif %}>{{ area }}</option>
-                        {% endfor %}
-                      {% endif %}
-                    </select>
-                  </td>
-                  <td>
-                    <select name="street" id="street_filter" class="form-control input-sm" >
-                      <option value="0">--- Улица ---</option>
-                      {% if area_list %}
-                        {% for street in street_list %}
-                        <option value="{{ street.id }}" {% if street.id == street_id %}selected="selected"{% endif %}>{{ street }}</option>
-                        {% endfor %}
-                    {% endif %}
-                    </select>
-                  </td>
-                  <td>
-                    <select name="management" id="management_filter" class="form-control input-sm" >
-                      <option value="0">--- Управляющая компания ---</option>
-                      <option value="-1" {% if management_id == -1 %}selected="selected"{% endif %}>УК не указана</option>
-                      {% if management_list %}
-                        {% for management in management_list %}
-                        <option value="{{ management.id }}" {% if management.id == management_id %}selected="selected"{% endif %}>{{ management.name }}</option>
-                        {% endfor %}
-                    {% endif %}
-                    </select>
-                  </td>
-                  <td>
-                    <select name="free" id="free_filter" class="form-control input-sm">
-                      <option value="0" {% if free == 0 %}selected="selected"{% endif %}>--- Занятость ---</option>
-                      <option value="1" {% if free == 1 %}selected="selected"{% endif %}>Свободна</option>
-                      <option value="2" {% if free == 2 %}selected="selected"{% endif %}>Занята</option>
-                    </select>
-                  </td>
-                  <td>
-                    <select name="has_stand" id="has_stand" class="form-control input-sm">
-                      <option value="0" {% if has_stand == 0 %}selected="selected"{% endif %}>--- Стенды ---</option>
-                      <option value="1" {% if has_stand == 1 %}selected="selected"{% endif %}>Стенды установлены</option>
-                      <option value="2" {% if has_stand == 2 %}selected="selected"{% endif %}>Стенды отсутствуют</option>
-                    </select>
-                  </td>
-                  <td>
-                    <input type="text" name="release_date" class="form-control input-sm" placeholder="свободна от:" id="id_release_date" value="{{ release_date }}">
-                  </td>
-                  <td>
-                    <button type="submit" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-search"></span> Искать</button>
-                  </td>
-                </tr>
-              </table>
-            </form>
+{#              <table>#}
+{#                <tr>#}
+{#                  <td>#}
+{#                    #}
+{#                  </td>#}
+{#                  <td>#}
+{#                    #}
+{#                  </td>#}
+{#                  <td>#}
+{#                    #}
+{#                  </td>#}
+{#                  <td>#}
+{#                    #}
+{#                  </td>#}
+{#                  <td>#}
+{#                    #}
+{#                  </td>#}
+{#                  <td>#}
+{#                    #}
+{#                  </td>#}
+{#                  <td>#}
+{#                    #}
+{#                  </td>#}
+{#                  <td>#}
+{#                    <button type="submit" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-search"></span> Искать</button>#}
+{#                  </td>#}
+{#                </tr>#}
+{#              </table>#}
+{#            </form>#}
           <table class="table table-hover table-condensed table-bordered table-list">
             <thead>
               <tr>

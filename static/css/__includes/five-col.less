@@ -1,0 +1,44 @@
+.five-col-base {
+  float: left;
+  position: relative;
+  min-height: 1px;
+  padding-left: 10px;
+  padding-right: 10px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.five {
+  &-col {
+    &-1 {
+      width: 20%;
+      .five-col-base;
+    }
+    &-2 {
+      width: 40%;
+      .five-col-base;
+    }
+    &-3 {
+      width: 60%;
+      .five-col-base;
+    }
+    &-4 {
+      width: 80%;
+      .five-col-base;
+    }
+    &-5 {
+      width: 100%;
+      float: none;
+      .five-col-base;
+    }
+    &-1, &-2, &-3, &-4, &-5 {
+      @media only screen and (max-width: 991px) {
+        width: 50%;
+      }
+      @media only screen and (max-width: 767px) {
+        width: 100%;
+        float: none;
+      }
+    }
+  }
+}

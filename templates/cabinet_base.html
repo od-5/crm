@@ -2,9 +2,10 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-{#  <meta name="viewport" content="width=device-width, initial-scale=1.0">#}
+
 {% block viewport %}
-  <meta name="viewport" content="width=1200">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{#  <meta name="viewport" content="width=1200">#}
 {% endblock %}
   <title>{% block title %}{{ page.meta_title|default:'Реклама-онлайн' }}{% endblock %}</title>
 {#  <link rel="icon" type="image/png" href="{{ STATIC_URL }}img/favicon.png">#}
@@ -38,7 +39,23 @@
 
   {% block header %}
   {% endblock %}
+  {% block breadcrumbs %}
+  <div class="breadcrumb-container">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb">
+            <li><a href="{% url 'cabinet:cabinet' %}">Рабочий стол</a></li>
+            {% block breadcrumbs_item %}
 
+            {% endblock %}
+          </ol>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+  {% endblock %}
   {% block content %}
   {% endblock %}
 
@@ -48,5 +65,6 @@
   </div>
 {% block bottom_js %}
 {% endblock %}
+{% include '__cabinet/mobile.html' %}
 </body>
 </html>

@@ -1,37 +1,60 @@
 {% extends 'cabinet_index.html' %}
+{% block breadcrumbs_item %}
+  <li class="active">Журнал клиентов</li>
+{% endblock %}
 {% block content %}
   <div class="container">
-    <div class="col-lg-12">
-      <ol class="breadcrumb">
-        <li><a href="{% url 'cabinet:cabinet' %}">Рабочий стол</a></li>
-        <li class="active">Журнал клиентов</li>
-      </ol>
+    <div class="col-md-12">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <p class="lead remove-bottom text-center">Журнал клиентов</p>
-        </div>
-        <div class="panel-body">
-          <div class="row">
-            <div class="col-lg-6">
-              <p>Количество клиентов: <strong>{{ manager_client_count|default:'0' }}</strong></p>
+          <div class="row page-top">
+            <div class="col-md-8">
+              Журнал клиентов <span>/ клиентов: {{ manager_client_count|default:'0' }}</span>
+              <span>/ задач: {{ manager_task_count|default:'0' }}</span>
             </div>
-            <div class="col-lg-6">
-              <p class="text-right">Количество задач: <strong>{{ manager_task_count|default:'0' }}</strong></p>
+            <div class="col-md-4">
+              <a href="{% url 'incoming:add' %}" class="btn btn-add page-top__btn">
+                <span class="glyphicon glyphicon-plus-sign"></span> Добавить клиента
+              </a>
             </div>
             <div class="clearfix"></div>
           </div>
+          <button class="btn btn-show-filter" id="js-show-filter-btn">
+            <span>Развернуть поиск <strong>+</strong></span>
+            <span class="hide">Свернуть поиск <strong>-</strong></span>
+          </button>
+          <form action="" class="form form-filter" role="form" method="GET">
+            <div class="col-md-12">
+              <div class="five-col-1">
+                <input type="text" name="name" value="{{ r_name|default:'' }}" class="form-control input-sm" placeholder="Название">
+              </div>
+              <div class="five-col-1">
+                <input type="text" name="phone" value="{{ r_phone|default:'' }}" class="form-control input-sm" placeholder="телефон контактного лица">
+              </div>
+              <div class="five-col-1">
+                <input type="text" name="contact" value="{{ r_contact|default:'' }}" class="form-control input-sm" placeholder="фамилия контактного лица">
+              </div>
+              <div class="five-col-1">
+                <input type="submit" class="btn btn-search" value="Искать">
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+          </form>
+        </div>
+        <div class="panel-body">
           <div class="row">
-            <div class="col-lg-7">
+            <div class="col-md-7">
               <form action="" method="GET" role="form" class="form-inline add-bottom">
-                <a href="{% url 'incoming:add' %}" class="btn btn-success">
-                  <span class="glyphicon glyphicon-plus-sign"></span> Добавить нового клиента
-                </a>
+{#                <a href="{% url 'incoming:add' %}" class="btn btn-success">#}
+{#                  <span class="glyphicon glyphicon-plus-sign"></span> Добавить нового клиента#}
+{#                </a>#}
                 <input type="text" name="client_name" value="{{ r_client_name }}" class="form-control" placeholder="Название клиента">
                 <button type="submit" class="btn btn-info"> <span class="glyphicon glyphicon-search"></span> Проверить наличие</button>
               </form>
             </div>
             {% if user.type == 5 %}
-            <div class="col-lg-5 text-right">
+            <div class="col-md-5 text-right">
               <form action="{% url 'incoming:client_list_import' %}" method="POST" enctype="multipart/form-data" class="form-inline" role="form">{% csrf_token %}
                 {{ import_form.file }}
                 <input type="submit" value="Загрузить" class="js-show-loader btn btn-info form-control">
@@ -66,12 +89,6 @@
             <p class="alert alert-info">Клиента {{ r_client_name }} в системе нет</p>
           {% endif %}
         {% endif %}
-          <form action="" method="GET" role="form" class="form-inline add-bottom">
-            <input type="text" name="name" value="{{ r_name|default:'' }}" class="form-control input-sm" placeholder="Название">
-            <input type="text" name="phone" value="{{ r_phone|default:'' }}" class="form-control input-sm" placeholder="телефон контактного лица">
-            <input type="text" name="contact" value="{{ r_contact|default:'' }}" class="form-control input-sm" placeholder="фамилия контактного лица">
-            <button type="submit" class="btn btn-info btn-sm"> <span class="glyphicon glyphicon-search"></span> Искать</button>
-          </form>
           <table class="table table-hover table-condensed table-bordered table-list" id="js-incomingclient-list">
             <thead>
               <tr>

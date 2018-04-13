@@ -1,6 +1,11 @@
 html, body {
   height: 100%;
 }
+.desktop-only {
+  @media only screen and (max-width: 991px) {
+    display: none;
+  }
+}
 a, h2 {
   -webkit-transition: color 0.5s ease;
   -moz-transition: color 0.5s ease;
@@ -53,7 +58,25 @@ td {
   padding-bottom: 100px;
   background-color: #fff;
 }
-
+.page {
+  &-info {
+    @media only screen and (max-width: 767px) {
+      text-align: left !important;
+    }
+  }
+  &-top {
+    padding: 25px 0;
+    &__btn {
+      @media only screen and (min-width: 768px) {
+        float: right;
+      }
+      @media only screen and (max-width: 767px) {
+        width: 100%;
+        margin-top: 20px;
+      }
+    }
+  }
+}
 .table {
   &-list {
     font-size: 12px;
@@ -200,25 +223,7 @@ img {
     }
   }
 }
-//.scroll {
-//  thead {
-//    position: relative;
-//    display: block;
-//    width: 100%;
-//  }
-//  tbody {
-//    width: 100%;
-//    display: block;
-//    overflow-y: scroll;
-//    max-height: 255px;
-//  }
-//  td:nth-child(1), th:nth-child(1) { width: 170px; }
-//  td:nth-child(2), th:nth-child(2) { width: 200px }
-//  td:nth-child(3), th:nth-child(3) { width: 200px; }
-//  td:nth-child(4), th:nth-child(4) { width: 300px; }
-//  td:nth-child(5), th:nth-child(5) { width: 200px; }
-//  //td:nth-child(6), th:nth-child(6) { width: 120px; }
-//}
+
 a.lead {
   display: inline-block;
 }
@@ -247,5 +252,77 @@ a.lead {
     -moz-box-shadow: 0 0 5px #ccc;
     box-shadow: 0 0 5px #ccc;
     background: #fff;
+  }
+}
+.container {
+  @media only screen and (max-width: 360px) {
+    padding: 0;
+  }
+}
+.breadcrumb {
+  margin-bottom: 0;
+  &-container {
+    background-color: #c4ecf5;
+    margin-bottom: 20px;
+    @media only screen and (max-width: 360px) {
+      margin-bottom: 20px;
+    }
+  }
+  a {
+    color: #318396;
+  }
+}
+.dropdown-menu {
+  padding: 0;
+  min-width: 100%;
+  li {
+    text-align: left;
+    a {
+      line-height: 30px !important;
+    }
+  }
+  .divider {
+    margin: 0;
+  }
+}
+.navbar {
+  border: none;
+  &-header {
+    @media only screen and (max-width: 991px) {
+      float: none;
+      width: 100%;
+      text-align: center;
+    }
+  }
+  &-brand {
+    height: 74px;
+    background-color: #057ab0;
+    font-weight: bold;
+    @media only screen and (min-width: 992px) {
+      box-shadow: 12px 0 15px -4px #333,
+                  -12px 0 8px -4px #333;
+    }
+    @media only screen and (min-width: 768px) and (max-width: 991px) {
+      //line-height: 50px;
+      float: none;
+    }
+    @media only screen and (max-width: 991px) {
+      height: 50px;
+      font-size: 16px;
+      display: block;
+      width: 100%;
+    }
+    @media only screen and (max-width: 767px) {
+      font-size: 14px;
+      padding: 5px 0;
+    }
+    &__small {
+      font-size: 10px;
+      letter-spacing: 0.4em;
+
+      @media only screen and (max-width: 1200px) {
+        display: none;
+      }
+    }
   }
 }

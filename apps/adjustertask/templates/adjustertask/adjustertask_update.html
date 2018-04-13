@@ -3,23 +3,27 @@
   <script src="http://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
   {% include 'adjustertask/__include/map-task.html' %}
 {% endblock %}
+{% block breadcrumbs_item %}
+  <li><a href="{% url 'adjustertask:list' %}">Список задач монтажников</a></li>
+        <li class="active">Редактирование задачи монтажника</li>
+{% endblock %}
 {% block content %}
   <div class="container">
     <div class="col-lg-12">
-      <ol class="breadcrumb">
-        <li><a href="{% url 'cabinet:cabinet' %}">Рабочий стол</a></li>
-        <li><a href="{% url 'adjustertask:list' %}">Список задач монтажников</a></li>
-        <li class="active">Редактирование задачи монтажника</li>
-      </ol>
       <a href="{{ back_to_list|default:'' }}" class="btn btn-default btn-sm add-bottom">
         <span class="glyphicon glyphicon-circle-arrow-left"></span> назад к списку
       </a>
       <div class="panel panel-default">
         <div class="panel-heading">
-          <p class="lead text-center remove-bottom">Задача для монтажника на {{ object.date }}</p>
+          <div class="row page-top">
+            <div class="col-md-12">
+              Задача для монтажника на {{ object.date }}
+            </div>
+            <div class="clearfix"></div>
+          </div>
         </div>
         <div class="panel-body">
-          <div class="col-lg-12">
+          <div class="col-md-12">
           {% if object.sent %}
             <div class="alert alert-warning">
               <p>
@@ -38,7 +42,7 @@
               </div>
             </div>
           </div>
-          <div class="col-lg-12">
+          <div class="col-md-12">
           {% if error %}
             <div class="alert alert-danger">
               {{ error }}
@@ -50,73 +54,53 @@
             </div>
           {% endif %}
 
-            <form action="." role="form" class="add-bottom" id="js-adjuster-client_task-update-form" method="post" data-client-ajax-url="{% url 'adjustertask:client-ajax' %}">
+            <form action="." role="form" class="form" id="js-adjuster-client_task-update-form" method="post" data-client-ajax-url="{% url 'adjustertask:client-ajax' %}">
               {% csrf_token %}
               {% load widget_tweaks %}
-              <div class="col-lg-6">
-                <div class="col-lg-12">
-                  <p class="lead">Информация по задаче</p>
-                </div>
+              <div class="col-md-12">
+                <p class="lead text-info">Информация по задаче</p>
+              </div>
+              <div class="col-md-6">
                 <div class="form-group">
-                  <div class="col-lg-5">
-                    {{ adjuster_task_form.adjuster.label_tag }}
-                  </div>
-                  <div class="col-lg-7">
-                    {% if user.type == 4 %}
-                    {{ adjuster_task_form.adjuster|attr:'disabled:disabled' }}
-                    {% else %}
-                    {{ adjuster_task_form.adjuster }}
-                    {% endif %}
-                  </div>
+                  {{ adjuster_task_form.adjuster.label_tag }}
+                  {% if user.type == 4 %}
+                  {{ adjuster_task_form.adjuster|attr:'disabled:disabled' }}
+                  {% else %}
+                  {{ adjuster_task_form.adjuster }}
+                  {% endif %}
                   {{ adjuster_task_form.adjuster.errors }}
-                  <div class="clearfix"></div>
                 </div>
                 <div class="form-group">
-                  <div class="col-lg-5">
-                    {{ adjuster_task_form.type.label_tag }}
-                  </div>
-                  <div class="col-lg-7">
-                    {% if user.type == 4 %}
-                    {{ adjuster_task_form.type|attr:'disabled:disabled' }}
-                    {% else %}
-                      {% if object.sent %}
-                      <strong>{{ object.get_type_display }}</strong>
-                      {% endif %}
-                      {{ adjuster_task_form.type }}
+                  {{ adjuster_task_form.type.label_tag }}
+                  {% if user.type == 4 %}
+                  {{ adjuster_task_form.type|attr:'disabled:disabled' }}
+                  {% else %}
+                    {% if object.sent %}
+                    <strong>{{ object.get_type_display }}</strong>
                     {% endif %}
-                  </div>
+                    {{ adjuster_task_form.type }}
+                  {% endif %}
                   {{ adjuster_task_form.type.errors }}
-                  <div class="clearfix"></div>
                 </div>
                 <div class="form-group">
-                  <div class="col-lg-5">
-                    {{ adjuster_task_form.date.label_tag }}
-                  </div>
-                  <div class="col-lg-7">
-                    {% if user.type == 4 %}
-                    {{ adjuster_task_form.date|attr:'disabled:disabled' }}
-                    {% else %}
-                      {% if object.sent %}
-                      <strong>{{ object.date|date:'d.m.Yг.' }}</strong>
-                      {% endif %}
-                      {{ adjuster_task_form.date }}
+                  {{ adjuster_task_form.date.label_tag }}
+                  {% if user.type == 4 %}
+                  {{ adjuster_task_form.date|attr:'disabled:disabled' }}
+                  {% else %}
+                    {% if object.sent %}
+                    <strong>{{ object.date|date:'d.m.Yг.' }}</strong>
                     {% endif %}
-                  </div>
+                    {{ adjuster_task_form.date }}
+                  {% endif %}
                   {{ adjuster_task_form.date.errors }}
-                  <div class="clearfix"></div>
                 </div>
                 <div class="form-group">
-                  <div class="col-lg-5">
-                    {{ adjuster_task_form.is_closed.label_tag }}
-                  </div>
-                  <div class="col-lg-7">
-                    {{ adjuster_task_form.is_closed }}
-                  </div>
+                  {{ adjuster_task_form.is_closed.label_tag }}
+                  {{ adjuster_task_form.is_closed }}
                   {{ adjuster_task_form.is_closed.errors }}
-                  <div class="clearfix"></div>
                 </div>
               </div>
-              <div class="col-lg-6 add-bottom">
+              <div class="col-md-6 add-bottom">
                 {{ adjuster_task_form.comment.label_tag }}
                 {% if user.type == 4 %}
                 {{ adjuster_task_form.comment|attr:'disabled:disabled' }}
@@ -128,7 +112,7 @@
                 {% endif %}
                 {{ adjuster_task_form.comment.errors }}
               </div>
-              <div class="col-lg-12">
+              <div class="col-md-12">
                 <table class="table table-condensed table-bordered table-list">
                   <thead>
                     <tr>
@@ -172,7 +156,9 @@
                 {% include '__includes/pagination.html' with page_obj=task_surface_list %}
               </div>
               <div class="clearfix"></div>
-              <button type="submit" class="btn btn-default">Сохранить</button>
+              <div class="col-md-6">
+                <button type="submit" class="btn btn-save">Сохранить</button>
+              </div>
             </form>
           </div>
         </div>

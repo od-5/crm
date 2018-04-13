@@ -1,0 +1,44 @@
+<div class="dashboard-modal dashboard-modal-profile">
+  <div class="container">
+    <div class="row">
+      <div class="dashboard-mobile dashboard-modal-close js-dashboard-modal-close">
+        <img src="{{ STATIC_URL }}icon/mobile-dash-close.png" alt="Закрыть">
+      </div>
+    </div>
+    <div class="row">
+      <ul class="dashboard-modal-nav">
+        <li class="active">
+          <a><span class="glyphicon glyphicon-user"></span> {{ user.email|default:'Anonymous' }}</a>
+        </li>
+        <li>
+          <a href="{% url 'cabinet:profile' %}">Профиль</a>
+        </li>
+{#        {% if user.type == 1 or user.type == 2 or user.type == 6 %}#}
+{#        <li>#}
+{#          <a href="{% url 'correspondence:usermessage-list' %}">#}
+{#          {% if MESSAGE_NOTIFY %}#}
+{#          Сообщения <span class="badge">{{ MESSAGE_NOTIFY.count|default:'0' }}</span>#}
+{#          {% else %}#}
+{#          Новых сообщений нет#}
+{#          {% endif %}#}
+{#          </a>#}
+{#        </li>#}
+{#        {% endif %}#}
+        <li><a href="{% url 'cabinet:logout' %}?next={% url 'cabinet:cabinet' %}">Выход</a></li>
+      </ul>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+</div>
+<div class="dashboard-modal dashboard-modal-menu">
+  <div class="container">
+    <div class="row">
+      <div class="dashboard-mobile dashboard-modal-close js-dashboard-modal-close">
+        <img src="{{ STATIC_URL }}icon/mobile-dash-close.png" alt="Закрыть">
+      </div>
+    </div>
+    <div class="row">
+      {% include '__cabinet/nav.html' with nav_class='dashboard-modal-nav' %}
+    </div>
+  </div>
+</div>

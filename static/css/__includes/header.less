@@ -1,3 +1,66 @@
 .header {
-
+  &-top {
+    height: 50px;
+    line-height: 50px;
+    background-color: #000;
+    @media only screen and (max-width: 991px) {
+      height: 38px;
+      line-height: 38px;
+      text-align: center;
+    }
+    &__nav {
+      .dropdown {
+        .dropdown-toggle {
+          color: #fff;
+          &:hover {
+            color: #333;
+          }
+        }
+        &.open {
+          .dropdown-toggle {
+            color: #333;
+          }
+        }
+      }
+    }
+    &__text {
+      color: #fff;
+      margin-bottom: 0;
+    }
+  }
+  &-navbar {
+    height: 74px;
+    @media only screen and (max-width: 991px) {
+      height: 50px;
+      line-height: 50px;
+    }
+    .navbar {
+      &-brand {
+        @media only screen and (min-width: 992px) and (max-width: 1200px) {
+          width: 230px;
+        }
+      }
+    }
+    .nav {
+      li {
+        a {
+          line-height: 74px;
+          padding-top: 0;
+          padding-bottom: 0;
+          @media only screen and (min-width: 992px) and (max-width: 1200px) {
+            padding: 10px;
+            line-height: 50px;
+          }
+        }
+      }
+    }
+    .dropdown {
+      &:hover, &.open {
+        background-color: #fff;
+        a {
+          color: #057ab0 !important;
+        }
+      }
+    }
+  }
 }

@@ -246,52 +246,6 @@ def adjustertask_client(request):
     return render(request, 'adjustertask/adjustertask_client_add.html', context)
 
 
-def adjuster_c_task(request):
-    """
-    функция добавления задачи по клиенту
-    версия 1
-    """
-    context = {}
-    if request.method == 'POST':
-        adjustertask_client_form = AdjusterTaskClientAddForm(request.POST, request=request)
-        # adjustertask_form = AdjusterTaskAddForm(request.POST, request=request)
-        if adjustertask_client_form.is_valid():
-            if request.POST.getlist('chk_group[]'):
-                task = adjustertask_client_form.save()
-                surfaces = request.POST.getlist('chk_group[]')
-                for item in surfaces:
-                    try:
-                        """
-                        Если поверхность есть у клиента в заказе, но из системы уже удалена - нужно проверять, что бы не было ошибок
-                        """
-                        surface = Surface.objects.get(pk=int(item))
-                        task_surface = AdjusterTaskSurface(
-                            adjustertask=task,
-                            surface=surface
-                        )
-                        task_surface.save()
-                    except:
-                        pass
-                return HttpResponseRedirect(task.get_absolute_url())
-        else:
-            context.update({
-                'error': 'Achtung! Form is invalid!'
-            })
-    else:
-        adjustertask_client_form = AdjusterTaskClientAddForm(request=request)
-        # adjustertask_form = AdjusterTaskAddForm(request=request)
-    # adjustertask_client_form = AdjusterTaskClientAddForm(request=request)
-    try:
-        request.session['adjustertask_filtered_list']
-    except:
-        request.session['adjustertask_filtered_list'] = reverse('adjustertask:list')
-    context.update({
-        'adjustertask_client_form': adjustertask_client_form,
-        'back_to_list': request.session['adjustertask_filtered_list']
-    })
-    return render(request, 'adjustertask/adjustertask_c_add.html', context)
-
-
 def adjustertask_area(request):
     """
     функция добавления задачи по районам
@@ -350,43 +304,6 @@ def adjustertask_area(request):
         'back_to_list': request.session['adjustertask_filtered_list']
     })
     return render(request, 'adjustertask/adjustertask_area_add.html', context)
-
-
-def adjuster_a_task(request):
-    """
-    функция добавления задачи по адресам
-    версия 1
-    """
-    context = {}
-    if request.method == 'POST':
-        adjustertask_form = AdjusterTaskAddForm(request.POST, request=request)
-        if adjustertask_form.is_valid():
-            if request.POST.getlist('chk_group[]'):
-                task = adjustertask_form.save()
-                surfaces = request.POST.getlist('chk_group[]')
-                for item in surfaces:
-                    surface = Surface.objects.get(pk=int(item))
-                    task_surface = AdjusterTaskSurface(
-                        adjustertask=task,
-                        surface=surface
-                    )
-                    task_surface.save()
-                return HttpResponseRedirect(task.get_absolute_url())
-        else:
-            context.update({
-                'error': 'Achtung! Form is invalid!'
-            })
-    else:
-        adjustertask_form = AdjusterTaskAddForm(request=request)
-    try:
-        request.session['adjustertask_filtered_list']
-    except:
-        request.session['adjustertask_filtered_list'] = reverse('adjustertask:list')
-    context.update({
-        'adjustertask_form': adjustertask_form,
-        'back_to_list': request.session['adjustertask_filtered_list']
-    })
-    return render(request, 'adjustertask/adjustertask_a_add.html', context)
 
 
 def adjustertask_repair(request):

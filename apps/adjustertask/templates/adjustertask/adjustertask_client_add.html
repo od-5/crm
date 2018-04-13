@@ -2,83 +2,68 @@
 {% block extra_js %}
   <script src="{{ STATIC_URL }}adjustertask/js/adjustertask.js"></script>
 {% endblock %}
+{% block breadcrumbs_item %}
+  <li><a href="{% url 'adjustertask:list' %}">Список задач монтажников</a></li>
+  <li class="active">Добавление задачи для монтажника</li>
+{% endblock %}
 {% block content %}
   <div class="container">
     <div class="col-lg-12">
       {% include 'adjustertask/__include/adjustertask_menu.html' %}
       <div class="panel panel-default">
         <div class="panel-heading">
-          <p class="lead text-center remove-bottom">Добавление задачи по клиенту</p>
+          <div class="row page-top">
+            <div class="col-md-12">Добавление задачи по клиенту</div>
+            <div class="clearfix"></div>
+          </div>
         </div>
         <div class="panel-body">
-          <div class="col-lg-12">
+          <div class="col-md-12">
             {% if error %}
             <div class="alert alert-danger">
               {{ error }}
             </div>
             {%  endif %}
-            <form action="" role="form" id="js-adjustertask-client-add" method="post" data-client-ajax-url="{% url 'adjustertask:client-ajax' %}">
+            <form action="" role="form" class="form" id="js-adjustertask-client-add" method="post" data-client-ajax-url="{% url 'adjustertask:client-ajax' %}">
               {% csrf_token %}
-              <div class="col-lg-12">
-                <p class="lead">Форма добавления задачи по клиенту</p>
+              <div class="col-md-12">
+                <p class="lead text-info">Форма добавления задачи по клиенту</p>
               </div>
-              <div class="col-lg-6">
+              <div class="col-md-6">
                 <div class="form-group" data-ajax-url="{% url 'adjustertask:ajax-order-adjuster-list' %}">
-                  <div class="col-lg-5">
-                    {{ form.client.label_tag }}
-                  </div>
-                  <div class="col-lg-7">
-                    {{ form.client }}
-                  </div>
+                  {{ form.client.label_tag }}
+                  {{ form.client }}
                   {{ form.client.errors }}
-                  <div class="clearfix"></div>
                 </div>
                 <div class="form-group hide" id="adjuster-wrapper">
-                  <div class="col-lg-5">
-                    {{ form.adjuster.label_tag }}
-                  </div>
-                  <div class="col-lg-7">
-                    {{ form.adjuster }}
-                  </div>
+                  {{ form.adjuster.label_tag }}
+                  {{ form.adjuster }}
                   {{ form.adjuster.errors }}
-                  <div class="clearfix"></div>
                 </div>
                 <div class="form-group">
-                  <div class="col-lg-5">
-                    {{ form.type.label_tag }}
-                  </div>
-                  <div class="col-lg-7">
-                    {{ form.type }}
-                  </div>
+                  {{ form.type.label_tag }}
+                  {{ form.type }}
                   {{ form.type.errors }}
-                  <div class="clearfix"></div>
                 </div>
                 <div class="form-group">
-                  <div class="col-lg-5">
-                    {{ form.date.label_tag }}
-                  </div>
-                  <div class="col-lg-7">
-                    {{ form.date }}
-                  </div>
+                  {{ form.date.label_tag }}
+                  {{ form.date }}
                   {{ form.date.errors }}
-                  <div class="clearfix"></div>
                 </div>
                 <div class="form-group hide" id="clientorder_wrapper" data-url="{% url 'client:get_order_address_list' %}">
-                  <div class="col-lg-5">
-                    {{ form.clientorder.label_tag }}
-                  </div>
-                  <div class="col-lg-7">
-                    {{ form.clientorder }}
-                  </div>
+                  {{ form.clientorder.label_tag }}
+                  {{ form.clientorder }}
                   {{ form.clientorder.errors }}
                   <div class="clearfix"></div>
                 </div>
               </div>
-              <div class="col-lg-6">
+              <div class="col-md-6">
+                {{ form.commentlabel_tag }}
                 {{ form.comment }}
                 {{ form.comment.errors }}
               </div>
-              <div class="col-lg-12">
+              <div class="clearfix"></div>
+              <div class="col-md-12">
                 <table class="table">
                   <thead>
                     <tr>
@@ -97,7 +82,10 @@
                 </table>
               </div>
               <div class="clearfix"></div>
-              <input type="submit" class="btn btn-default" value="Сохранить">
+              <div class="col-md-6">
+                <input type="submit" class="btn btn-save" value="Сохранить">
+              </div>
+              <div class="clearfix"></div>
             </form>
           </div>
         </div>

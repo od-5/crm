@@ -1,5 +1,68 @@
-<div class="container">
-  <div class="col-lg-12">
-    {% include '__cabinet/nav.html' %}
+{% load static %}
+<div class="header-top">
+    <div class="container">
+      <div>
+        <div class="col-md-6 col-xs-12 col-sm-12 ">
+          <p class="header-top__text"><span class="hidden-xs">Информационный отдел:</span> 8 (918) 510 29 91</p>
+        </div>
+        <div class="col-md-6 text-right hidden-xs hidden-sm">
+          <ul class="nav navbar-nav navbar-right header-top__nav">
+{#            {% if user.type == 1 or user.type == 2 or user.type == 6 %}#}
+{#            <li>#}
+{#              <a href="{% url 'correspondence:usermessage-list' %}">#}
+{#              {% if MESSAGE_NOTIFY %}#}
+{#              Сообщения <span class="badge">{{ MESSAGE_NOTIFY.count|default:'0' }}</span>#}
+{#              {% else %}#}
+{#              Новых сообщений нет#}
+{#              {% endif %}#}
+{#              </a>#}
+{#            </li>#}
+{#            {% endif %}#}
+
+            <li class="dropdown">
+              <a href="" class="dropdown-toggle" data-toggle="dropdown">
+                <span class="glyphicon glyphicon-user"></span> {{ user.email|default:'Anonymous' }}<span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a href="{% url 'cabinet:profile' %}">Профиль</a>
+                </li>
+                <li>
+                  <a href="{% url 'cabinet:logout' %}?next={% url 'cabinet:cabinet' %}" class="header-top__text">Выход</a>
+                </li>
+
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
   </div>
-</div>
+  <div class="header-navbar">
+    <nav class="navbar navbar-default" role="navigation">
+      <div class="container">
+        <div class="col-xs-2 col-sm-2 hidden-md hidden-lg">
+          <div class="dashboard-mobile dashboard-mobile-profile js-dashboard-mobile-profile__btn">
+            <img src="{% static 'icon/mobile-dash-profile.png' %}" alt="Меню пользователя">
+          </div>
+        </div>
+        <div class="col-md-12 col-sm-8 col-xs-8">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="{% url 'cabinet:cabinet' %}">
+              Контроль рекламных поверхностей<br>
+              <span class="navbar-brand__small hidden-xs hidden-sm">информационно-программный комплекс</span>
+            </a>
+          </div>
+          <div class="desktop-only">
+            {% include '__cabinet/nav.html' with nav_class='nav navbar-nav navbar-right' %}
+          </div>
+        </div>
+        <div class="col-xs-2 col-sm-2 hidden-md hidden-lg text-right">
+          <div class="dashboard-mobile dashboard-mobile-menu js-dashboard-mobile-menu__btn">
+            <img src="{% static 'icon/mobile-dash-menu.png' %}" alt="Навигация">
+          </div>
+        </div>
+      </div>
+    </nav>
+  </div>
