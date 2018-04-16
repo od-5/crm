@@ -1,0 +1,85 @@
+.five-col-base {
+  float: left;
+  position: relative;
+  min-height: 1px;
+  padding-left: 10px;
+  padding-right: 10px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.five-col-1 {
+  width: 20%;
+  float: left;
+  position: relative;
+  min-height: 1px;
+  padding-left: 10px;
+  padding-right: 10px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.five-col-2 {
+  width: 40%;
+  float: left;
+  position: relative;
+  min-height: 1px;
+  padding-left: 10px;
+  padding-right: 10px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.five-col-3 {
+  width: 60%;
+  float: left;
+  position: relative;
+  min-height: 1px;
+  padding-left: 10px;
+  padding-right: 10px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.five-col-4 {
+  width: 80%;
+  float: left;
+  position: relative;
+  min-height: 1px;
+  padding-left: 10px;
+  padding-right: 10px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.five-col-5 {
+  width: 100%;
+  float: none;
+  float: left;
+  position: relative;
+  min-height: 1px;
+  padding-left: 10px;
+  padding-right: 10px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+@media only screen and (max-width: 991px) {
+  .five-col-1,
+  .five-col-2,
+  .five-col-3,
+  .five-col-4,
+  .five-col-5 {
+    width: 50%;
+  }
+}
+@media only screen and (max-width: 767px) {
+  .five-col-1,
+  .five-col-2,
+  .five-col-3,
+  .five-col-4,
+  .five-col-5 {
+    width: 100%;
+    float: none;
+  }
+}

@@ -1,0 +1,57 @@
+.btn {
+  vertical-align: top;
+}
+.btn-green {
+  width: 100%;
+  background: #5cb85c;
+  border: none;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+  color: #fff;
+  height: 36px;
+  line-height: 36px;
+  text-transform: uppercase;
+  padding: 0;
+}
+.btn-show-filter {
+  width: 100%;
+  color: #8b9ea7;
+  font-size: 14px;
+  background: #cee7ed;
+  padding: 12px;
+  -webkit-border-radius: 4px 4px 0 0;
+  -moz-border-radius: 4px 4px 0 0;
+  border-radius: 4px 4px 0 0;
+}
+@media only screen and (min-width: 768px) {
+  .btn-show-filter {
+    display: none;
+  }
+}
+.btn-search,
+.btn-save {
+  background-color: #0e99db;
+  width: 100%;
+  border-radius: 0;
+  height: 36px;
+  color: #fff;
+  text-transform: uppercase;
+}
+.btn-search_green,
+.btn-save_green {
+  background-color: #5cb85c;
+}
+.btn-right {
+  float: right;
+}
+.btn-tile {
+  font-size: 30px;
+}
+.btn-add {
+  background-color: #fff;
+  border-radius: 21px;
+  font-size: 16px;
+  padding: 0 35px;
+  line-height: 45px;
+}
