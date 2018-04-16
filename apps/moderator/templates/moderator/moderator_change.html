@@ -1,20 +1,22 @@
 {% extends 'cabinet_index.html' %}
+{% block breadcrumbs_item %}
+  {% if user.type == 1 or user.type == 6 %}
+  <li><a href="{% url 'moderator:list' %}">Список модераторов</a></li>
+  {% endif %}
+  <li class="active">Редактирование модератора</li>
+{% endblock %}
 {% block content %}
   <div class="container">
-    <div class="col-lg-12">
-    <ol class="breadcrumb">
-        <li><a href="{% url 'cabinet:cabinet' %}">Рабочий стол</a></li>
-        {% if user.type == 1 or user.type == 6 %}
-        <li><a href="{% url 'moderator:list' %}">Список модераторов</a></li>
-        {% endif %}
-        <li class="active">Редактирование модератора</li>
-      </ol>
+    <div class="col-ьв-12">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <p class="lead text-center remove-bottom">Редактирование модератора {{ object.email }}</p>
+          <div class="row page-top">
+            <div class="col-md-12">Редактирование модератора {{ object.email }}</div>
+            <div class="clearfix"></div>
+          </div>
         </div>
         <div class="panel-body">
-          <div class="col-lg-12">
+          <div class="col-md-12">
               {% if error %}
                 <div class="alert alert-danger">
                   {{ error }}
@@ -26,118 +28,90 @@
                 </div>
               {% endif %}
           </div>
-          <div class="col-lg-12">
+          <div class="col-md-12">
             <ul class="nav nav-tabs">
               <li class="active"><a data-toggle="tab" href="#moderator">Информация о модераторе</a></li>
               <li><a data-toggle="tab" href="#license">Информация о лицензии</a></li>
             </ul>
             <div class="tab-content">
               <div id="moderator" class="tab-pane fade in active">
-                <form action="" role="form" class="js-form-administrator-change" method="post">
+                <form action="" role="form" class="js-form-administrator-change form" method="post">
                   {% csrf_token %}
-                  <div class="col-lg-6">
+                  <div class="col-md-6">
                     <div class="form-group">
                       <p class="text-info lead">Персональная информация</p>
-                      <div class="col-lg-5">
-                        {{ form.email.label_tag }}
-                      </div>
-                      <div class="col-lg-7">
-                        {{ form.email }}
-                      </div>
-                      <div class="clearfix"></div>
+                      {{ form.email.label_tag }}
+                      {{ form.email }}
                       {{ form.email.errors }}
                     </div>
                     <div class="form-group">
-                      <div class="col-lg-5">
-                        {{ form.last_name.label_tag }}
-                      </div>
-                      <div class="col-lg-7">
-                        {{ form.last_name }}
-                      </div>
-                      <div class="clearfix"></div>
+                      {{ form.last_name.label_tag }}
+                      {{ form.last_name }}
                       {{ form.last_name.errors }}
                     </div>
                     <div class="form-group">
-                      <div class="col-lg-5">
-                        {{ form.first_name.label_tag }}
-                      </div>
-                      <div class="col-lg-7">
-                        {{ form.first_name }}
-                      </div>
-                      <div class="clearfix"></div>
+                      {{ form.first_name.label_tag }}
+                      {{ form.first_name }}
                       {{ form.first_name.errors }}
                     </div>
                     <div class="form-group">
-                      <div class="col-lg-5">
-                        {{ form.patronymic.label_tag }}
-                      </div>
-                      <div class="col-lg-7">
-                        {{ form.patronymic }}
-                      </div>
-                      <div class="clearfix"></div>
+                      {{ form.patronymic.label_tag }}
+                      {{ form.patronymic }}
                       {{ form.patronymic.errors }}
                     </div>
                     <div class="form-group add-bottom">
-                      <div class="col-lg-5">
-                        {{ form.phone.label_tag }}
-                      </div>
-                      <div class="col-lg-7">
-                        {{ form.phone }}
-                      </div>
-                      <div class="clearfix"></div>
+                      {{ form.phone.label_tag }}
+                      {{ form.phone }}
                       {{ form.phone.errors }}
                     </div>
                     <div class="form-group">
                       <p class="text-info lead">Смена пароля</p>
-                      <div class="col-lg-5"><label for="password1">Новый пароль</label></div>
-                      <div class="col-lg-7"><input type="password" name="password1" class="form-control"></div>
-                      <div class="clearfix"></div>
+                      <label for="password1">Новый пароль</label>
+                      <input type="password" name="password1" class="form-control">
                     </div>
                     <div class="form-group">
-                      <div class="col-lg-5"><label for="password2">Повторите пароль</label></div>
-                      <div class="col-lg-7"><input type="password" name="password2" class="form-control"></div>
-                      <div class="clearfix"></div>
+                      <label for="password2">Повторите пароль</label>
+                      <input type="password" name="password2" class="form-control">
                     </div>
                   </div>
-                  <div class="col-lg-6">
+                  <div class="col-md-6">
                     <div class="form-group">
                       <p class="text-info lead">Информация об организации</p>
-                      <div class="col-lg-5"> {{ form.company.label_tag }} </div>
-                      <div class="col-lg-7"> {{ form.company }} </div>
-                      <div class="clearfix"></div>
+                      {{ form.company.label_tag }}
+                      {{ form.company }}
                       {{ form.company.errors }}
                     </div>
                     <div class="form-group">
-                      <div class="col-lg-5"> {{ form.leader.label_tag }} </div>
-                      <div class="col-lg-7"> {{ form.leader }} </div>
-                      <div class="clearfix"></div>
+                      {{ form.leader.label_tag }}
+                      {{ form.leader }}
                       {{ form.leader.errors }}
                     </div>
                     <div class="form-group">
-                      <div class="col-lg-5"> {{ form.leader_function.label_tag }} </div>
-                      <div class="col-lg-7"> {{ form.leader_function }} </div>
-                      <div class="clearfix"></div>
+                      {{ form.leader_function.label_tag }}
+                      {{ form.leader_function }}
                       {{ form.leader_function.errors }}
                     </div>
                     <div class="form-group">
-                      <div class="col-lg-5"> {{ form.work_basis.label_tag }} </div>
-                      <div class="col-lg-7"> {{ form.work_basis }} </div>
-                      <div class="clearfix"></div>
+                      {{ form.work_basis.label_tag }}
+                      {{ form.work_basis }}
                       {{ form.work_basis.errors }}
                     </div>
                     <p class="alert alert-info">данные в поля "Руководитель", "Должность руководителя"
                         и "действует на основании" необходимо указывать в родительном падеже.</p>
                   </div>
                   <div class="clearfix"></div>
-                  <div class="text-center">
-                    <button type="submit" class="btn btn-default">Сохранить изменения</button>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <button type="submit" class="btn btn-save">Сохранить изменения</button>
+                    </div>
                   </div>
+                  <div class="clearfix"></div>
                 </form>
               </div>
               <div id="license" class="tab-pane fade">
-                <form action="{% url 'moderator:moderatorinfo' %}" role="form" id="js-form-moderatorinfo-update" method="post">
+                <form action="{% url 'moderator:moderatorinfo' %}" role="form" class="form" id="js-form-moderatorinfo-update" method="post">
                   {% csrf_token %}
-                  <div class="col-lg-6">
+                  <div class="col-md-12">
                     <div class="form-group">
                       <p class="text-info lead">Информация о лицензии</p>
                       <p class="lead">Информационно-программный комплекс «Контроль рекламных поверхностей»</p>
@@ -154,8 +128,11 @@
                       {{ field.errors }}
                     </div>
                   {% endfor %}
-                    <button type="submit" class="btn btn-default">Сохранить изменения</button>
                   </div>
+                  <div class="col-md-6">
+                    <button type="submit" class="btn btn-save">Сохранить изменения</button>
+                  </div>
+                  <div class="clearfix"></div>
                 </form>
               </div>
             </div>

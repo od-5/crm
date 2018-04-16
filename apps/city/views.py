@@ -33,20 +33,17 @@ class CityListView(ListView):
         qs = self.model.objects.get_qs(user).select_related('moderator').annotate(
             num_porch=Count('surface__porch'), num_client=Count('client'))
         if self.request.GET.get('moderator'):
-            qs = qs.filter(moderator__email=self.request.GET.get('moderator'))
-        if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
-            qs = qs.filter(id=int(self.request.GET.get('city')))
+            qs = qs.filter(moderator__email__icontains=self.request.GET.get('moderator'))
+        if self.request.GET.get('city'):
+            qs = qs.filter(name__icontains=self.request.GET.get('city'))
         return qs
 
     @csrf_exempt
     def get_context_data(self, **kwargs):
         context = super(CityListView, self).get_context_data()
-        if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
-            context.update({
-                'city_id': int(self.request.GET.get('city'))
-            })
         context.update({
-            'user_city_list': self.object_list
+            'r_city': self.request.GET.get('city', None),
+            'r_moderator': self.request.GET.get('moderator', None)
         })
         return context
 

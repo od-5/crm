@@ -2,38 +2,54 @@
 {#{% block header %}{% with mobile_class='js-nav-main' %}{{ block.super }}{% endwith %}{% endblock %}#}
 {% block content %}
   <div class="container">
-    <div class="col-lg-12">
+    <div class="col-md-12">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <p class="lead remove-bottom text-center">Отчёты по городам</p>
+          <div class="row page-top">
+            <div class="col-md-12">Отчёты по городам</div>
+            <div class="clearfix"></div>
+          </div>
+          {% include '__cabinet/filter_button.html' %}
+          <form action="" method="GET" role="form" class="form form-filter js-city-report-form">
+            <div class="col-md-12">
+              <div class="five-col-1">
+                <select name="city" id="city_filter" class="form-control input-sm">
+                  <option value="0">Город</option>
+                  {% for item in city_list %}
+                    <option value="{{ item.id }}" {% if item.id == city.id %}selected="selected"{% endif %}>{{ item }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="five-col-1">
+                <input type="text" name="date_s" id="id_date_s" class="form-control input-sm" value="{{ r_date_s|default:'' }}" placeholder="Дата от">
+              </div>
+              <div class="five-col-1">
+                <input type="text" name="date_e" id="id_date_e" class="form-control input-sm" value="{{ r_date_e|default:'' }}" placeholder="Дата до">
+              </div>
+              <div class="five-col-1">
+                <input type="submit" class="btn btn-search" value="Искать">
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+          </form>
         </div>
         <div class="panel-body">
-          <form action="" method="GET" role="form" class="form-inline add-bottom js-city-report-form">
-            <select name="city" id="city_filter" class="form-control input-sm">
-              <option value="0">Город</option>
-              {% for item in city_list %}
-                <option value="{{ item.id }}" {% if item.id == city.id %}selected="selected"{% endif %}>{{ item }}</option>
-              {% endfor %}
-            </select>
-            <input type="text" name="date_s" id="id_date_s" class="form-control input-sm" value="{{ r_date_s|default:'' }}" placeholder="Дата от">
-            <input type="text" name="date_e" id="id_date_e" class="form-control input-sm" value="{{ r_date_e|default:'' }}" placeholder="Дата до">
-            <button type="submit" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-random"></span> Построить отчёт</button>
-          </form>
         {% if city %}
           <div class="row add-bottom">
-            <div class="col-lg-3 text-center">
+            <div class="col-md-3 text-center">
               <div class="text-info">Продажи</div>
               <div class="city-report__value alert-info">{{ total_cost|default:'0' }}руб.</div>
             </div>
-            <div class="col-lg-3 text-center">
+            <div class="col-md-3 text-center">
               <div class="text-success">Поступления</div>
               <div class="city-report__value alert-success">{{ total_payment|default:'0' }}руб.</div>
             </div>
-            <div class="col-lg-3 text-center">
+            <div class="col-md-3 text-center">
               <div class="text-warning">Количество клиентов</div>
               <div class="city-report__value alert-warning">{{ city.client_set.count|default:'0' }}</div>
             </div>
-            <div class="col-lg-3 text-center">
+            <div class="col-md-3 text-center">
               <div class="text-danger">Количество поверхностей</div>
               <div class="city-report__value alert-danger">{{ city.surface_count|default:'0' }}</div>
             </div>

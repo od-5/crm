@@ -1,77 +1,64 @@
 {% extends 'cabinet_index.html' %}
+{% block breadcrumbs_item %}
+  <li><a href="{% url 'city:list' %}">Список городов</a></li>
+  <li class="active">Редактирование города</li>
+{% endblock %}
 {% block content %}
   <div class="container">
-    <div class="col-lg-12">
+    <div class="col-md-12">
       {% include 'city/__include/city_menu.html' %}
       <div class="panel panel-default">
         <div class="panel-heading">
-          <p class="lead text-center remove-bottom">
-            Редактирование {{ city }}
-          </p>
+          <div class="row page-top">
+            <div class="col-md-12">Редактирование {{ city }}</div>
+            <div class="clearfix"></div>
+          </div>
         </div>
         <div class="panel-body">
-          <div class="row">
-            <div class="col-lg-6">
-              <p class="text-info lead">Город</p>
-              <form action="" role="form" class="form-profile" id="js-city-form" method="post">
-                {% csrf_token %}
-                {% for field in form %}
-                <div class="form-group">
-                  <div class="col-lg-5">{{ field.label_tag }}</div>
-                  <div class="col-lg-7">{{ field }}</div>
-                  {{ field.errors }}
-                  <div class="clearfix"></div>
-                </div>
-                {% endfor %}
-{#                {% load widget_tweaks %}#}
-{#                <div class="form-group">#}
-{#                  <div class="col-lg-5">{{ form.name.label_tag }}</div>#}
-{#                  <div class="col-lg-7">{{ form.name }}</div>#}
-{#                  {{ form.name.errors }}#}
-{#                  <div class="clearfix"></div>#}
-{#                </div>#}
-{#                <div class="form-group">#}
-{#                  <div class="col-lg-5">{{ form.moderator.label_tag }}</div>#}
-{#                  <div class="col-lg-7">#}
-{#                  {% if user.type == 1 %}#}
-{#                    {{ form.moderator }}#}
-{#                  {% else %}#}
-{#                    {{ form.moderator|attr:'disabled:disabled' }}#}
-{#                  {% endif %}#}
-{#                  </div>#}
-{#                  {{ form.moderator.errors }}#}
-{#                  <div class="clearfix"></div>#}
-{#                </div>#}
-{#                <div class="form-group">#}
-{#                  <div class="col-lg-5">{{ form.contract_number.label_tag }}</div>#}
-{#                  <div class="col-lg-7">{{ form.contract_number }}</div>#}
-{#                  {{ form.contract_number.errors }}#}
-{#                  <div class="clearfix"></div>#}
-{#                </div>#}
-{#                <div class="form-group">#}
-{#                  <div class="col-lg-5">{{ form.contract_date.label_tag }}</div>#}
-{#                  <div class="col-lg-7">{{ form.contract_date }}</div>#}
-{#                  {{ form.contract_date.errors }}#}
-{#                  <div class="clearfix"></div>#}
-{#                </div>#}
-{#                <div class="form-group">#}
-{#                  <div class="col-lg-5">{{ form.slug.label_tag }}</div>#}
-{#                  <div class="col-lg-7">#}
-{#                  {% if user.type == 1 %}#}
-{#                    {{ form.slug }}#}
-{#                  {% else %}#}
-{#                    {{ form.slug|attr:'disabled:disabled' }}#}
-{#                  {% endif %}#}
-{#                  </div>#}
-{#                  {{ form.slug.errors }}#}
-{#                  <div class="clearfix"></div>#}
-{#                </div>#}
-{#              {% if user.type == 1 %}#}
-                <button type="submit" class="btn btn-default">Сохранить</button>
-{#              {% endif %}#}
-              </form>
+          <form action="" role="form" class="form" id="js-city-form" method="post">
+            {% csrf_token %}
+            <div class="col-md-12">
+              <div class="form-group">
+                <p class="text-info lead">Город</p>
+              </div>
             </div>
-          </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                {{ form.name.label_tag }}
+                {{ form.name }}
+                {{ form.name.errors }}
+              </div>
+              <div class="form-group">
+                {{ form.moderator.label_tag }}
+                {{ form.moderator }}
+                {{ form.moderator.errors }}
+              </div>
+              <div class="form-group">
+                {{ form.slug.label_tag }}
+                {{ form.slug }}
+                {{ form.slug.errors }}
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                {{ form.contract_number.label_tag }}
+                {{ form.contract_number }}
+                {{ form.contract_number.errors }}
+              </div>
+              <div class="form-group">
+                {{ form.contract_date.label_tag }}
+                {{ form.contract_date }}
+                {{ form.contract_date.errors }}
+              </div>
+            </div>
+            <div class="clearfix"></div>
+            {% if user.type == 1 %}
+            <div class="col-md-6">
+              <button type="submit" class="btn btn-save">Сохранить</button>
+            </div>
+            <div class="clearfix"></div>
+            {% endif %}
+          </form>
         </div>
       </div>
     </div>

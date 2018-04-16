@@ -1,66 +1,77 @@
 {% extends 'cabinet_index.html' %}
+{% block breadcrumbs_item %}
+  <li><a href="{% url 'city:list' %}">Список городов</a></li>
+  <li class="active">Редактирование города</li>
+{% endblock %}
 {% block content %}
   <div class="container">
-    <div class="col-lg-12">
+    <div class="col-md-12">
       {% include 'city/__include/city_menu.html' %}
       <div class="panel panel-default">
         <div class="panel-heading">
-          <p class="lead text-center remove-bottom">
-            Улицы города {{ city }}
-          </p>
+          <div class="row page-top">
+            <div class="col-md-12">Улицы города {{ city }}</div>
+            <div class="clearfix"></div>
+          </div>
         </div>
         <div class="panel-body">
-          <div class="row">
-            <div class="col-lg-6">
-              <p class="text-info lead">Добавить улицу</p>
-              <form action="" role="form" class="add-bottom" id="js-street-add-form" method="post">
-                {% csrf_token %}
-                {% for field in form.hidden_fields %}
-                  {{ field }}
-                {% endfor %}
-                {% for field in form.visible_fields %}
+          <form action="" role="form" class="form" id="js-street-add-form" method="post">
+            <div class="row">
+              {% csrf_token %}
+              {% for field in form.hidden_fields %}
+                {{ field }}
+              {% endfor %}
+              <div class="col-md-12">
                 <div class="form-group">
-                  <div class="col-lg-5">{{ field.label_tag }}</div>
-                  <div class="col-lg-7">{{ field }}</div>
-                  {{ field.errors }}
-                  <div class="clearfix"></div>
+                  <p class="text-info lead">Добавить улицу</p>
                 </div>
-                {% endfor %}
-                <button type="submit" class="btn btn-default">Добавить улицу</button>
-              </form>
+              </div>
+              {% for field in form.visible_fields %}
+              <div class="col-md-6">
+                <div class="form-group">
+                  {{ field.label_tag }}
+                  {{ field }}
+                  {{ field.errors }}
+                </div>
+              </div>
+              {% endfor %}
+              <div class="clearfix"></div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <button type="submit" class="btn btn-save">Добавить улицу</button>
+                </div>
+              </div>
+              <div class="clearfix"></div>
             </div>
-            <div class="clearfix"></div>
-            <div class="col-lg-12">
-              <table class="table table-hover table-condensed table-bordered table-list">
-                <thead>
-                  <tr>
-                    <th>Название</th>
-                    <th>Район</th>
-                    <th>&nbsp; </th>
-                  </tr>
-                </thead>
-                <tbody class="js-list">
-                {% for street in city.street_set.all %}
-                  <tr data-id="{{ street.id }}" data-name="{{ street.name }}" data-model="Street" id="id_Street_{{ street.id }}">
-                    <td><a href="{% url 'city:street-update' street.id %}">{{ street.name }}</a></td>
-                    <td>{{ street.area.name|default:'не указано' }}</td>
-                    <td>
-                      <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-Street-{{ street.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
-                        <span class="glyphicon glyphicon-remove"></span> Удалить
-                      </a>
-                    </td>
-                  </tr>
-                {% empty %}
-                  <tr>
-                    <td colspan="3">
-                      <p class="alert alert-info text-left">Улиц не найдено</p>
-                    </td>
-                  </tr>
-                {%  endfor %}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          </form>
+          <table class="table table-hover table-condensed table-bordered table-list">
+            <thead>
+              <tr>
+                <th>Название</th>
+                <th>Район</th>
+                <th>&nbsp; </th>
+              </tr>
+            </thead>
+            <tbody class="js-list">
+            {% for street in city.street_set.all %}
+              <tr data-id="{{ street.id }}" data-name="{{ street.name }}" data-model="Street" id="id_Street_{{ street.id }}">
+                <td><a href="{% url 'city:street-update' street.id %}">{{ street.name }}</a></td>
+                <td>{{ street.area.name|default:'не указано' }}</td>
+                <td>
+                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-Street-{{ street.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
+                    <span class="glyphicon glyphicon-remove"></span> Удалить
+                  </a>
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="3">
+                  <p class="alert alert-info text-left">Улиц не найдено</p>
+                </td>
+              </tr>
+            {%  endfor %}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

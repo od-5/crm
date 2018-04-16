@@ -1,27 +1,50 @@
 {% extends 'cabinet_index.html' %}
+{% block breadcrumbs_item %}
+  <li class="active">Список администраторов</li>
+{% endblock %}
 {% block content %}
   <div class="container">
-    <div class="col-lg-12">
-      <ol class="breadcrumb">
-        <li><a href="{% url 'cabinet:cabinet' %}">Рабочий стол</a></li>
-        <li class="active">Список администраторов</li>
-      </ol>
+    <div class="col-md-12">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <p class="lead remove-bottom text-center">Администраторы</p>
+          <div class="row page-top">
+            <div class="col-md-8">
+              Администраторы <span>/ {{ page_obj.paginator.count|default:'0' }}</span>
+            </div>
+            <div class="col-md-4">
+              <a href="{% url 'administrator:add' %}" class="btn btn-add page-top__btn">
+                <span class="glyphicon glyphicon-plus-sign"></span> Добавить
+              </a>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+          {% include '__cabinet/filter_button.html' %}
+          <form action="" method="GET" role="form" class="form form-filter">
+            <div class="col-md-12">
+              <div class="five-col-1">
+                <input type="text" name="email" value="{{ r_email|default:'' }}" class="form-control input-sm" placeholder="e-mail">
+              </div>
+              <div class="five-col-1">
+                <input type="text" name="last_name" value="{{ r_last_name|default:'' }}" class="form-control input-sm" placeholder="Фамилия">
+              </div>
+              <div class="five-col-1">
+                <input type="text" name="first_name" value="{{ r_first_name|default:'' }}" class="form-control input-sm" placeholder="Имя">
+              </div>
+              <div class="five-col-1">
+                <input type="text" name="patronymic" value="{{ r_patronymic|default:'' }}" class="form-control input-sm" placeholder="Отчество">
+              </div>
+              <div class="five-col-1">
+                <input type="text" name="phone" value="{{ r_phone|default:'' }}" class="form-control input-sm" placeholder="Телефон">
+              </div>
+              <div class="five-col-1">
+                <input type="submit" class="btn btn-search" value="Искать">
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+          </form>
         </div>
         <div class="panel-body">
-          <a href="{% url 'administrator:add' %}" class="btn btn-success add-bottom">
-            <span class="glyphicon glyphicon-plus-sign"></span> Добавить администратора
-          </a>
-          <form action="" method="GET" role="form" class="form-inline add-bottom">
-            <input type="text" name="email" value="{{ r_email|default:'' }}" class="form-control input-sm" placeholder="e-mail">
-            <input type="text" name="last_name" value="{{ r_last_name|default:'' }}" class="form-control input-sm" placeholder="Фамилия">
-            <input type="text" name="first_name" value="{{ r_first_name|default:'' }}" class="form-control input-sm" placeholder="Имя">
-            <input type="text" name="patronymic" value="{{ r_patronymic|default:'' }}" class="form-control input-sm" placeholder="Отчество">
-            <input type="text" name="phone" value="{{ r_phone|default:'' }}" class="form-control input-sm" placeholder="Телефон">
-            <button type="submit" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-search"></span> Искать</button>
-          </form>
           <table class="table table-hover table-condensed table-bordered table-list">
             <thead>
               <tr>

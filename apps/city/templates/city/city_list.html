@@ -2,45 +2,51 @@
 {% block extra_js %}
   <script src="http://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
 {% endblock %}
+{% block breadcrumbs_item %}
+  <li class="active">Список городов</li>
+{% endblock %}
 {% block content %}
   <div class="container">
-    <div class="col-lg-12">
-      <ol class="breadcrumb">
-        <li><a href="{% url 'cabinet:cabinet' %}">Рабочий стол</a></li>
-        <li class="active">Список городов</li>
-      </ol>
+    <div class="col-md-12">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <p class="lead remove-bottom text-center">Города</p>
+          <div class="row page-top">
+            <div class="col-md-8">Города</div>
+            <div class="col-md-4">
+              {% if user.type == 1 %}
+                <a href="{% url 'city:add' %}" class="btn btn-add page-top__btn">
+                  <span class="glyphicon glyphicon-plus-sign"></span> Добавить город
+                </a>
+                {% endif %}
+            </div>
+            <div class="clearfix"></div>
+          </div>
+          {% include '__cabinet/filter_button.html' %}
+          <form action="{% url 'city:list' %}" method="GET" role="form" class="form form-filter">
+            <div class="col-md-12">
+              <div class="five-col-1">
+                <input type="text" name="city" class="form-control input-sm" placeholder="Название" value="{{ r_city|default:'' }}">
+              </div>
+              {% if user.type == 1 %}
+              <div class="five-col-1">
+                <input type="text" name="moderator" class="form-control input-sm" placeholder="e-mail" value="{{ r_moderator|default:'' }}">
+              </div>
+              {% endif %}
+              <div class="five-col-1">
+                <input type="submit" class="btn btn-search" value="Искать">
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+          </form>
         </div>
         <div class="panel-body">
-          {% if user.type == 1 %}
-          <a href="{% url 'city:add' %}" class="btn btn-success add-bottom">
-            <span class="glyphicon glyphicon-plus-sign"></span> Добавить город
-          </a>
-          {% endif %}
-
           <div class="panel panel-success">
             <div class="panel-heading js-show-map">Посмотреть города на карте <span class="caret"></span></div>
             <div class="panel-body js-map">
               <div id="YMapsID" style="height: 500px;"></div>
             </div>
           </div>
-
-
-          <form action="{% url 'city:list' %}" method="GET" role="form" class="form-inline add-bottom">
-            <select name="city" id="city_filter" class="form-control input-sm">
-              <option value="0">Город</option>
-              {% for city in user_city_list %}
-                <option value="{{ city.id }}" {% if city.id == city_id %}selected="selected"{% endif %}>{{ city }}</option>
-              {% endfor %}
-            </select>
-            {% if user.type == 1 %}
-            <input type="text" name="moderator" class="form-control  input-sm" placeholder="e-mail">
-            {% endif %}
-            <button type="submit" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-search"></span> Искать</button>
-          </form>
-
           <div class="city-list">
             <table class="table table-hover table-condensed table-list">
               <thead>
