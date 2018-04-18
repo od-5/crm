@@ -1,19 +1,21 @@
 {% extends 'cabinet_index.html' %}
+{% block breadcrumbs_item %}
+  <li><a href="{% url 'incoming:list' %}">Журнал клиентов</a></li>
+  <li class="active">Редактирование клиента</li>
+{% endblock %}
 {% block content %}
   <div class="container">
-    <div class="col-lg-12">
-      <ol class="breadcrumb">
-        <li><a href="{% url 'cabinet:cabinet' %}">Рабочий стол</a></li>
-        <li><a href="{% url 'incoming:list' %}">Журнал клиентов</a></li>
-        <li class="active">Редактирование клиента</li>
-      </ol>
+    <div class="col-md-12">
       {% include 'incoming/__include/incoming_menu.html' %}
       <div class="panel panel-default">
         <div class="panel-heading">
-          <p class="lead text-center remove-bottom">Редактирование клиента {{ object.name }}</p>
+          <div class="row page-top">
+            <div class="col-md-12">Редактирование клиента {{ object.name }}</div>
+            <div class="clearfix"></div>
+          </div>
         </div>
         <div class="panel-body">
-          <div class="col-lg-12">
+          <div class="col-md-12">
               {% if error %}
                 <div class="alert alert-danger">
                   {{ error }}
@@ -25,52 +27,53 @@
                 </div>
               {% endif %}
           </div>
-          <div class="col-lg-6">
-            <form action="" role="form" class="js-form-incomingclient-update" method="post">
-              {% csrf_token %}
+          <form action="" role="form" class="js-form-incomingclient-update form" method="post">
+            {% csrf_token %}
+            <div class="col-md-6">
               <div class="form-group {% if not user.is_leader_manager %}hide{% endif %}">
-                <div class="col-lg-5"> {{ form.manager.label_tag }} </div>
-                <div class="col-lg-7"> {{ form.manager }} </div>
+                {{ form.manager.label_tag }}
+                {{ form.manager }}
                 {{ form.manager.errors }}
-                <div class="clearfix"></div>
               </div>
               <div class="form-group">
-                <div class="col-lg-5"> {{ form.name.label_tag }} </div>
-                <div class="col-lg-7"> {{ form.name }} </div>
-                {{ form.name.errors }}
-                <div class="clearfix"></div>
-              </div>
-              <div class="form-group">
-                <div class="col-lg-5"> {{ form.city.label_tag }} </div>
-                <div class="col-lg-7"> {{ form.city }} </div>
+                {{ form.city.label_tag }}
+                {{ form.city }}
                 {{ form.city.errors }}
-                <div class="clearfix"></div>
               </div>
               <div class="form-group">
-                <div class="col-lg-5"> {{ form.kind_of_activity.label_tag }} </div>
-                <div class="col-lg-7"> {{ form.kind_of_activity }} </div>
+                {{ form.name.label_tag }}
+                {{ form.name }}
+                {{ form.name.errors }}
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                {{ form.kind_of_activity.label_tag }}
+                {{ form.kind_of_activity }}
                 {{ form.kind_of_activity.errors }}
-                <div class="clearfix"></div>
               </div>
               <div class="form-group">
-                <div class="col-lg-5"> {{ form.actual_address.label_tag }} </div>
-                <div class="col-lg-7"> {{ form.actual_address }} </div>
+                {{ form.actual_address.label_tag }}
+                {{ form.actual_address }}
                 {{ form.actual_address.errors }}
-                <div class="clearfix"></div>
               </div>
               <div class="form-group">
-                <div class="col-lg-5"> {{ form.site.label_tag }} </div>
-                <div class="col-lg-7"> {{ form.site }} </div>
+                {{ form.site.label_tag }}
+                {{ form.site }}
                 {{ form.site.errors }}
-                <div class="clearfix"></div>
               </div>
-              <div class="text-center">
-                <button type="submit" class="btn btn-default">Сохранить</button>
+            </div>
+            <div class="clearfix"></div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <button type="submit" class="btn btn-save">Сохранить</button>
               </div>
-            </form>
-          </div>
+            </div>
+            <div class="clearfix"></div>
+          </form>
         </div>
       </div>
     </div>
+    <div class="clearfix"></div>
   </div>
 {% endblock %}

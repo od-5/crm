@@ -16,13 +16,13 @@ class TicketForm(forms.ModelForm):
 class TicketChangeForm(forms.ModelForm):
     class Meta:
         model = Ticket
-        fields = '__all__'
+        fields = ('city', 'type', 'name', 'phone', 'text', 'comment')
         widgets = {
             'city': forms.Select(attrs={'class': 'form-control'}),
             'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'type': forms.Select(attrs={'class': 'form-control'}),
             'phone': forms.TextInput(attrs={'class': 'form-control'}),
             'text': forms.Textarea(attrs={'class': 'form-control'}),
-            'type': forms.Select(attrs={'class': 'form-control'}),
             'comment': forms.Textarea(attrs={'class': 'form-control'}),
         }
 

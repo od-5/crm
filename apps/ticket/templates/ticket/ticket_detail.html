@@ -1,36 +1,39 @@
 {% extends 'cabinet_index.html' %}
+{% block breadcrumbs_item %}
+  <li><a href="{% url 'ticket:list' %}">Заявки с сайта</a></li>
+  <li class="active">{{ object }}</li>
+{% endblock %}
 {% block content %}
   <div class="container">
-    <div class="col-lg-12">
-      <ol class="breadcrumb">
-        <li><a href="{% url 'cabinet:cabinet' %}">Рабочий стол</a></li>
-        <li><a href="{% url 'ticket:list' %}">Заявки с сайта</a></li>
-        <li class="active">{{ object }}</li>
-      </ol>
+    <div class="col-md-12">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <p class="lead text-center remove-bottom">
-            {{ object }}
-          </p>
+          <div class="row page-top">
+            <div class="col-md-12">{{ object }}</div>
+            <div class="clearfix"></div>
+          </div>
         </div>
         <div class="panel-body">
-          <div class="col-lg-12">
+          <div class="col-md-12">
             {% if error %} <div class="alert alert-danger"> {{ error }} </div> {% endif %}
-{#            <div class="col-lg-6">#}
-              <form action="" role="form" class="js-form-ticket" method="post">
-                {% csrf_token %}
-                {% for field in form %}
-                  <div class="form-group">
-                    <div class="col-lg-5">{{ field.label_tag }}</div>
-                    <div class="col-lg-7">{{ field }}</div>
-                    {{ field.errors }}
-                    <div class="clearfix"></div>
-                  </div>
-                {% endfor %}
-                <button type="submit" class="btn btn-default">Сохранить</button>
-              </form>
-{#            </div>#}
           </div>
+          <form action="" role="form" class="js-form-ticket form" method="post">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="col-md-6">
+              <div class="form-group">
+                {{ field.label_tag }}
+                {{ field }}
+                {{ field.errors }}
+              </div>
+            </div>
+            {% endfor %}
+            <div class="clearfix"></div>
+            <div class="col-md-6">
+              <button type="submit" class="btn btn-save">Сохранить</button>
+            </div>
+            <div class="clearfix"></div>
+          </form>
         </div>
       </div>
     </div>

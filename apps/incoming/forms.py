@@ -53,7 +53,7 @@ class IncomingClientContactForm(forms.ModelForm):
         model = IncomingClientContact
         fields = '__all__'
         widgets = {
-            'incomingclient': forms.Select(attrs={'class': 'form-control'}),
+            'incomingclient': forms.HiddenInput(),
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'function': forms.TextInput(attrs={'class': 'form-control'}),
             'phone': forms.TextInput(attrs={'class': 'form-control'}),

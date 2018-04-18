@@ -3,63 +3,59 @@
 {% block extra_js %}
   <script src="http://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
 {% endblock %}
+{% block breadcrumbs_item %}
+  <li><a href="{% url 'manager:list' %}">Список менеджеров</a></li>
+  <li class="active">Отчёт по менеджерам</li>
+{% endblock %}
 {% block content %}
   <div class="container">
     <div class="col-lg-12">
-      <ol class="breadcrumb">
-        <li><a href="{% url 'cabinet:cabinet' %}">Рабочий стол</a></li>
-        <li><a href="{% url 'manager:list' %}">Список менеджеров</a></li>
-        <li class="active">Отчёт по менеджерам</li>
-      </ol>
       <div class="panel panel-default">
         <div class="panel-heading">
-          <p class="lead remove-bottom text-center">Отчёт по менеджерам</p>
+          <div class="row page-top">
+            <div class="col-md-12">Отчёт по менеджерам <span>/ {{ object_list.count|default:'0' }}</span></div>
+            <div class="clearfix"></div>
+          </div>
+          {% include '__cabinet/filter_button.html' %}
+          <form action="" method="GET" role="form" class="js-manager-report-form form form-filter">
+            <div class="col-md-12">
+              {% if user.type == 1 or user.type == 6 %}
+              <div class="five-col-1">
+                <select name="moderator" id="id_moderator" class="form-control input-sm">
+                  <option value="0">Выберите модератора</option>
+                  {% for moderator in moderator_list %}
+                    <option value="{{ moderator.id }}" {% if moderator.id == r_moderator %}selected="selected"{% endif %}>{{ moderator.company|default:moderator }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              {% endif %}
+              <div class="five-col-1">
+                <input type="text" name="email" value="{{ r_email|default:'' }}" class="form-control input-sm" placeholder="e-mail">
+              </div>
+              <div class="five-col-1">
+                <input type="text" name="last_name" value="{{ r_last_name|default:'' }}" class="form-control input-sm" placeholder="Фамилия">
+              </div>
+              <div class="five-col-1">
+                <input type="text" name="first_name" value="{{ r_first_name|default:'' }}" class="form-control input-sm" placeholder="Имя">
+              </div>
+              <div class="five-col-1">
+                <input type="text" name="phone" value="{{ r_phone|default:'' }}" class="form-control input-sm" placeholder="Телефон">
+              </div>
+              <div class="five-col-1">
+                <input type="text" name="date_s" id="id_date_s" class="form-control input-sm" placeholder="Дата от" value="{{ r_date_s|default:'' }}">
+              </div>
+              <div class="five-col-1">
+                <input type="text" name="date_e" id="id_date_e" class="form-control input-sm" placeholder="Дата до" value="{{ r_date_e|default:'' }}">
+              </div>
+              <div class="five-col-1">
+                <input type="submit" class="btn btn-search" value="Искать">
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+          </form>
         </div>
         <div class="panel-body">
-          <div class="row">
-            <div class="col-lg-12">
-              <p class="text-right">Найдено менеджеров: <strong>{{ object_list.count|default:'0' }}</strong></p>
-            </div>
-          </div>
-          <form action="" method="GET" role="form" class="js-manager-report-form add-bottom">
-            <table class="table table-search">
-              <tbody>
-              <tr>
-              {% if user.type == 1 or user.type == 6 %}
-                <td>
-                  <select name="moderator" id="id_moderator" class="form-control input-sm">
-                    <option value="0">Выберите модератора</option>
-                    {% for moderator in moderator_list %}
-                      <option value="{{ moderator.id }}" {% if moderator.id == r_moderator %}selected="selected"{% endif %}>{{ moderator.company|default:moderator }}</option>
-                    {% endfor %}
-                  </select>
-                </td>
-                {% endif %}
-                <td>
-                  <input type="text" name="email" value="{{ r_email|default:'' }}" class="form-control input-sm" placeholder="e-mail">
-                </td>
-                <td>
-                  <input type="text" name="last_name" value="{{ r_last_name|default:'' }}" class="form-control input-sm" placeholder="Фамилия">
-                </td>
-                <td>
-                  <input type="text" name="first_name" value="{{ r_first_name|default:'' }}" class="form-control input-sm" placeholder="Имя">
-                </td>
-                <td>
-                  <input type="text" name="phone" value="{{ r_phone|default:'' }}" class="form-control input-sm" placeholder="Телефон">
-                </td>
-                <td>
-                  <input type="text" name="date_s" id="id_date_s" class="form-control input-sm" placeholder="Дата от" value="{{ r_date_s|default:'' }}">
-                </td>
-                <td>
-                  <input type="text" name="date_e" id="id_date_e" class="form-control input-sm" placeholder="Дата до" value="{{ r_date_e|default:'' }}">
-                </td>
-                <td>
-                  <button type="submit" class="btn btn-info btn-sm"> <span class="glyphicon glyphicon-search"></span> Искать</button>
-                </td>
-              </tr>
-              </tbody>
-            </table>
-          </form>
           <form action="{% url 'manager:report-excel' %}" method="post" class="add-bottom" target="_blank">{% csrf_token %}
             <input type="hidden" name="date_from" value="{{ r_date_s|default:'' }}">
             <input type="hidden" name="date_to" value="{{ r_date_e|default:'' }}">
@@ -105,10 +101,10 @@
             </table>
             <button type="submit" class="btn btn-info add-bottom" {% if not object_list %}disabled='disabled'{% endif %}><span class="glyphicon glyphicon-download-alt"></span> Экспорт в EXCEL по выбранным менеджерам</button>
           </form>
-          <div class="col-lg-12">
+          <div class="col-md-12">
             <div id="sale-chart" style="height:500px; width: 100%;"></div>
           </div>
-          <div class="col-lg-12">
+          <div class="col-md-12">
             <div id="payment-chart" style="height:500px; width: 100%;"></div>
           </div>
         </div>

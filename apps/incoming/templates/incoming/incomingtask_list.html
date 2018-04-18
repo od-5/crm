@@ -1,86 +1,76 @@
 {% extends 'cabinet_index.html' %}
+{% block breadcrumbs_item %}
+  <li class="active">Журнал задач по клиентам</li>
+{% endblock %}
 {% block content %}
   <div class="container">
-    <div class="col-lg-12">
-      <ol class="breadcrumb">
-        <li><a href="{% url 'cabinet:cabinet' %}">Рабочий стол</a></li>
-        <li class="active">Журнал задач по клиентам</li>
-      </ol>
+    <div class="col-md-12">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <p class="lead remove-bottom text-center">Задачи по клиентам</p>
-        </div>
-        <div class="panel-body">
-          {% if error %}
-          <p class="alert alert-danger">
-            Продажа не может быть создана: клиент с таким email уже зарегистрирован в системе.
-          </p>
-          {% endif %}
-          <div class="row">
-            <div class="col-lg-6">
-              <a href="{% url 'incoming:task-add' %}" class="btn btn-success add-bottom">
-              <span class="glyphicon glyphicon-plus-sign"></span> Добавить новую задачу по клиенту
-            </a>
-            </div>
-            <div class="col-lg-6">
-              <p class="text-right">Количество задач: <strong>{{ object_list.paginator.count|default:'0' }}</strong></p>
+          <div class="row page-top">
+            <div class="col-md-8">Задачи по клиентам <span>/ {{ object_list.paginator.count|default:'0' }}</span></div>
+            <div class="col-md-4">
+              <a href="{% url 'incoming:task-add' %}" class="btn btn-add page-top__btn">
+                <span class="glyphicon glyphicon-plus-sign"></span> Добавить
+              </a>
             </div>
             <div class="clearfix"></div>
           </div>
+          {% include '__cabinet/filter_button.html' %}
+          <form action="" method="GET" role="form" id="js-incomingtask-search-form" class="form form-filter">
+            <div class="col-md-12">
+              <div class="five-col-1">
+                <input type="text" name="name" value="{{ r_name|default:'' }}" class="form-control input-sm" placeholder="Название">
+              </div>
+              <div class="five-col-1">
+                <input type="text" name="date_s" id="id_date_s" value="{{ r_date_s|default:'' }}" class="form-control input-sm" placeholder="Дата от">
+              </div>
+              <div class="five-col-1">
+                <input type="text" name="date_e" id="id_date_e" value="{{ r_date_e|default:'' }}" class="form-control input-sm" placeholder="Дата до">
+              </div>
+              <div class="five-col-1">
+                <select name="type"  class="form-control input-sm">
+                  <option value="">Тип задачи</option>
+                  <option value="0" {% if r_type == 0 %}selected="selected"{% endif %}>Назначена встреча</option>
+                  <option value="1" {% if r_type == 1 %}selected="selected"{% endif %}>Назначен звонок</option>
+                  <option value="2" {% if r_type == 2 %}selected="selected"{% endif %}>Продажа</option>
+                  <option value="3" {% if r_type == 3 %}selected="selected"{% endif %}>Отказ</option>
+                </select>
+              </div>
+              <div class="five-col-1">
+                <select name="status"  class="form-control input-sm">
+                  <option value="">Статус</option>
+                  <option value="0" {% if r_status == 0 %}selected="selected"{% endif %}>План</option>
+                  <option value="1" {% if r_status == 1 %}selected="selected"{% endif %}>Сделано</option>
+                </select>
+              </div>
 
-          <form action="" method="GET" role="form" id="js-incomingtask-search-form" class="add-bottom">
-            <table class="table table-search table-condensed">
-              <tbody>
-                <tr>
-                  <td>
-                    <input type="text" name="name" value="{{ r_name|default:'' }}" class="form-control input-sm" placeholder="Название">
-                  </td>
-                  <td>
-                    <input type="text" name="date_s" id="id_date_s" value="{{ r_date_s|default:'' }}" class="form-control input-sm" placeholder="Дата от">
-                  </td>
-                  <td>
-                    <input type="text" name="date_e" id="id_date_e" value="{{ r_date_e|default:'' }}" class="form-control input-sm" placeholder="Дата до">
-                  </td>
-                  <td>
-                    <select name="type"  class="form-control input-sm">
-                      <option value="">Тип задачи</option>
-                      <option value="0" {% if r_type == 0 %}selected="selected"{% endif %}>Назначена встреча</option>
-                      <option value="1" {% if r_type == 1 %}selected="selected"{% endif %}>Назначен звонок</option>
-                      <option value="2" {% if r_type == 2 %}selected="selected"{% endif %}>Продажа</option>
-                      <option value="3" {% if r_type == 3 %}selected="selected"{% endif %}>Отказ</option>
-                    </select>
-                  </td>
-                  <td>
-                    <select name="status"  class="form-control input-sm">
-                      <option value="">Статус</option>
-                      <option value="0" {% if r_status == 0 %}selected="selected"{% endif %}>План</option>
-                      <option value="1" {% if r_status == 1 %}selected="selected"{% endif %}>Сделано</option>
-                    </select>
-                  </td>
-                  {% if user.is_leader_manager %}
-                  <td>
-                    <select name="r_manager" class="form-control input-sm">
-                      <option value="">Выбор менеджера</option>
-                      {% for manager in manager_list %}
-                      <option value="{{ manager.id }}" {% if r_manager == manager.id %}selected="selected"{% endif %}>{{ manager.user.get_full_name }}</option>
-                      {% endfor %}
-                    </select>
-                  </td>
-                  {% endif %}
-                  <td>
-                    <button type="submit" class="btn btn-info btn-sm"> <span class="glyphicon glyphicon-search"></span> Искать</button>
-                  </td>
-                  <td>
-                  {% if show_all %}
-                    <a href="?all=0" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-calendar"></span> Показать задачи на сегодня</a>
-                  {% else %}
-                    <a href="?all=1" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-list-alt"></span> Показать все задачи</a>
-                  {% endif %}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+              {% if user.is_leader_manager %}
+              <div class="five-col-1">
+                <select name="r_manager" class="form-control input-sm">
+                  <option value="">Выбор менеджера</option>
+                  {% for manager in manager_list %}
+                  <option value="{{ manager.id }}" {% if r_manager == manager.id %}selected="selected"{% endif %}>{{ manager.user.get_full_name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              {% endif %}
+              <div class="five-col-1">
+                <input type="submit" class="btn btn-search" value="Искать">
+              </div>
+              <div class="five-col-2">
+              {% if show_all %}
+                <a href="?all=0" class="btn btn-search btn-search_green">Показать задачи на сегодня</a>
+              {% else %}
+                <a href="?all=1" class="btn btn-search btn-search_green">Показать все задачи</a>
+              {% endif %}
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
           </form>
+        </div>
+        <div class="panel-body">
           <table class="table table-hover table-condensed table-bordered table-list">
             <thead>
               <tr>
