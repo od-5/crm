@@ -1,37 +1,51 @@
 {% extends 'cabinet_index.html' %}
+{% block breadcrumbs_item %}
+  <li><a href="{% url 'client:list' %}">Список продаж</a></li>
+  <li class="active">Редактирование продажи</li>
+{% endblock %}
 {% block content %}
   <div class="container">
-    <div class="col-lg-12">
+    <div class="col-md-12">
       {% include 'client/__include/client_menu.html' %}
       <div class="panel panel-default">
         <div class="panel-heading">
-          <p class="lead text-center remove-bottom">Редактирование макета "{{ object.name }}" клиента "{{ object.client.legal_name }}"</p>
+          <div class="row page-top">
+            <div class="col-md-12">Редактирование макета "{{ object.name }}" клиента "{{ object.client.legal_name }}"
+            </div>
+            <div class="clearfix"></div>
+          </div>
         </div>
         <div class="panel-body">
           <form action="" id="js-client-update-maket-form" method="post"
-                role="form" class="add-bottom" enctype="multipart/form-data">
+                role="form" class="form" enctype="multipart/form-data">
             {% csrf_token %}
-            <div class="col-lg-6">
+            <div class="col-md-6">
               {{ client_maket_form.client }}
               <div class="form-group">
-                <div class="col-lg-5">{{ client_maket_form.name.label_tag }}</div>
-                <div class="col-lg-7">{{ client_maket_form.name }}</div>
+                {{ client_maket_form.name.label_tag }}
+                {{ client_maket_form.name }}
                 {{ client_maket_form.name.errors }}
-                <div class="clearfix"></div>
               </div>
+            </div>
+            <div class="col-md-6">
               <div class="form-group">
-                <div class="col-lg-5">{{ client_maket_form.file.label_tag }}</div>
-                <div class="col-lg-7">{{ client_maket_form.file }}</div>
-                {{ client_maket_form.file.errors }}
-                <div class="clearfix"></div>
-              </div>
-              <div class="form-group">
-                <div class="col-lg-5">{{ client_maket_form.date.label_tag }}</div>
-                <div class="col-lg-7">{{ client_maket_form.date }}</div>
+                {{ client_maket_form.date.label_tag }}
+                {{ client_maket_form.date }}
                 {{ client_maket_form.date.errors }}
-                <div class="clearfix"></div>
               </div>
-              <input type="submit" value="Сохранить изменения" class="btn btn-default">
+            </div>
+            <div class="col-md-12">
+              <div class="form-group">
+                {{ client_maket_form.file.label_tag }}
+                {{ client_maket_form.file }}
+                {{ client_maket_form.file.errors }}
+              </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <input type="submit" value="Сохранить изменения" class="btn btn-save">
+              </div>
             </div>
             <div class="clearfix"></div>
           </form>

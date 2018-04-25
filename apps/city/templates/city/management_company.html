@@ -1,68 +1,69 @@
 {% extends 'cabinet_index.html' %}
+{% block breadcrumbs_item %}
+  <li><a href="{% url 'city:management-company' %}">Список управляющих компаний</a></li>
+  {% if object %}
+    <li class="active">Редактирование {{ object.name|default:'' }}</li>
+  {% else %}
+    <li class="active">Добавление управляющей компании</li>
+  {% endif %}
+{% endblock %}
 {% block content %}
   <div class="container">
-    <div class="col-lg-12">
-      <ol class="breadcrumb">
-        <li><a href="{% url 'cabinet:cabinet' %}">Рабочий стол</a></li>
-        <li><a href="{% url 'city:management-company' %}">Список управляющих компаний</a></li>
-      {% if object %}
-        <li class="active">Редактирование {{ object.name|default:'' }}</li>
-      {% else %}
-        <li class="active">Добавление управляющей компании</li>
-      {% endif %}
-      </ol>
+    <div class="col-md-12">
       <a href="{{ back_to_list|default:'' }}" class="btn btn-default btn-sm add-bottom">
         <span class="glyphicon glyphicon-circle-arrow-left"></span> назад к списку
       </a>
       <div class="panel panel-default">
         <div class="panel-heading">
-          {% if object %}
-          <p class="lead text-center remove-bottom">Редактирование {{ object.name }}</p>
-          {% else %}
-          <p class="lead text-center remove-bottom">Добавление управляющей компании</p>
-          {% endif %}
+          <div class="row page-top">
+            <div class="col-md-12">
+              {% if object %}Редактирование {{ object.name }}{% else %}Добавление управляющей компании{% endif %}
+            </div>
+            <div class="clearfix"></div>
+          </div>
+
         </div>
         <div class="panel-body">
-          <div class="row">
-            <div class="col-lg-6">
-              <form action="" role="form" id="js-management-company-form" method="post">
-                {% csrf_token %}
-                <div class="form-group">
-                  <div class="col-lg-5">{{ form.city.label_tag }}</div>
-                  <div class="col-lg-7">{{ form.city }}</div>
-                  {{ form.city.errors }}
-                  <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                  <div class="col-lg-5">{{ form.name.label_tag }}</div>
-                  <div class="col-lg-7">{{ form.name }}</div>
-                  {{ form.name.errors }}
-                  <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                  <div class="col-lg-5">{{ form.leader_function.label_tag }}</div>
-                  <div class="col-lg-7">{{ form.leader_function }}</div>
-                  {{ form.leader_function.errors }}
-                  <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                  <div class="col-lg-5">{{ form.leader_name.label_tag }}</div>
-                  <div class="col-lg-7">{{ form.leader_name }}</div>
-                  {{ form.leader_name.errors }}
-                  <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                  <div class="col-lg-5">{{ form.phone.label_tag }}</div>
-                  <div class="col-lg-7">{{ form.phone }}</div>
-                  {{ form.phone.errors }}
-                  <div class="clearfix"></div>
-                </div>
-                <button type="submit" class="btn btn-default">Сохранить</button>
-              </form>
+          <form action="" role="form" id="js-management-company-form" class="form" method="post">
+            {% csrf_token %}
+            <div class="col-md-6">
+              <div class="form-group">
+                {{ form.city.label_tag }}
+                {{ form.city }}
+                {{ form.city.errors }}
+              </div>
+              <div class="form-group">
+                {{ form.name.label_tag }}
+                {{ form.name }}
+                {{ form.name.errors }}
+              </div>
+              <div class="form-group">
+                {{ form.leader_function.label_tag }}
+                {{ form.leader_function }}
+                {{ form.leader_function.errors }}
+              </div>
             </div>
-          </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                {{ form.leader_name.label_tag }}
+                {{ form.leader_name }}
+                {{ form.leader_name.errors }}
+              </div>
+              <div class="form-group">
+                {{ form.phone.label_tag }}
+                {{ form.phone }}
+                {{ form.phone.errors }}
+              </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="col-md-6">
+              <button type="submit" class="btn btn-save">Сохранить</button>
+            </div>
+            <div class="clearfix"></div>
+          </form>
         </div>
       </div>
     </div>
+    <div class="clearfix"></div>
   </div>
 {% endblock %}

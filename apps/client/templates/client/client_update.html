@@ -1,16 +1,21 @@
 {% extends 'cabinet_index.html' %}
+{% block breadcrumbs_item %}
+  <li><a href="{% url 'client:list' %}">Список продаж</a></li>
+  <li class="active">Редактирование продажи</li>
+{% endblock %}
 {% block content %}
   <div class="container">
-    <div class="col-lg-12">
+    <div class="col-md-12">
       {% include 'client/__include/client_menu.html' %}
       <div class="panel panel-default">
         <div class="panel-heading">
-          <p class="lead text-center remove-bottom">
-            Редактирование {{ object }}
-          </p>
+          <div class="row page-top">
+            <div class="col-md-12">Редактирование {{ object }}</div>
+            <div class="clearfix"></div>
+          </div>
         </div>
         <div class="panel-body">
-          <div class="col-lg-12">
+          <div class="col-md-12">
             {% if error %}
               <div class="alert alert-danger">
                 {{ error }}
@@ -21,174 +26,160 @@
                 {{ success }}
               </div>
             {% endif %}
-            <form action="" role="form" class="js-form-client-update" method="post">
-              {% csrf_token %}
-              <div class="col-lg-6">
-                <p class="lead text-center">ФИО представителя</p>
-                {{ user_form.errors }}
-                <div class="form-group">
-                  <div class="col-lg-5">{{ client_form.city.label_tag }}</div>
-                  <div class="col-lg-7">{{ client_form.city }}</div>
-                  {{ client_form.city.errors }}
-                  <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                  <div class="col-lg-5">{{ client_form.manager.label_tag }}</div>
-                  <div class="col-lg-7">{{ client_form.manager }}</div>
-                  {{ client_form.manager.errors }}
-                  <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                  <div class="col-lg-5">{{ user_form.email.label_tag }}</div>
-                  <div class="col-lg-7">{{ user_form.email }}</div>
-                  {{ user_form.email.errors }}
-                  <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                  <div class="col-lg-5">{{ user_form.last_name.label_tag }}</div>
-                  <div class="col-lg-7">{{ user_form.last_name }}</div>
-                  {{ user_form.last_name.errors }}
-                  <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                  <div class="col-lg-5">{{ user_form.first_name.label_tag }}</div>
-                  <div class="col-lg-7">{{ user_form.first_name }}</div>
-                  {{ user_form.first_name.errors }}
-                  <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                  <div class="col-lg-5">{{ user_form.patronymic.label_tag }}</div>
-                  <div class="col-lg-7">{{ user_form.patronymic }}</div>
-                  {{ user_form.patronymic.errors }}
-                  <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                  <div class="col-lg-5">{{ user_form.phone.label_tag }}</div>
-                  <div class="col-lg-7">{{ user_form.phone }}</div>
-                  {{ user_form.phone.errors }}
-                  <div class="clearfix"></div>
-                </div>
-                <p class="lead text-center">Смена пароля</p>
-                <div class="form-group">
-                  <div class="col-lg-5"><label for="password1">Новый пароль</label></div>
-                  <div class="col-lg-7"><input type="password" name="password1" class="form-control"></div>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                  <div class="col-lg-5"><label for="password2">Повторите пароль</label></div>
-                  <div class="col-lg-7"><input type="password" name="password2" class="form-control"></div>
-                  <div class="clearfix"></div>
-                </div>
-              </div>
-              <div class="col-lg-6">
-                <p class="lead text-center">Реквизиты организации</p>
-                {{ client_form.user }}
-
-
-                <div class="form-group">
-                  <div class="col-lg-5">{{ client_form.legal_name.label_tag }}</div>
-                  <div class="col-lg-7">{{ client_form.legal_name }}</div>
-                  {{ client_form.legal_name.errors }}
-                  <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                  <div class="col-lg-5">{{ client_form.actual_name.label_tag }}</div>
-                  <div class="col-lg-7">{{ client_form.actual_name }}</div>
-                  {{ client_form.actual_name.errors }}
-                  <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                  <div class="col-lg-5">{{ client_form.legal_address.label_tag }}</div>
-                  <div class="col-lg-7">{{ client_form.legal_address }}</div>
-                  {{ client_form.legal_address.errors }}
-                  <div class="clearfix"></div>
-                </div>
-
-                <div class="form-group">
-                  <div class="col-lg-5">{{ client_form.inn.label_tag }}</div>
-                  <div class="col-lg-7">{{ client_form.inn }}</div>
-                  {{ client_form.inn.errors }}
-                  <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                  <div class="col-lg-5">{{ client_form.kpp.label_tag }}</div>
-                  <div class="col-lg-7">{{ client_form.kpp }}</div>
-                  {{ client_form.kpp.errors }}
-                  <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                  <div class="col-lg-5">{{ client_form.ogrn.label_tag }}</div>
-                  <div class="col-lg-7">{{ client_form.ogrn }}</div>
-                  {{ client_form.ogrn.errors }}
-                  <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                  <div class="col-lg-5">{{ client_form.bank.label_tag }}</div>
-                  <div class="col-lg-7">{{ client_form.bank }}</div>
-                  {{ client_form.bank.errors }}
-                  <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                  <div class="col-lg-5">{{ client_form.bik.label_tag }}</div>
-                  <div class="col-lg-7">{{ client_form.bik }}</div>
-                  {{ client_form.bik.errors }}
-                  <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                  <div class="col-lg-5">{{ client_form.account.label_tag }}</div>
-                  <div class="col-lg-7">{{ client_form.account }}</div>
-                  {{ client_form.account.errors }}
-                  <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                  <div class="col-lg-5">{{ client_form.account_cor.label_tag }}</div>
-                  <div class="col-lg-7">{{ client_form.account_cor }}</div>
-                  {{ client_form.account_cor.errors }}
-                  <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                  <div class="col-lg-5">{{ client_form.leader.label_tag }}</div>
-                  <div class="col-lg-7">{{ client_form.leader }}</div>
-                  {{ client_form.leader.errors }}
-                  <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                  <div class="col-lg-5">{{ client_form.leader_function.label_tag }}</div>
-                  <div class="col-lg-7">{{ client_form.leader_function }}</div>
-                  {{ client_form.leader_function.errors }}
-                  <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                  <div class="col-lg-5">{{ client_form.work_basis.label_tag }}</div>
-                  <div class="col-lg-7">{{ client_form.work_basis }}</div>
-                  {{ client_form.work_basis.errors }}
-                  <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                  <div class="col-lg-5">{{ client_form.photo_additional.label_tag }}</div>
-                  <div class="col-lg-7">{{ client_form.photo_additional }}</div>
-                  {{ client_form.photo_additional.errors }}
-                  <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                  {% load widget_tweaks %}
-                  <h4>Преамбула к договору</h4>
-                  <p>
-                    "Название компании", именуемое в дальнейшем "Заказчик",<br>
-                    в лице
-                    {{ client_form.signer_post_dec|attr:'placeholder:должность подписанта'|add_class:'signer-input' }}
-                    {{ client_form.signer_name_dec|attr:'placeholder:имя подписанта'|add_class:'signer-input' }},
-                     действующего на основании
-                    {{ client_form.signer_doc_dec|attr:'placeholder:действует на основании'|add_class:'signer-input' }}
-                  </p>
-                </div>
-                <div class="clearfix"></div>
-              </div>
-              <div class="text-center">
-                <button type="submit" class="btn btn-default">Сохранить</button>
-              </div>
-            </form>
           </div>
+          <form action="" role="form" class="js-form-client-update form" method="post">
+            {% csrf_token %}
+            <div class="col-md-6">
+              <div class="form-group">
+                <p class="lead text-info">ФИО представителя</p>
+              </div>
+              {{ user_form.errors }}
+              <div class="form-group">
+                {{ user_form.email.label_tag }}
+                {{ user_form.email }}
+                {{ user_form.email.errors }}
+              </div>
+              <div class="form-group">
+                {{ user_form.last_name.label_tag }}
+                {{ user_form.last_name }}
+                {{ user_form.last_name.errors }}
+              </div>
+              <div class="form-group">
+                {{ user_form.first_name.label_tag }}
+                {{ user_form.first_name }}
+                {{ user_form.first_name.errors }}
+              </div>
+              <div class="form-group">
+                {{ user_form.patronymic.label_tag }}
+                {{ user_form.patronymic }}
+                {{ user_form.patronymic.errors }}
+              </div>
+              <div class="form-group">
+                {{ user_form.phone.label_tag }}
+                {{ user_form.phone }}
+                {{ user_form.phone.errors }}
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <p class="lead text-info">Смена пароля</p>
+              </div>
+              <div class="form-group">
+                <label for="password1">Новый пароль</label>
+                <input type="password" name="password1" class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="password2">Повторите пароль</label>
+                <input type="password" name="password2" class="form-control">
+              </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="col-md-6">
+              <p class="lead text-center">Реквизиты организации</p>
+              {{ client_form.user }}
+              <div class="form-group">
+                {{ client_form.city.label_tag }}
+                {{ client_form.city }}
+                {{ client_form.city.errors }}
+              </div>
+              <div class="form-group">
+                {{ client_form.manager.label_tag }}
+                {{ client_form.manager }}
+                {{ client_form.manager.errors }}
+              </div>
+              <div class="form-group">
+                {{ client_form.legal_name.label_tag }}
+                {{ client_form.legal_name }}
+                {{ client_form.legal_name.errors }}
+              </div>
+              <div class="form-group">
+                {{ client_form.actual_name.label_tag }}
+                {{ client_form.actual_name }}
+                {{ client_form.actual_name.errors }}
+              </div>
+              <div class="form-group">
+                {{ client_form.legal_address.label_tag }}
+                {{ client_form.legal_address }}
+                {{ client_form.legal_address.errors }}
+              </div>
+              <div class="form-group">
+                {{ client_form.inn.label_tag }}
+                {{ client_form.inn }}
+                {{ client_form.inn.errors }}
+              </div>
+              <div class="form-group">
+                {{ client_form.kpp.label_tag }}
+                {{ client_form.kpp }}
+                {{ client_form.kpp.errors }}
+              </div>
+              <div class="form-group">
+                {{ client_form.ogrn.label_tag }}
+                {{ client_form.ogrn }}
+                {{ client_form.ogrn.errors }}
+              </div>
+              <div class="form-group">
+                {{ client_form.bank.label_tag }}
+                {{ client_form.bank }}
+                {{ client_form.bank.errors }}
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                {{ client_form.bik.label_tag }}
+                {{ client_form.bik }}
+                {{ client_form.bik.errors }}
+              </div>
+              <div class="form-group">
+                {{ client_form.account.label_tag }}
+                {{ client_form.account }}
+                {{ client_form.account.errors }}
+              </div>
+              <div class="form-group">
+                {{ client_form.account_cor.label_tag }}
+                {{ client_form.account_cor }}
+                {{ client_form.account_cor.errors }}
+              </div>
+              <div class="form-group">
+                {{ client_form.leader.label_tag }}
+                {{ client_form.leader }}
+                {{ client_form.leader.errors }}
+              </div>
+              <div class="form-group">
+                {{ client_form.leader_function.label_tag }}
+                {{ client_form.leader_function }}
+                {{ client_form.leader_function.errors }}
+              </div>
+              <div class="form-group">
+                {{ client_form.work_basis.label_tag }}
+                {{ client_form.work_basis }}
+                {{ client_form.work_basis.errors }}
+              </div>
+              <div class="form-group">
+                {{ client_form.photo_additional.label_tag }}
+                {{ client_form.photo_additional }}
+                {{ client_form.photo_additional.errors }}
+              </div>
+              <div class="form-group">
+                {% load widget_tweaks %}
+                <h4>Преамбула к договору</h4>
+                <p>
+                  "Название компании", именуемое в дальнейшем "Заказчик",<br>
+                  в лице
+                  {{ client_form.signer_post_dec|attr:'placeholder:должность подписанта'|add_class:'signer-input' }}
+                  {{ client_form.signer_name_dec|attr:'placeholder:имя подписанта'|add_class:'signer-input' }},
+                   действующего на основании
+                  {{ client_form.signer_doc_dec|attr:'placeholder:действует на основании'|add_class:'signer-input' }}
+                </p>
+              </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <button type="submit" class="btn btn-save">Сохранить</button>
+              </div>
+            </div>
+            <div class="clearfix"></div>
+          </form>
         </div>
       </div>
     </div>

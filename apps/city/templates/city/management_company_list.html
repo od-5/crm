@@ -1,78 +1,82 @@
 {% extends 'cabinet_index.html' %}
-{% block extra_js %}
-  <script src="http://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
-  <script src="{{ STATIC_URL }}js/map.js"></script>
+{% block breadcrumbs_item %}
+  <li class="active">Управляющие компании</li>
 {% endblock %}
 {% block content %}
   <div class="container">
-    <div class="col-lg-12">
+    <div class="col-md-12">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <p class="lead remove-bottom text-center">Управляющие компании</p>
-        </div>
-        <div class="panel-body">
-          <div class="row">
-            <div class="col-lg-6">
-              <a href="{% url 'city:management-company-add' %}" class="btn btn-success add-bottom">
-                <span class="glyphicon glyphicon-plus-sign"></span> Добавить управляющую программу
+          <div class="row page-top">
+            <div class="col-md-8">Управляющие компании <span>/ {{ object_list.count|default:'0' }}</span></div>
+            <div class="col-md-4">
+              <a href="{% url 'city:management-company-add' %}" class="btn btn-add page-top__btn">
+                <span class="glyphicon glyphicon-plus-sign"></span> Добавить
               </a>
-            </div>
-            <div class="col-lg-6">
-              <p class="text-right">Всего управляющих компаний: <strong>{{ object_list.count|default:'0' }}</strong></p>
             </div>
             <div class="clearfix"></div>
           </div>
-          <form action="" method="GET" role="form" class="form-inline add-bottom">
-            <select name="city" id="city_filter" class="form-control input-sm">
-              <option value="0">Город</option>
-              {% for city in city_list %}
-                <option value="{{ city.id }}" {% if city.id == city_id %}selected="selected"{% endif %}>{{ city }}</option>
-              {% endfor %}
-            </select>
-            <input type="text" name="name" class="form-control  input-sm" placeholder="Название организации">
-            <button type="submit" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-search"></span> Искать</button>
+          {% include '__cabinet/filter_button.html' %}
+          <form action="" method="GET" role="form" class="form form-filter">
+            <div class="col-md-12">
+              <div class="five-col-1">
+                <select name="city" id="city_filter" class="form-control input-sm">
+                  <option value="0">Город</option>
+                  {% for city in city_list %}
+                    <option value="{{ city.id }}" {% if city.id == city_id %}selected="selected"{% endif %}>{{ city }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="five-col-1">
+                <input type="text" name="name" class="form-control  input-sm" placeholder="Название организации">
+              </div>
+              <div class="five-col-1">
+                <input type="submit" class="btn btn-search" value="Искать">
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
           </form>
-
-          <div>
-            <table class="table table-hover table-condensed table-bordered table-list">
-              <thead>
-                <tr>
-                  <th>Город</th>
-                  <th>Название</th>
-                  <th>Должность руководителя</th>
-                  <th>ФИО руководителя</th>
-                  <th>Контактный телефон</th>
-                  <th>&nbsp;</th>
-                </tr>
-              </thead>
-              <tbody class="js-list">
-              {% for object in object_list %}
-                <tr data-id="{{ object.id }}" data-name="{{ object.name }}" data-model="ManagementCompany" id="id_ManagementCompany_{{ object.id }}">
-                  <td>{{ object.city.name|default:'Не указано' }}</td>
-                  <td><a href="{% url 'city:management-company-update' object.pk %}">{{ object.name|default:'' }}</a></td>
-                  <td>{{ object.leader_function|default:'Не указано' }}</td>
-                  <td>{{ object.leader_name|default:'Не указано' }}</td>
-                  <td>{{ object.phone|default:'Не указано' }}</td>
-                  <td>
-                    <a href="#js-ajax-item-remove" id="js-ajax-remove-btт-ManagementCompany-{{ object.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
-                      <span class="glyphicon glyphicon-remove"></span> Удалить
-                    </a>
-                  </td>
-                </tr>
-              {% empty %}
-                <tr style="width:100%">
-                  <td colspan="6">
-                    <p class="alert alert-info text-left">Управляющих компаний не найдено</p>
-                  </td>
-                </tr>
-              {% endfor %}
-              </tbody>
-            </table>
-          </div>
+        </div>
+        <div class="panel-body">
+          <table class="table table-hover table-condensed table-bordered table-list">
+            <thead>
+              <tr>
+                <th>Город</th>
+                <th>Название</th>
+                <th>Должность руководителя</th>
+                <th>ФИО руководителя</th>
+                <th>Контактный телефон</th>
+                <th>&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody class="js-list">
+            {% for object in object_list %}
+              <tr data-id="{{ object.id }}" data-name="{{ object.name }}" data-model="ManagementCompany" id="id_ManagementCompany_{{ object.id }}">
+                <td>{{ object.city.name|default:'Не указано' }}</td>
+                <td><a href="{% url 'city:management-company-update' object.pk %}">{{ object.name|default:'' }}</a></td>
+                <td>{{ object.leader_function|default:'Не указано' }}</td>
+                <td>{{ object.leader_name|default:'Не указано' }}</td>
+                <td>{{ object.phone|default:'Не указано' }}</td>
+                <td>
+                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btт-ManagementCompany-{{ object.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
+                    <span class="glyphicon glyphicon-remove"></span> Удалить
+                  </a>
+                </td>
+              </tr>
+            {% empty %}
+              <tr style="width:100%">
+                <td colspan="6">
+                  <p class="alert alert-info text-left">Управляющих компаний не найдено</p>
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
         </div>
       </div>
-
     </div>
+    <div class="clearfix"></div>
   </div>
-{% include '__modal/js_ajax_remove_form.html' %}
+  {% include '__modal/js_ajax_remove_form.html' %}
 {% endblock %}

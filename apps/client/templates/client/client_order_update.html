@@ -1,61 +1,78 @@
 {% extends 'cabinet_index.html' %}
+{% block breadcrumbs_item %}
+  <li><a href="{% url 'client:list' %}">Список продаж</a></li>
+  <li class="active">Редактирование продажи</li>
+{% endblock %}
 {% block content %}
   <div class="container">
-    <div class="col-lg-12">
+    <div class="col-md-12">
       {% include 'client/__include/client_menu.html' %}
       <div class="panel panel-default">
         <div class="panel-heading">
-          <p class="lead text-center remove-bottom">
-            {{ object }} клиента "{{ object.client.legal_name }}"
-          </p>
+          <div class="row page-top">
+            <div class="col-md-12">{{ object }} клиента "{{ object.client.legal_name }}"</div>
+            <div class="clearfix"></div>
+          </div>
         </div>
         <div class="panel-body">
         {% if object.is_closed %}
           <p class="lead add-bottom text-center">Заказ закрыт</p>
         {% else %}
-          <form action="" id="js-client-update-order-form" method="post" role="form" class="add-bottom">
+          <form action="" id="js-client-update-order-form" method="post" role="form" class="form add-bottom">
             {% csrf_token %}
-            <div class="col-lg-6">
+            <div class="col-md-12">
+              <div class="form-group">
+                <p class="lead add-bottom text-info">Редактирование заказа</p>
+              </div>
+            </div>
+            <div class="col-md-6">
               {{ order_form.client }}
               <div class="form-group">
-                <p class="lead add-bottom">Редактировать заказ</p>
-                <div class="col-lg-5">{{ order_form.date_start.label_tag }}</div>
-                <div class="col-lg-7">{{ order_form.date_start }}</div>
+                {{ order_form.date_start.label_tag }}
+                {{ order_form.date_start }}
                 {{ order_form.date_start.errors }}
-                <div class="clearfix"></div>
               </div>
+            </div>
+            <div class="col-md-6">
               <div class="form-group">
-                <div class="col-lg-5">{{ order_form.date_end.label_tag }}</div>
-                <div class="col-lg-7">{{ order_form.date_end }}</div>
+                {{ order_form.date_end.label_tag }}
+                {{ order_form.date_end }}
                 {{ form.date_end.errors }}
-                <div class="clearfix"></div>
               </div>
-              <input type="submit" value="Сохранить изменения" class="btn btn-default">
+            </div>
+            <div class="clearfix"></div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <input type="submit" value="Сохранить изменения" class="btn btn-save">
+              </div>
             </div>
             <div class="clearfix"></div>
           </form>
-          <div class="col-lg-12">
-            <p class="lead">Добавление адресов к заказу</p>
+          <hr>
+          <div class="col-md-12">
+            <p class="lead text-info">Добавление адресов к заказу</p>
           </div>
 
-          <form action="{% url 'client:add-client-surface' %}" id="js-order-surface-add-form" method="post" role="form">
+          <form action="{% url 'client:add-client-surface' %}" id="js-order-surface-add-form" method="post" class="form" role="form">
           {% csrf_token %}
-            <div class="col-lg-6">
+            <div class="col-md-6">
               <input type="hidden" name="cos_client" id="id_cos_client" value="{{ client.id }}">
               <input type="hidden" name="cos_order" id="id_cos_order" value="{{ object.id }}">
             </div>
-            <div class="col-lg-10">
+            <div class="col-md-12">
               <div class="form-group">
-                <div class="col-lg-3"><label for="cos_area">Выберите район:</label></div>
-                <div class="col-lg-4">
-                  <select name="cos_area" id="id_cos_area" class="form-control" data-ajax-url="{% url 'city:get_free_area_surface' %}" data-client-order="{{ object.id }}">
-                    <option value="">---- выберите район ----</option>
-                  {% for area in area_list %}
-                    <option value="{{ area.id }}">{{ area.name }}</option>
-                  {% endfor %}
-                  </select>
+                <div class="row">
+                  <div class="col-md-6">
+                    <label for="cos_area">Выберите район:</label>
+                      <select name="cos_area" id="id_cos_area" class="form-control" data-ajax-url="{% url 'city:get_free_area_surface' %}" data-client-order="{{ object.id }}">
+                        <option value="">---- выберите район ----</option>
+                      {% for area in area_list %}
+                        <option value="{{ area.id }}">{{ area.name }}</option>
+                      {% endfor %}
+                      </select>
+                    </div>
+                  <div class="clearfix"></div>
                 </div>
-                <div class="clearfix"></div>
                 <div class="surface-list js-surface-list">
                   <table class="table">
                     <thead>
@@ -70,19 +87,19 @@
                     <tbody></tbody>
                   </table>
                 </div>
-                <p class="lead">
+                <p class="lead text-info">
                   Количество стендов: <span id="js-selected-surface-porch-count">0</span>
                 </p>
                 <div class="clearfix"></div>
               </div>
             </div>
             <div class="clearfix"></div>
-            <div class="col-lg-12">
-              <input type="submit" class="btn btn-default add-bottom" value="Добавить адреса к заказу">
+            <div class="col-md-6">
+              <input type="submit" class="btn btn-save btn-save_green" value="Добавить адреса к заказу">
             </div>
           </form>
         {% endif %}
-          <div class="col-lg-12 surface-list">
+          <div class="col-md-12 surface-list">
             <table class="table table-hover table-condensed table-bordered table-list">
               <thead>
                 <tr>
@@ -118,8 +135,8 @@
             </table>
 
           </div>
-          <div class="col-lg-12">
-            <p class="lead">
+          <div class="col-md-12">
+            <p class="lead text-info">
               Количество стендов в заказе: {{ object.stand_count|default:'0' }}
             </p>
           </div>

@@ -1,41 +1,46 @@
 {% extends 'cabinet_index.html' %}
+{% block breadcrumbs_item %}
+  <li><a href="{% url 'client:list' %}">Список продаж</a></li>
+  <li class="active">Редактирование продажи</li>
+{% endblock %}
 {% block content %}
   <div class="container">
-    <div class="col-lg-12">
+    <div class="col-md-12">
       {% include 'client/__include/client_menu.html' %}
       <div class="panel panel-default">
         <div class="panel-heading">
-          <p class="lead text-center remove-bottom">
-            Заказы клиента "{{ object.legal_name }}"
-          </p>
+          <div class="row page-top">
+            <div class="col-md-12">Заказы клиента "{{ object.legal_name }}"</div>
+            <div class="clearfix"></div>
+          </div>
         </div>
         <div class="panel-body">
-          <form action="" id="js-client-add-order-form" method="post" role="form" class="add-bottom">
+          <form action="" id="js-client-add-order-form" method="post" role="form" class="form add-bottom">
             {% csrf_token %}
             <div class="row">
-              <div class="col-lg-6">
-                <p class="lead add-bottom">Добавить заказ</p>
+              <div class="col-md-6">
                 {{ client_order_form.client }}
                 <div class="form-group">
-                  <div class="row">
-                    <div class="col-lg-5">{{ client_order_form.date_start.label_tag }}</div>
-                    <div class="col-lg-7">{{ client_order_form.date_start }}</div>
-                    {{ client_order_form.date_start.errors }}
-                  </div>
-                  <div class="clearfix"></div>
+                  {{ client_order_form.date_start.label_tag }}
+                  {{ client_order_form.date_start }}
+                  {{ client_order_form.date_start.errors }}
                 </div>
-                <div class="form-group">
-                  <div class="row">
-                    <div class="col-lg-5">{{ client_order_form.date_end.label_tag }}</div>
-                    <div class="col-lg-7">{{ client_order_form.date_end }}</div>
-                    {{ client_order_form.date_end.errors }}
-                  </div>
-                  <div class="clearfix"></div>
-                </div>
-                <input type="submit" value="Создать заказ" class="btn btn-default">
               </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  {{ client_order_form.date_end.label_tag }}
+                  {{ client_order_form.date_end }}
+                  {{ client_order_form.date_end.errors }}
+                </div>
+              </div>
+              <div class="clearfix"></div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <input type="submit" value="Создать заказ" class="btn btn-save">
+                </div>
+              </div>
+              <div class="clearfix"></div>
             </div>
-            <div class="clearfix"></div>
           </form>
           <table class="table table-hover table-condensed table-bordered table-list">
             <thead>
