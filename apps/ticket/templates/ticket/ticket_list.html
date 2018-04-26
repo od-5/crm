@@ -51,7 +51,6 @@
                 <th>Имя</th>
                 <th>Телефон</th>
                 <th>Город</th>
-                <th>Текст</th>
                 <th>Дата</th>
                 <th>Статус</th>
                 <th>&nbsp;</th>
@@ -65,7 +64,6 @@
                 <td><a href="{% url 'ticket:detail' object.id %}">{{ object.name|default:'Не указано' }}</a></td>
                 <td>{{ object.phone|default:'Не указано' }}</td>
                 <td>{{ object.city|default:'Не указано' }}</td>
-                <td>{{ object.text|default:'Не указано' }}</td>
                 <td>{{ object.created|default:'Не указано' }}</td>
                 <td>{{ object.get_type_display|default:'Не указано' }}</td>
                 <td>
@@ -77,7 +75,7 @@
               {% endfor %}
             {% else %}
               <tr>
-                <td colspan="7"><p class="alert alert-info text-left">Заявок нет</p></td>
+                <td colspan="6"><p class="alert alert-info text-left">Заявок нет</p></td>
               </tr>
             {% endif %}
             </tbody>

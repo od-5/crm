@@ -10,19 +10,18 @@ __author__ = 'Rylcev Alexy'
 class TicketForm(forms.ModelForm):
     class Meta:
         model = Ticket
-        fields = ('name', 'phone', 'city', 'text')
+        fields = ('name', 'phone', 'city')
 
 
 class TicketChangeForm(forms.ModelForm):
     class Meta:
         model = Ticket
-        fields = ('city', 'type', 'name', 'phone', 'text', 'comment')
+        fields = ('city', 'type', 'name', 'phone', 'comment')
         widgets = {
             'city': forms.Select(attrs={'class': 'form-control'}),
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'type': forms.Select(attrs={'class': 'form-control'}),
             'phone': forms.TextInput(attrs={'class': 'form-control'}),
-            'text': forms.Textarea(attrs={'class': 'form-control'}),
             'comment': forms.Textarea(attrs={'class': 'form-control'}),
         }
 

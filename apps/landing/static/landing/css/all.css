@@ -823,8 +823,9 @@ label.error {
     background-size: cover;
     border-top: 1px solid #000;
 }
-.ask .form-block {width: 765px;}
-.ask .form-block form {width: 671px;}
+.ask .form-block {width: 500px;}
+.ask .form-block form {width: 400px;}
+.ask .form-block .ui-selectmenu-button {width: 100% !important;}
 .form-right {
     float: right;
     width: 440px;

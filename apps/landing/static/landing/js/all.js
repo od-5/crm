@@ -10,9 +10,6 @@ $(document).ready(function () {
          name: {
            required: true
          },
-         text: {
-           required: true
-         },
          mail: {
            required: true,
            email: true

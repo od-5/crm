@@ -69,17 +69,10 @@ class Ticket(Common):
             if setup and setup.email:
                 email = setup.email
         if email:
-            if self.text:
-                if self.city:
-                    message = u'Имя: %s\nТелефон: %s\nГород: %s\nСообщение: %s\n' % (
-                    self.name, self.phone, self.city, self.text)
-                else:
-                    message = u'Имя: %s\nТелефон: %s\nСообщение: %s\n' % (self.name, self.phone, self.text)
+            if self.city:
+                message = u'Имя: %s\nТелефон: %s\nГород: %s' % (self.name, self.phone, self.city)
             else:
-                if self.city:
-                    message = u'Имя: %s\nТелефон: %s\nГород: %s' % (self.name, self.phone, self.city)
-                else:
-                    message = u'Имя: %s\nТелефон: %s\n' % (self.name, self.phone)
+                message = u'Имя: %s\nТелефон: %s\n' % (self.name, self.phone)
             send_mail(
                 mail_title_msg,
                 message,

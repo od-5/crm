@@ -233,20 +233,24 @@
 					<div class="form-top"></div>
 					<div class="form-frame">
 						<div class="form-title">у Вас есть какой-либо вопрос, Вы можете задать его в форме ниже:</div>
-						<form action="{% url 'ticket:send' %}" method="post">
-              {% csrf_token %}
-							<fieldset>
-								<div class="form-right">
-									<textarea name="text" cols="30" rows="10" class="textarea" placeholder="Ваш вопрос *"></textarea>
-								</div>
-								<div class="form-left">
-									<input type="text" name="name" class="input" placeholder="Ваше имя *">
-									<input type="text" name="phone" class="input no-margin" placeholder="+7 (___) ___ - __ - __">
-								</div>
+            <form action="{% url 'ticket:send' %}" id="js-ticket-form-1" method="post">
+						  {%  csrf_token %}
+						  <fieldset>
+                <input type="text" name="name" class="input" placeholder="Ваше имя *">
+                <input type="text" name="phone" class="input no-margin" placeholder="+7 (___) ___ - __ - __">
+                <div class="select-block">
+                  <select name="city" class="styled" id="ui-id-1" style="display: none;">
+                  <option value="">Выберите ваш город</option>
+                  {% for city in city_list %}
+                    <option value="{{ city.id }}">{{ city.name }}</option>
+                  {% endfor %}
+                  </select>
+                </div>
                 <input type="checkbox" name="terms" id="id_terms"><label for="id_terms" class="terms"> Я согласен на <a href="#hidden-block" class="fancybox">обработку персональных данных</a></label>
-								<input type="hidden" name="theme" value="Задать вопрос">
-								<button class="submit">Отправить</button>
-							</fieldset>
+							  <input type="hidden" name="theme" value="Заказать обратный звонок">
+                <br>
+							  <button class="submit">Заказать</button>
+						  </fieldset>
 						</form>
 					</div>
 				</div>
