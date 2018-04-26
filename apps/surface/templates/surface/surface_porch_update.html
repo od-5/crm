@@ -1,109 +1,126 @@
 {% extends 'cabinet_index.html' %}
+{% block breadcrumbs_item %}
+  <li><a href="{% url 'surface:list' %}">Список поверхностей</a></li>
+  <li class="active">Редактирование рекламной поверхности</li>
+{% endblock %}
 {% block content %}
   <div class="container">
-    <div class="col-lg-12">
+    <div class="col-md-12">
       {% include 'surface/__include/surface_menu.html' %}
       <div class="panel panel-default">
         <div class="panel-heading">
-          <p class="lead text-center remove-bottom">Редактирование подъезда №:{{ object }}, поверхности {{ surface }}</p>
-        </div>
-        <div class="panel-body">
-          <div class="col-lg-12">
-            <form action="" role="form" id="js-porch-add-form" method="post">
-              {% csrf_token %}
-              <div class="col-lg-6">
-              {{ porch_form.surface }}
-                <div class="form-group">
-                  <div class="col-lg-5">{{ porch_form.number.label_tag }}</div>
-                  <div class="col-lg-7">{{ porch_form.number }}</div>
-                  {{ porch_form.number.errors }}
-                  <div class="clearfix"></div>
-                </div>
-              </div>
-              <div class="clearfix"></div>
-              <div class="col-lg-4">
-                <div class="form-group">
-                  <div class="col-lg-8">{{ porch_form.broken_shield.label_tag }}</div>
-                  <div class="col-lg-4">{{ porch_form.broken_shield }}</div>
-                  {{ porch_form.broken_shield.errors }}
-                  <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                  <div class="col-lg-8">{{ porch_form.broken_gib.label_tag }}</div>
-                  <div class="col-lg-4">{{ porch_form.broken_gib }}</div>
-                  {{ porch_form.broken_gib.errors }}
-                  <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                  <div class="col-lg-8">{{ porch_form.no_glass.label_tag }}</div>
-                  <div class="col-lg-4">{{ porch_form.no_glass }}</div>
-                  {{ porch_form.no_glass.errors }}
-                  <div class="clearfix"></div>
-                </div>
-              </div>
-              <div class="col-lg-4">
-                <div class="form-group">
-                  <div class="col-lg-8">{{ porch_form.replace_glass.label_tag }}</div>
-                  <div class="col-lg-4">{{ porch_form.replace_glass }}</div>
-                  {{ porch_form.replace_glass.errors }}
-                  <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                  <div class="col-lg-8">{{ porch_form.against_tenants.label_tag }}</div>
-                  <div class="col-lg-4">{{ porch_form.against_tenants }}</div>
-                  {{ porch_form.against_tenants.errors }}
-                  <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                  <div class="col-lg-8">{{ porch_form.no_social_info.label_tag }}</div>
-                  <div class="col-lg-4">{{ porch_form.no_social_info }}</div>
-                  {{ porch_form.no_social_info.errors }}
-                  <div class="clearfix"></div>
-                </div>
-              </div>
-              <div class="clearfix"></div>
-              <div class="col-lg-12">
-                <button type="submit" class="btn btn-default">Сохранить изменения</button>
-              </div>
-            </form>
+          <div class="row page-top">
+            <div class="col-md-12">Редактирование подъезда №:{{ object }}, поверхности {{ surface }}</div>
             <div class="clearfix"></div>
           </div>
+        </div>
+        <div class="panel-body">
+          <form action="" role="form" id="js-porch-add-form" method="post">
+            {% csrf_token %}
+            <div class="col-md-6">
+            {{ porch_form.surface }}
+              <div class="form-group">
+                <div class="col-md-5">{{ porch_form.number.label_tag }}</div>
+                <div class="col-md-7">{{ porch_form.number }}</div>
+                {{ porch_form.number.errors }}
+                <div class="clearfix"></div>
+              </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <div class="col-md-8">{{ porch_form.broken_shield.label_tag }}</div>
+                <div class="col-md-4">{{ porch_form.broken_shield }}</div>
+                {{ porch_form.broken_shield.errors }}
+                <div class="clearfix"></div>
+              </div>
+              <div class="form-group">
+                <div class="col-md-8">{{ porch_form.broken_gib.label_tag }}</div>
+                <div class="col-md-4">{{ porch_form.broken_gib }}</div>
+                {{ porch_form.broken_gib.errors }}
+                <div class="clearfix"></div>
+              </div>
+              <div class="form-group">
+                <div class="col-md-8">{{ porch_form.no_glass.label_tag }}</div>
+                <div class="col-md-4">{{ porch_form.no_glass }}</div>
+                {{ porch_form.no_glass.errors }}
+                <div class="clearfix"></div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <div class="col-md-8">{{ porch_form.replace_glass.label_tag }}</div>
+                <div class="col-md-4">{{ porch_form.replace_glass }}</div>
+                {{ porch_form.replace_glass.errors }}
+                <div class="clearfix"></div>
+              </div>
+              <div class="form-group">
+                <div class="col-md-8">{{ porch_form.against_tenants.label_tag }}</div>
+                <div class="col-md-4">{{ porch_form.against_tenants }}</div>
+                {{ porch_form.against_tenants.errors }}
+                <div class="clearfix"></div>
+              </div>
+              <div class="form-group">
+                <div class="col-md-8">{{ porch_form.no_social_info.label_tag }}</div>
+                <div class="col-md-4">{{ porch_form.no_social_info }}</div>
+                {{ porch_form.no_social_info.errors }}
+                <div class="clearfix"></div>
+              </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="col-md-6">
+              <button type="submit" class="btn btn-save">Сохранить</button>
+            </div>
+            <div class="clearfix"></div>
+          </form>
         </div>
       </div>
       <div class="panel panel-default">
         <div class="panel-heading">
-          <p class="lead text-center remove-bottom">Фотографии подъезда №:{{ object }}</p>
+          <div class="row page-top">
+            <div class="col-md-12">Фотографии подъезда №:{{ object }}</div>
+            <div class="clearfix"></div>
+          </div>
         </div>
         <div class="panel-body">
-          <div class="col-lg-6">
-            <form action="{% url 'surface:photo-add' %}" role="form" id="js-surface-photo-add-form" class="add-bottom" method="post" enctype="multipart/form-data">
-              {% csrf_token %}
-              {{ photo_form.porch }}
+          <form action="{% url 'surface:photo-add' %}" role="form" id="js-surface-photo-add-form" class="form add-bottom" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ photo_form.porch }}
+            <div class="col-md-4">
               <div class="form-group">
-                <div class="col-lg-5">{{ photo_form.date.label_tag }}</div>
-                <div class="col-lg-7">{{ photo_form.date }}</div>
+                {{ photo_form.date.label_tag }}
+                {{ photo_form.date }}
                 {{ photo_form.date.errors }}
-                <div class="clearfix"></div>
               </div>
+            </div>
+            <div class="col-md-8">
               <div class="form-group">
-                <div class="col-lg-5">{{ photo_form.is_broken.label_tag }}</div>
-                <div class="col-lg-7">{{ photo_form.is_broken }}</div>
-                {{ photo_form.is_broken.errors }}
-                <div class="clearfix"></div>
-              </div>
-              <div class="form-group">
-                <div class="col-lg-5">{{ photo_form.image.label_tag }}</div>
-                <div class="col-lg-7">{{ photo_form.image }}</div>
+                {{ photo_form.image.label_tag }}
+                {{ photo_form.image }}
                 {{ photo_form.image.errors }}
-                <div class="clearfix"></div>
               </div>
-              <button type="submit" class="btn btn-default">Сохранить изменения</button>
-            </form>
-          </div>
-          <div class="clearfix"></div>
+            </div>
+            <div class="col-md-4">
+              <div class="row">
+                <div class="form-group">
+                  <div class="col-md-5">{{ photo_form.is_broken.label_tag }}</div>
+                  <div class="col-md-7">{{ photo_form.is_broken }}</div>
+                  {{ photo_form.is_broken.errors }}
+                  <div class="clearfix"></div>
+                </div>
+              </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <button type="submit" class="btn btn-save">Сохранить</button>
+              </div>
+            </div>
+            <div class="clearfix"></div>
+          </form>
           <div class="row">
           {% for photo in photo_list %}
-            <div class="col-lg-3">
+            <div class="col-md-3">
               <div>
                 <a href="{{ photo.image.url }}" rel="group" class="js-gallery" title="{{ photo.address }}, подъезд: {{ item.porch.number }}">
                   <img src="{{ photo.image_resize.url }}" alt="{{ photo.address }}, подъезд: {{ item.porch.number }}">
@@ -120,7 +137,7 @@
               </div>
             </div>
           {% empty %}
-            <div class="col-lg-12">
+            <div class="col-md-12">
               <p class="alert alert-info">Фотографий не найдено</p>
             </div>
           {% endfor %}

@@ -1,83 +1,74 @@
 {% extends 'cabinet_index.html' %}
+{% block breadcrumbs_item %}
+  <li><a href="{% url 'surface:list' %}">Список поверхностей</a></li>
+  <li class="active">Редактирование рекламной поверхности</li>
+{% endblock %}
 {% block content %}
-  <script type="text/javascript">
-      $(function() {
-          $('.js-porch-form input[type="text"]').addClass('form-control');
-      })
-  </script>
   <div class="container">
-    <div class="col-lg-12">
+    <div class="col-md-12">
       {% include 'surface/__include/surface_menu.html' %}
         <div class="panel panel-default">
           <div class="panel-heading">
-            <p class="lead text-center remove-bottom">Подъезды</p>
+            <div class="row page-top">
+              <div class="col-md-12">Подъезды</div>
+              <div class="clearfix"></div>
+            </div>
           </div>
           <div class="panel-body">
-            <div class="col-lg-8">
-              <p class="text-info lead">Подъезды</p>
-              <form action="" role="form" id="js-porch-add-form" class="form-inline add-bottom" method="post">
-                <div class="row">
-                  {% csrf_token %}
-                  <div>{{ form.surface }}</div>
-                  <div class="col-lg-4">{{ form.number.label_tag }}</div>
-                  <div class="col-lg-4">{{ form.number }}</div>
-                  {{ form.number.errors }}
-                  <div class="col-lg-4">
-                    <button type="submit" class="btn btn-default">Добавить подъезд</button>
-                  </div>
-                  <div class="clearfix"></div>
-                </div>
-              </form>
-            </div>
-            <div class="clearfix"></div>
-            <div class="col-lg-12">
-              <table class="table table-hover table-condensed table-list">
-                <thead>
-                  <tr>
-                    <th>№</th>
-                    <th>&nbsp;</th>
-                    <th>Состояние</th>
-                    <th>&nbsp;</th>
-                  </tr>
-                </thead>
-                <tbody class="js-list">
-                {% for porch in surface.porch_set.all %}
-                  <tr class="{% if porch.damaged %}danger{% else %}success{% endif %}" data-id="{{ porch.id }}" data-name="{{ porch.number }}" data-model="Porch" id="id_Porch_{{ porch.id }}">
-                    <td data-id="{{ porch.id }}">
-                      <strong>Подъезд №:{{ porch.number }}</strong>
-                    </td>
-                    <td>
-                      <a href="{% url 'surface:porch-update' porch.id %}">
-                         <button class="btn btn-sm btn-primary">
-                           <span class="glyphicon glyphicon-pencil"> редактировать</span>
-                         </button>
-                      </a>
-                    </td>
-                    <td>
-                      {% if porch.damaged %}
-                      Есть повреждения
-                      {% else %}
-                      Целый
-                      {% endif %}
-                    </td>
-                    <td>
-                      <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ porch.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
-                        <span class="glyphicon glyphicon-remove"></span> Удалить
-                      </a>
-                    </td>
-                  </tr>
-                {% empty %}
-                  <tr>
-                    <td colspan="4">
-                      <p class="alert alert-info text-left">Подъездов не найдено</p>
-                    </td>
-                  </tr>
-                {% endfor %}
-              </table>
-            </div>
+            <form action="" role="form" id="js-porch-add-form" class="form add-bottom" method="post">
+              {% csrf_token %}
+              {{ form.surface }}
+              <div class="col-md-3">{{ form.number.label_tag }}</div>
+              <div class="col-md-3">{{ form.number }}</div>
+              {{ form.number.errors }}
+              <div class="col-lg-3">
+                <button type="submit" class="btn btn-save">Добавить подъезд</button>
+              </div>
+              <div class="clearfix"></div>
+            </form>
+            <table class="table table-hover table-condensed table-list">
+              <thead>
+                <tr>
+                  <th>№</th>
+                  <th>&nbsp;</th>
+                  <th>Состояние</th>
+                  <th>&nbsp;</th>
+                </tr>
+              </thead>
+              <tbody class="js-list">
+              {% for porch in surface.porch_set.all %}
+                <tr class="{{ porch.damaged|yesno:'danger,success' }}" data-id="{{ porch.id }}" data-name="{{ porch.number }}" data-model="Porch" id="id_Porch_{{ porch.id }}">
+                  <td data-id="{{ porch.id }}">
+                    <strong>Подъезд №:{{ porch.number }}</strong>
+                  </td>
+                  <td>
+                    <a href="{% url 'surface:porch-update' porch.id %}">
+                       <button class="btn btn-sm btn-primary">
+                         <span class="glyphicon glyphicon-pencil"> редактировать</span>
+                       </button>
+                    </a>
+                  </td>
+                  <td>
+                    {{ porch.damaged|yesno:'Есть повреждения,Целый' }}
+                  </td>
+                  <td>
+                    <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ porch.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
+                      <span class="glyphicon glyphicon-remove"></span> Удалить
+                    </a>
+                  </td>
+                </tr>
+              {% empty %}
+                <tr>
+                  <td colspan="4">
+                    <p class="alert alert-info text-left">Подъездов не найдено</p>
+                  </td>
+                </tr>
+              {% endfor %}
+            </table>
           </div>
         </div>
     </div>
+    <div class="clearfix"></div>
   </div>
 {% include '__modal/js_ajax_remove_form.html' %}
 {% endblock %}

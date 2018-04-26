@@ -1,19 +1,21 @@
 {% extends 'cabinet_index.html' %}
+{% block breadcrumbs_item %}
+  <li><a href="{% url 'surface:list' %}">Список поверхностей</a></li>
+  <li class="active">Редактирование рекламной поверхности</li>
+{% endblock %}
 {% block content %}
   <div class="container">
-    <div class="col-lg-12">
+    <div class="col-md-12">
       {% include 'surface/__include/surface_menu.html' %}
       <div class="panel panel-default">
-        <div class="panel-heading">
-          <p class="lead text-center remove-bottom">Удаление фотографии подъезда №: {{ object.porch.number }}</p>
-        </div>
         <div class="panel-body">
-          <div class="col-lg-6">
-            <img src="{{ object.image_resize.url }}" alt=""><br><br>
-            <form action="" method="post">
+          <div class="col-md-6 col-md-offset-3">
+            <form action="" method="post" class="form text-center">
               {% csrf_token %}
-              <p>Вы действительно хотите удалить фотографию"?</p>
-              <input type="submit" value="Удалить" class="btn btn-danger"/>
+              <p class="lead text-danger">Вы действительно хотите удалить фотографию"?</p>
+              <img src="{{ object.image_resize.url }}" alt="">
+              <br>
+              <input type="submit" value="Удалить" class="btn btn-save btn-save_red"/>
             </form>
           </div>
         </div>

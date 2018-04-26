@@ -6214,6 +6214,14 @@ td.visible-print {
 .btn-save_green {
   background-color: #5cb85c;
 }
+.btn-search_red,
+.btn-save_red {
+  background-color: #d9534f;
+}
+.btn-search_warning,
+.btn-save_warning {
+  background-color: #f0ad4e;
+}
 .btn-right {
   float: right;
 }

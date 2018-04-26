@@ -15,7 +15,7 @@ class SurfaceImportForm(forms.Form):
 class SurfaceAddForm(forms.ModelForm):
     class Meta:
         model = Surface
-        fields = ('city', 'street', 'house_number', 'management', 'has_stand')
+        fields = ('city', 'street', 'house_number', 'management')
         widgets = {
             'city': forms.Select(attrs={'class': 'form-control', 'data-ajax-url': reverse_lazy('city:surface-ajax')}),
             'street': forms.Select(attrs={'class': 'form-control'}),
@@ -65,7 +65,7 @@ class PorchAddForm(forms.ModelForm):
         fields = ('surface', 'number', 'broken_shield', 'broken_gib', 'no_glass', 'replace_glass', 'against_tenants',
                   'no_social_info')
         widgets = {
-            'surface': forms.HiddenInput(attrs={'class': 'form-control'}),
+            'surface': forms.HiddenInput(),
             'number': forms.TextInput(attrs={'class': 'form-control'}),
             'broken_shield': forms.CheckboxInput(),
             'broken_gib': forms.CheckboxInput(),

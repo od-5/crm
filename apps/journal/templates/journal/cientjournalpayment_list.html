@@ -1,65 +1,57 @@
 {% extends 'cabinet_index.html' %}
+{% block breadcrumbs_item %}
+  <li><a href="{% url 'client:list' %}">Список продаж</a></li>
+  <li class="active">Журнал поступлений</li>
+{% endblock %}
 {% block content %}
   <div class="container">
-    <div class="col-lg-12">
-      <ol class="breadcrumb">
-        <li><a href="{% url 'cabinet:cabinet' %}">Рабочий стол</a></li>
-        <li><a href="{% url 'client:list' %}">Список продаж</a></li>
-        <li class="active">Журнал поступлений</li>
-      </ol>
+    <div class="col-md-12">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <p class="lead remove-bottom text-center">Журнал поступлений</p>
+          <div class="row page-top">
+            <div class="col-md-12">
+              Журнал поступлений <span>/ {{ page_obj.paginator.count|default:'0' }}</span> <span>/ {{ payments_sum|default:'0' }}руб.</span>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+          {% include '__cabinet/filter_button.html' %}
+          <form action="" method="GET" role="form" class="form form-filter">
+            <div class="col-md-12">
+              <div class="five-col-1">
+                <select name="city" id="" class="form-control input-sm">
+                  <option value="">-- Город --</option>
+                  {% for city in city_list %}
+                  <option value="{{ city.id }}" {% if city.id == r_city %}selected="selected"{% endif %}>{{ city.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="five-col-1">
+                <input type="text" name="date_s" value="{{ r_date_s|default:'' }}" id="js-journal-filter-date_s" class="form-control input-sm" placeholder="Дата от">
+              </div>
+              <div class="five-col-1">
+                <input type="text" name="date_e" value="{{ r_date_e|default:'' }}" id="js-journal-filter-date_e" class="form-control input-sm" placeholder="Дата до">
+              </div>
+              <div class="five-col-2">
+                <input type="text" name="legal_name" value="{{ r_legal_name|default:'' }}" class="form-control input-sm" placeholder="Юридическое название">
+              </div>
+              <div class="five-col-1">
+                <select name="manager" id="" class="form-control input-sm" {% if user.type == 5 and not user.is_leader_manager %}disabled="disabled"{% endif %}>
+                  <option value="">-- Менеджер --</option>
+                  {% for manager in manager_list %}
+                  <option value="{{ manager.id }}" {% if manager.id == r_manager %}selected="selected"{% endif %}>{{ manager.user.get_full_name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="five-col-1">
+                <input type="submit" class="btn btn-search">
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+          </form>
+
         </div>
         <div class="panel-body">
-          <div class="row">
-            <div class="col-lg-6">
-              <p>
-                Общая сумма поступлений: <strong>{{ payments_sum|default:'0' }}</strong> руб
-              </p>
-            </div>
-            <div class="col-lg-6 text-right">
-              <p>
-                Всего поступлений: <strong>{{ page_obj.paginator.count|default:'0' }}</strong>
-              </p>
-            </div>
-          </div>
-          <form action="" method="GET" role="form" class="">
-            <table class="table table-condensed table-search">
-              <tbody>
-                <tr>
-                  <td>
-                    <select name="city" id="" class="form-control input-sm">
-                      <option value="">-- Город --</option>
-                      {% for city in city_list %}
-                      <option value="{{ city.id }}" {% if city.id == r_city %}selected="selected"{% endif %}>{{ city.name }}</option>
-                      {% endfor %}
-                    </select>
-                  </td>
-                  <td>
-                    <input type="text" name="date_s" value="{{ r_date_s|default:'' }}" id="js-journal-filter-date_s" class="form-control input-sm" placeholder="Дата от">
-                  </td>
-                  <td>
-                    <input type="text" name="date_e" value="{{ r_date_e|default:'' }}" id="js-journal-filter-date_e" class="form-control input-sm" placeholder="Дата до">
-                  </td>
-                  <td>
-                    <input type="text" name="legal_name" value="{{ r_legal_name|default:'' }}" class="form-control input-sm" placeholder="Юридическое название">
-                  </td>
-                  <td>
-                    <select name="manager" id="" class="form-control input-sm" {% if user.type == 5 and not user.is_leader_manager %}disabled="disabled"{% endif %}>
-                      <option value="">-- Менеджер --</option>
-                      {% for manager in manager_list %}
-                      <option value="{{ manager.id }}" {% if manager.id == r_manager %}selected="selected"{% endif %}>{{ manager.user.get_full_name }}</option>
-                      {% endfor %}
-                    </select>
-                  </td>
-                  <td>
-                    <button type="submit" class="btn btn-info btn-sm"> <span class="glyphicon glyphicon-search"></span> Искать</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </form>
           <table class="table table-hover table-condensed table-bordered table-list">
             <thead>
               <tr>

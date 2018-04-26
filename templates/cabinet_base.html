@@ -40,6 +40,7 @@
   {% block header %}
   {% endblock %}
   {% block breadcrumbs %}
+  {% if user.is_authenticated and user.type != 3 %}
   <div class="breadcrumb-container">
     <div class="container">
       <div class="row">
@@ -55,6 +56,7 @@
       </div>
     </div>
   </div>
+  {% endif %}
   {% endblock %}
   {% block content %}
   {% endblock %}

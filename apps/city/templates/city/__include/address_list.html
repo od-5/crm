@@ -1,16 +1,64 @@
-{% if user.type == 3 %}
-<a href="{% url 'surface:photo-list' %}?full_view=0" class="btn btn-info add-bottom">
-  <span class="glyphicon glyphicon-phone"></span> Перейти на мобильную версию
-</a>
-{% endif %}
+{#{% if user.type == 3 %}#}
+{#<a href="{% url 'surface:photo-list' %}?full_view=0" class="btn btn-info add-bottom">#}
+{#  <span class="glyphicon glyphicon-phone"></span> Перейти на мобильную версию#}
+{#</a>#}
+{#{% endif %}#}
 
 <div class="panel panel-default">
-  <div class="panel-heading"><p class="lead remove-bottom text-center">Фотографии поверхностей</p></div>
+  <div class="panel-heading">
+    <div class="row page-top">
+      <div class="col-md-12">Фотографии поверхностей <span>/ {{ photo_count|default:'0' }}</span></div>
+      <div class="clearfix"></div>
+    </div>
+    {% include '__cabinet/filter_button.html' %}
+    <form action="" method="GET" role="form" id="js-address-filter-form" class="form form-filter">
+      <div class="col-md-12">
+        <div class="five-col-1">
+          <select name="a_city" id="id_a_city" class="form-control input-sm" data-ajax-url="{% url 'city:get_area_list' %}">
+            <option value="">Город</option>
+            {% for city in city_list %}
+            <option value="{{ city.id }}" {% if city.id == a_city %}selected="selected"{% endif %}>{{ city.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="five-col-1">
+          <select name="a_area" id="id_a_area" class="form-control input-sm"  data-ajax-url="{% url 'city:simple_get_area_streets' %}">
+            <option value="">Район</option>
+            {% if area_list %}
+              {% for area in area_list %}
+              <option value="{{ area.id }}" {% if area.id == a_area %}selected="selected"{% endif %}>{{ area.name }}</option>
+              {% endfor %}
+            {% endif %}
+          </select>
+        </div>
+        <div class="five-col-1">
+          <select name="a_street" id="id_a_street" class="form-control input-sm">
+            <option value="">Улица</option>
+            {% if street_list %}
+              {% for street in street_list %}
+              <option value="{{ street.id }}" {% if street.id == a_street %}selected="selected"{% endif %}>{{ street.name }}</option>
+              {% endfor %}
+            {% endif %}
+          </select>
+        </div>
+        <div class="five-col-1">
+          <input type="text" name="a_date_s" id="id_a_date_s" placeholder="дата от" class="form-control input-sm" value="{{ a_date_s|default:'' }}">
+        </div>
+        <div class="five-col-1">
+          <input type="text" name="a_date_e" id="id_a_date_e" placeholder="дата до" class="form-control input-sm" value="{{ a_date_e|default:'' }}">
+        </div>
+        <div class="five-col-1">
+          <input class="btn btn-search" type="submit" value="Искать">
+        </div>
+        <div class="clearfix"></div>
+      </div>
+      <div class="clearfix"></div>
+    </form>
+  </div>
   <div class="panel-body">
-
     <div class="address-list">
       <div class="row">
-        <div class="col-lg-12 add-bottom">
+        <div class="col-md-8 add-bottom">
         {% if user.type != 3 %}
           {% if show_broken %}
           <a href="{{ request.path }}?broken=0&a_city={{ a_city|default:'' }}&a_area={{ a_area|default:'' }}&a_street={{ a_street|default:'' }}&a_date_s={{ a_date_s|default:'' }}&a_date_e={{ a_date_e|default:'' }}" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Показать целые</a>
@@ -40,67 +88,36 @@
           <button class="btn btn-info" disabled="disabled">Для просмотра карты укажите диапазон дат</button>
         {% endif %}
         </div>
-        <div class="col-lg-12">
-          <form action="" method="GET" role="form" id="js-address-filter-form" class="form-inline add-bottom">
-            <select name="a_city" id="id_a_city" class="form-control input-sm" data-ajax-url="{% url 'city:get_area_list' %}">
-              <option value="">Город</option>
-              {% for city in city_list %}
-              <option value="{{ city.id }}" {% if city.id == a_city %}selected="selected"{% endif %}>{{ city.name }}</option>
-              {% endfor %}
-            </select>
-            <select name="a_area" id="id_a_area" class="form-control input-sm"  data-ajax-url="{% url 'city:simple_get_area_streets' %}">
-              <option value="">Район</option>
-              {% if area_list %}
-                {% for area in area_list %}
-                <option value="{{ area.id }}" {% if area.id == a_area %}selected="selected"{% endif %}>{{ area.name }}</option>
-                {% endfor %}
-              {% endif %}
-            </select>
-            <select name="a_street" id="id_a_street" class="form-control input-sm">
-              <option value="">Улица</option>
-              {% if street_list %}
-                {% for street in street_list %}
-                <option value="{{ street.id }}" {% if street.id == a_street %}selected="selected"{% endif %}>{{ street.name }}</option>
-                {% endfor %}
-              {% endif %}
-            </select>
-            <input type="text" name="a_date_s" id="id_a_date_s" placeholder="дата от" class="form-control input-sm" value="{{ a_date_s|default:'' }}">
-            <input type="text" name="a_date_e" id="id_a_date_e" placeholder="дата до" class="form-control input-sm" value="{{ a_date_e|default:'' }}">
-            <button class="btn btn-info btn-sm" type="submit"><span class="glyphicon glyphicon-search"></span> Искать</button>
-          </form>
+        <div class="col-md-4">
+          <div class="row">
+            <div class="col-md-8 text-right" style="line-height: 30px;">
+              <label for="page_count">Показывать на странице</label>
+            </div>
+            <div class="col-md-4">
+              <form action="" method="get">
+                {% csrf_token %}
+                <select class="form-control" id="js-page-count">
+                  <option value="20" {% if page_count == 20 %}selected="selected"{% endif %}>20</option>
+                  <option value="50" {% if page_count == 50 %}selected="selected"{% endif %}>50</option>
+                  <option value="100" {% if page_count == 100 %}selected="selected"{% endif %}>100</option>
+                  <option value="0" {% if page_count == 0 %}selected="selected"{% endif %}>все</option>
+                </select>
+                <input type="hidden" id="id_page_count" name="page_count" value="{{ page_count|default:'' }}">
+                <input type="hidden" name="a_city" value="{{ a_city|default:'' }}">
+                <input type="hidden" name="a_area" value="{{ a_area|default:'' }}">
+                <input type="hidden" name="a_street" value="{{ a_street|default:'' }}">
+                <input type="hidden" name="a_date_s" value="{{ a_date_s|default:'' }}">
+                <input type="hidden" name="a_date_e" value="{{ a_date_e|default:'' }}">
+              </form>
+            </div>
+          </div>
         </div>
-
         <div class="clearfix"></div>
       </div>
       <div class="row" id="js-photo-map-wrapper">
         <div id="photoMap" data-url="{% url 'city:get_photo_map' %}" style="height: 500px;"></div>
       </div>
-      <div class="row">
-        <div class="col-lg-7">
-          <p class="lead">Итого количество фотографий: {{ photo_count|default:'0' }}</p>
-        </div>
-        <div class="col-lg-3 text-right" style="line-height: 30px;">
-          <label for="page_count">Показывать на странице</label>
-        </div>
-        <div class="col-lg-2">
-          <form action="" method="get">
-            {% csrf_token %}
-            <select class="form-control" id="js-page-count">
-              <option value="20" {% if page_count == 20 %}selected="selected"{% endif %}>20</option>
-              <option value="50" {% if page_count == 50 %}selected="selected"{% endif %}>50</option>
-              <option value="100" {% if page_count == 100 %}selected="selected"{% endif %}>100</option>
-              <option value="0" {% if page_count == 0 %}selected="selected"{% endif %}>все</option>
-            </select>
-            <input type="hidden" id="id_page_count" name="page_count" value="{{ page_count|default:'' }}">
-            <input type="hidden" name="a_city" value="{{ a_city|default:'' }}">
-            <input type="hidden" name="a_area" value="{{ a_area|default:'' }}">
-            <input type="hidden" name="a_street" value="{{ a_street|default:'' }}">
-            <input type="hidden" name="a_date_s" value="{{ a_date_s|default:'' }}">
-            <input type="hidden" name="a_date_e" value="{{ a_date_e|default:'' }}">
-          </form>
 
-        </div>
-      </div>
     {% if grid %}
       <div class="row">
       {% for item in address_list %}
