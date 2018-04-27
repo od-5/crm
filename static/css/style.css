@@ -6162,34 +6162,6 @@ h2 {
     margin-top: 20px;
   }
 }
-.table-list {
-  font-size: 12px;
-}
-.table-list thead {
-  background-color: #666;
-  color: #fff;
-  vertical-align: top;
-}
-.table-list thead tr th {
-  vertical-align: top;
-  font-weight: normal;
-}
-.table-list tr td:last-child {
-  text-align: right;
-}
-.table-search {
-  font-size: 12px;
-}
-.table-search thead tr th {
-  padding: 0 5px;
-  border: none;
-  background: transparent;
-}
-.table-search tbody tr td {
-  padding: 0 5px;
-  border: none;
-  background-color: transparent !important;
-}
 .caret.caret-reversed {
   border-top-width: 0;
   border-bottom: 4px solid #fff;
@@ -6376,13 +6348,6 @@ a.lead {
 }
 .form-horizontal .control-label {
   text-align: left;
-}
-.table tbody tr td {
-  background-color: #f6f7f8;
-}
-.table tbody tr td.name {
-  background-color: #fff;
-  width: 320px;
 }
 .glyphlink .glyphicon {
   color: #5cb85c;

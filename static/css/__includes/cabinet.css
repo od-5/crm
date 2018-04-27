@@ -1,13 +1,6 @@
 .form-horizontal .control-label {
   text-align: left;
 }
-.table tbody tr td {
-  background-color: #f6f7f8;
-}
-.table tbody tr td.name {
-  background-color: #fff;
-  width: 320px;
-}
 .glyphlink .glyphicon {
   color: #5cb85c;
   margin-right: 5px;
