@@ -4,12 +4,12 @@
 {% endblock %}
 {% block content %}
 <div class="container dashboard">
-  <div class="col-lg-12">
+  <div class="col-md-12">
     <div class="panel panel-dashboard">
       <div class="panel-heading">Пользователи</div>
       <div class="panel-body">
         <div class="row">
-          <div class="col-lg-2">
+          <div class="col-md-2 col-sm-4 col-xs-6">
             <a href="{% url 'administrator:list' %}" class="dashboard__link">
               <div class="dashboard__link-icon">
                 <img src="{% static 'icon/administrator_list.png' %}" alt="Список администраторов">
@@ -17,7 +17,7 @@
               <span class="dashboard__link_text">Список администраторов</span>
             </a>
           </div>
-          <div class="col-lg-2">
+          <div class="col-md-2 col-sm-4 col-xs-6">
             <a href="{% url 'administrator:add' %}" class="dashboard__link">
               <div class="dashboard__link-icon">
                 <img src="{% static 'icon/administrator_add.png' %}" alt="Добавить нового администратора">
@@ -25,7 +25,7 @@
               <span class="dashboard__link_text">Добавить нового администратора</span>
             </a>
           </div>
-          <div class="col-lg-2">
+          <div class="col-md-2 col-sm-4 col-xs-6">
             <a href="{% url 'moderator:list' %}" class="dashboard__link">
               <div class="dashboard__link-icon">
                 <img src="{% static 'icon/moderator_list.png' %}" alt="Список модераторов">
@@ -33,7 +33,7 @@
               <span class="dashboard__link_text">Список модераторов</span>
             </a>
           </div>
-          <div class="col-lg-2">
+          <div class="col-md-2 col-sm-4 col-xs-6">
             <a href="{% url 'moderator:add' %}" class="dashboard__link">
               <div class="dashboard__link-icon">
                 <img src="{% static 'icon/moderator_add.png' %}" alt="Добавить нового модератора">
@@ -41,7 +41,7 @@
               <span class="dashboard__link_text">Добавить нового модератора</span>
             </a>
           </div>
-          <div class="col-lg-2">
+          <div class="col-md-2 col-sm-4 col-xs-6">
             <a href="{% url 'superviser:list' %}" class="dashboard__link">
               <div class="dashboard__link-icon">
                 <img src="{% static 'icon/superviser_list.png' %}" alt="Список супервайзеров">
@@ -49,7 +49,7 @@
               <span class="dashboard__link_text">Список супервайзеров</span>
             </a>
           </div>
-          <div class="col-lg-2">
+          <div class="col-md-2 col-sm-4 col-xs-6">
             <a href="{% url 'city:report' %}" class="dashboard__link">
               <div class="dashboard__link-icon">
                 <img src="{% static 'icon/city_report.png' %}" alt="Отчёты по городам">
@@ -65,7 +65,7 @@
       <div class="panel-heading">Города, адреса и рекламные поверхности</div>
       <div class="panel-body">
         <div class="row">
-          <div class="col-lg-2">
+          <div class="col-md-2 col-sm-4 col-xs-6">
             <a href="{% url 'city:list' %}" class="dashboard__link">
               <div class="dashboard__link-icon">
                 <img src="{% static 'icon/city_list.png' %}" alt="Список городов">
@@ -73,7 +73,7 @@
               <span class="dashboard__link_text">Список городов</span>
             </a>
           </div>
-          <div class="col-lg-2">
+          <div class="col-md-2 col-sm-4 col-xs-6">
             <a href="{% url 'city:add' %}" class="dashboard__link">
               <div class="dashboard__link-icon">
                 <img src="{% static 'icon/city_add.png' %}" alt="Добавить новый город">
@@ -81,7 +81,7 @@
               <span class="dashboard__link_text">Добавить новый город</span>
             </a>
           </div>
-          <div class="col-lg-2">
+          <div class="col-md-2 col-sm-4 col-xs-6">
             <a href="{% url 'surface:list' %}" class="dashboard__link">
               <div class="dashboard__link-icon">
                 <img src="{% static 'icon/surface_list.png' %}" alt="Список поверхностей">
@@ -89,7 +89,7 @@
               <span class="dashboard__link_text">Список поверхностей</span>
             </a>
           </div>
-          <div class="col-lg-2">
+          <div class="col-md-2 col-sm-4 col-xs-6">
             <a href="{% url 'surface:add' %}" class="dashboard__link">
               <div class="dashboard__link-icon">
                 <img src="{% static 'icon/surface_add.png' %}" alt="Добавить новую поверхность">
@@ -97,7 +97,7 @@
               <span class="dashboard__link_text">Добавить новую поверхность</span>
             </a>
           </div>
-          <div class="col-lg-2">
+          <div class="col-md-2 col-sm-4 col-xs-6">
             <a href="{% url 'city:management-company' %}" class="dashboard__link">
               <div class="dashboard__link-icon">
                 <img src="{% static 'icon/UK_list.png' %}" alt="Список управляющих компаний">
@@ -105,7 +105,7 @@
               <span class="dashboard__link_text">Список управляющих компаний</span>
             </a>
           </div>
-          <div class="col-lg-2">
+          <div class="col-md-2 col-sm-4 col-xs-6">
             <a href="{% url 'city:management-company-add' %}" class="dashboard__link">
               <div class="dashboard__link-icon">
                 <img src="{% static 'icon/UK_add.png' %}" alt="Добавить новую управляющую компанию">
@@ -121,7 +121,7 @@
       <div class="panel-heading">CRM - система управления клиентами</div>
       <div class="panel-body">
         <div class="row">
-          <div class="col-lg-2">
+          <div class="col-md-2 col-sm-4 col-xs-6">
             <a href="{% url 'manager:list' %}" class="dashboard__link">
               <div class="dashboard__link-icon">
                 <img src="{% static 'icon/manager_list.png' %}" alt="Список менеджеров">
@@ -129,7 +129,7 @@
               <span class="dashboard__link_text">Список менеджеров</span>
             </a>
           </div>
-          <div class="col-lg-2">
+          <div class="col-md-2 col-sm-4 col-xs-6">
             <a href="{% url 'manager:add' %}" class="dashboard__link">
               <div class="dashboard__link-icon">
                 <img src="{% static 'icon/manager_add.png' %}" alt="Добавить нового менеджера">
@@ -137,7 +137,7 @@
               <span class="dashboard__link_text">Добавить нового менеджера</span>
             </a>
           </div>
-          <div class="col-lg-2">
+          <div class="col-md-2 col-sm-4 col-xs-6">
             <a href="{% url 'incoming:list' %}" class="dashboard__link">
               <div class="dashboard__link-icon">
                 <img src="{% static 'icon/incoming_list.png' %}" alt="Список клиентов">
@@ -145,7 +145,7 @@
               <span class="dashboard__link_text">Список клиентов</span>
             </a>
           </div>
-          <div class="col-lg-2">
+          <div class="col-md-2 col-sm-4 col-xs-6">
             <a href="{% url 'incoming:add' %}" class="dashboard__link">
               <div class="dashboard__link-icon">
                 <img src="{% static 'icon/incoming_add.png' %}" alt="Добавить нового клиента">
@@ -153,7 +153,7 @@
               <span class="dashboard__link_text">Добавить нового клиента</span>
             </a>
           </div>
-          <div class="col-lg-2">
+          <div class="col-md-2 col-sm-4 col-xs-6">
             <a href="{% url 'incoming:task-list' %}" class="dashboard__link">
               <div class="dashboard__link-icon">
                 <img src="{% static 'icon/incoming_task_list.png' %}" alt="Журнал задач по клиентам">
@@ -161,7 +161,7 @@
               <span class="dashboard__link_text">Журнал задач по клиентам</span>
             </a>
           </div>
-          <div class="col-lg-2">
+          <div class="col-md-2 col-sm-4 col-xs-6">
             <a href="{% url 'incoming:task-list' %}" class="dashboard__link">
               <div class="dashboard__link-icon">
                 <img src="{% static 'icon/incoming_task_add.png' %}" alt="Добавить новую задачу по клиенту">
@@ -174,12 +174,12 @@
       </div>
     </div>
   </div>
-  <div class="col-lg-12">
+  <div class="col-md-12">
     <div class="panel panel-dashboard">
       <div class="panel-heading">Работа с монтажниками</div>
       <div class="panel-body">
         <div class="row">
-          <div class="col-lg-2">
+          <div class="col-md-2 col-sm-4 col-xs-6">
             <a href="{% url 'adjuster:list' %}" class="dashboard__link">
               <div class="dashboard__link-icon">
                 <img src="{% static 'icon/adjuster_list.png' %}" alt="Список монтажников">
@@ -187,7 +187,7 @@
               <span class="dashboard__link_text">Список монтажников</span>
             </a>
           </div>
-          <div class="col-lg-2">
+          <div class="col-md-2 col-sm-4 col-xs-6">
             <a href="{% url 'adjuster:add' %}" class="dashboard__link">
               <div class="dashboard__link-icon">
                 <img src="{% static 'icon/adjuster_add.png' %}" alt="Добавить нового монтажника">
@@ -195,7 +195,7 @@
               <span class="dashboard__link_text">Добавить нового монтажника</span>
             </a>
           </div>
-          <div class="col-lg-2">
+          <div class="col-md-2 col-sm-4 col-xs-6">
             <a href="{% url 'adjustertask:list' %}" class="dashboard__link">
               <div class="dashboard__link-icon">
                 <img src="{% static 'icon/adjustertask_list.png' %}" alt="Список задач">
@@ -203,7 +203,7 @@
               <span class="dashboard__link_text">Список задач</span>
             </a>
           </div>
-          <div class="col-lg-2">
+          <div class="col-md-2 col-sm-4 col-xs-6">
             <a href="{% url 'adjustertask:client-add' %}" class="dashboard__link">
               <div class="dashboard__link-icon">
                 <img src="{% static 'icon/adjustertask_add.png' %}" alt="Добавить новую задачу">
@@ -211,7 +211,7 @@
               <span class="dashboard__link_text">Добавить <br> новую задачу</span>
             </a>
           </div>
-          <div class="col-lg-2">
+          <div class="col-md-2 col-sm-4 col-xs-6">
             <a href="{% url 'adjustertask:archive' %}" class="dashboard__link">
               <div class="dashboard__link-icon">
                 <img src="{% static 'icon/adjustertask_archive.png' %}" alt="Архив задач">
@@ -219,7 +219,7 @@
               <span class="dashboard__link_text">Архив задач</span>
             </a>
           </div>
-          <div class="col-lg-2">
+          <div class="col-md-2 col-sm-4 col-xs-6">
             <a href="{% url 'adjuster:report' %}" class="dashboard__link">
               <div class="dashboard__link-icon">
                 <img src="{% static 'icon/adjuster_report.png' %}" alt="Отчёты по монтажнкам">
@@ -232,12 +232,12 @@
       </div>
     </div>
   </div>
-  <div class="col-lg-12">
+  <div class="col-md-12">
     <div class="panel panel-dashboard">
       <div class="panel-heading">Продажи</div>
       <div class="panel-body">
         <div class="row">
-          <div class="col-lg-2">
+          <div class="col-md-2 col-sm-4 col-xs-6">
             <a href="{% url 'client:list' %}" class="dashboard__link">
               <div class="dashboard__link-icon">
                 <img src="{% static 'icon/client_list.png' %}" alt="Список продаж">
@@ -245,7 +245,7 @@
               <span class="dashboard__link_text">Список продаж</span>
             </a>
           </div>
-          <div class="col-lg-2">
+          <div class="col-md-2 col-sm-4 col-xs-6">
             <a href="{% url 'client:add' %}" class="dashboard__link">
               <div class="dashboard__link-icon">
                 <img src="{% static 'icon/client_add.png' %}" alt="Добавить новую продажу">
@@ -253,7 +253,7 @@
               <span class="dashboard__link_text">Добавить новую продажу</span>
             </a>
           </div>
-          <div class="col-lg-2">
+          <div class="col-md-2 col-sm-4 col-xs-6">
             <a href="{% url 'journal:list' %}" class="dashboard__link">
               <div class="dashboard__link-icon">
                 <img src="{% static 'icon/journal_list.png' %}" alt="Журнал продаж">
@@ -261,7 +261,7 @@
               <span class="dashboard__link_text">Журнал продаж</span>
             </a>
           </div>
-          <div class="col-lg-2">
+          <div class="col-md-2 col-sm-4 col-xs-6">
             <a href="{% url 'journal:payment-list' %}" class="dashboard__link">
               <div class="dashboard__link-icon">
                 <img src="{% static 'icon/clientjournalpayment_list.png' %}" alt="Журнал поступлений">
@@ -269,7 +269,7 @@
               <span class="dashboard__link_text">Журнал поступлений</span>
             </a>
           </div>
-          <div class="col-lg-2">
+          <div class="col-md-2 col-sm-4 col-xs-6">
             <a href="{% url 'manager:report' %}" class="dashboard__link">
               <div class="dashboard__link-icon">
                 <img src="{% static 'icon/manager_report.png' %}" alt="Журнал поступлений">
@@ -277,7 +277,7 @@
               <span class="dashboard__link_text">Отчёты по менеджерам</span>
             </a>
           </div>
-          <div class="col-lg-2">
+          <div class="col-md-2 col-sm-4 col-xs-6">
             <a href="{% url 'surface:photo-list' %}" class="dashboard__link">
               <div class="dashboard__link-icon">
                 <img src="{% static 'icon/surface_photo.png' %}" alt="Фотографии поверхностей">
@@ -290,12 +290,12 @@
       </div>
     </div>
   </div>
-  <div class="col-lg-6">
+  <div class="col-md-6 col-sm-12">
     <div class="panel panel-dashboard">
       <div class="panel-heading panel-heading_conf">Сайт</div>
       <div class="panel-body">
         <div class="row">
-          <div class="col-lg-4">
+          <div class="col-md-4 col-sm-6 col-xs-6">
             <a href="{% url 'setup-list' %}" class="dashboard__link dashboard__link_conf">
               <div class="dashboard__link-icon">
                 <img src="{% static 'icon/site_settings.png' %}" alt="Настройки сайта">
@@ -303,7 +303,7 @@
               <span class="dashboard__link_text">Настройки сайта</span>
             </a>
           </div>
-          <div class="col-lg-4">
+          <div class="col-md-4 col-sm-6 col-xs-6">
             <a href="{% url 'block-list' %}" class="dashboard__link dashboard__link_conf">
               <div class="dashboard__link-icon">
                 <img src="{% static 'icon/site_blocks.png' %}" alt="Блоки сайта">
@@ -311,7 +311,7 @@
               <span class="dashboard__link_text">Блоки сайта</span>
             </a>
           </div>
-          <div class="col-lg-4">
+          <div class="col-md-4 col-sm-6 col-xs-6">
             <a href="{% url 'ticket:list' %}" class="dashboard__link dashboard__link_conf">
               <div class="dashboard__link-icon">
                 <img src="{% static 'icon/site_task.png' %}" alt="Заявки с сайта">

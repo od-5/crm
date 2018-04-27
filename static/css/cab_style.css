@@ -6912,6 +6912,9 @@ label.error {
   color: #fff;
   font-size: 18px;
 }
+.dashboard-modal-nav li .glyphicon {
+  display: none;
+}
 .dashboard-modal-nav li.active {
   background-color: #0d8ac2;
 }
@@ -7000,6 +7003,7 @@ label.error {
   font-size: 14px;
 }
 .panel-default .panel-body {
+  overflow-x: scroll;
   background-color: #fff;
 }
 .panel-dashboard .panel-heading {
