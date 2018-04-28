@@ -15,7 +15,7 @@ class SurfaceImportForm(forms.Form):
 class SurfaceAddForm(forms.ModelForm):
     class Meta:
         model = Surface
-        fields = ('city', 'street', 'house_number', 'management')
+        fields = ('city', 'street', 'house_number', 'management', 'has_stand')
         widgets = {
             'city': forms.Select(attrs={'class': 'form-control', 'data-ajax-url': reverse_lazy('city:surface-ajax')}),
             'street': forms.Select(attrs={'class': 'form-control'}),
