@@ -6,8 +6,205 @@
 {% block content %}
   <div class="container">
     <div class="col-md-12">
-      {% include 'surface/__include/address_list.html' %}
+{#      {% include 'surface/__include/address_list.html' %}#}
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="row page-top">
+            <div class="col-md-12">Фотографии поверхностей <span>/ {{ photo_count|default:'0' }}</span></div>
+            <div class="clearfix"></div>
+          </div>
+          {% include '__cabinet/filter_button.html' %}
+          <form action="" method="GET" role="form" id="js-address-filter-form" class="form form-filter">
+            <div class="col-md-12">
+              <div class="five-col-1">
+                <select name="a_city" id="id_a_city" class="form-control input-sm" data-ajax-url="{% url 'city:get_area_list' %}">
+                  <option value="">Город</option>
+                  {% for city in city_list %}
+                  <option value="{{ city.id }}" {% if city.id == a_city %}selected="selected"{% endif %}>{{ city.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="five-col-1">
+                <select name="a_area" id="id_a_area" class="form-control input-sm"  data-ajax-url="{% url 'city:simple_get_area_streets' %}">
+                  <option value="">Район</option>
+                  {% if area_list %}
+                    {% for area in area_list %}
+                    <option value="{{ area.id }}" {% if area.id == a_area %}selected="selected"{% endif %}>{{ area.name }}</option>
+                    {% endfor %}
+                  {% endif %}
+                </select>
+              </div>
+              <div class="five-col-1">
+                <select name="a_street" id="id_a_street" class="form-control input-sm">
+                  <option value="">Улица</option>
+                  {% if street_list %}
+                    {% for street in street_list %}
+                    <option value="{{ street.id }}" {% if street.id == a_street %}selected="selected"{% endif %}>{{ street.name }}</option>
+                    {% endfor %}
+                  {% endif %}
+                </select>
+              </div>
+              <div class="five-col-1">
+                <input type="text" name="a_date_s" id="id_a_date_s" placeholder="дата от" class="form-control input-sm" value="{{ a_date_s|default:'' }}">
+              </div>
+              <div class="five-col-1">
+                <input type="text" name="a_date_e" id="id_a_date_e" placeholder="дата до" class="form-control input-sm" value="{{ a_date_e|default:'' }}">
+              </div>
+              <div class="five-col-1">
+                <input class="btn btn-search" type="submit" value="Искать">
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+          </form>
+        </div>
+        <div class="panel-body">
+          <div class="address-list">
+            <div class="row">
+              <div class="col-md-8 add-bottom">
+              {% if user.type != 3 %}
+                {% if show_broken %}
+                <a href="{{ request.path }}?broken=0&a_city={{ a_city|default:'' }}&a_area={{ a_area|default:'' }}&a_street={{ a_street|default:'' }}&a_date_s={{ a_date_s|default:'' }}&a_date_e={{ a_date_e|default:'' }}" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Показать целые</a>
+                {% else %}
+                  <a href="{{ request.path }}?broken=1&a_city={{ a_city|default:'' }}&a_area={{ a_area|default:'' }}&a_street={{ a_street|default:'' }}&a_date_s={{ a_date_s|default:'' }}&a_date_e={{ a_date_e|default:'' }}" class="btn btn-warning"><span class="glyphicon glyphicon-wrench"></span> Показать повреждённые</a>
+                {% endif %}
+              {% else %}
+                <a href="{% url 'client:download-archive' %}?a_city={{ a_city|default:'' }}&a_area={{ a_area|default:'' }}&a_street={{ a_street|default:'' }}&a_date_s={{ a_date_s|default:'' }}&a_date_e={{ a_date_e|default:'' }}" id="js-download-archive" class="btn btn-success" target="_blank" onclick="return location.href = '{% url 'surface:photo-list' %}'">
+                  <span class="glyphicon glyphicon-download-alt"></span>  Скачать архив
+                </a>
+      {#          <button data-url="{% url 'client:download-archive' %}" id="js-download-archive" class="btn btn-success">#}
+      {#            <span class="glyphicon glyphicon-download-alt"></span>  Скачать архив#}
+      {#          </button>#}
+              {% endif %}
+                {% if grid %}
+                <a href="{{ request.path }}?grid=0&a_city={{ a_city|default:'' }}&a_area={{ a_area|default:'' }}&a_street={{ a_street|default:'' }}&a_date_s={{ a_date_s|default:'' }}&a_date_e={{ a_date_e|default:'' }}" class="btn btn-info" title="Показать таблицей">
+                  <span class="glyphicon glyphicon-th-list"></span> Показать таблицей
+                </a>
+              {% else %}
+                <a href="{{ request.path }}?grid=1&a_city={{ a_city|default:'' }}&a_area={{ a_area|default:'' }}&a_street={{ a_street|default:'' }}&a_date_s={{ a_date_s|default:'' }}&a_date_e={{ a_date_e|default:'' }}" class="btn btn-info" title="Показать плиткой">
+                  <span class="glyphicon glyphicon-th"></span> Показать плиткой
+                </a>
+              {% endif %}
+              {%  if a_date_s %}
+                <button id="js-photo-map-button" class="btn btn-info"><span class="glyphicon glyphicon-globe"></span> Показать на карте</button>
+              {% else %}
+                <button class="btn btn-info" disabled="disabled">Для просмотра карты укажите диапазон дат</button>
+              {% endif %}
+              </div>
+              <div class="col-md-4">
+                <div class="row">
+                  <div class="col-md-8 text-right" style="line-height: 30px;">
+                    <label for="page_count">Показывать на странице</label>
+                  </div>
+                  <div class="col-md-4">
+                    <form action="" method="get">
+                      {% csrf_token %}
+                      <select class="form-control" id="js-page-count">
+                        <option value="20" {% if page_count == 20 %}selected="selected"{% endif %}>20</option>
+                        <option value="50" {% if page_count == 50 %}selected="selected"{% endif %}>50</option>
+                        <option value="100" {% if page_count == 100 %}selected="selected"{% endif %}>100</option>
+                        <option value="0" {% if page_count == 0 %}selected="selected"{% endif %}>все</option>
+                      </select>
+                      <input type="hidden" id="id_page_count" name="page_count" value="{{ page_count|default:'' }}">
+                      <input type="hidden" name="a_city" value="{{ a_city|default:'' }}">
+                      <input type="hidden" name="a_area" value="{{ a_area|default:'' }}">
+                      <input type="hidden" name="a_street" value="{{ a_street|default:'' }}">
+                      <input type="hidden" name="a_date_s" value="{{ a_date_s|default:'' }}">
+                      <input type="hidden" name="a_date_e" value="{{ a_date_e|default:'' }}">
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="row" id="js-photo-map-wrapper">
+              <div id="photoMap" data-url="{% url 'city:get_photo_map' %}" style="height: 500px;"></div>
+            </div>
+
+          {% if grid %}
+            <div class="row">
+            {% for item in address_list %}
+              <div class="col-lg-3">
+                <div class="photo-list-block" id="photo-{{ item.id }}">
+                  <a href="{{ item.image.url }}" rel="group" class="js-gallery" title="{{ item.address }}, подъезд {{ item.porch.number }}">
+                    <img src="{{ item.image_resize.url }}" alt="{{ item.address }}, подъезд {{ item.porch.number }}">
+                  </a>
+                  {% if user.is_leader_manager %}
+                  <div class="photo-list-block-panel">
+                    <button class="btn btn-sm js-photo-rotate__button">
+                      <span class="glyphicon glyphicon-repeat"></span> повернуть
+                    </button>
+                    <button class="btn btn-sm btn-success js-photo-save__button" data-url="{% url 'surface:photo-rotate' %}" data-id="{{ item.id }}" data-angle="0">
+                      <span class="glyphicon glyphicon-ok"></span> сохранить
+                    </button>
+                  </div>
+                  {% endif %}
+                </div>
+                <div>
+                  <p class="photo_description">
+                    Адрес: {{ item.address }} <br>
+                    Подъезд: {{ item.porch.number }}, <br>
+                    Дата: {{ item.date }}
+                    {% if user.type == 1 %}<br> id={{ item.id }}{% endif %}
+                  </p>
+                </div>
+              </div>
+            {% empty %}
+              <div class="col-lg-12">
+                <p class="alert alert-info">Фотографий не найдено</p>
+              </div>
+            {% endfor %}
+              <div class="clearfix"></div>
+            </div>
+          {% else %}
+            <table class="table table-condensed table-bordered table-list">
+              <thead>
+                <tr>
+                  <th>Город</th>
+                  <th>Район</th>
+                  <th>Адрес</th>
+                  <th>Дом</th>
+                  <th>Подъезд</th>
+                  <th>Дата</th>
+                  <th>&nbsp;</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for item in address_list %}
+              <tr {% if item.is_broken %}class="danger"{% endif %}>
+                <td>{{ item.porch.surface.city.name }}</td>
+                <td>{{ item.porch.surface.street.area.name }}</td>
+                <td>{{ item.porch.surface.street.name }}</td>
+                <td>{{ item.porch.surface.house_number }}</td>
+                <td>{{ item.porch.number }}</td>
+                <td>{{ item.date }}</td>
+                <td><a href="{{ item.image.url }}" rel="group" class="js-gallery" title="{{ item.address }}, подъезд {{ item.porch.number }}">
+                    <span class="glyphicon glyphicon-zoom-in"></span>
+                  </a></td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="7">
+                  <p class="alert alert-info text-left">Фотографий не найдено</p>
+                </td>
+              </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          {% endif %}
+        {% if new %}
+          {% include '__includes/pagination.html' %}
+        {% else %}
+          {% include '__includes/pagination.html' with page_obj=address_list%}
+        {% endif %}
+          </div>
+        </div>
+      </div>
+
+
+
     </div>
+    <div class="clearfix"></div>
   </div>
   <div class="loader">
     <div class="loader-content">
