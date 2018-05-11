@@ -335,24 +335,24 @@ class SurfacePhotoListView(ListView):
     Отображение списка фотографий
     """
     model = SurfacePhoto
-    template_name = 'surface/surface_list.html'
+    template_name = 'surface/surface_photo_list.html'
     paginate_by = 20
     context_object_name = 'address_list'
 
-    def get_template_names(self):
-        """
-        Выбор шаблона в зависимости от уровня доступа
-        """
-        folder = 'surface'
-        template = 'surface_photo_list.html'
-        if self.request.user.type == 3:
-            try:
-                if self.request.session['is_mobile']:
-                    folder = 'mobile'
-                    template = 'photo_list.html'
-            except:
-                self.request.session['is_mobile'] = False
-        return op.join(folder, template)
+    # def get_template_names(self):
+    #     """
+    #     Выбор шаблона в зависимости от уровня доступа
+    #     """
+    #     folder = 'surface'
+    #     template = 'surface_photo_list.html'
+    #     if self.request.user.type == 3:
+    #         try:
+    #             if self.request.session['is_mobile']:
+    #                 folder = 'mobile'
+    #                 template = 'photo_list.html'
+    #         except:
+    #             self.request.session['is_mobile'] = False
+    #     return op.join(folder, template)
 
     def get_paginate_by(self, queryset):
         """
@@ -454,7 +454,7 @@ class SurfacePhotoListView(ListView):
 
     def get_filter_args(self):
         """
-        Подготовка данных для формы поискаи и фильтрации queryset
+        Подготовка данных для формы поиска и фильтрации queryset
         """
         a_city = a_area = a_street = area_list = street_list = None
         if self.request.GET.get('a_city') and self.request.GET.get('a_city').isdigit():
