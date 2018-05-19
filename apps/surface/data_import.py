@@ -45,7 +45,7 @@ def address_list_import(request):
                 # import pdb; pdb.set_trace()
                 porch_list = []
                 for i in raw_porch_list:
-                    if i.strip() != '0' or i.strip() != '0':
+                    if i.strip().isdigit() and i.strip() != '0' or i.strip() != '':
                         porch_list.append(int(i.strip()))
                 try:
                     # пробуем получить город
