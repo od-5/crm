@@ -1,5 +1,6 @@
 # coding=utf-8
 from PIL import Image
+from django.core.files import File
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.conf import settings
@@ -82,6 +83,18 @@ class SurfacePhoto(models.Model):
         [SmartResize(*settings.SURFACE_THUMB_SIZE)], source='image', format='JPEG', options={'quality': 94}
     )
     is_broken = models.BooleanField(default=False, verbose_name=u'Поломка')
+
+
+@receiver(models.signals.pre_delete, sender=SurfacePhoto)
+def delete_old_image_resize(sender, instance, **kwargs):
+    try:
+        file = instance.image_resize.file
+        cache_backend = instance.image_resize.cachefile_backend
+        cache_backend.cache.delete(cache_backend.get_key(file))
+        instance.image_resize.storage.delete(file)
+    except:
+        pass
+    instance.image.delete()
 
 
 class AdjusterTask(models.Model):
