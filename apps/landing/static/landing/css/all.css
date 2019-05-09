@@ -212,7 +212,6 @@ h4 {
     position: relative;
 	z-index: 5;
     height: 861px;
-    padding: 87px 0 0;
     background: url(../images/bg.jpg) 50% 0 no-repeat;
 }
 .header-main.margin {margin: 0 0 68px;}

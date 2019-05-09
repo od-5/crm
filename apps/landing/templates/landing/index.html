@@ -63,12 +63,12 @@
 			<div class="header-main">
 				<div class="holder">
 				  <div class="header-main-left">
-					<div class="header-main-text"><strong>Нужны клиенты?</strong>
-					Закажите эффективную рекламу по цене 10 коп. за показ</div>
+					<div class="header-main-text"><strong>Нужны новые клиенты?</strong>
+					Закажите эффективную рекламу по цене 10 коп. за просмотр</div>
 					<div class="form-block">
 					  <div class="form-top"></div>
 					  <div class="form-frame">
-						<div class="form-title">Заказать <br>рекламу</div>
+						<div class="form-title">Введите свои данные чтобы получить прайс-лист с ценами</div>
 						<form action="{% url 'ticket:send' %}" id="js-ticket-form-1" method="post">
 						  {%  csrf_token %}
 						  <fieldset>
@@ -84,7 +84,7 @@
                 </div>
                 <input type="checkbox" name="terms" id="id_terms"><label for="id_terms" class="terms"> Я согласен на <a href="#hidden-block" class="fancybox">обработку персональных данных</a></label>
 							  <input type="hidden" name="theme" value="Заказать эффективную рекламу">
-							  <button class="submit">Заказать</button>
+							  <button class="submit">Получить прайс-лист</button>
 						  </fieldset>
 						</form>
 					  </div>
@@ -193,7 +193,7 @@
 			  </div> 
 			</div>
 			<div class="button-holder">
-			  <a href="#dialog3" class="button modal">Заказать рекламу</a>
+			  <a href="#dialog3" class="button modal">Получить прайс-лист</a>
 			</div>
 		  </div>
 		</section>
@@ -232,7 +232,7 @@
 				<div class="form-block">
 					<div class="form-top"></div>
 					<div class="form-frame">
-						<div class="form-title">у Вас есть какой-либо вопрос, закажите звонок менеджера:</div>
+						<div class="form-title">у Вас есть какой-либо вопрос? закажите звонок менеджера:</div>
             <form action="{% url 'ticket:send' %}" id="js-ticket-form-1" method="post">
 						  {%  csrf_token %}
 						  <fieldset>
@@ -249,7 +249,7 @@
                 <input type="checkbox" name="terms" id="id_terms"><label for="id_terms" class="terms"> Я согласен на <a href="#hidden-block" class="fancybox">обработку персональных данных</a></label>
 							  <input type="hidden" name="theme" value="Заказать обратный звонок">
                 <br>
-							  <button class="submit">Заказать</button>
+							  <button class="submit">Заказать звонок</button>
 						  </fieldset>
 						</form>
 					</div>
@@ -349,7 +349,7 @@
 				<div class="form-block">
 					<div class="form-top"></div>
 					<div class="form-frame">
-						<div class="form-title">Заказать <br>рекламу</div>
+						<div class="form-title">Получить <br>прайс-лист</div>
 						<form action="{% url 'ticket:send' %}" method="post">
               {% csrf_token %}
 							<fieldset>
@@ -365,7 +365,7 @@
 								</div>
 								<input type="hidden" name="theme" value="Заказать рекламу">
                 <input type="checkbox" name="terms" id="id_terms"><label for="id_terms" class="terms"> Я согласен на <a href="#hidden-block" class="fancybox">обработку персональных данных</a></label>
-								<button class="submit">Заказать</button>
+								<button class="submit">Получить прайс-лист</button>
 							</fieldset>
 						</form>
 					</div>
