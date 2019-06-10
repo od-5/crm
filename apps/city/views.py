@@ -198,7 +198,7 @@ def management_company_list(request):
     else:
         request.session['mc_filtered_list'] = reverse('city:management-company')
     context.update({
-        'object_list': qs,
+        'object_list': qs.select_related('city'),
         'city_list': city_qs
     })
     return render(request, 'city/management_company_list.html', context)

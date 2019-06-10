@@ -278,7 +278,9 @@ def photo_add(request):
             data = request.data
             if len(data['date'].split(' ')) == 1:
                 date = data['date']
-                time = datetime.datetime.now().strftime('%H:%M')
+                porch = Porch.objects.get(id=data['porch'])
+                tz = porch.surface.city.timezone
+                time = (datetime.datetime.now() + datetime.timedelta(hours=tz)).strftime('%H:%M')
                 data['date'] = u'%s %s' % (date, time)
             serializer = SurfacePhotoSerializer(data=data)
             if serializer.is_valid():

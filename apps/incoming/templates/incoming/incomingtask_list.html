@@ -18,7 +18,7 @@
           </div>
           {% include '__cabinet/filter_button.html' %}
           <form action="" method="GET" role="form" id="js-incomingtask-search-form" class="form form-filter">
-            <div class="col-md-12">
+            <div class="col-md-13">
               <div class="five-col-1">
                 <input type="text" name="name" value="{{ r_name|default:'' }}" class="form-control input-sm" placeholder="Название">
               </div>
@@ -64,6 +64,24 @@
               {% else %}
                 <a href="?all=1" class="btn btn-search btn-search_green">Показать все задачи</a>
               {% endif %}
+              </div>
+              <div class="five-col-1">
+                <form action="" method="get">
+                  {% csrf_token %}
+                  <select class="form-control" id="js-page-count">
+                    <option value="20" {% if page_count == 20 %}selected="selected"{% endif %}>20</option>
+                    <option value="50" {% if page_count == 50 %}selected="selected"{% endif %}>50</option>
+                    <option value="100" {% if page_count == 100 %}selected="selected"{% endif %}>100</option>
+                    <option value="0" {% if page_count == 0 %}selected="selected"{% endif %}>все</option>
+                  </select>
+                  <input type="hidden" id="id_page_count" name="page_count" value="{{ page_count|default:'' }}">
+                  <input type="hidden" name="manager" value="{{ r_manager|default:'' }}">
+                  <input type="hidden" name="type" value="{{ r_type|default:'' }}">
+                  <input type="hidden" name="status" value="{{ r_status|default:'' }}">
+                  <input type="hidden" name="date_s" value="{{ r_date_s|default:'' }}">
+                  <input type="hidden" name="date_s" value="{{ r_date_e|default:'' }}">
+                  <input type="hidden" name="name" value="{{ r_name|default:'' }}">
+                </form>
               </div>
               <div class="clearfix"></div>
             </div>

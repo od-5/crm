@@ -142,8 +142,8 @@
                 </div>
                 <div>
                   <p class="photo_description">
-                    Адрес: {{ item.address }} <br>
-                    Подъезд: {{ item.porch.number }}, <br>
+                    Адрес: <a href="{% url 'surface:porch-update' item.porch_id %}">{{ item.address }} <br>
+                    Подъезд: {{ item.porch.number }}</a>, <br>
                     Дата: {{ item.date }}
                     {% if user.type == 1 %}<br> id={{ item.id }}{% endif %}
                   </p>

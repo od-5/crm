@@ -21,11 +21,30 @@ class IncomingClientListView(ListView):
     template_name = 'incoming/incoming_list.html'
     paginate_by = 25
 
+    def get_paginate_by(self, queryset):
+        """
+        Получение параметра - сколько показывать элементов на странице
+        """
+        if self.request.GET.get('page_count'):
+            if self.request.GET.get('page_count') == '0':
+                page_count = 0
+            else:
+                page_count = int(self.request.GET.get('page_count'))
+        else:
+            try:
+                page_count = int(self.request.session['page_count'])
+            except:
+                page_count = self.paginate_by
+        self.paginate_by = self.request.session['page_count'] = page_count
+        return page_count
+
     def get_queryset(self):
         user = self.request.user
         name = self.request.GET.get('name')
         phone = self.request.GET.get('phone')
         contact = self.request.GET.get('contact')
+        manager = self.request.GET.get('manager')
+        city = self.request.GET.get('city')
         if user.type == 1:
             qs = IncomingClient.objects.select_related().all()
         elif user.type == 6:
@@ -50,7 +69,11 @@ class IncomingClientListView(ListView):
                 c_qs = c_qs.filter(name__icontains=contact)
             client_id_list = [int(i.incomingclient.id) for i in c_qs]
             qs = qs.filter(id__in=client_id_list)
-        return qs
+        if manager and int(manager) != 0:
+            qs = qs.filter(manager=int(manager))
+        if city and int(city) != 0:
+            qs = qs.filter(city=int(city))
+        return qs.select_related('city').prefetch_related('incomingtask_set')
 
     def get_context_data(self, **kwargs):
         context = super(IncomingClientListView, self).get_context_data(**kwargs)
@@ -65,6 +88,14 @@ class IncomingClientListView(ListView):
         if self.request.GET.get('contact'):
             context.update({
                 'r_contact': self.request.GET.get('contact')
+            })
+        if self.request.GET.get('manager'):
+            context.update({
+                'r_manager': int(self.request.GET.get('manager'))
+            })
+        if self.request.GET.get('city'):
+            context.update({
+                'r_city': int(self.request.GET.get('city'))
             })
         queryset = self.object_list
         manager_client_count = queryset.count()
@@ -98,7 +129,9 @@ class IncomingClientListView(ListView):
             self.request.session['incoming_filtered_list'] = reverse('incoming:list')
         context.update({
             'import_form': import_form,
-            'manager_list': Manager.objects.get_qs(user)
+            'manager_list': Manager.objects.get_qs(user),
+            'city_list': City.objects.get_qs(user),
+            'page_count': self.paginate_by,
         })
         return context
 
@@ -382,7 +415,20 @@ def incomingtask_list(request):
         context.update({
             'show_all': True
         })
-    paginator = Paginator(qs, 25)
+
+    page_count = 25
+    if request.GET.get('page_count'):
+        if request.GET.get('page_count') == '0':
+            page_count = 0
+        else:
+            page_count = int(request.GET.get('page_count'))
+    else:
+        try:
+            page_count = int(request.session['page_count'])
+        except:
+            pass
+    request.session['page_count'] = page_count
+    paginator = Paginator(qs, page_count)
     page = request.GET.get('page')
     try:
         object_list = paginator.page(page)
@@ -396,7 +442,8 @@ def incomingtask_list(request):
         request.session['incomingtask_filtered_list'] = reverse('incoming:task-list')
     context.update({
         'object_list': object_list,
-        'manager_list': manager_qs
+        'manager_list': manager_qs,
+        'page_count': page_count
     })
     return render(request, 'incoming/incomingtask_list.html', context)
 

@@ -8,13 +8,14 @@ __author__ = 'alexy'
 class CityForm(forms.ModelForm):
     class Meta:
         model = City
-        fields = ('name', 'moderator', 'contract_number', 'contract_date', 'slug')
+        fields = ('name', 'moderator', 'contract_number', 'contract_date', 'slug', 'timezone',)
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'moderator': forms.Select(attrs={'class': 'form-control'}),
             'contract_number': forms.TextInput(attrs={'class': 'form-control'}),
             'contract_date': forms.DateInput(attrs={'class': 'form-control'}),
             'slug': forms.TextInput(attrs={'class': 'form-control'}),
+            'timezone': forms.Select(attrs={'class': 'form-control'}),
         }
 
     def __init__(self, *args, **kwargs):

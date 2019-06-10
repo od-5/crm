@@ -34,6 +34,8 @@ class CityModelManager(models.Manager):
 
 
 class City(models.Model):
+    TIME_CHOICES = tuple((i, i) for i in xrange(-12, 13))
+
     name = models.CharField(max_length=100, verbose_name=u'Город')
     moderator = models.ForeignKey(to=User, limit_choices_to={'type': 2}, blank=True, null=True,
                                   verbose_name=u'Модератор')
@@ -42,6 +44,7 @@ class City(models.Model):
     coord_x = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=u'Ширина')
     coord_y = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=u'Долгота')
     slug = models.SlugField(verbose_name=u'url имя поддомена', blank=True, null=True, max_length=50)
+    timezone = models.SmallIntegerField(verbose_name=u'Часовой пояс', default=3, choices=TIME_CHOICES)
     # stand_total_count = models.IntegerField(blank=True, null=True, default=0)
 
     objects = CityModelManager()

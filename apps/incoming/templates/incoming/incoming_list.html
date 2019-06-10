@@ -21,7 +21,7 @@
           </div>
           {% include '__cabinet/filter_button.html' %}
           <form action="" class="form form-filter" role="form" method="GET">
-            <div class="col-md-12">
+            <div class="col-md-13">
               <div class="five-col-1">
                 <input type="text" name="name" value="{{ r_name|default:'' }}" class="form-control input-sm" placeholder="Название">
               </div>
@@ -32,7 +32,40 @@
                 <input type="text" name="contact" value="{{ r_contact|default:'' }}" class="form-control input-sm" placeholder="фамилия контактного лица">
               </div>
               <div class="five-col-1">
+                <select name="manager" id="manager_filter" class="form-control input-sm">
+                  <option value="0">--- Менеджер--- </option>
+                {% for manager in manager_list %}
+                  <option value="{{ manager.id }}" {% if manager.id == r_manager %}selected="selected"{% endif %}>{{ manager }}</option>
+                {% endfor %}
+                </select>
+              </div>
+              <div class="five-col-1">
+                <select name="city" id="city_filter" class="form-control input-sm">
+                  <option value="0">--- Город--- </option>
+                {% for city in city_list %}
+                  <option value="{{ city.id }}" {% if city.id == r_city %}selected="selected"{% endif %}>{{ city }}</option>
+                {% endfor %}
+                </select>
+              </div>
+              <div class="five-col-1">
                 <input type="submit" class="btn btn-search" value="Искать">
+              </div>
+              <div class="five-col-1">
+                <form action="" method="get">
+                  {% csrf_token %}
+                  <select class="form-control" id="js-page-count">
+                    <option value="20" {% if page_count == 20 %}selected="selected"{% endif %}>20</option>
+                    <option value="50" {% if page_count == 50 %}selected="selected"{% endif %}>50</option>
+                    <option value="100" {% if page_count == 100 %}selected="selected"{% endif %}>100</option>
+                    <option value="0" {% if page_count == 0 %}selected="selected"{% endif %}>все</option>
+                  </select>
+                  <input type="hidden" id="id_page_count" name="page_count" value="{{ page_count|default:'' }}">
+                  <input type="hidden" name="manager" value="{{ r_manager|default:'' }}">
+                  <input type="hidden" name="city" value="{{ r_city|default:'' }}">
+                  <input type="hidden" name="name" value="{{ r_name|default:'' }}">
+                  <input type="hidden" name="phone" value="{{ r_phone|default:'' }}">
+                  <input type="hidden" name="contact" value="{{ r_contact|default:'' }}">
+                </form>
               </div>
               <div class="clearfix"></div>
             </div>
@@ -73,7 +106,7 @@
             </thead>
             {% for object in search_client_list %}
               <tr>
-                <td>{{ object.name|default:'' }}</td>
+                <td><a href="{% url 'incoming:update' object.id %}"> {{ object.name|default:'' }}</a></td>
                 <td class="break-all">{{ object.kind_of_activity|default:'Не указано' }}</td>
                 <td>{{ object.manager|default:'Не указано' }}</td>
                 <td>{{ object.city|default:'Не указано' }}</td>
@@ -156,6 +189,7 @@
     </div>
   </div>
   {% include '__modal/js_ajax_remove_form.html' %}
+{% include '__modal/many_modal_forms.html' %}
   {% include 'incoming/__modal/reassign_manager_form.html' %}
 {% endblock %}
 {% block footer %}

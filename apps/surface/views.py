@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 import xlwt
 from os import path as op
-from datetime import datetime
+import datetime
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect, HttpResponse
@@ -57,7 +57,7 @@ class SurfaceListView(ListView):
         if self.request.GET.get('street') and int(self.request.GET.get('street')) != 0:
             qs = qs.filter(street=int(self.request.GET.get('street')))
         if self.request.GET.get('release_date'):
-            qs = qs.filter(release_date__lte=datetime.strptime(self.request.GET.get('release_date'), '%d.%m.%Y'))
+            qs = qs.filter(release_date__lte=datetime.datetime.strptime(self.request.GET.get('release_date'), '%d.%m.%Y'))
         if self.request.GET.get('free') and int(self.request.GET.get('free')) == 1:
             qs = qs.filter(free=True)
         elif self.request.GET.get('free') and int(self.request.GET.get('free')) == 2:
@@ -294,7 +294,14 @@ def surface_photo_add(request):
     if request.method == 'POST':
         form = SurfacePhotoForm(request.POST, request.FILES)
         if form.is_valid():
-            instance = form.save()
+            date = form.cleaned_data['date']
+            porch = form.cleaned_data['porch']
+            tz = porch.surface.city.timezone
+            time = datetime.datetime.combine(date.date(), datetime.datetime.now().time()) + \
+                   datetime.timedelta(hours=tz)
+            instance = form.save(commit=False)
+            instance.date = time
+            instance.save()
             return HttpResponseRedirect(reverse('surface:porch-update', args=(instance.porch.id, )))
         else:
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
@@ -416,9 +423,9 @@ class SurfacePhotoListView(ListView):
         if filter_args['a_street']:
             a_qs = a_qs.filter(porch__surface__street=filter_args['a_street'])
         if filter_args['a_date_s']:
-            a_qs = a_qs.filter(date__gte=datetime.strptime(filter_args['a_date_s'], '%d.%m.%Y'))
+            a_qs = a_qs.filter(date__gte=datetime.datetime.strptime(filter_args['a_date_s'], '%d.%m.%Y'))
         if filter_args['a_date_e']:
-            a_qs = a_qs.filter(date__lte=datetime.strptime(filter_args['a_date_e'], '%d.%m.%Y'))
+            a_qs = a_qs.filter(date__lte=datetime.datetime.strptime(filter_args['a_date_e'], '%d.%m.%Y'))
         return a_qs.select_related('porch', 'porch__surface', 'porch__surface__street',
                                    'porch__surface__street__area', 'porch__surface__city')
 
@@ -534,7 +541,7 @@ def surface_export(request):
     if street and int(street) != 0:
         qs = qs.filter(street=int(street))
     if release_date:
-        qs = qs.filter(release_date__lte=datetime.strptime(release_date, '%d.%m.%Y'))
+        qs = qs.filter(release_date__lte=datetime.datetime.strptime(release_date, '%d.%m.%Y'))
     if free:
         if int(free) == 1:
             qs = qs.filter(free=True)

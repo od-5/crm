@@ -113,7 +113,7 @@ class ClientListView(ListView, CityListMixin):
             qs = qs.filter(city__id=int(r_city))
         if r_manager and int(r_manager) != 0:
             qs = qs.filter(manager__id=int(r_manager))
-        return qs
+        return qs.order_by('-id')
 
     def get_context_data(self, **kwargs):
         context = super(ClientListView, self).get_context_data(**kwargs)
