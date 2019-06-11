@@ -189,7 +189,8 @@ $(function() {
       url: ata_form.find('#id_area').parents('.form-group').data('surface-url'),
       data: {
         date: ata_form.find('#id_date').val(),
-        area: ata_form.find('#id_area').val()
+        area: ata_form.find('#id_area').val(),
+        type: ata_form.find('#id_type').val()
       }
     }).done(function( data ) {
       if (data.surface_list) {
@@ -198,18 +199,34 @@ $(function() {
         var surface_table = $('.js-task-surface-list');
         console.log(surface_table);
         for (var i = 0; i < surface_list.length; i++){
-          surface_table.append(
-            '<tr class="result">'+
-            '<td><input type="checkbox" name="chk_group[]" value="' +surface_list[i]['id'] +'"></td>'+
-            '<td>'+surface_list[i]['city']+'</td>'+
-            '<td>'+surface_list[i]['area']+'</td>'+
-            '<td>'+surface_list[i]['street']+'</td>'+
-            '<td>'+surface_list[i]['number']+'</td>'+
-            '<td>'+surface_list[i]['porch']+'</td>'+
-            '<td>'+surface_list[i]['intact_porch']+'</td>'+
-            '<td>'+surface_list[i]['broken_porch']+'</td>'+
-            '</tr>'
-          )
+          if (surface_list[i]['porch_id']){
+                surface_table.append(
+                '<tr class="result">'+
+                '<td><input type="checkbox" name="chk_group2[]" value="' +surface_list[i]['porch_id'] +'"></td>'+
+                '<td>'+surface_list[i]['city']+'</td>'+
+                '<td>'+surface_list[i]['area']+'</td>'+
+                '<td>'+surface_list[i]['street']+'</td>'+
+                '<td>'+surface_list[i]['number']+'</td>'+
+                '<td>'+surface_list[i]['porch']+'</td>'+
+                '<td>'+surface_list[i]['intact_porch']+'</td>'+
+                '<td>'+surface_list[i]['broken_porch']+'</td>'+
+                '</tr>'
+              )
+          }
+          else {
+              surface_table.append(
+                '<tr class="result">'+
+                '<td><input type="checkbox" name="chk_group[]" value="' +surface_list[i]['id'] +'"></td>'+
+                '<td>'+surface_list[i]['city']+'</td>'+
+                '<td>'+surface_list[i]['area']+'</td>'+
+                '<td>'+surface_list[i]['street']+'</td>'+
+                '<td>'+surface_list[i]['number']+'</td>'+
+                '<td>'+surface_list[i]['porch']+'</td>'+
+                '<td>'+surface_list[i]['intact_porch']+'</td>'+
+                '<td>'+surface_list[i]['broken_porch']+'</td>'+
+                '</tr>'
+              )
+          }
         }
         var select_all_selector = $('#js-select-all');
         select_all_selector.prop('checked', false);

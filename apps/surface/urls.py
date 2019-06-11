@@ -25,5 +25,6 @@ urlpatterns = patterns(
     url(r'^surface-map/$', surface_map, name='surface-map'),
     url(r'^export/$', 'surface_export', name='export'),
     url(r'^import/$', address_list_import, name='import'),
+    url(r'^update_company/$', 'update_company', name='update_company'),
     url(r'^photo-rotate/$', ajax_photo_rotate, name='photo-rotate'),
 )

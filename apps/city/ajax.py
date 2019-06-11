@@ -171,6 +171,7 @@ def get_area_surface_list(request):
         surface_list = []
         r_area = request.GET.get('area')
         r_date = request.GET.get('date')
+        r_type = request.GET.get('type')
         at_surface_list_id = []
         if r_date:
             date = datetime.strptime(r_date, '%d.%m.%Y')
@@ -179,6 +180,10 @@ def get_area_surface_list(request):
                 adjustertask__date=date
             )
             at_surface_list_id = [int(i.surface.id) for i in at_surface]
+        one_porch = False
+        if r_type:
+            if int(r_type) == 3:
+                one_porch = True
         surface_qs = Surface.objects.filter(street__area=int(r_area), full_broken=False)
         for surface in surface_qs:
             broken_porch = []
@@ -189,16 +194,32 @@ def get_area_surface_list(request):
                         broken_porch.append(porch.number)
                     else:
                         intact_porch.append(porch.number)
-                surface_list.append({
-                    'id': surface.id,
-                    'city': surface.city.name,
-                    'area': surface.street.area.name,
-                    'street': surface.street.name,
-                    'number': surface.house_number,
-                    'porch': int(surface.porch_count()),
-                    'intact_porch': intact_porch,
-                    'broken_porch': broken_porch
-                })
+                    if one_porch:
+                        surface_list.append({
+                            'id': surface.id,
+                            'porch_id': porch.id,
+                            'city': surface.city.name,
+                            'area': surface.street.area.name,
+                            'street': surface.street.name,
+                            'number': surface.house_number,
+                            'porch': '-',
+                            'intact_porch': intact_porch,
+                            'broken_porch': broken_porch
+                        })
+                        broken_porch = []
+                        intact_porch = []
+                if not one_porch:
+                    surface_list.append({
+                        'id': surface.id,
+                        'porch_id': None,
+                        'city': surface.city.name,
+                        'area': surface.street.area.name,
+                        'street': surface.street.name,
+                        'number': surface.house_number,
+                        'porch': int(surface.porch_count()),
+                        'intact_porch': intact_porch,
+                        'broken_porch': broken_porch
+                    })
         return {
             'surface_list': surface_list
         }

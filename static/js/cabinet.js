@@ -1486,6 +1486,12 @@ $(function() {
       table_report.find('tbody input[type=checkbox]').prop('checked', $(this).prop('checked'));
   });
 
+  var table_list = $('.table-list');
+  table_list.find('#js-select-all');
+  table_list.find('#js-select-all').on('click', function(){
+      table_list.find('tbody input[type=checkbox]').prop('checked', $(this).prop('checked'));
+  });
+
 //  поворот фотографий
   $('.js-photo-rotate__button').click(function(){
     var block = $(this).parents('.photo-list-block');

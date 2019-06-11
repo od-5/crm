@@ -153,9 +153,9 @@ class ManagementCompany(models.Model):
 
     city = models.ForeignKey(to=City, verbose_name=u'Город')
     name = models.CharField(verbose_name=u'Название', max_length=255)
-    leader_function = models.CharField(verbose_name=u'Должность руководители', max_length=255, blank=True, null=True)
+    leader_function = models.CharField(verbose_name=u'Адрес и комментарии', max_length=455, blank=True, null=True)
     leader_name = models.CharField(verbose_name=u'ФИО руководители', max_length=255, blank=True, null=True)
-    phone = models.CharField(verbose_name=u'Контактный телефон', max_length=20, blank=True, null=True)
+    phone = models.CharField(verbose_name=u'Контактный телефон', max_length=40, blank=True, null=True)
 
 
 class Surface(models.Model):

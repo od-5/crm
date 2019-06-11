@@ -619,3 +619,18 @@ def surface_export(request):
     response['Content-Disposition'] = 'attachment; filename=%s' % fname
     wb.save(response)
     return response
+
+
+@login_required
+def update_company(request):
+    surfaces = request.POST.getlist('chk_group[]')
+    surface_qs = Surface.objects.filter(pk__in=surfaces)
+    type = request.POST.get('type')
+    if int(type) == 0:
+        surface_qs.update(has_stand=True)
+    if int(type) == 1:
+        surface_qs.update(has_stand=False)
+    if int(type) == 2:
+        company = request.POST.get('company')
+        surface_qs.update(management_id=company)
+    return HttpResponseRedirect(reverse('surface:list'))

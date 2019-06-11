@@ -281,6 +281,30 @@ def adjustertask_area(request):
                     except:
                         pass
                 return HttpResponseRedirect(task.get_absolute_url())
+            elif request.POST.getlist('chk_group2[]'):
+                # сохраняем задачу
+                task = form.save()
+                porches = request.POST.getlist('chk_group2[]')
+                for item in porches:
+                    try:
+                        porch = Porch.objects.get(pk=int(item))
+                        try:
+                            adjustertasksurface = AdjusterTaskSurface.objects.get(adjustertask=task,
+                                                                                  surface=porch.surface)
+                        except:
+                            adjustertasksurface = AdjusterTaskSurface(
+                                adjustertask=task,
+                                surface=porch.surface
+                            )
+                            adjustertasksurface.save()
+                        atsporch = AdjusterTaskSurfacePorch(
+                            adjustertasksurface=adjustertasksurface,
+                            porch=porch
+                        )
+                        atsporch.save()
+                    except:
+                        pass
+                return HttpResponseRedirect(task.get_absolute_url())
     else:
         form = AdjusterTaskAreaAddForm()
         if user.type == 1:
