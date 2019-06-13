@@ -278,9 +278,11 @@ $(function() {
     if (city == '') {
       atr_form.find('#id_adjuster').parents('.form-group').addClass('hide');
       atr_form.find('#id_area').parents('.form-group').addClass('hide');
+      atr_form.find('#id_client').parents('.form-group').addClass('hide');
     } else {
       atr_form.find('#id_adjuster').parents('.form-group').removeClass('hide');
       atr_form.find('#id_area').parents('.form-group').removeClass('hide');
+      atr_form.find('#id_client').parents('.form-group').removeClass('hide');
       $.ajax({
         type: "GET",
         url: ajax_url,
@@ -310,6 +312,16 @@ $(function() {
             text: data.area_list[j]['name']
           }));
         }
+        // заполняем список клиентов
+        var client_selector = atr_form.find('#id_client');
+        client_selector.find('option').remove();
+        client_selector.append($("<option value selected='selected'>--------</option>"));
+        for (var j = 0; j < data.client_list.length; j++) {
+          client_selector.append($("<option/>", {
+            value: data.client_list[j]['id'],
+            text: data.client_list[j]['name']
+          }));
+        }
       });
     }
   });
@@ -320,7 +332,8 @@ $(function() {
       url: atr_form.find('#id_area').parents('.form-group').data('ajax-url'),
       data: {
         area: atr_form.find('#id_area').val(),
-        date: atr_form.find('#id_date').val()
+        date: atr_form.find('#id_date').val(),
+        client: atr_form.find('#id_client').val()
       }
     }).done(function( data ) {
       if (data.porch_list) {
@@ -358,6 +371,10 @@ $(function() {
   atr_form.find('#id_date').change(function(){
     $('.js-task-porch-list tr.result').remove();
     console.log($(this).val());
+    get_area_damaged_surface()
+  });
+  atr_form.find('#id_client').change(function(){
+    $('.js-task-porch-list tr.result').remove();
     get_area_damaged_surface()
   });
 });

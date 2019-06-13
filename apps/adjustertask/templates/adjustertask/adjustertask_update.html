@@ -99,6 +99,9 @@
                   {{ adjuster_task_form.is_closed }}
                   {{ adjuster_task_form.is_closed.errors }}
                 </div>
+                <div class="form_group">
+                  <label>Итоговое количество стендов - {{ object.get_porch_count }}</label>
+                </div>
               </div>
               <div class="col-md-6 add-bottom">
                 {{ adjuster_task_form.comment.label_tag }}
@@ -132,7 +135,7 @@
                       <td>{{ ats.surface.street.area }}</td>
                       <td>{{ ats.surface.street.name }}</td>
                       <td>{{ ats.surface.house_number }}</td>
-                      <td>{{ ats.adjustertasksurfaceporch_set.count }}</td>
+                      <td>{{ ats.adjustertasksurfaceporch_set.count }} {{ ats.get_closed_porch_count }} / {{ ats.get_porch_count }}</td>
                       <td>
                         {% for atsp in ats.adjustertasksurfaceporch_set.all %}
                           {{ atsp.porch.number }}{% if not forloop.last %}, {% endif %}

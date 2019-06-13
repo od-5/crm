@@ -4,7 +4,7 @@ from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt
 from apps.adjuster.models import Adjuster, AdjusterTaskSurface, SurfacePhoto
 from apps.city.models import Area, City, Street, Surface, Porch
-from apps.client.models import Client, ClientOrder
+from apps.client.models import Client, ClientOrder, ClientOrderSurface
 from apps.surface.forms import PorchAddForm
 from core.models import User
 
@@ -40,9 +40,11 @@ def get_city_area(request):
     if request.GET.get('city'):
         area_list = []
         adjuster_list = []
+        client_list = []
         r_city = request.GET.get('city')
         area_qs = Area.objects.filter(city=int(r_city))
         adjuster_qs = Adjuster.objects.filter(city=int(r_city))
+        client_qs = Client.objects.filter(city=int(r_city))
         for i in area_qs:
             area_list.append({
                 'id': i.id,
@@ -55,9 +57,17 @@ def get_city_area(request):
                     'name': i.user.get_full_name()
                 }
             )
+        for i in client_qs:
+            client_list.append(
+                {
+                    'id': i.id,
+                    'name': i.legal_name
+                }
+            )
         return {
             'area_list': area_list,
-            'adjuster_list': adjuster_list
+            'adjuster_list': adjuster_list,
+            'client_list': client_list
         }
     else:
         return {
@@ -247,7 +257,12 @@ def get_area_surface_list_with_damage(request):
                 adjustertask__date=date
             )
             at_surface_list_id = [int(i.surface.id) for i in at_surface]
-        surface_qs = Surface.objects.filter(street__area=int(r_area), has_broken=True)
+        r_client = request.GET.get('client')
+        if r_client:
+            client_qs = ClientOrderSurface.objects.filter(clientorder__client_id=int(request.GET.get('client')))
+            surface_qs = [c_surface.surface for c_surface in client_qs]
+        else:
+            surface_qs = Surface.objects.filter(street__area=int(r_area), has_broken=True)
         for surface in surface_qs:
             if int(surface.id) not in at_surface_list_id:
                 porch_qs = surface.porch_set.filter(is_broken=True)

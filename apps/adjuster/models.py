@@ -248,7 +248,7 @@ class AdjusterTaskSurface(models.Model):
         """
         Количество выполненных подъездов по данному адресу
         """
-        return self.adjustertasksurfaceporch_set.filter(is_closed=True)
+        return self.adjustertasksurfaceporch_set.filter(is_closed=True).count()
 
     adjustertask = models.ForeignKey(to=AdjusterTask, verbose_name=u'Задача')
     surface = models.ForeignKey(to=Surface, verbose_name=u'Поверхность')
