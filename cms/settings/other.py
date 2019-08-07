@@ -68,3 +68,5 @@ LOGGING = {
         },
     },
 }
+
+DOCX_TEMPLATE_DIR = os.path.join(BASE_DIR, '../templates/docx/')

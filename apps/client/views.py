@@ -106,9 +106,9 @@ class ClientListView(ListView, CityListMixin):
         r_city = self.request.GET.get('city')
         r_manager = self.request.GET.get('manager')
         if r_email:
-            qs = qs.filter(user__email=r_email)
+            qs = qs.filter(user__email__icontains=r_email)
         if r_legal_name:
-            qs = qs.filter(legal_name=r_legal_name)
+            qs = qs.filter(legal_name__icontains=r_legal_name)
         if r_city and int(r_city) != 0:
             qs = qs.filter(city__id=int(r_city))
         if r_manager and int(r_manager) != 0:
@@ -129,7 +129,7 @@ class ClientListView(ListView, CityListMixin):
         else:
             manager_qs = None
         context.update({
-            'manager_list': manager_qs.values('id', 'user')
+            'manager_list': manager_qs
         })
         if self.request.GET.get('city'):
             context.update({
@@ -687,8 +687,10 @@ def add_client_surface(request):
         ClientOrderSurface.objects.bulk_create(
             [ClientOrderSurface(clientorder=order, surface=surface) for surface in surface_qs]
         )
-        # for item in surfaces:
-        #     surface = Surface.objects.get(pk=int(item))
+        for surface in surface_qs.filter(coord_x__isnull=True):
+            surface.save()
+        for surface in surface_qs.filter(coord_y__isnull=True):
+            surface.save()
         #     surface.free = False
         #     surface.release_date = order.date_end
         #     surface.save()

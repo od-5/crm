@@ -1,4 +1,8 @@
 {% extends 'cabinet_index.html' %}
+{% block extra_js %}
+  <script src="http://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+  {% include 'client/__include/map.html' %}
+{% endblock %}
 {% block breadcrumbs_item %}
   <li><a href="{% url 'client:list' %}">Список продаж</a></li>
   <li class="active">Редактирование продажи</li>
@@ -21,6 +25,17 @@
           <form action="" id="js-client-update-order-form" method="post" role="form" class="form add-bottom">
             {% csrf_token %}
             <div class="col-md-12">
+              <div class="add-bottom panel panel-success">
+                <div class="panel-heading js-map-task-heading">
+                  Карта <span class="caret"></span>
+                </div>
+                <div class="panel-body js-map-task-body">
+                  <div id="tasksMap" style="height: 500px;"></div>
+                  <div class="clearfix"></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
               <div class="form-group">
                 <p class="lead add-bottom text-info">Редактирование заказа</p>
               </div>
@@ -38,6 +53,13 @@
                 {{ order_form.date_end.label_tag }}
                 {{ order_form.date_end }}
                 {{ form.date_end.errors }}
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                {{ order_form.name.label_tag }}
+                {{ order_form.name }}
+                {{ form.name.errors }}
               </div>
             </div>
             <div class="clearfix"></div>

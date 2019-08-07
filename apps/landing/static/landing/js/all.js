@@ -3,7 +3,7 @@ $(document).ready(function () {
   $('.styled').selectmenu();
   // fancybox
   $('.fancybox').fancybox();
-  $(".input[name='phone']").mask("+7 (999) 999-99-99");
+  $(".input[name='phone']").mask("9 (999) 999-99-99");
   $('form').each(function(){
     $(this).validate({
       rules: {

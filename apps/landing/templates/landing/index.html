@@ -38,6 +38,7 @@
 				  </div>
 				  <div class="header-phone">
 					<div class="header-number">{{ setup.phone|default:"8 800 250-34-50" }}</div>
+				    <div class="header-callback">Звонок бесплатный</div>
 					<div class="header-callback"><a href="#dialog2" class="modal">Заказать обратный звонок</a></div>
 				  </div>
 				  <div class="header-right">
@@ -73,7 +74,7 @@
 						  {%  csrf_token %}
 						  <fieldset>
                 <input type="text" name="name" class="input" placeholder="Ваше имя *">
-                <input type="text" name="phone" class="input no-margin" placeholder="+7 (___) ___ - __ - __">
+                <input type="text" name="phone" class="input no-margin" placeholder="Ваш номер телефона">
                 <div class="select-block">
                   <select name="city" class="styled" id="ui-id-1" style="display: none;">
                   <option value="">Выберите ваш город</option>
@@ -237,7 +238,7 @@
 						  {%  csrf_token %}
 						  <fieldset>
                 <input type="text" name="name" class="input" placeholder="Ваше имя *">
-                <input type="text" name="phone" class="input no-margin" placeholder="+7 (___) ___ - __ - __">
+                <input type="text" name="phone" class="input no-margin" placeholder="Ваш номер телефона">
                 <div class="select-block">
                   <select name="city" class="styled" id="ui-id-1" style="display: none;">
                   <option value="">Выберите ваш город</option>
@@ -333,7 +334,7 @@
               {% csrf_token %}
 							<fieldset>
 								<input type="text" name="name" class="input" placeholder="Ваше имя *">
-								<input type="text" name="phone" class="input no-margin" placeholder="+7 (___) ___ - __ - __">
+								<input type="text" name="phone" class="input no-margin" placeholder="Ваш номер телефона">
 								<input type="hidden" name="theme" value="Заказать обратный звонок">
                 {% if current_city %}
                 <input type="hidden" name="city" value="{{ current_city.id }}">
@@ -354,7 +355,7 @@
               {% csrf_token %}
 							<fieldset>
 								<input type="text" name="name" class="input" placeholder="Ваше имя *">
-								<input type="text" name="phone" class="input no-margin" placeholder="+7 (___) ___ - __ - __">
+								<input type="text" name="phone" class="input no-margin" placeholder="Ваш номер телефона">
 								<div class="select-block">
 									<select name="city" class="styled">
 										<option value="">Выберите ваш город</option>

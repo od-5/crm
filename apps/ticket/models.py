@@ -44,6 +44,12 @@ class Ticket(Common):
         verbose_name=u'Комментарий',
         blank=True,
         null=True)
+    email = models.CharField(
+        verbose_name=u'Email',
+        max_length=30,
+        blank=True,
+        null=True
+    )
 
     class Meta:
         verbose_name = u'Заявка'

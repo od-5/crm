@@ -1,23 +1,20 @@
 # coding=utf-8
-from copy import copy
-import json
 import datetime
-from django.core.urlresolvers import reverse
+
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from api.serializers import TaskSerializer, TaskSurfaceSerializer, TaskSurfacePorchSerializer, UserSerializer, \
+
+from api.serializers import TaskSurfaceSerializer, TaskSurfacePorchSerializer, UserSerializer, \
     PorchSerializer, SurfacePhotoSerializer
 from apps.adjuster.models import Adjuster, AdjusterTask, AdjusterTaskSurface, AdjusterTaskSurfacePorch, SurfacePhoto
 from apps.city.models import Porch
-from apps.surface.forms import SurfacePhotoForm
 from core.common import str_to_bool
-from core.models import User
-# import the logging library
+
 import logging
-# Get an instance of a logger
+
 logger = logging.getLogger('django.request')
 
 
@@ -49,7 +46,13 @@ def task_list(request, format=None):
             'comment': task.comment
         }
         address_list = []
-        for atsurface in task.adjustertasksurface_set.filter(is_closed=False):
+        adjustertasksurface_qs = task.adjustertasksurface_set.filter(is_closed=False).select_related('surface').extra(
+            {'int_number': "CAST(city_surface.house_number as UNSIGNED)"}
+        ).order_by(
+            'surface__street__name',
+            'int_number'
+        )
+        for atsurface in adjustertasksurface_qs:
             ats_context = {
                 'id': atsurface.id,
                 'address': atsurface.get_address(),

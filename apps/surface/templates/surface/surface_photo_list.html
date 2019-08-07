@@ -51,6 +51,22 @@
                 <input type="text" name="a_date_e" id="id_a_date_e" placeholder="дата до" class="form-control input-sm" value="{{ a_date_e|default:'' }}">
               </div>
               <div class="five-col-1">
+                <input type="text" name="a_house_number" id="id_a_house_number" placeholder="номер дома" class="form-control input-sm" value="{{ a_house_number|default:'' }}">
+              </div>
+              {% if show_broken %}
+                <div class="five-col-1">
+                  <select name="broken_type" id="id_broken_type" class="form-control input-sm">
+                    <option value="">Тип повреждения</option>
+                    <option value="broken_shield" {% if broken_type == 'broken_shield' %}selected="selected"{% endif %}>Щит сломан</option>
+                    <option value="broken_gib" {% if broken_type == 'broken_gib' %}selected="selected"{% endif %}>Сломана прижимная планка</option>
+                    <option value="no_glass" {% if broken_type == 'no_glass' %}selected="selected"{% endif %}>Отсутствует защитное стекло</option>
+                    <option value="replace_glass" {% if broken_type == 'replace_glass' %}selected="selected"{% endif %}>Заменить защитное стекло</option>
+                    <option value="against_tenants" {% if broken_type == 'against_tenants' %}selected="selected"{% endif %}>Жильцы против</option>
+                    <option value="no_social_info" {% if broken_type == 'no_social_info' %}selected="selected"{% endif %}>Отсутствует социальная информация</option>
+                  </select>
+                </div>
+              {% endif %}
+              <div class="five-col-1">
                 <input class="btn btn-search" type="submit" value="Искать">
               </div>
               <div class="clearfix"></div>
@@ -174,7 +190,7 @@
               <tr {% if item.is_broken %}class="danger"{% endif %}>
                 <td>{{ item.porch.surface.city.name }}</td>
                 <td>{{ item.porch.surface.street.area.name }}</td>
-                <td>{{ item.porch.surface.street.name }}</td>
+                <td><a href="{% url 'surface:porch-update' item.porch_id %}">{{ item.porch.surface.street.name }}</a></td>
                 <td>{{ item.porch.surface.house_number }}</td>
                 <td>{{ item.porch.number }}</td>
                 <td>{{ item.date }}</td>

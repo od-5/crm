@@ -112,11 +112,12 @@ class ClientMaketForm(forms.ModelForm):
 class ClientOrderForm(forms.ModelForm):
     class Meta:
         model = ClientOrder
-        fields = ('client', 'date_start', 'date_end')
+        fields = ('client', 'date_start', 'date_end', 'name')
         widgets = {
             'client': forms.HiddenInput(attrs={'class': 'form-control'}),
             'date_start': forms.DateInput(attrs={'class': 'form-control'}),
             'date_end': forms.DateInput(attrs={'class': 'form-control'}),
+            'name': forms.DateInput(attrs={'class': 'form-control'}),
         }
 
 

@@ -129,7 +129,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         return reverse('cabinet:user-change', args=(self.pk, ))
 
     def get_full_name(self):
-        return u'%s %s %s' % (self.last_name, self.first_name or '', self.patronymic or '')
+        if self.last_name:
+            return u'%s %s %s' % (self.last_name, self.first_name or '', self.patronymic or '')
+        return self.email
 
     def get_short_name(self):
         return u'%s' % self.first_name

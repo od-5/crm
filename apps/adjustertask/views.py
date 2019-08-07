@@ -218,6 +218,8 @@ def adjustertask_client(request):
                                         porch=porch
                                     )
                                     atsporch.save()
+                            if not surface.coord_x or not surface.coord_y:
+                                surface.save()
                     except:
                         pass
                 return HttpResponseRedirect(task.get_absolute_url())
@@ -278,6 +280,8 @@ def adjustertask_area(request):
                                         porch=porch
                                     )
                                     atsporch.save()
+                            if not surface.coord_x or not surface.coord_y:
+                                surface.save()
                     except:
                         pass
                 return HttpResponseRedirect(task.get_absolute_url())
@@ -359,6 +363,9 @@ def adjustertask_repair(request):
                         porch=porch
                     )
                     atsporch.save()
+                    surface = porch.surface
+                    if not surface.coord_x or not surface.coord_y:
+                        surface.save()
                 return HttpResponseRedirect(task.get_absolute_url())
             else:
                 error = u'Не выбрано ни одно подъезда для ремонта'

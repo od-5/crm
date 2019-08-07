@@ -74,7 +74,7 @@ class TicketListView(ListView):
 
 class TicketView(CreateView):
     model = Ticket
-    fields = ('name', 'phone', 'city')
+    fields = ('name', 'phone', 'city', 'email')
     success_url = reverse_lazy('ok')
 
 

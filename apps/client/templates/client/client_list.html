@@ -31,15 +31,15 @@
                 <select name="manager" class="form-control input-sm" {% if not user.is_leader_manager %}disabled="disabled"{% endif %}>
                   <option value="0">Менеджер</option>
                   {% for manager in manager_list %}
-                    <option value="{{ manager.id }}" {% if manager.id == manager_id %}selected="selected"{% endif %}>{{ manager }}</option>
+                    <option value="{{ manager.id }}" {% if manager.id == manager_id %}selected="selected"{% endif %}>{{ manager.user.get_full_name }}</option>
                   {% endfor %}
                 </select>
               </div>
               <div class="five-col-1">
-                <input type="text" name="email" class="form-control input-sm" placeholder="email">
+                <input type="text" name="email" class="form-control input-sm" placeholder="email" value="{{ r_email }}">
               </div>
               <div class="five-col-1">
-                <input type="text" name="legal_name" class="form-control input-sm" placeholder="Юридическое название">
+                <input type="text" name="legal_name" class="form-control input-sm" value="{{ r_legal_name }}" placeholder="Юридическое название">
               </div>
               <div class="five-col-1">
                 <input type="submit" class="btn btn-search" value="Искать">
@@ -55,7 +55,7 @@
               <tr>
                 <th>id</th>
                 <th>Юридические наименование</th>
-                <th>Фактичесское наименование</th>
+                <th>Фактическое наименование</th>
                 <th>Город</th>
                 <th>Менеджер</th>
                 <th>Пользователь</th>

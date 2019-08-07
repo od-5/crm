@@ -56,6 +56,7 @@ class ClientOrder(models.Model):
     date_start = models.DateField(verbose_name=u'Дата начала размещения')
     date_end = models.DateField(verbose_name=u'Дата окончания размещения')
     is_closed = models.BooleanField(verbose_name=u'Заказ закрыт', default=False)
+    name = models.CharField(verbose_name=u'Название', blank=True, null=True, max_length=200)
 
     class Meta:
         verbose_name = u'Заказ'
@@ -64,6 +65,8 @@ class ClientOrder(models.Model):
         ordering = ['-date_start', ]
 
     def __unicode__(self):
+        if self.name:
+            return self.name
         if self.date_end:
             return u'Заказ %s - %s ' % (self.date_start, self.date_end)
         else:

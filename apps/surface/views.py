@@ -11,7 +11,9 @@ from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from apps.adjuster.models import SurfacePhoto
+from apps.client.models import Client, ClientOrderSurface
 from apps.manager.models import Manager
+from lib.cbv import DocResponseMixin
 from .forms import SurfaceAddForm, PorchAddForm, SurfacePhotoForm, SurfaceImportForm
 from apps.city.models import City, Area, Surface, Street, Porch, ManagementCompany
 
@@ -23,11 +25,7 @@ class SurfaceListView(ListView):
     template_name = 'surface/surface_list.html'
     paginate_by = 25
 
-    def get_queryset(self):
-        """
-        Если пользователь администратор - ему доступны всё города.
-        Если пользователь модератор - ему доступны только те города, которыми он управляет.
-        """
+    def get_qs(self):
         user = self.request.user
         if user.type == 1:
             qs = Surface.objects.select_related('city', 'street', 'street__area', 'management').all()
@@ -42,6 +40,15 @@ class SurfaceListView(ListView):
                 city__moderator=user.manager.moderator)
         else:
             qs = Surface.objects.none()
+        return qs
+
+    def get_queryset(self):
+        """
+        Если пользователь администратор - ему доступны всё города.
+        Если пользователь модератор - ему доступны только те города, которыми он управляет.
+        """
+        user = self.request.user
+        qs = self.get_qs()
         # фильтрация поверхностей по городам, районам, улицам
         if self.request.GET.get('management'):
             if int(self.request.GET.get('management')) == 0:
@@ -54,18 +61,30 @@ class SurfaceListView(ListView):
             qs = qs.filter(city=int(self.request.GET.get('city')))
         if self.request.GET.get('area') and int(self.request.GET.get('area')) != 0:
             qs = qs.filter(street__area=int(self.request.GET.get('area')))
-        if self.request.GET.get('street') and int(self.request.GET.get('street')) != 0:
-            qs = qs.filter(street=int(self.request.GET.get('street')))
+        if self.request.GET.get('street') and self.request.GET.get('street') != '':
+            qs = qs.filter(street__name__icontains=self.request.GET.get('street'))
         if self.request.GET.get('release_date'):
-            qs = qs.filter(release_date__lte=datetime.datetime.strptime(self.request.GET.get('release_date'), '%d.%m.%Y'))
-        if self.request.GET.get('free') and int(self.request.GET.get('free')) == 1:
-            qs = qs.filter(free=True)
-        elif self.request.GET.get('free') and int(self.request.GET.get('free')) == 2:
-            qs = qs.filter(free=False)
+            if self.request.GET.get('free') and int(self.request.GET.get('free')) == 2:
+                qs = qs.filter(release_date__gte=datetime.datetime.strptime(self.request.GET.get('release_date'), '%d.%m.%Y'))
+            else:
+                qs = qs.filter(release_date__lt=datetime.datetime.strptime(self.request.GET.get('release_date'), '%d.%m.%Y'))
+        if self.request.GET.get('free') and not self.request.GET.get('release_date'):
+            if int(self.request.GET.get('free')) == 1:
+                qs = qs.filter(free=True)
+            if int(self.request.GET.get('free')) == 2:
+                qs = qs.filter(free=False)
         if self.request.GET.get('has_stand') and int(self.request.GET.get('has_stand')) == 1:
             qs = qs.filter(has_stand=True)
         elif self.request.GET.get('has_stand') and int(self.request.GET.get('has_stand')) == 2:
             qs = qs.filter(has_stand=False)
+        if self.request.GET.get('client') and int(self.request.GET.get('client')) != 0:
+            today = datetime.datetime.today()
+            client_filter = ClientOrderSurface.objects.filter(
+                surface__in=qs,
+                clientorder__date_end__gte=today,
+                clientorder__client=int(self.request.GET.get('client'))
+            ).values_list('surface', flat=True)
+            qs = qs.filter(id__in=client_filter)
         return qs
 
     def get_context_data(self, **kwargs):
@@ -83,11 +102,17 @@ class SurfaceListView(ListView):
         surface_count = surface_qs.count()
         # for surface in surface_qs:
         #     porch_count += surface.porch_count()
+        today = datetime.datetime.today()
+        client_qs = Client.objects.filter(
+            clientorder__clientordersurface__surface__in=self.get_qs(),
+            clientorder__date_end__gte=today
+        ).distinct()
         context.update({
             'import_form': SurfaceImportForm(),
             'porch_count': porch_count,
             'surface_count': surface_count,
-            'center': surface_qs.first()
+            'center': surface_qs.first(),
+            'client_list': client_qs.values('id', 'legal_name')
         })
         if user.type == 1:
             qs = City.objects.all()
@@ -109,6 +134,11 @@ class SurfaceListView(ListView):
             'management_list': management_qs
         })
 
+        if self.request.GET.get('client'):
+            context.update({
+                'client_id': int(self.request.GET.get('client'))
+            })
+
         if self.request.GET.get('city'):
             area_qs = Area.objects.filter(city__id=int(self.request.GET.get('city')))
             context.update({
@@ -116,14 +146,12 @@ class SurfaceListView(ListView):
                 'city_id': int(self.request.GET.get('city'))
             })
             if self.request.GET.get('area'):
-                street_qs = Street.objects.filter(area__id=int(self.request.GET.get('area')))
                 context.update({
-                    'street_list': street_qs,
                     'area_id': int(self.request.GET.get('area'))
                 })
                 if self.request.GET.get('street'):
                     context.update({
-                        'street_id': int(self.request.GET.get('street'))
+                        'street': self.request.GET.get('street')
                     })
         if self.request.GET.get('management'):
             context.update({
@@ -416,12 +444,18 @@ class SurfacePhotoListView(ListView):
             a_qs = self.model.objects.none()
         a_qs = a_qs.filter(is_broken=self.show_broken())
         filter_args = self.get_filter_args()
+        if self.show_broken():
+            if filter_args['broken_type']:
+                filter_kwargs = {'porch__%s' % filter_args['broken_type']: True}
+                a_qs = a_qs.filter(**filter_kwargs)
         if filter_args['a_city']:
             a_qs = a_qs.filter(porch__surface__city=filter_args['a_city'])
         if filter_args['a_area']:
             a_qs = a_qs.filter(porch__surface__street__area=filter_args['a_area'])
         if filter_args['a_street']:
             a_qs = a_qs.filter(porch__surface__street=filter_args['a_street'])
+        if filter_args['a_house_number']:
+            a_qs = a_qs.filter(porch__surface__house_number=filter_args['a_house_number'])
         if filter_args['a_date_s']:
             a_qs = a_qs.filter(date__gte=datetime.datetime.strptime(filter_args['a_date_s'], '%d.%m.%Y'))
         if filter_args['a_date_e']:
@@ -463,7 +497,7 @@ class SurfacePhotoListView(ListView):
         """
         Подготовка данных для формы поиска и фильтрации queryset
         """
-        a_city = a_area = a_street = area_list = street_list = None
+        a_city = a_area = a_street = area_list = street_list = broken_type = a_house_number = None
         if self.request.GET.get('a_city') and self.request.GET.get('a_city').isdigit():
             a_city = int(self.request.GET.get('a_city'))
             area_list = Area.objects.filter(city=a_city)
@@ -472,6 +506,10 @@ class SurfacePhotoListView(ListView):
             street_list = Street.objects.filter(area=a_area)
         if self.request.GET.get('a_street') and self.request.GET.get('a_street').isdigit():
             a_street = int(self.request.GET.get('a_street'))
+        if self.request.GET.get('broken_type'):
+            broken_type = self.request.GET.get('broken_type')
+        if self.request.GET.get('a_house_number'):
+            a_house_number = self.request.GET.get('a_house_number')
         a_date_s = self.request.GET.get('a_date_s') or None
         # установка флага начальной даты для фильтрации
         a_date_e = self.request.GET.get('a_date_e') or None
@@ -482,7 +520,9 @@ class SurfacePhotoListView(ListView):
             'a_date_s': a_date_s,
             'a_date_e': a_date_e,
             'area_list': area_list,
-            'street_list': street_list
+            'street_list': street_list,
+            'broken_type': broken_type,
+            'a_house_number': a_house_number
         }
 
     def get_context_data(self, **kwargs):
@@ -619,6 +659,62 @@ def surface_export(request):
     response['Content-Disposition'] = 'attachment; filename=%s' % fname
     wb.save(response)
     return response
+
+
+class SurfaceDocView(DocResponseMixin, ListView):
+    model = Porch
+    template_name = 'surface.docx'
+    filename = 'surface'
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.type == 1:
+            qs = Surface.objects.select_related('city', 'street', 'street__area', 'management').all()
+        elif user.type == 6:
+            qs = Surface.objects.select_related('city', 'street', 'street__area', 'management').filter(
+                city__in=user.superviser.city_id_list())
+        elif user.type == 2:
+            qs = Surface.objects.select_related('city', 'street', 'street__area', 'management').filter(
+                city__moderator=user)
+        elif user.type == 5:
+            qs = Surface.objects.select_related('city', 'street', 'street__area', 'management').filter(
+                city__moderator=user.manager.moderator)
+        else:
+            qs = None
+        # фильтрация поверхностей по городам, районам, улицам
+        management = self.request.GET.get('management')
+        city = self.request.GET.get('city')
+        area = self.request.GET.get('area')
+        street = self.request.GET.get('street')
+        release_date = self.request.GET.get('release_date')
+        free = self.request.GET.get('free')
+        has_stand = self.request.GET.get('has_stand')
+        if management:
+            if int(management) == 0:
+                qs = qs
+            elif int(management) == -1:
+                qs = qs.filter(management__isnull=True)
+            else:
+                qs = qs.filter(management=int(management))
+        if city and int(city) != 0:
+            qs = qs.filter(city=int(city))
+        if area and int(area) != 0:
+            qs = qs.filter(street__area=int(area))
+        if street and int(street) != 0:
+            qs = qs.filter(street=int(street))
+        if release_date:
+            qs = qs.filter(release_date__lte=datetime.datetime.strptime(release_date, '%d.%m.%Y'))
+        if free:
+            if int(free) == 1:
+                qs = qs.filter(free=True)
+            elif int(free) == 2:
+                qs = qs.filter(free=False)
+        if has_stand:
+            if int(has_stand) == 1:
+                qs = qs.filter(has_stand=True)
+            elif int(has_stand) == 2:
+                qs = qs.filter(has_stand=False)
+        return self.model.objects.filter(surface__in=qs).select_related('surface', 'surface__street')
 
 
 @login_required

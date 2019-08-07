@@ -43,14 +43,7 @@
                 </select>
               </div>
               <div class="five-col-1">
-                <select name="street" id="street_filter" class="form-control input-sm" >
-                  <option value="0">--- Улица ---</option>
-                  {% if area_list %}
-                    {% for street in street_list %}
-                    <option value="{{ street.id }}" {% if street.id == street_id %}selected="selected"{% endif %}>{{ street }}</option>
-                    {% endfor %}
-                {% endif %}
-                </select>
+                <input type="text" name="street" id="street_filter" class="form-control input-sm" placeholder="Улица" value="{{ street }}">
               </div>
               <div class="five-col-2">
                 <select name="management" id="management_filter" class="form-control input-sm" >
@@ -64,13 +57,6 @@
                 </select>
               </div>
               <div class="five-col-1">
-                <select name="free" id="free_filter" class="form-control input-sm">
-                  <option value="0" {% if free == 0 %}selected="selected"{% endif %}>--- Занятость ---</option>
-                  <option value="1" {% if free == 1 %}selected="selected"{% endif %}>Свободна</option>
-                  <option value="2" {% if free == 2 %}selected="selected"{% endif %}>Занята</option>
-                </select>
-              </div>
-              <div class="five-col-1">
                 <select name="has_stand" id="has_stand" class="form-control input-sm">
                   <option value="0" {% if has_stand == 0 %}selected="selected"{% endif %}>--- Стенды ---</option>
                   <option value="1" {% if has_stand == 1 %}selected="selected"{% endif %}>Стенды установлены</option>
@@ -78,9 +64,26 @@
                 </select>
               </div>
               <div class="five-col-1">
-                <input type="text" name="release_date" class="form-control input-sm" placeholder="свободна от:" id="id_release_date" value="{{ release_date }}">
+                <select name="free" id="free_filter" class="form-control input-sm">
+                  <option value="0" {% if free == 0 %}selected="selected"{% endif %}>--- Занятость ---</option>
+                  <option value="1" {% if free == 1 %}selected="selected"{% endif %}>Свободна</option>
+                  <option value="2" {% if free == 2 %}selected="selected"{% endif %}>Занята</option>
+                </select>
               </div>
-              <div class="five-col-2">
+              <div class="five-col-1">
+                <input type="text" name="release_date" class="form-control input-sm" placeholder="в момент:" id="id_release_date" value="{{ release_date }}">
+              </div>
+              <div class="five-col-1">
+                <select name="client" id="client_filter" class="form-control input-sm" >
+                  <option value="0">--- Клиент ---</option>
+                  {% if client_list %}
+                    {% for client in client_list %}
+                    <option value="{{ client.id }}" {% if client.id == client_id %}selected="selected"{% endif %}>{{ client.legal_name }}</option>
+                    {% endfor %}
+                  {% endif %}
+                </select>
+              </div>
+              <div class="five-col-1">
                 <input type="submit" class="btn btn-search" value="Искать поверхности">
               </div>
               <div class="clearfix"></div>
@@ -90,9 +93,14 @@
         </div>
         <div class="panel-body">
           <div class="row">
-            <div class="col-lg-6">
+            <div class="col-lg-2">
               <a href="{% url 'surface:export' %}?city={{ city_id|default:'' }}&area={{ area_id|default:'' }}&street={{ street_id|default:'' }}&management={{ management_id|default:'' }}&release_date={{ release_date|default:'' }}&free={{ free|default:0 }}&has_stand={{ has_stand|default:0 }}" class="btn btn-warning add-bottom">
                 <span class="glyphicon glyphicon-download-alt"></span> Скачать в EXCEL
+              </a>
+            </div>
+            <div class="col-lg-4">
+              <a href="{% url 'surface:export-docx' %}?city={{ city_id|default:'' }}&area={{ area_id|default:'' }}&street={{ street_id|default:'' }}&management={{ management_id|default:'' }}&release_date={{ release_date|default:'' }}&free={{ free|default:0 }}&has_stand={{ has_stand|default:0 }}" class="btn btn-warning add-bottom">
+                <span class="glyphicon glyphicon-download-alt"></span> Скачать в DOCX
               </a>
             </div>
             <div class="col-lg-6 text-right">
@@ -201,7 +209,7 @@
                 </tr>
               {% empty %}
                 <tr>
-                  <td colspan="8">
+                  <td colspan="10">
                     <p class="alert alert-info text-left">Поверхностей не найдено</p>
                   </td>
                 </tr>

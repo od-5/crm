@@ -34,7 +34,7 @@ class AreaForm(forms.ModelForm):
         fields = ('city', 'name', )
         widgets = {
             'city': forms.HiddenInput(attrs={'class': 'form-control'}),
-            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': u'Нзвание района'}),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': u'Название района'}),
         }
 
 

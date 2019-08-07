@@ -1,9 +1,12 @@
 # coding=utf-8
+from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from django.views.generic.base import ContextMixin
 from django.views.generic.edit import FormMixin, ModelFormMixin, ProcessFormView
 from django.views.generic.list import MultipleObjectTemplateResponseMixin, MultipleObjectMixin
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.utils.translation import ugettext as _
+from docxtpl import DocxTemplate
 
 __author__ = '2mitrij'
 
@@ -109,3 +112,36 @@ class ListWithCreateView(MultipleObjectTemplateResponseMixin, MultipleObjectMixi
         self.object = None
 
         return super(ListWithCreateView, self).post(request, *args, **kwargs)
+
+
+class DocResponseMixin(object):
+    """
+    A mixin that can be used to render a doc file.
+    """
+    template_name = None
+    filename = None
+    content_type = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+
+    def render_to_response(self, context, **response_kwargs):
+        document = DocxTemplate(self.get_template_name())
+        document.render(context)
+        response = HttpResponse(content_type=self.content_type)
+        response['Content-Disposition'] = 'attachment; filename=%s.docx' % (self.get_filename())
+        document.save(response)
+        return response
+
+    def get_template_name(self):
+        if self.template_name is None:
+            raise ImproperlyConfigured(
+                "DocResponseMixin requires either a definition of "
+                "'template_name' or an implementation of 'get_template_name()'")
+        else:
+            return settings.DOCX_TEMPLATE_DIR + self.template_name
+
+    def get_filename(self):
+        if self.filename is None:
+            raise ImproperlyConfigured(
+                "DocResponseMixin requires either a definition of "
+                "'filename' or an implementation of 'get_filename()'")
+        else:
+            return self.filename
