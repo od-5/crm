@@ -46,6 +46,7 @@ class Client(models.Model):
         verbose_name = u'Клиент'
         verbose_name_plural = u'Клиенты'
         app_label = 'client'
+        ordering = ['-id']
 
     def __unicode__(self):
         return self.legal_name
@@ -159,6 +160,7 @@ class ClientJournal(models.Model):
         verbose_name = u'Покупка'
         verbose_name_plural = u'Покупки'
         app_label = 'client'
+        ordering = ('-id', )
 
     def __unicode__(self):
         return u'Покупка на дату %s' % self.created

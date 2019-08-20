@@ -86,7 +86,6 @@
               <div class="five-col-1">
                 <input type="submit" class="btn btn-search" value="Искать поверхности">
               </div>
-              <div class="clearfix"></div>
             </div>
             <div class="clearfix"></div>
           </form>
@@ -94,15 +93,35 @@
         <div class="panel-body">
           <div class="row">
             <div class="col-lg-2">
-              <a href="{% url 'surface:export' %}?city={{ city_id|default:'' }}&area={{ area_id|default:'' }}&street={{ street_id|default:'' }}&management={{ management_id|default:'' }}&release_date={{ release_date|default:'' }}&free={{ free|default:0 }}&has_stand={{ has_stand|default:0 }}" class="btn btn-warning add-bottom">
+              <a href="{% url 'surface:export' %}?city={{ city_id|default:'' }}&area={{ area_id|default:'' }}&street={{ street_id|default:'' }}&management={{ management_id|default:'' }}&release_date={{ release_date|default:'' }}&free={{ free|default:0 }}&has_stand={{ has_stand|default:0 }}&client={{ client_id|default:0 }}" class="btn btn-warning add-bottom">
                 <span class="glyphicon glyphicon-download-alt"></span> Скачать в EXCEL
               </a>
             </div>
-            <div class="col-lg-4">
-              <a href="{% url 'surface:export-docx' %}?city={{ city_id|default:'' }}&area={{ area_id|default:'' }}&street={{ street_id|default:'' }}&management={{ management_id|default:'' }}&release_date={{ release_date|default:'' }}&free={{ free|default:0 }}&has_stand={{ has_stand|default:0 }}" class="btn btn-warning add-bottom">
+            <div class="col-lg-2">
+              <a href="{% url 'surface:export-docx' %}?city={{ city_id|default:'' }}&area={{ area_id|default:'' }}&street={{ street_id|default:'' }}&management={{ management_id|default:'' }}&release_date={{ release_date|default:'' }}&free={{ free|default:0 }}&has_stand={{ has_stand|default:0 }}&client={{ client_id|default:0 }}" class="btn btn-warning add-bottom">
                 <span class="glyphicon glyphicon-download-alt"></span> Скачать в DOCX
               </a>
             </div>
+            <div class="col-lg-2">
+                <form action="" method="get">
+                  {% csrf_token %}
+                  <select class="form-control" id="js-page-count" style="max-width: 100px;">
+                    <option value="20" {% if page_count == 20 %}selected="selected"{% endif %}>20</option>
+                    <option value="50" {% if page_count == 50 %}selected="selected"{% endif %}>50</option>
+                    <option value="100" {% if page_count == 100 %}selected="selected"{% endif %}>100</option>
+                    <option value="0" {% if page_count == 0 %}selected="selected"{% endif %}>все</option>
+                  </select>
+                  <input type="hidden" id="id_page_count" name="page_count" value="{{ page_count|default:'' }}">
+                  <input type="hidden" name="city" value="{{ city_id|default:'' }}">
+                  <input type="hidden" name="area" value="{{ area_id|default:'' }}">
+                  <input type="hidden" name="street" value="{{ street|default:'' }}">
+                  <input type="hidden" name="management" value="{{ management_id|default:'' }}">
+                  <input type="hidden" name="has_stand" value="{{ has_stand|default:'' }}">
+                  <input type="hidden" name="free" value="{{ free|default:'' }}">
+                  <input type="hidden" name="release_date" value="{{ release_date|default:'' }}">
+                  <input type="hidden" name="client" value="{{ client_id|default:'' }}">
+                </form>
+              </div>
             <div class="col-lg-6 text-right">
               <form action="{% url 'surface:import' %}" method="POST" enctype="multipart/form-data" class="form-inline" role="form">{% csrf_token %}
                 {{ import_form.file }}
@@ -210,7 +229,7 @@
               {% empty %}
                 <tr>
                   <td colspan="10">
-                    <p class="alert alert-info text-left">Поверхностей не найдено</p>
+                    <p class="alert alert-info text-left">{{ city_id|yesno:'Поверхностей не найдено,Выберите город' }}</p>
                   </td>
                 </tr>
               {% endfor %}

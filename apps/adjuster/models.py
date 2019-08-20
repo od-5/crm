@@ -72,6 +72,9 @@ class SurfacePhoto(models.Model):
     def address(self):
         return self.porch.surface
 
+    def image_exists(self):
+        return self.image.storage.exists(self.image.name)
+
     def save(self, *args, **kwargs):
         super(SurfacePhoto, self).save()
 

@@ -3,7 +3,7 @@ from annoying.decorators import ajax_request
 from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt
 from apps.adjuster.models import Adjuster, AdjusterTaskSurface, SurfacePhoto
-from apps.city.models import Area, City, Street, Surface, Porch
+from apps.city.models import Area, City, Street, Surface, Porch, ManagementCompany
 from apps.client.models import Client, ClientOrder, ClientOrderSurface
 from apps.surface.forms import PorchAddForm
 from core.models import User
@@ -41,10 +41,18 @@ def get_city_area(request):
         area_list = []
         adjuster_list = []
         client_list = []
+        clientorder_list = []
+        management_list = []
         r_city = request.GET.get('city')
         area_qs = Area.objects.filter(city=int(r_city))
         adjuster_qs = Adjuster.objects.filter(city=int(r_city))
         client_qs = Client.objects.filter(city=int(r_city))
+        today = datetime.today()
+        clientorder_qs = Client.objects.filter(
+            clientorder__clientordersurface__surface__city_id=int(r_city),
+            clientorder__date_end__gte=today
+        ).distinct()
+        management_qs = ManagementCompany.objects.filter(city_id=int(r_city))
         for i in area_qs:
             area_list.append({
                 'id': i.id,
@@ -64,10 +72,26 @@ def get_city_area(request):
                     'name': i.legal_name
                 }
             )
+        for i in clientorder_qs:
+            clientorder_list.append(
+                {
+                    'id': i.id,
+                    'name': i.legal_name
+                }
+            )
+        for i in management_qs:
+            management_list.append(
+                {
+                    'id': i.id,
+                    'name': i.name
+                }
+            )
         return {
             'area_list': area_list,
             'adjuster_list': adjuster_list,
-            'client_list': client_list
+            'client_list': client_list,
+            'clientorder_list': clientorder_list,
+            'management_list': management_list
         }
     else:
         return {

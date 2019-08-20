@@ -77,8 +77,8 @@ def surface_map(request):
         qs = qs.filter(city=int(city))
     if area and int(area) != 0:
         qs = qs.filter(street__area=int(area))
-    if street and int(street) != 0:
-        qs = qs.filter(street=int(street))
+    if street:
+        qs = qs.filter(street__name__icontains=street)
     if release_date:
         qs = qs.filter(release_date__lte=datetime.strptime(release_date, '%d.%m.%Y'))
     if free:

@@ -80,9 +80,9 @@
               <div class="col-md-8 add-bottom">
               {% if user.type != 3 %}
                 {% if show_broken %}
-                <a href="{{ request.path }}?broken=0&a_city={{ a_city|default:'' }}&a_area={{ a_area|default:'' }}&a_street={{ a_street|default:'' }}&a_date_s={{ a_date_s|default:'' }}&a_date_e={{ a_date_e|default:'' }}" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Показать целые</a>
+                <a href="{{ request.path }}?broken=0&a_city={{ a_city|default:'' }}&a_area={{ a_area|default:'' }}&a_street={{ a_street|default:'' }}&a_date_s={{ a_date_s|default:'' }}&a_date_e={{ a_date_e|default:'' }}&a_house_number={{ a_house_number|default:'' }}&broken_type={{ broken_type|default:'' }}" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Показать целые</a>
                 {% else %}
-                  <a href="{{ request.path }}?broken=1&a_city={{ a_city|default:'' }}&a_area={{ a_area|default:'' }}&a_street={{ a_street|default:'' }}&a_date_s={{ a_date_s|default:'' }}&a_date_e={{ a_date_e|default:'' }}" class="btn btn-warning"><span class="glyphicon glyphicon-wrench"></span> Показать повреждённые</a>
+                  <a href="{{ request.path }}?broken=1&a_city={{ a_city|default:'' }}&a_area={{ a_area|default:'' }}&a_street={{ a_street|default:'' }}&a_date_s={{ a_date_s|default:'' }}&a_date_e={{ a_date_e|default:'' }}&a_house_number={{ a_house_number|default:'' }}&broken_type={{ broken_type|default:'' }}" class="btn btn-warning"><span class="glyphicon glyphicon-wrench"></span> Показать повреждённые</a>
                 {% endif %}
               {% else %}
                 <a href="{% url 'client:download-archive' %}?a_city={{ a_city|default:'' }}&a_area={{ a_area|default:'' }}&a_street={{ a_street|default:'' }}&a_date_s={{ a_date_s|default:'' }}&a_date_e={{ a_date_e|default:'' }}" id="js-download-archive" class="btn btn-success" target="_blank" onclick="return location.href = '{% url 'surface:photo-list' %}'">
@@ -201,7 +201,7 @@
               {% empty %}
               <tr>
                 <td colspan="7">
-                  <p class="alert alert-info text-left">Фотографий не найдено</p>
+                  <p class="alert alert-info text-left">{{ city_id|yesno:'Фотографий не найдено,Выберите город' }}</p>
                 </td>
               </tr>
               {% endfor %}

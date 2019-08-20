@@ -29,6 +29,34 @@ $(function() {
             }));
           }
         }
+        if (data.management_list){
+          var management_list = data.management_list;
+          $('#management_filter').find('option').remove();
+          $('#management_filter').append($("<option/>", {
+            value: '',
+            text: '--- Управляющая компания ---'
+          }));
+          for (var i = 0; i < management_list.length; i++) {
+            $('#management_filter').append($("<option/>", {
+                value: management_list[i]['id'],
+                text: management_list[i]['name']
+            }));
+          }
+        }
+        if (data.clientorder_list){
+          var clientorder_list = data.clientorder_list;
+          $('#client_filter').find('option').remove();
+          $('#client_filter').append($("<option/>", {
+            value: '',
+            text: '--- Клиент ---'
+          }));
+          for (var i = 0; i < clientorder_list.length; i++) {
+            $('#client_filter').append($("<option/>", {
+                value: clientorder_list[i]['id'],
+                text: clientorder_list[i]['name']
+            }));
+          }
+        }
         $('#street_filter').find('option').remove();
         $('#street_filter').append($("<option/>", {
           value: '',
