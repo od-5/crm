@@ -67,6 +67,7 @@ class ManagementCompanyForm(forms.ModelForm):
             'leader_function': forms.TextInput(attrs={'class': 'form-control'}),
             'leader_name': forms.TextInput(attrs={'class': 'form-control'}),
             'phone': forms.TextInput(attrs={'class': 'form-control'}),
+            'phones': forms.Textarea(attrs={'class': 'form-control'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -77,3 +78,10 @@ class ManagementCompanyForm(forms.ModelForm):
                 self.fields['city'].queryset = self.request.user.superviser.city.all()
             elif self.request.user.type == 2:
                 self.fields['city'].queryset = City.objects.filter(moderator=self.request.user)
+
+    def clean_phones(self):
+        value = self.cleaned_data['phones']
+        for phone in value.split('$'):
+            if phone and len(phone.split('#')) != 2:
+                raise forms.ValidationError('Неверный формат')
+        return value

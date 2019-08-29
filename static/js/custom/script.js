@@ -42,6 +42,18 @@ $(function() {
                 text: management_list[i]['name']
             }));
           }
+
+          $('#management_filter2').find('option').remove();
+          $('#management_filter2').append($("<option/>", {
+            value: '',
+            text: '--- Управляющая компания ---'
+          }));
+          for (var i = 0; i < management_list.length; i++) {
+            $('#management_filter2').append($("<option/>", {
+                value: management_list[i]['id'],
+                text: management_list[i]['name']
+            }));
+          }
         }
         if (data.clientorder_list){
           var clientorder_list = data.clientorder_list;

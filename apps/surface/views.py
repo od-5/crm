@@ -600,7 +600,7 @@ def surface_export(request):
         qs = qs.filter(city=int(city))
     if area and int(area) != 0:
         qs = qs.filter(street__area=int(area))
-    if street and int(street) != 0:
+    if street:
         qs = qs.filter(street__name__icontains=street)
     if free:
         if int(free) == 1:
@@ -666,13 +666,15 @@ def surface_export(request):
 
     wb = xlwt.Workbook()
     ws = wb.add_sheet(u'Список адресов')
-    ws.write_merge(0, 0, 0, 5, u'Список доступных адресов', style0)
+    ws.write_merge(0, 0, 0, 7, u'Список доступных адресов', style0)
     ws.write(2, 0, u'Город', style2)
     ws.write(2, 1, u'Район', style2)
     ws.write(2, 2, u'Улица', style2)
     ws.write(2, 3, u'Дом', style2)
     ws.write(2, 4, u'Кол-во подъездов', style2)
     ws.write(2, 5, u'Номера подъездов', style2)
+    ws.write(2, 6, u'Клиент', style2)
+    ws.write(2, 7, u'УК', style2)
     i = 3
     stands_count = 0
     for surface in qs:
@@ -682,6 +684,8 @@ def surface_export(request):
         ws.write(i, 3, surface.house_number, style2)
         ws.write(i, 4, surface.porch_count(), style2)
         ws.write(i, 5, surface.porch_list(), style2)
+        ws.write(i, 6, surface.get_current_client() or u'отсутствует', style2)
+        ws.write(i, 7, surface.management.name, style2)
         i += 1
         if surface.porch_count():
             stands_count += surface.porch_count()
@@ -741,7 +745,7 @@ class SurfaceDocView(DocResponseMixin, ListView):
             qs = qs.filter(city=int(city))
         if area and int(area) != 0:
             qs = qs.filter(street__area=int(area))
-        if street and int(street) != 0:
+        if street:
             qs = qs.filter(street__name__icontains=street)
         if free:
             if int(free) == 1:
@@ -772,7 +776,7 @@ class SurfaceDocView(DocResponseMixin, ListView):
             ).values_list('surface', flat=True)
             qs = qs.filter(id__in=client_filter)
         return self.model.objects.filter(surface__in=qs).select_related(
-            'surface', 'surface__street'
+            'surface', 'surface__street', 'surface__management'
         ).order_by('surface', 'number')
 
 
@@ -788,4 +792,4 @@ def update_company(request):
     if int(type) == 2:
         company = request.POST.get('company')
         surface_qs.update(management_id=company)
-    return HttpResponseRedirect(reverse('surface:list'))
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', reverse('surface:list')))
