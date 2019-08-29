@@ -685,7 +685,7 @@ def surface_export(request):
         ws.write(i, 4, surface.porch_count(), style2)
         ws.write(i, 5, surface.porch_list(), style2)
         ws.write(i, 6, surface.get_current_client() or u'отсутствует', style2)
-        ws.write(i, 7, surface.management.name, style2)
+        ws.write(i, 7, surface.management.name if surface.management else u'не указана', style2)
         i += 1
         if surface.porch_count():
             stands_count += surface.porch_count()
