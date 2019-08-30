@@ -15,12 +15,13 @@ class SurfaceImportForm(forms.Form):
 class SurfaceAddForm(forms.ModelForm):
     class Meta:
         model = Surface
-        fields = ('city', 'street', 'house_number', 'management', 'has_stand')
+        fields = ('city', 'street', 'house_number', 'management', 'has_stand', 'floors')
         widgets = {
             'city': forms.Select(attrs={'class': 'form-control', 'data-ajax-url': reverse_lazy('city:surface-ajax')}),
             'street': forms.Select(attrs={'class': 'form-control'}),
             'house_number': forms.TextInput(attrs={'class': 'form-control'}),
             'management': forms.Select(attrs={'class': 'form-control'}),
+            'floors': forms.NumberInput(attrs={'class': 'form-control'}),
         }
 
     def __init__(self, *args, **kwargs):

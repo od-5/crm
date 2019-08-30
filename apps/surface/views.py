@@ -104,7 +104,7 @@ class SurfaceListView(ListView):
                 clientorder__client=int(self.request.GET.get('client'))
             ).values_list('surface', flat=True)
             qs = qs.filter(id__in=client_filter)
-        return qs
+        return qs.order_by('street__area', 'street__name', 'house_number')
 
     def get_context_data(self, **kwargs):
         context = super(SurfaceListView, self).get_context_data(**kwargs)
@@ -126,6 +126,8 @@ class SurfaceListView(ListView):
             clientorder__clientordersurface__surface__in=self.get_qs(),
             clientorder__date_end__gte=today
         ).distinct()
+        if self.request.GET.get('city'):
+            client_qs = client_qs.filter(city_id=self.request.GET.get('city'))
         context.update({
             'import_form': SurfaceImportForm(),
             'porch_count': porch_count,
@@ -149,6 +151,10 @@ class SurfaceListView(ListView):
         else:
             qs = None
             management_qs = None
+
+        if self.request.GET.get('city'):
+            management_qs = management_qs.filter(city_id=self.request.GET.get('city'))
+
         context.update({
             'city_list': qs,
             'management_list': management_qs
@@ -696,6 +702,8 @@ def surface_export(request):
     ws.col(3).width = 5000
     ws.col(4).width = 5000
     ws.col(5).width = 5000
+    ws.col(6).width = 5000
+    ws.col(7).width = 5000
     for count in range(i):
         ws.row(count).height = 300
 

@@ -181,6 +181,7 @@
                   <th>Улица</th>
                   <th>Номер дома</th>
                   <th>Кол-во подъездов</th>
+                  <th>Этажность</th>
                   <th>Управляющая компания</th>
                   <th>Свободна</th>
                   <th>Клиент</th>
@@ -202,6 +203,7 @@
                   </td>
                   <td>{{ object.house_number|default:'Не указано' }} {% if object.has_stand %}<span class="glyphicon glyphicon-check text-success pull-right" data-toggle="tooltip" data-placement="top" title="Стенды установлены"></span>{% endif %}</td>
                   <td>{{ object.porch_total_count|default:'Не указано' }}</td>
+                  <td>{{ object.floors|default:'' }}</td>
                   <td>{{ object.management.name|default:'Не указано' }}</td>
                   <td>
                     {% if object.free %}

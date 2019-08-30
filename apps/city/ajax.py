@@ -132,9 +132,12 @@ def get_free_area_surface(request):
             if surface.id:
                 surface_list.append({
                     'id': surface.id,
+                    'city': surface.city.name,
                     'street': surface.street.name,
                     'number': surface.house_number,
-                    'porch_count': surface.porch_count()
+                    'porch_count': surface.porch_count(),
+                    'coord_x': surface.coord_x,
+                    'coord_y': surface.coord_y
                 })
         return {
             'surface_list': surface_list
