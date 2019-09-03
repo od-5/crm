@@ -22,7 +22,7 @@ class Client(models.Model):
     city = models.ForeignKey(to=City, verbose_name=u'Город')
     manager = models.ForeignKey(to=Manager, verbose_name=u'Менеджер', blank=True, null=True)
     legal_name = models.CharField(max_length=256, blank=True, null=True, verbose_name=u'Юридическое название')
-    actual_name = models.CharField(max_length=256, blank=True, null=True, verbose_name=u'Фактичексое название')
+    actual_name = models.CharField(max_length=256, blank=True, null=True, verbose_name=u'Фактическое название')
     inn = models.CharField(max_length=50, blank=True, null=True, verbose_name=u'ИНН')
     kpp = models.CharField(max_length=50, blank=True, null=True, verbose_name=u'КПП')
 
