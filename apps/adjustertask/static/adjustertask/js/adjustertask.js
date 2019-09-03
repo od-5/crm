@@ -351,6 +351,7 @@ $(function() {
             '<td>'+porch_list[i]['house_number']+'</td>'+
             '<td>'+porch_list[i]['number']+'</td>'+
             '<td>'+porch_list[i]['type']+'</td>'+
+            '<td>'+porch_list[i]['order']+'</td>'+
             '</tr>'
           )
         }

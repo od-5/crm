@@ -7,11 +7,17 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from django.conf import settings
+
 from api.serializers import TaskSurfaceSerializer, TaskSurfacePorchSerializer, UserSerializer, \
     PorchSerializer, SurfacePhotoSerializer
 from apps.adjuster.models import Adjuster, AdjusterTask, AdjusterTaskSurface, AdjusterTaskSurfacePorch, SurfacePhoto
 from apps.city.models import Porch
 from core.common import str_to_bool
+
+if not settings.DEBUG:
+    from warnings import filterwarnings
+    import MySQLdb
 
 import logging
 
@@ -46,6 +52,8 @@ def task_list(request, format=None):
             'comment': task.comment
         }
         address_list = []
+        if not settings.DEBUG:
+            filterwarnings('ignore', category=MySQLdb.Warning)
         adjustertasksurface_qs = task.adjustertasksurface_set.filter(is_closed=False).select_related('surface').extra(
             {'int_number': "CAST(city_surface.house_number as UNSIGNED)"}
         ).order_by(

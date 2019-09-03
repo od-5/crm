@@ -285,8 +285,13 @@ def get_area_surface_list_with_damage(request):
             )
             at_surface_list_id = [int(i.surface.id) for i in at_surface]
         r_client = request.GET.get('client')
+        order_dict = {}
         if r_client:
-            client_qs = ClientOrderSurface.objects.filter(clientorder__client_id=int(request.GET.get('client')))
+            client_qs = ClientOrderSurface.objects.filter(
+                clientorder__client_id=int(request.GET.get('client')),
+                surface__street__area=int(r_area)
+            )
+            order_dict = {c_surface.surface: str(c_surface.clientorder) for c_surface in client_qs}
             surface_qs = [c_surface.surface for c_surface in client_qs]
         else:
             surface_qs = Surface.objects.filter(street__area=int(r_area), has_broken=True)
@@ -316,6 +321,7 @@ def get_area_surface_list_with_damage(request):
                         'house_number': porch.surface.house_number,
                         'number': porch.number,
                         'type': damage_type,
+                        'order': order_dict.get(porch.surface, '')
                     })
         return {
             'porch_list': porch_list
