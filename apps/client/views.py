@@ -326,10 +326,6 @@ def client_order_update(request, pk):
                     surface.save()
     else:
         form = ClientOrderForm(instance=order)
-    try:
-        request.session['client_filtered_list']
-    except:
-        request.session['client_filtered_list'] = reverse('client:list')
     context.update({
         'success': success_msg,
         'error': error_msg,
@@ -337,7 +333,7 @@ def client_order_update(request, pk):
         'object': order,
         'client': client,
         'area_list': area_list,
-        'back_to_list': request.session['client_filtered_list']
+        'back_to_list': reverse('client:order', args=(client.pk,))
     })
     return render(request, 'client/client_order_update.html', context)
 
@@ -413,9 +409,8 @@ def client_journal(request, pk):
     client = Client.objects.select_related('clientorder').get(pk=int(pk))
     # journal_list_qs = client.clientjournal_set.prefetch_related('clientorder').all()
     journal_list_qs = client.clientjournal_set.prefetch_related('clientorder').annotate(
-        num_stand=Count('clientorder__clientordersurface__surface__porch'),
-        sum_payment=Sum('clientjournalpayment__sum')
-    )
+        num_stand=Count('clientorder__clientordersurface__surface__porch', distinct=True)
+    ).order_by()
     paginator = Paginator(journal_list_qs, 25)
     page = request.GET.get('page')
     try:

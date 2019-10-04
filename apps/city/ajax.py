@@ -295,7 +295,7 @@ def get_area_surface_list_with_damage(request):
             surface_qs = [c_surface.surface for c_surface in client_qs]
         else:
             surface_qs = Surface.objects.filter(street__area=int(r_area), has_broken=True)
-        for surface in surface_qs:
+        for surface in surface_qs.order_by('street__area', 'street__name', 'house_number'):
             if int(surface.id) not in at_surface_list_id:
                 porch_qs = surface.porch_set.filter(is_broken=True)
                 for porch in porch_qs:

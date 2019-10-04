@@ -79,7 +79,7 @@
                 <td>{{ item.num_stand|default:'Не указано' }}</td>
                 <td>{{ item.full_cost|default:'Не указано' }}</td>
                 <td style="width: 120px;">
-                  {{ item.sum_payment|default:'0' }}
+                  {{ item.total_payment|default:'0' }}
                   <a href="#js-modal-payment-add" id="js-payment-btn-{{ item.id }}" class="btn btn-sm btn-info js-payment-add-btn hide" data-client="{{ item.client.id }}" data-clientjournal="{{ item.id }}">
                     <span class="glyphicon glyphicon-plus-sign"></span> Добавить
                   </a>

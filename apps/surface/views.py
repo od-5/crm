@@ -328,17 +328,13 @@ def surface_porch_update(request, pk):
         photo_list = paginator.page(1)
     except EmptyPage:
         photo_list = paginator.page(paginator.num_pages)
-    try:
-        request.session['surface_filtered_list']
-    except:
-        request.session['surface_filtered_list'] = reverse('surface:list')
     context.update({
         'object': porch,
         'surface': porch.surface,
         'photo_list': photo_list,
         'porch_form': form,
         'photo_form': photo_form,
-        'back_to_list': request.session['surface_filtered_list']
+        'back_to_list': reverse('surface:photo-list')
     })
     return render(request, 'surface/surface_porch_update.html', context)
 
