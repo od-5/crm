@@ -299,6 +299,13 @@ class Porch(models.Model):
     is_broken = models.BooleanField(verbose_name=u'Стенд поломан', default=False)
 
 
+class SurfaceDocTemplate(models.Model):
+    docx = models.FileField(blank=True, null=True)
+
+    def __unicode__(self):
+        return 'Шаблон'
+
+
 @receiver(post_save, sender=Porch)
 def increment_porch_total_count(sender, created, **kwargs):
     surface = kwargs['instance'].surface

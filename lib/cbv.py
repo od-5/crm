@@ -123,12 +123,15 @@ class DocResponseMixin(object):
     content_type = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 
     def render_to_response(self, context, **response_kwargs):
-        document = DocxTemplate(self.get_template_name())
+        document = self.get_document()
         document.render(context)
         response = HttpResponse(content_type=self.content_type)
         response['Content-Disposition'] = 'attachment; filename=%s.docx' % (self.get_filename())
         document.save(response)
         return response
+
+    def get_document(self):
+        return DocxTemplate(self.get_template_name())
 
     def get_template_name(self):
         if self.template_name is None:

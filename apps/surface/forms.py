@@ -46,6 +46,9 @@ class SurfaceAddForm(forms.ModelForm):
             self.fields['city'].queryset = City.objects.filter(moderator=manager.moderator)
             self.fields['street'].queryset = Street.objects.filter(city__moderator=manager.moderator)
             self.fields['management'].queryset = ManagementCompany.objects.filter(city__moderator=manager.moderator)
+        if self.instance.pk:
+            street_qs = self.fields['street'].queryset
+            self.fields['street'].queryset = street_qs.filter(city=self.instance.city)
 
 
 class SurfacePhotoForm(forms.ModelForm):

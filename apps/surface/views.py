@@ -1,4 +1,7 @@
 # coding=utf-8
+import os
+
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 import xlwt
@@ -10,12 +13,14 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from docxtpl import DocxTemplate
+
 from apps.adjuster.models import SurfacePhoto
 from apps.client.models import Client, ClientOrderSurface
 from apps.manager.models import Manager
 from lib.cbv import DocResponseMixin
 from .forms import SurfaceAddForm, PorchAddForm, SurfacePhotoForm, SurfaceImportForm
-from apps.city.models import City, Area, Surface, Street, Porch, ManagementCompany
+from apps.city.models import City, Area, Surface, Street, Porch, ManagementCompany, SurfaceDocTemplate
 
 __author__ = 'alexy'
 
@@ -782,6 +787,23 @@ class SurfaceDocView(DocResponseMixin, ListView):
         return self.model.objects.filter(surface__in=qs).select_related(
             'surface', 'surface__street', 'surface__management'
         ).order_by('surface', 'number')
+
+
+class SurfaceDocViewWithFile(SurfaceDocView):
+    def get_document(self):
+        uploaded_file = self.request.FILES.get('template')
+        if not uploaded_file:
+            return None
+        if uploaded_file.content_type != 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+            return None
+        docx_model, created = SurfaceDocTemplate.objects.get_or_create()
+        docx_model.docx.save(uploaded_file.name, uploaded_file)
+        path = os.path.join(settings.BASE_DIR, '../../%s' % docx_model.docx.url)
+        docx = DocxTemplate(path)
+        return docx
+
+    def post(self, request, *args, **kwargs):
+        return self.get(request, *args, **kwargs)
 
 
 @login_required

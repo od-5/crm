@@ -98,9 +98,9 @@
               </a>
             </div>
             <div class="col-lg-2">
-              <a href="{% url 'surface:export-docx' %}?city={{ city_id|default:'' }}&area={{ area_id|default:'' }}&street={{ street|default:'' }}&management={{ management_id|default:'' }}&release_date={{ release_date|default:'' }}&free={{ free|default:0 }}&has_stand={{ has_stand|default:0 }}&client={{ client_id|default:0 }}" class="btn btn-warning add-bottom">
-                <span class="glyphicon glyphicon-download-alt"></span> Скачать в DOCX
-              </a>
+                <a href="#doc-popup" class="btn btn-warning add-bottom fancybox">
+                    <span class="glyphicon glyphicon-download-alt"></span> Скачать в DOCX
+                </a>
             </div>
             <div class="col-lg-2">
                 <form action="" method="get">
@@ -273,13 +273,35 @@
     </div>
   </div>
 {% include '__modal/js_ajax_remove_form.html' %}
+<div id="js-modal-payment-add">
+  <form action="{% url 'client:payment-add' %}" role="form" class="js-modal-payment-add-form form" method="post">
+    {% csrf_token %}
+    <p class="lead text-center">Поступление</p>
+    <input type="hidden" name="p_client" id="p_client">
+    <input type="hidden" name="p_clientjournal" id="p_clientjournal">
+    <input type="number" name="p_sum" id="p_sum" step="0.01" class="form-control add-bottom" placeholder="Сумма, руб">
+    <input type="submit" value="Добавить" class="btn btn-save">
+  </form>
+</div>
+<div id="doc-popup" class="cp-popup" style="display:none" align="center">
+      <p class="alert" style="font-size: 26px; margin-bottom: 0px;">Выберите шаблон</p>
+      <a style="width: 140px;; height: 36px; margin-bottom: 5px;" class="btn btn-default" href="{% url 'surface:export-docx' %}?city={{ city_id|default:'' }}&area={{ area_id|default:'' }}&street={{ street|default:'' }}&management={{ management_id|default:'' }}&release_date={{ release_date|default:'' }}&free={{ free|default:0 }}&has_stand={{ has_stand|default:0 }}&client={{ client_id|default:0 }}">Встроенный</a></li>
+      <form name="template-file-form" method="post" enctype="multipart/form-data" action="{% url 'surface:export-docx-from-file' %}?city={{ city_id|default:'' }}&area={{ area_id|default:'' }}&street={{ street|default:'' }}&management={{ management_id|default:'' }}&release_date={{ release_date|default:'' }}&free={{ free|default:0 }}&has_stand={{ has_stand|default:0 }}&client={{ client_id|default:0 }}">
+        {% csrf_token %}
+        <input id="id_template" style="width: 140px;" class="btn btn-default" type="file" name="template" placeholder="Выберите файл">
+      </form>
+</div>
 {% endblock %}
 {% block bottom_js %}
   <script src="http://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
   <script src="{{ STATIC_URL }}surface/js/surface-map.js"></script>
   <script>
   $(function () {
-    $('[data-toggle="tooltip"]').tooltip()
+    $('[data-toggle="tooltip"]').tooltip();
+    $('.fancybox').fancybox();
+    $('#id_template').on('change', function() {
+     document.forms["template-file-form"].submit();
+  });
   })
   </script>
 {% endblock %}
