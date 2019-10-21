@@ -2,7 +2,7 @@
 import os, socket
 from .base import BASE_DIR
 
-YANDEX_MAPS_API_KEY = 'AO7kF1UBAAAA-akFCwIAR7_VYsSjwJ9g-dDEVHElLxuBQi8AAAAAAAAAAAAQMK4N7NYtvg4ALgMZ8-GRO_cQqQ=='
+YANDEX_MAPS_API_KEY = '3514a786-106c-42e1-9bd1-5746a49028d0'
 
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',

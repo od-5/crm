@@ -48,7 +48,7 @@ def getJSON(address, key):
     """Get latitude longitude from Yandex.maps service.
     """
     yandexGeotaggingApi = url_fix("http://geocode-maps.yandex.ru/1.x/"+\
-            "?format=json&geocode=%s&key=%s" % (address, key))
+            "?format=json&geocode=%s&apikey=%s" % (address, key))
     f = urllib2.urlopen(yandexGeotaggingApi)
     return f.read()
 
