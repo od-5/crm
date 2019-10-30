@@ -292,7 +292,8 @@ def get_area_surface_list_with_damage(request):
                 surface__street__area=int(r_area)
             )
             order_dict = {c_surface.surface: str(c_surface.clientorder) for c_surface in client_qs}
-            surface_qs = [c_surface.surface for c_surface in client_qs]
+            surface_ids = [c_surface.surface_id for c_surface in client_qs]
+            surface_qs = Surface.objects.filter(id__in=surface_ids)
         else:
             surface_qs = Surface.objects.filter(street__area=int(r_area), has_broken=True)
         for surface in surface_qs.order_by('street__area', 'street__name', 'house_number'):
