@@ -41,7 +41,10 @@ def address_list_import(request):
                 #             porch_list.append(int(porch))
                 #         except:
                 #             pass
-                raw_porch_list = str(data[row][4]).replace('.', ',').strip().split(',')
+                try:
+                    raw_porch_list = str(data[row][4]).replace('.', ',').strip().split(',')
+                except UnicodeEncodeError:
+                    continue
                 # import pdb; pdb.set_trace()
                 porch_list = []
                 for i in raw_porch_list:

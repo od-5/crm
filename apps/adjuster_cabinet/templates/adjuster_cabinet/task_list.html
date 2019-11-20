@@ -26,6 +26,7 @@
                       <th>Кол-во адресов</th>
                       <th>Кол-во подъездов</th>
                       <th>Тип задачи</th>
+                      <th>Комментарий</th>
                       <th></th>
                     </tr>
                   </thead>
@@ -37,6 +38,7 @@
                       <td>{{ task.adjustertasksurface_set.all.count|default:'0' }}</td>
                       <td>{{ task.get_porch_count }}</td>
                       <td>{{ task.get_type_display|default:'--' }}</td>
+                      <td>{{ task.comment|default:'--' }}</td>
                       <td><a href="{% url 'work:detail' task.id %}" class="btn btn-info btn-sm">Начать работу</a></td>
                     </tr>
                   {% endfor %}
