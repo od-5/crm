@@ -72,6 +72,28 @@ class OkView(TemplateView):
         return context
 
 
+class NoOkView(TemplateView):
+    template_name = 'landing/no_ok.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(NoOkView, self).get_context_data(**kwargs)
+        city_qs = City.objects.values('id', 'name', 'slug')
+        current_city = get_object_or_None(City, slug=self.request.subdomain)
+        if current_city:
+            try:
+                setup = Setup.objects.get(city=current_city)
+            except:
+                setup = Setup.objects.filter(city__isnull=True).first()
+        else:
+            setup = Setup.objects.filter(city__isnull=True).first()
+        context.update({
+            'setup': setup,
+            'city_list': city_qs,
+            'cache_time': 1800,
+        })
+        return context
+
+
 class SiteSetupList(ListView):
     model = Setup
     template_name = 'landing/setup_list.html'

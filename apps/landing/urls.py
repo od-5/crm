@@ -4,7 +4,7 @@ from django.views.generic import TemplateView
 
 from .views import LandingView, block_list, blockeffective_list, blockeffective_add, blockeffective_update, \
     blockreview_list, blockreview_add, blockreview_update, blockexample_list, blockexample_add, blockexample_update, \
-    SiteSetupList, SetupCreateView, SetupUpdateView, OkView
+    SiteSetupList, SetupCreateView, SetupUpdateView, OkView, NoOkView
 
 __author__ = 'alexy'
 
@@ -13,6 +13,7 @@ urlpatterns = patterns(
     '',
     url(r'^$', LandingView.as_view(), name='home'),
     url(r'^ok/$', OkView.as_view(), name='ok'),
+    url(r'^no_ok/$', NoOkView.as_view(), name='no-ok'),
     url(r'^confidentiality/$', TemplateView.as_view(template_name='landing/confidentiality.html'),
         name='confidentiality'),
     # настроки лэндинга

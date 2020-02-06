@@ -23,7 +23,8 @@ class Ticket(Common):
     city = models.ForeignKey(to=City, verbose_name=u'Город', blank=True, null=True)
     name = models.CharField(
         verbose_name=u'Имя',
-        max_length=256)
+        max_length=30
+    )
     phone = models.CharField(
         verbose_name=u'Телефон',
         max_length=20,

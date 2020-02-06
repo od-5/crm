@@ -77,6 +77,9 @@ class TicketView(CreateView):
     fields = ('name', 'phone', 'city', 'email')
     success_url = reverse_lazy('ok')
 
+    def form_invalid(self, form):
+        return HttpResponseRedirect(reverse_lazy('no-ok'))
+
 
 class TicketUpdateView(UpdateView):
     model = Ticket
