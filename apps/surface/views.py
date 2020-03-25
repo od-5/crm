@@ -1,5 +1,7 @@
 # coding=utf-8
 import os
+import zipfile
+from io import BytesIO
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -490,7 +492,8 @@ class SurfacePhotoListView(ListView):
         if filter_args['a_date_e']:
             a_qs = a_qs.filter(date__lte=datetime.datetime.strptime(filter_args['a_date_e'], '%d.%m.%Y'))
         return a_qs.select_related('porch', 'porch__surface', 'porch__surface__street',
-                                   'porch__surface__street__area', 'porch__surface__city')
+                                   'porch__surface__street__area', 'porch__surface__city', 'adjuster',
+                                   'adjuster__user')
 
     def grid_display(self):
         """
@@ -558,7 +561,7 @@ class SurfacePhotoListView(ListView):
         context = super(SurfacePhotoListView, self).get_context_data(**kwargs)
         user = self.request.user
         photo_count = self.object_list.count()
-        if user.type == 3 and user.client.photo_additional:
+        if user.type == 3 and user.client.photo_additional and photo_count > 0:
             photo_additional = user.client.photo_additional
             photo_count += photo_additional
         context.update({
@@ -571,6 +574,25 @@ class SurfacePhotoListView(ListView):
         })
         context.update(self.get_filter_args())
         return context
+
+
+class SurfacePhotoZipView(SurfacePhotoListView):
+    def get(self, request, *args, **kwargs):
+        qs = self.get_queryset()
+        o = BytesIO()
+        zip_file = zipfile.ZipFile(o, mode='w')
+        for photo in qs:
+            if photo.image_exists():
+                zip_file.write(photo.image.path, photo.image.name.split('/')[-1])
+
+        zip_file.close()
+
+        o.seek(0)
+        response = HttpResponse(o.getvalue())
+        o.close()
+        response['Content-Type'] = 'application/octet-stream'
+        response['Content-Disposition'] = "attachment; filename=\"photos.zip\""
+        return response
 
 
 def surface_export(request):
@@ -682,6 +704,8 @@ def surface_export(request):
     ws.write(2, 5, u'Номера подъездов', style2)
     ws.write(2, 6, u'Клиент', style2)
     ws.write(2, 7, u'УК', style2)
+    ws.write(2, 8, u'Этажей', style2)
+    ws.write(2, 9, u'Квартир', style2)
     i = 3
     stands_count = 0
     for surface in qs:
@@ -693,6 +717,8 @@ def surface_export(request):
         ws.write(i, 5, surface.porch_list(), style2)
         ws.write(i, 6, surface.get_current_client() or u'отсутствует', style2)
         ws.write(i, 7, surface.management.name if surface.management else u'не указана', style2)
+        ws.write(i, 8, surface.floors, style2)
+        ws.write(i, 9, surface.apart_count, style2)
         i += 1
         if surface.porch_count():
             stands_count += surface.porch_count()

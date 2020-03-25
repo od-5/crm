@@ -69,6 +69,9 @@
               <div class="five-col-1">
                 <input class="btn btn-search" type="submit" value="Искать">
               </div>
+              <div class="five-col-1">
+                <a href="{% url 'surface:photo-zip-list' %}?&a_city={{ a_city|default:'' }}&a_area={{ a_area|default:'' }}&a_street={{ a_street|default:'' }}&a_date_s={{ a_date_s|default:'' }}&a_date_e={{ a_date_e|default:'' }}&a_house_number={{ a_house_number|default:'' }}&broken_type={{ broken_type|default:'' }}" class="btn btn-save" type="button">Скачать архив</a>
+              </div>
               <div class="clearfix"></div>
             </div>
             <div class="clearfix"></div>
@@ -165,6 +168,9 @@
                     Адрес: <a href="{% url 'surface:porch-update' item.porch_id %}">{{ item.address }} <br>
                     Подъезд: {{ item.porch.number }}</a>, <br>
                     Дата: {{ item.date }}
+                    {% if item.adjuster %}
+                      <br>{{ item.adjuster.user.first_name }} {{ item.adjuster.user.last_name }}
+                    {% endif %}
                     {% if user.type == 1 %}<br> id={{ item.id }}{% endif %}
                   </p>
                 </div>

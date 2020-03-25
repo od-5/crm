@@ -190,12 +190,26 @@ $(function() {
     }
   });
   // ajax удаление объектов
+  $('.remove-fancy').fancybox({
+    helpers: {
+      overlay: {
+        locked: false
+      }
+    }
+  });
+  $('.js-btn-remove-success').on('click', function(){
+    $('.js-remove-item-form').submit();
+  });
+  $('.js-btn-remove-cancel').on('click', function(){
+    $.fancybox.close();
+  });
   var fancy_initial = function(){
     $('.js-ajax-remove-btn').fancybox({
       afterClose: function () {
         $('.js-ajax-remove-item-form').resetForm();
       },
       beforeLoad: function() {
+      console.log('efef');
         var item_id = '#' + this.element[0].id;
         var item = $(item_id);
         $('#js-ajax-item-remove-id').val(item.parents('tr').data('id'));
@@ -544,9 +558,11 @@ $(function() {
             surface_table.append(
               '<tr class="result">'+
               '<td><input type="checkbox" data-porch-count="'+surface_list[i]['porch_count']+'" name="chk_group[]" value="' +surface_list[i]['id'] +'"></td>'+
-              '<td>'+surface_list[i]['street']+'</td>'+
-              '<td>'+surface_list[i]['number']+'</td>'+
+              '<td>'+surface_list[i]['street']+' ' + surface_list[i]['number'] +'</td>'+
               '<td>'+surface_list[i]['porch_count']+'</td>'+
+              '<td>'+surface_list[i]['floors']+'</td>'+
+              '<td>'+surface_list[i]['apart_count']+'</td>'+
+              '<td>'+surface_list[i]['management']+'</td>'+
               '</tr>'
             );
             tasks_points.push([surface_list[i]['coord_y'], surface_list[i]['coord_x']]);

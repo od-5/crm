@@ -138,7 +138,7 @@
                       <td>{{ ats.adjustertasksurfaceporch_set.count }} {{ ats.get_closed_porch_count }}/{{ ats.get_porch_count }}</td>
                       <td>
                         {% for atsp in ats.adjustertasksurfaceporch_set.all %}
-                          {{ atsp.porch.number }}{% if not forloop.last %}, {% endif %}
+                          <span{% if atsp.is_closed %} style="background: greenyellow"{% endif %}>{{ atsp.porch.number }}{% if not forloop.last %}, {% endif %}</span>
                         {% endfor %}
                       </td>
                       <td>

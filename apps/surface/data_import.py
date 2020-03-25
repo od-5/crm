@@ -51,6 +51,30 @@ def address_list_import(request):
                     if i.strip().isdigit() and i.strip() != '0' or i.strip() != '':
                         porch_list.append(int(i.strip()))
                 try:
+                    if str(data[row][5]).isdigit():
+                        floors = data[row][5]
+                    else:
+                        floors = None
+                        floor_data = str(data[row][5])
+                        if floor_data.__contains__('.'):
+                            floor_data = floor_data.split('.')
+                            if len(floor_data) == 2 and floor_data[1] == '0' and floor_data[0].isdigit():
+                                floors = floor_data[0]
+                except:
+                    floors = None
+                try:
+                    if str(data[row][6]).isdigit():
+                        apart_count = data[row][6]
+                    else:
+                        apart_count = None
+                        apart_count_data = str(data[row][6])
+                        if apart_count_data.__contains__('.'):
+                            apart_count_data = apart_count_data.split('.')
+                            if len(apart_count_data) == 2 and apart_count_data[1] == '0' and apart_count_data[0].isdigit():
+                                apart_count = apart_count_data[0]
+                except:
+                    apart_count = None
+                try:
                     # пробуем получить город
                     city_instance = City.objects.get(name__iexact=city)
                     try:
@@ -74,7 +98,11 @@ def address_list_import(request):
                     except:
                         # создаём поверхность
                         surface_instance = Surface(city=city_instance, street=street_instance, house_number=house_number)
-                        surface_instance.save()
+                    if floors:
+                        surface_instance.floors = floors
+                    if apart_count:
+                        surface_instance.apart_count = apart_count
+                    surface_instance.save()
                     for i in porch_list:
                         # пробегаемся по списку подъездов
                         try:
@@ -82,7 +110,8 @@ def address_list_import(request):
                         except:
                             porch = Porch(surface=surface_instance, number=i)
                             porch.save()
-                except:
+                except Exception as e:
+                    print(e)
                     pass
                     # print u'Город не найден'
     return HttpResponseRedirect(reverse('surface:list'))

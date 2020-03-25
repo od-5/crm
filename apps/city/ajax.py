@@ -127,7 +127,7 @@ def get_free_area_surface(request):
         surface_list = []
         area_pk = int(request.GET.get('area'))
         order = ClientOrder.objects.get(pk=int(request.GET.get('order')))
-        surface_qs = Surface.objects.select_related().filter(street__area=area_pk, release_date__lt=order.date_start)
+        surface_qs = Surface.objects.select_related('management').filter(street__area=area_pk, release_date__lt=order.date_start)
         for surface in surface_qs:
             if surface.id:
                 surface_list.append({
@@ -137,7 +137,10 @@ def get_free_area_surface(request):
                     'number': surface.house_number,
                     'porch_count': surface.porch_count(),
                     'coord_x': surface.coord_x,
-                    'coord_y': surface.coord_y
+                    'coord_y': surface.coord_y,
+                    'floors': surface.floors or '-',
+                    'apart_count': surface.apart_count or '-',
+                    'management': surface.management.name if surface.management else '-'
                 })
         return {
             'surface_list': surface_list

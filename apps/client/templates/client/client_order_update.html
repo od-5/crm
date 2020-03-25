@@ -101,9 +101,11 @@
                     <tr>
                       <th><input type="checkbox" id="js-select-all" value="">
                       </th>
-                      <th>Название улицы</th>
-                      <th>Номер дома</th>
-                      <th>Кол-во стендов</th>
+                      <th>Адрес</th>
+                      <th>Стендов</th>
+                      <th>Этажей</th>
+                      <th>Квартир</th>
+                      <th>УК</th>
                     </tr>
                     </thead>
                     <tbody></tbody>
@@ -121,14 +123,17 @@
             </div>
           </form>
         {% endif %}
+          <form action="{% url 'client:order-remove' %}" method="post" class="js-remove-item-form">{% csrf_token %}
           <div class="col-md-12 surface-list">
             <table class="table table-hover table-condensed table-bordered table-list">
               <thead>
                 <tr>
                   <th>Район</th>
-                  <th>Улица</th>
-                  <th>Номер дома</th>
-                  <th>Количество подъездов</th>
+                  <th>Адрес</th>
+                  <th>Подъездов</th>
+                  <th>Этажей</th>
+                  <th>Квартир</th>
+                  <th>УК</th>
                   <th></th>
                 </tr>
               </thead>
@@ -136,13 +141,18 @@
                 {% for item in object.clientordersurface_list %}
                 <tr data-id="{{ item.id }}" data-name="{{ item }}" data-model="ClientOrderSurface" id="id_ClientOrderSurface_{{ item.id }}">
                   <td>{{ item.surface.street.area.name|default:'Не указано' }}</td>
-                  <td>{{ item.surface.street.name|default:'Не указано' }}</td>
-                  <td>{{ item.surface.house_number|default:'Не указано' }}</td>
+                  <td>{{ item.surface.street.name|default:'Не указано' }}, д. {{ item.surface.house_number|default:'Не указано' }}</td>
                   <td>{{ item.num_porch|default:'0' }}</td>
+                  <td>{{ item.surface.floors|default:'-' }}</td>
+                  <td>{{ item.surface.apart_count|default:'-' }}</td>
+                  <td>{{ item.surface.management.name|default:'-' }}</td>
                   <td>
-                    <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-ClientOrderSurface-{{ item.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn" {% if object.is_closed %}disabled="disabled" {% endif %}>
-                      <span class="glyphicon glyphicon-remove"></span> Удалить
-                    </a>
+                    {% if not object.is_closed %}
+                      <div class="checkbox-min">
+                        <input type="checkbox" id="ch{{ item.id }}" class="checkbox-min-input" name="chk_grp[]" value="{{ item.id }}">
+                        <label for="ch{{ item.id }}" class="checkbox-min-label"></label>
+                      </div>
+                    {% endif %}
                   </td>
                 </tr>
                 {% empty %}
@@ -155,16 +165,25 @@
                 <tr></tr>
               </tbody>
             </table>
-
           </div>
           <div class="col-md-12">
+            <div class="lead text-info">
+              <a href="#js-ajax-remove" class="btn btn-sm btn-danger remove-fancy">
+                <span class="glyphicon glyphicon-remove"></span> Удалить
+              </a>
+            </div>
             <p class="lead text-info">
               Количество стендов в заказе: {{ object.stand_count|default:'0' }}
             </p>
           </div>
+          </form>
         </div>
       </div>
     </div>
   </div>
-{% include '__modal/js_ajax_remove_form.html' %}
+  <div id="js-ajax-remove" align="center" style="display: none">
+    <p class="alert alert-danger">Вы действительно хотите удалить объекты?</p>
+    <button class="js-btn-remove-success btn-success">Да</button>
+    <button class="js-btn-remove-cancel btn-danger">Нет</button>
+  </div>
 {% endblock %}

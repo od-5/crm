@@ -3,7 +3,7 @@ from django.conf.urls import patterns, url
 from django.contrib.auth.decorators import login_required
 from apps.surface.data_import import address_list_import
 from .views import SurfaceListView, SurfaceCreateView, SurfaceUpdateView, SurfacePhotoDeleteView, SurfacePhotoListView, \
-    PorchView, SurfaceDocView, SurfaceDocViewWithFile
+    PorchView, SurfaceDocView, SurfaceDocViewWithFile, SurfacePhotoZipView
 from .ajax import surface_map, ajax_photo_rotate
 
 __author__ = 'alexy'
@@ -13,6 +13,7 @@ urlpatterns = patterns(
     url(r'^$', login_required(SurfaceListView.as_view()), name='list'),
     url(r'^add/$', login_required(SurfaceCreateView.as_view()), name='add'),
     url(r'^photo/$', login_required(SurfacePhotoListView.as_view()), name='photo-list'),
+    url(r'^photo/zip/$', login_required(SurfacePhotoZipView.as_view()), name='photo-zip-list'),
     url(r'^(?P<pk>\d+)/$', login_required(SurfaceUpdateView.as_view()), name='update'),
 
     url(r'^(?P<pk>\d+)/porch/$', login_required(PorchView.as_view()), name='porch'),

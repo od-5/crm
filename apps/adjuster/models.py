@@ -206,13 +206,13 @@ def write_ats(sender, created, **kwargs):
     Принудительное закрытие всех адресов в задаче при установка чекбокса ВЫПОЛНЕНО.
     """
     task = kwargs['instance']
-    if task.is_closed:
-        for ats in task.adjustertasksurface_set.filter(is_closed=False):
-            for atsp in ats.adjustertasksurfaceporch_set.filter(is_closed=False):
-                atsp.is_closed = True
-                atsp.save()
-            ats.is_closed = True
-            ats.save()
+    # if task.is_closed:
+    #     for ats in task.adjustertasksurface_set.filter(is_closed=False):
+    #         for atsp in ats.adjustertasksurfaceporch_set.filter(is_closed=False):
+    #             atsp.is_closed = True
+    #             atsp.save()
+    #         ats.is_closed = True
+    #         ats.save()
 
 
 class AdjusterTaskSurface(models.Model):

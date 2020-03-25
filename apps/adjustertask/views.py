@@ -402,8 +402,10 @@ def adjuster_task_update(request, pk):
     """
     context = {}
     adjustertask = AdjusterTask.objects.get(pk=int(pk))
-    task_surface_qs = adjustertask.adjustertasksurface_set.all()
-    paginator = Paginator(task_surface_qs, 25)
+    task_surface_qs = adjustertask.adjustertasksurface_set.all().select_related(
+        'surface', 'surface__street', 'surface__street__area', 'surface__street__city'
+    ).prefetch_related('adjustertasksurfaceporch_set')
+    paginator = Paginator(task_surface_qs, 100)
     page = request.GET.get('page')
     try:
         task_surface_list = paginator.page(page)

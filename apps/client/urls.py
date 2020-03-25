@@ -3,7 +3,7 @@ from django.conf.urls import patterns, url
 from django.contrib.auth.decorators import login_required
 from ajax import get_client_order_list, get_client_order_address_list, payment_add
 from .models import Client
-from .views import ClientListView
+from .views import ClientListView, ClientOrderSurfaceRemoveView
 
 __author__ = 'alexy'
 
@@ -19,6 +19,7 @@ urlpatterns = patterns(
 
     url(r'^(?P<pk>\d+)/order/$', 'client_order', name='order'),
     url(r'^order/(?P<pk>\d+)/$', 'client_order_update', name='order-update'),
+    url(r'^order/remove/$', ClientOrderSurfaceRemoveView.as_view(), name='order-remove'),
     url(r'^order/(?P<pk>\d+)/export/$', 'client_order_export', name='order-export'),
 
     url(r'^(?P<pk>\d+)/journal/$', 'client_journal', name='journal'),

@@ -238,6 +238,7 @@ class Surface(models.Model):
     porch_total_count = models.IntegerField(blank=True, null=True, default=0)
     has_stand = models.BooleanField(default=False, verbose_name=u'Стенды установлены')
     floors = models.PositiveSmallIntegerField(verbose_name=u'Этажность', blank=True, null=True)
+    apart_count = models.PositiveSmallIntegerField(verbose_name=u'Кол-во квартир', blank=True, null=True)
 
 
 class Porch(models.Model):

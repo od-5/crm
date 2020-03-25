@@ -1,10 +1,10 @@
 # coding=utf-8
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-from django.views.generic.base import ContextMixin
+from django.views.generic.base import ContextMixin, View
 from django.views.generic.edit import FormMixin, ModelFormMixin, ProcessFormView
 from django.views.generic.list import MultipleObjectTemplateResponseMixin, MultipleObjectMixin
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.utils.translation import ugettext as _
 from docxtpl import DocxTemplate
 
@@ -148,3 +148,29 @@ class DocResponseMixin(object):
                 "'filename' or an implementation of 'get_filename()'")
         else:
             return self.filename
+
+
+class BaseRemoveView(View):
+    """
+    Базовый класс удаления объектов
+    """
+    success_url = None
+    model = False
+
+    def get_success_url(self):
+        if self.success_url:
+            return self.success_url
+        else:
+            return self.request.META['HTTP_REFERER']
+
+    def get_queryset(self):
+        chk_grp = self.request.POST.getlist('chk_grp[]')
+        if chk_grp and self.model:
+            return self.model.objects.filter(pk__in=[int(i) for i in chk_grp if i.isdigit()])
+        return self.model.objects.none()
+
+    def post(self, request):
+        qs = self.get_queryset()
+        print(qs)
+        qs.delete()
+        return HttpResponseRedirect(self.get_success_url())

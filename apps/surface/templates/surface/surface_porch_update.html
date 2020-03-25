@@ -123,8 +123,8 @@
             <div class="col-md-3">
               {% if photo.image_exists %}
               <div>
-                <a href="{{ photo.image.url }}" rel="group" class="js-gallery" title="{{ photo.address }}, подъезд: {{ item.porch.number }}">
-                  <img src="{{ photo.image_resize.url }}" alt="{{ photo.address }}, подъезд: {{ item.porch.number }}">
+                <a href="{{ photo.image.url }}" rel="group" class="js-gallery" title="{{ photo.address }}, подъезд: {{ photo.porch.number }}">
+                  <img src="{{ photo.image_resize.url }}" alt="{{ photo.address }}, подъезд: {{ photo.porch.number }}">
                 </a>
               </div>
               {% else %}

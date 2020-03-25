@@ -23,6 +23,7 @@ from apps.client.forms import ClientUpdateForm, ClientAddForm, ClientMaketForm, 
 from apps.incoming.models import IncomingClient
 from apps.manager.models import Manager
 from core.forms import UserAddForm, UserUpdateForm
+from lib.cbv import BaseRemoveView
 from .models import Client, ClientMaket, ClientOrder, ClientOrderSurface, ClientJournal
 
 __author__ = 'alexy'
@@ -818,3 +819,7 @@ def get_files(request):
     resp = HttpResponse(s.getvalue(), content_type="application/x-zip-compressed")
     resp['Content-Disposition'] = 'attachment; filename=%s' % zip_filename
     return resp
+
+
+class ClientOrderSurfaceRemoveView(BaseRemoveView):
+    model = ClientOrderSurface

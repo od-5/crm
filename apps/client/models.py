@@ -92,7 +92,7 @@ class ClientOrder(models.Model):
 
     def clientordersurface_list(self):
         return self.clientordersurface_set.select_related(
-            'surface', 'surface__street', 'surface__street__area').annotate(
+            'surface', 'surface__street', 'surface__street__area', 'surface__management').annotate(
             num_porch=Count('surface__porch'))
 
 

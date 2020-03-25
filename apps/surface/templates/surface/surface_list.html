@@ -178,10 +178,10 @@
                   <th><input type="checkbox" id="js-select-all" value="">
                   <th>Город</th>
                   <th>Район</th>
-                  <th>Улица</th>
-                  <th>Номер дома</th>
-                  <th>Кол-во подъездов</th>
-                  <th>Этажность</th>
+                  <th>Адрес</th>
+                  <th>Подъездов</th>
+                  <th>Этажей</th>
+                  <th>Квартир</th>
                   <th>Управляющая компания</th>
                   <th>Свободна</th>
                   <th>Клиент</th>
@@ -196,15 +196,15 @@
                   <td>{{ object.street.area|default:'Не указано' }}</td>
                   <td>
                   {% if not user.is_leader_manager %}
-                    {{ object.street.name|default:'Не указано' }}
+                    {{ object.street.name|default:'Не указано' }}, д. {{ object.house_number|default:'Не указано' }} {% if object.has_stand %}<span class="glyphicon glyphicon-check text-success pull-right" data-toggle="tooltip" data-placement="top" title="Стенды установлены"></span>{% endif %}
                   {% else %}
-                    <a href="{% url 'surface:update' object.id %}">{{ object.street.name|default:'Не указано' }}</a>
+                    <a href="{% url 'surface:update' object.id %}">{{ object.street.name|default:'Не указано' }}, д. {{ object.house_number|default:'Не указано' }} {% if object.has_stand %}<span class="glyphicon glyphicon-check text-success pull-right" data-toggle="tooltip" data-placement="top" title="Стенды установлены"></span>{% endif %}</a>
                   {% endif %}
                   </td>
-                  <td>{{ object.house_number|default:'Не указано' }} {% if object.has_stand %}<span class="glyphicon glyphicon-check text-success pull-right" data-toggle="tooltip" data-placement="top" title="Стенды установлены"></span>{% endif %}</td>
-                  <td>{{ object.porch_total_count|default:'Не указано' }}</td>
-                  <td>{{ object.floors|default:'' }}</td>
-                  <td>{{ object.management.name|default:'Не указано' }}</td>
+                  <td>{{ object.porch_total_count|default:'-' }}</td>
+                  <td>{{ object.floors|default:'-' }}</td>
+                  <td>{{ object.apart_count|default:'-' }}</td>
+                  <td>{{ object.management.name|default:'-' }}</td>
                   <td>
                     {% if object.free %}
                       <span class="glyphicon glyphicon-ok-sign text-success"></span>
