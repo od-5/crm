@@ -18,7 +18,7 @@ def adjuster_map(request):
     elif user.type == 5:
         qs = Adjuster.objects.filter(city__moderator=user.manager.moderator)
     else:
-        qs = None
+        qs = Adjuster.objects.none()
     if request.POST.get('email'):
         qs = qs.filter(user__email=request.POST.get('email'))
     if request.POST.get('last_name'):

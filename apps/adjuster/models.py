@@ -125,17 +125,32 @@ class AdjusterTask(models.Model):
     def get_closed_surface_count(self):
         return self.adjustertasksurface_set.filter(is_closed=True).count()
 
+    def get_porch_dict(self):
+        porch_dict = {}
+        for ats in self.adjustertasksurface_set.all():
+            for atsp in ats.adjustertasksurfaceporch_set.all():
+                if atsp.id not in porch_dict:
+                    porch_dict.update({atsp.id: atsp.complete})
+        return porch_dict
+
     def get_porch_count(self):
         """
         Метод, возвращающий количество подъездов/стендов, входящих в задачу
         """
-        return AdjusterTaskSurfacePorch.objects.filter(adjustertasksurface__adjustertask=self).count()
+        # return AdjusterTaskSurfacePorch.objects.filter(adjustertasksurface__adjustertask=self).count()
+        return len(self.get_porch_dict())
 
     def get_closed_porch_count(self):
         """
         Метод, возвращающий количество выполненных подъездов/стендов, входящих в задачу
         """
-        return AdjusterTaskSurfacePorch.objects.filter(adjustertasksurface__adjustertask=self, is_closed=True).count()
+        # return AdjusterTaskSurfacePorch.objects.filter(adjustertasksurface__adjustertask=self, is_closed=True).count()
+        count = 0
+        porch_dict = self.get_porch_dict()
+        for i in porch_dict:
+            if porch_dict[i]:
+                count += 1
+        return count
 
     def get_actual_cost(self):
         """
@@ -206,13 +221,15 @@ def write_ats(sender, created, **kwargs):
     Принудительное закрытие всех адресов в задаче при установка чекбокса ВЫПОЛНЕНО.
     """
     task = kwargs['instance']
-    # if task.is_closed:
-    #     for ats in task.adjustertasksurface_set.filter(is_closed=False):
-    #         for atsp in ats.adjustertasksurfaceporch_set.filter(is_closed=False):
-    #             atsp.is_closed = True
-    #             atsp.save()
-    #         ats.is_closed = True
-    #         ats.save()
+    if task.is_closed:
+        for ats in task.adjustertasksurface_set.filter(is_closed=False):
+            for atsp in ats.adjustertasksurfaceporch_set.filter(is_closed=False):
+                atsp.is_closed = True
+                atsp.complete = False
+                atsp.save()
+            ats.is_closed = True
+            ats.complate = False
+            ats.save()
 
 
 class AdjusterTaskSurface(models.Model):
@@ -251,7 +268,7 @@ class AdjusterTaskSurface(models.Model):
         """
         Количество выполненных подъездов по данному адресу
         """
-        return self.adjustertasksurfaceporch_set.filter(is_closed=True).count()
+        return self.adjustertasksurfaceporch_set.filter(is_closed=True, complete=True).count()
 
     adjustertask = models.ForeignKey(to=AdjusterTask, verbose_name=u'Задача')
     surface = models.ForeignKey(to=Surface, verbose_name=u'Поверхность')
@@ -299,3 +316,4 @@ class AdjusterTaskSurfacePorch(models.Model):
     adjustertasksurface = models.ForeignKey(to=AdjusterTaskSurface, verbose_name=u'Поверхность для задачи')
     porch = models.ForeignKey(to=Porch, verbose_name=u'Подъезд поверхности для задачи')
     is_closed = models.BooleanField(verbose_name=u'Выполнено', default=False)
+    complete = models.BooleanField(verbose_name=u'Работы выполнены', default=False)

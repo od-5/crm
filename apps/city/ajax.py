@@ -340,7 +340,7 @@ def get_area_surface_list_with_damage(request):
 @csrf_exempt
 def get_photo_map(request):
     user = request.user
-    qs = None
+    qs = SurfacePhoto.objects.none()
     photo_list = []
     if user.type == 1:
         qs = SurfacePhoto.objects.select_related().all()

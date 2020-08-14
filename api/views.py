@@ -214,6 +214,7 @@ def tasksurfaceporch_detail(request, pk):
         except:
             is_closed = porch.is_closed
         porch.is_closed = is_closed
+        porch.complete = is_closed
         porch.save()
         try:
             logger.error(u'user=%s, porch=%s, params=%s' % (request.user, porch.id, request.query_params))

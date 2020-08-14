@@ -60,6 +60,7 @@ def porch_detail(request, pk):
     is_closed = request.GET.get('is_closed')
     if is_closed:
         aporch.is_closed = True
+        aporch.complete = True
         aporch.save()
         return HttpResponseRedirect(reverse('work:address-detail', args=(aporch.adjustertasksurface.id,)))
     if request.method == 'POST':
