@@ -489,9 +489,12 @@ class SurfacePhotoListView(ListView):
         if filter_args['a_house_number']:
             a_qs = a_qs.filter(porch__surface__house_number=filter_args['a_house_number'])
         if filter_args['a_date_s']:
-            a_qs = a_qs.filter(date__gte=datetime.datetime.strptime(filter_args['a_date_s'], '%d.%m.%Y'))
+            date_s = datetime.datetime.strptime(filter_args['a_date_s'], '%d.%m.%Y')
+            a_qs = a_qs.filter(date__gte=date_s)
         if filter_args['a_date_e']:
-            a_qs = a_qs.filter(date__lte=datetime.datetime.strptime(filter_args['a_date_e'], '%d.%m.%Y'))
+            date_e = datetime.datetime.strptime(filter_args['a_date_e'], '%d.%m.%Y') + \
+                     datetime.timedelta(hours=23, minutes=59, seconds=59)
+            a_qs = a_qs.filter(date__lte=date_e)
         return a_qs.select_related('porch', 'porch__surface', 'porch__surface__street',
                                    'porch__surface__street__area', 'porch__surface__city', 'adjuster',
                                    'adjuster__user')
