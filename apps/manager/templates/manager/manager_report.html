@@ -42,10 +42,10 @@
                 <input type="text" name="phone" value="{{ r_phone|default:'' }}" class="form-control input-sm" placeholder="Телефон">
               </div>
               <div class="five-col-1">
-                <input type="text" name="date_s" id="id_date_s" class="form-control input-sm" placeholder="Дата от" value="{{ r_date_s|default:'' }}">
+                <input type="text" name="date_s" id="id_date_s" class="form-control input-sm" placeholder="Дата от" value="{{ r_date_s|default:'' }}" autocomplete="off">
               </div>
               <div class="five-col-1">
-                <input type="text" name="date_e" id="id_date_e" class="form-control input-sm" placeholder="Дата до" value="{{ r_date_e|default:'' }}">
+                <input type="text" name="date_e" id="id_date_e" class="form-control input-sm" placeholder="Дата до" value="{{ r_date_e|default:'' }}" autocomplete="off">
               </div>
               <div class="five-col-1">
                 <input type="submit" class="btn btn-search" value="Искать">

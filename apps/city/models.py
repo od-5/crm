@@ -131,7 +131,8 @@ class Street(models.Model):
         app_label = 'city'
 
     def __unicode__(self):
-        if Street.objects.filter(city=self.city, name=self.name).count() > 1:
+        if self.city.street_set.filter(name=self.name).count() > 1:
+        # if Street.objects.filter(city=self.city, name=self.name).count() > 1:
             return u'%s (%s)' % (self.name, self.area.name)
         return self.name
 
@@ -162,11 +163,12 @@ class ManagementCompany(models.Model):
     @property
     def doc_phones(self):
         data = []
-        for phone in self.phones.split('$'):
-            data.append({
-                'type': phone.split('#')[0],
-                'phone': phone.split('#')[1]
-            })
+        if '$' in self.phones and '#' in 'self.phones':
+            for phone in self.phones.split('$'):
+                data.append({
+                    'type': phone.split('#')[0],
+                    'phone': phone.split('#')[1]
+                })
         return data
 
 
@@ -183,7 +185,7 @@ class Surface(models.Model):
         try:
             today = datetime.datetime.today()
             return self.clientordersurface_set.select_related().filter(
-                # clientorder__date_start__lte=today,
+                clientorder__date_start__lte=today,
                 clientorder__date_end__gte=today
             ).first().clientorder.client.legal_name
         except:

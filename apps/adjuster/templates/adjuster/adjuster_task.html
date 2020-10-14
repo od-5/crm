@@ -30,10 +30,10 @@
           <form action="" role="form" method="get" class="form form-filter" id="js-adjuster-task-filter-form">
             <div class="col-md-12">
               <div class="five-col-1">
-                <input type="text" id="id_date_s" name="date_s" class="form-control input-sm" placeholder="дата от:" value="{{ r_date_s|default:'' }}">
+                <input type="text" id="id_date_s" autocomplete="off" name="date_s" class="form-control input-sm" placeholder="дата от:" value="{{ r_date_s|default:'' }}">
               </div>
               <div class="five-col-1">
-                <input type="text" id="id_date_e" name="date_e" class="form-control input-sm" placeholder="дата до:" value="{{ r_date_e|default:'' }}">
+                <input type="text" id="id_date_e" autocomplete="off" name="date_e" class="form-control input-sm" placeholder="дата до:" value="{{ r_date_e|default:'' }}">
               </div>
               <div class="five-col-1">
                 <input type="submit" class="btn btn-search" value="Искать">

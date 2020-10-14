@@ -1,9 +1,12 @@
 # coding=utf-8
 from datetime import datetime
+
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.urlresolvers import reverse
 from django.forms import HiddenInput
 from django.http import HttpResponseRedirect
+from django.http.response import Http404
 from django.shortcuts import render
 from django.views.generic import ListView
 from apps.adjuster.models import AdjusterTask, AdjusterTaskSurface, Adjuster, AdjusterTaskSurfacePorch
@@ -24,20 +27,23 @@ def adjustertask_list(request):
     )
     initial_args = {}
     user = request.user
-    if user.type == 1:
-        qs = AdjusterTask.objects.select_related().filter(is_closed=False).prefetch_related('adjustertasksurface_set')
-    elif user.type == 6:
-        qs = AdjusterTask.objects.select_related().filter(
-            is_closed=False, adjuster__city__in=user.superviser.city_id_list())
-    elif user.type == 2:
-        qs = AdjusterTask.objects.select_related().filter(is_closed=False, adjuster__city__moderator=user)
-    elif user.type == 4:
-        qs = AdjusterTask.objects.select_related().filter(is_closed=False, adjuster__user=user)
-    elif user.type == 5:
-        qs = AdjusterTask.objects.select_related().filter(
-            is_closed=False, adjuster__city__moderator=user.manager.moderator)
+    if not user.is_anonymous():
+        if user.type == 1:
+            qs = AdjusterTask.objects.select_related().filter(is_closed=False).prefetch_related('adjustertasksurface_set')
+        elif user.type == 6:
+            qs = AdjusterTask.objects.select_related().filter(
+                is_closed=False, adjuster__city__in=user.superviser.city_id_list())
+        elif user.type == 2:
+            qs = AdjusterTask.objects.select_related().filter(is_closed=False, adjuster__city__moderator=user)
+        elif user.type == 4:
+            qs = AdjusterTask.objects.select_related().filter(is_closed=False, adjuster__user=user)
+        elif user.type == 5:
+            qs = AdjusterTask.objects.select_related().filter(
+                is_closed=False, adjuster__city__moderator=user.manager.moderator)
+        else:
+            qs = AdjusterTask.objects.none()
     else:
-        qs = None
+        qs = AdjusterTask.objects.none()
     if request.GET.get('city'):
         qs = qs.filter(adjuster__city=int(request.GET.get('city')))
         initial_args.update({
@@ -382,7 +388,7 @@ def adjustertask_repair(request):
     elif user.type == 5:
         city_qs = City.objects.filter(moderator=user.manager.moderator)
     else:
-        city_qs = None
+        city_qs = City.objects.none()
     form.fields['city'].queryset = city_qs
     try:
         request.session['adjustertask_filtered_list']
@@ -396,15 +402,24 @@ def adjustertask_repair(request):
     return render(request, 'adjustertask/adjustertask_repair_add.html', context)
 
 
+@login_required
 def adjuster_task_update(request, pk):
     """
     Обновление задачи
     """
     context = {}
-    adjustertask = AdjusterTask.objects.get(pk=int(pk))
-    task_surface_qs = adjustertask.adjustertasksurface_set.all().select_related(
-        'surface', 'surface__street', 'surface__street__area', 'surface__street__city'
-    ).prefetch_related('adjustertasksurfaceporch_set')
+    try:
+        adjustertask = AdjusterTask.objects.prefetch_related(
+            'adjustertasksurface_set', 'adjustertasksurface_set__surface',
+            'adjustertasksurface_set__adjustertasksurfaceporch_set',
+            'adjustertasksurface_set__surface__city', 'adjustertasksurface_set__surface__street',
+            'adjustertasksurface_set__surface__street__area', 'adjustertasksurface_set__surface__street__city'
+        ).get(pk=int(pk))
+    except AdjusterTask.DoesNotExist:
+        raise Http404
+    task_surface_qs = adjustertask.adjustertasksurface_set.select_related(
+        'surface', 'surface__street', 'surface__street__area', 'surface__street__city', 'surface__city'
+    ).prefetch_related('adjustertasksurfaceporch_set', 'adjustertasksurfaceporch_set__porch').all()
     paginator = Paginator(task_surface_qs, 100)
     page = request.GET.get('page')
     try:

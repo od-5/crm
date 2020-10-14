@@ -15,7 +15,7 @@ class AdjusterTaskClientForm(forms.ModelForm):
         widgets = {
             'adjuster': forms.Select(attrs={'class': 'form-control'}),
             'type': forms.Select(attrs={'class': 'form-control'}),
-            'date': forms.DateInput(attrs={'class': 'form-control '}),
+            'date': forms.DateInput(attrs={'class': 'form-control ', 'autocomplete': 'off'}),
             'comment': forms.Textarea(attrs={'class': 'form-control', 'placeholder': u'Текст комментария к задаче'}),
         }
 
@@ -48,7 +48,7 @@ class AdjusterTaskClientAddForm(forms.ModelForm):
         widgets = {
             'adjuster': forms.Select(attrs={'class': 'form-control'}),
             'type': forms.Select(attrs={'class': 'form-control'}),
-            'date': forms.DateInput(attrs={'class': 'form-control '}),
+            'date': forms.DateInput(attrs={'class': 'form-control ', 'autocomplete': 'off'}),
             'comment': forms.Textarea(attrs={'class': 'form-control', 'placeholder': u'Текст комментария к задаче'}),
         }
 
@@ -87,7 +87,7 @@ class AdjusterTaskAreaAddForm(forms.ModelForm):
         widgets = {
             'adjuster': forms.Select(attrs={'class': 'form-control'}),
             'type': forms.Select(attrs={'class': 'form-control'}),
-            'date': forms.DateInput(attrs={'class': 'form-control'}),
+            'date': forms.DateInput(attrs={'class': 'form-control', 'autocomplete': 'off'}),
             'comment': forms.Textarea(attrs={'class': 'form-control', 'placeholder': u'Текст комментария к задаче'}),
         }
 
@@ -114,7 +114,7 @@ class AdjusterTaskAddForm(forms.ModelForm):
         widgets = {
             'adjuster': forms.Select(attrs={'class': 'form-control'}),
             'type': forms.Select(attrs={'class': 'form-control'}),
-            'date': forms.DateInput(attrs={'class': 'form-control at_date'}),
+            'date': forms.DateInput(attrs={'class': 'form-control at_date', 'autocomplete': 'off'}),
             'comment': forms.Textarea(attrs={'class': 'form-control', 'placeholder': u'Текст комментария к задаче'}),
         }
 
@@ -154,7 +154,7 @@ class AdjusterTaskRepairAddForm(forms.ModelForm):
         fields = ('adjuster', 'date', 'type', 'comment')
         widgets = {
             'adjuster': forms.Select(attrs={'class': 'form-control'}),
-            'date': forms.DateInput(attrs={'class': 'form-control at_date'}),
+            'date': forms.DateInput(attrs={'class': 'form-control at_date', 'autocomplete': 'off'}),
             'comment': forms.Textarea(attrs={'class': 'form-control', 'placeholder': u'Текст комментария к задаче'}),
         }
 
@@ -170,7 +170,7 @@ class AdjusterTaskUpdateForm(forms.ModelForm):
         widgets = {
             'adjuster': forms.Select(attrs={'class': 'form-control'}),
             'type': forms.Select(attrs={'class': 'form-control'}),
-            'date': forms.DateInput(attrs={'class': 'form-control'}),
+            'date': forms.DateInput(attrs={'class': 'form-control', 'autocomplete': 'off'}),
             'comment': forms.Textarea(attrs={'class': 'form-control'}),
         }
 
@@ -211,9 +211,9 @@ class AdjusterTaskFilterForm(forms.Form):
     )
     date_s = forms.DateField(
         label=u'Дата от',
-        widget=forms.DateInput(attrs={'class': 'form-control input-sm'})
+        widget=forms.DateInput(attrs={'class': 'form-control input-sm', 'autocomplete': 'off'})
     )
     date_e = forms.DateField(
         label=u'до',
-        widget=forms.DateInput(attrs={'class': 'form-control input-sm'})
+        widget=forms.DateInput(attrs={'class': 'form-control input-sm', 'autocomplete': 'off'})
     )

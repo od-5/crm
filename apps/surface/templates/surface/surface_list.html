@@ -71,7 +71,7 @@
                 </select>
               </div>
               <div class="five-col-1">
-                <input type="text" name="release_date" class="form-control input-sm" placeholder="в момент:" id="id_release_date" value="{{ release_date }}">
+                <input type="text" name="release_date" class="form-control input-sm" placeholder="в момент:" id="id_release_date" value="{{ release_date }}" autocomplete="off">
               </div>
               <div class="five-col-1">
                 <select name="client" id="client_filter" class="form-control input-sm" >
@@ -118,7 +118,7 @@
                   <input type="hidden" name="management" value="{{ management_id|default:'' }}">
                   <input type="hidden" name="has_stand" value="{{ has_stand|default:'' }}">
                   <input type="hidden" name="free" value="{{ free|default:'' }}">
-                  <input type="hidden" name="release_date" value="{{ release_date|default:'' }}">
+                  <input type="hidden" name="release_date" value="{{ release_date|default:'' }}" autocomplete="off">
                   <input type="hidden" name="client" value="{{ client_id|default:'' }}">
                 </form>
               </div>
@@ -190,7 +190,7 @@
               </thead>
               <tbody class="js-list">
               {% for object in object_list %}
-                <tr {% if object.damaged %}class="danger"{% endif %} data-id="{{ object.id }}" data-name="{{ object.street }}" data-model="Surface" id="id_Surface_{{ object.id }}">
+                <tr {% if object.damaged %}class="danger"{% endif %} data-id="{{ object.id }}" data-name="{{ object.street.name }} , д. {{ object.house_number }}" data-model="Surface" id="id_Surface_{{ object.id }}">
                   <td><input type="checkbox" name="chk_group[]" value="{{ object.id }}"></td>
                   <td>{{ object.city|default:'Не указано' }}</td>
                   <td>{{ object.street.area|default:'Не указано' }}</td>

@@ -58,7 +58,7 @@ class SurfacePhotoForm(forms.ModelForm):
         fields = ('porch', 'date', 'image', 'is_broken')
         widgets = {
             'porch': forms.HiddenInput(attrs={'class': 'form-control'}),
-            'date': forms.DateInput(attrs={'class': 'form-control'}),
+            'date': forms.DateInput(attrs={'class': 'form-control', 'autocomplete': 'off'}),
             'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
             'is_broken': forms.CheckboxInput(),
         }

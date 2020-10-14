@@ -70,7 +70,7 @@ class IncomingTaskForm(forms.ModelForm):
             'incomingclient': forms.Select(attrs={'class': 'form-control'}),
             'incomingclientcontact': forms.Select(attrs={'class': 'form-control'}),
             'type': forms.Select(attrs={'class': 'form-control'}),
-            'date': forms.DateInput(attrs={'class': 'form-control'}),
+            'date': forms.DateInput(attrs={'class': 'form-control', 'autocomplete': 'off'}),
             'comment': forms.Textarea(attrs={'class': 'form-control', 'placeholder': u'Текст комментария к задаче'}),
             'status': forms.Select(attrs={'class': 'form-control'})
         }

@@ -127,7 +127,7 @@ class AdjusterTask(models.Model):
 
     def get_porch_dict(self):
         porch_dict = {}
-        for ats in self.adjustertasksurface_set.all():
+        for ats in self.adjustertasksurface_set.prefetch_related('adjustertasksurfaceporch_set').all():
             for atsp in ats.adjustertasksurfaceporch_set.all():
                 if atsp.id not in porch_dict:
                     porch_dict.update({atsp.id: atsp.complete})
@@ -268,7 +268,12 @@ class AdjusterTaskSurface(models.Model):
         """
         Количество выполненных подъездов по данному адресу
         """
-        return self.adjustertasksurfaceporch_set.filter(is_closed=True, complete=True).count()
+        count = 0
+        for atsp in self.adjustertasksurfaceporch_set.all():
+            if atsp.is_closed and atsp.complete:
+                count += 1
+        return count
+        # return self.adjustertasksurfaceporch_set.filter(is_closed=True, complete=True).count()
 
     adjustertask = models.ForeignKey(to=AdjusterTask, verbose_name=u'Задача')
     surface = models.ForeignKey(to=Surface, verbose_name=u'Поверхность')

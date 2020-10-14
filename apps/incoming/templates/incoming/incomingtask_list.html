@@ -23,10 +23,10 @@
                 <input type="text" name="name" value="{{ r_name|default:'' }}" class="form-control input-sm" placeholder="Название">
               </div>
               <div class="five-col-1">
-                <input type="text" name="date_s" id="id_date_s" value="{{ r_date_s|default:'' }}" class="form-control input-sm" placeholder="Дата от">
+                <input type="text" name="date_s" autocomplete="off" id="id_date_s" value="{{ r_date_s|default:'' }}" class="form-control input-sm" placeholder="Дата от">
               </div>
               <div class="five-col-1">
-                <input type="text" name="date_e" id="id_date_e" value="{{ r_date_e|default:'' }}" class="form-control input-sm" placeholder="Дата до">
+                <input type="text" name="date_e" autocomplete="off" id="id_date_e" value="{{ r_date_e|default:'' }}" class="form-control input-sm" placeholder="Дата до">
               </div>
               <div class="five-col-1">
                 <select name="type"  class="form-control input-sm">

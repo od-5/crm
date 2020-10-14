@@ -105,7 +105,7 @@ class ClientMaketForm(forms.ModelForm):
             'client': forms.HiddenInput(attrs={'class': 'form-control'}),
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'file': forms.ClearableFileInput(attrs={'class': 'form-control'}),
-            'date': forms.DateInput(attrs={'class': 'form-control'}),
+            'date': forms.DateInput(attrs={'class': 'form-control', 'autocomplete': 'off'}),
         }
 
 
@@ -115,8 +115,8 @@ class ClientOrderForm(forms.ModelForm):
         fields = ('client', 'date_start', 'date_end', 'name')
         widgets = {
             'client': forms.HiddenInput(attrs={'class': 'form-control'}),
-            'date_start': forms.DateInput(attrs={'class': 'form-control'}),
-            'date_end': forms.DateInput(attrs={'class': 'form-control'}),
+            'date_start': forms.DateInput(attrs={'class': 'form-control', 'autocomplete': 'off'}),
+            'date_end': forms.DateInput(attrs={'class': 'form-control', 'autocomplete': 'off'}),
             'name': forms.DateInput(attrs={'class': 'form-control'}),
         }
 

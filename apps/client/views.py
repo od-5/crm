@@ -13,6 +13,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.db.models import Count, Sum
 from django.http import HttpResponseRedirect, HttpResponse
+from django.http.response import Http404
 from django.shortcuts import render
 from django.views.generic import ListView
 
@@ -101,7 +102,7 @@ class ClientListView(ListView, CityListMixin):
                 qs = Client.objects.select_related('user', 'city', 'city__moderator', 'manager__user').filter(
                     manager=user.manager)
         else:
-            qs = None
+            qs = Client.objects.none()
         r_email = self.request.GET.get('email')
         r_legal_name = self.request.GET.get('legal_name')
         r_city = self.request.GET.get('city')
@@ -307,7 +308,10 @@ def client_order(request, pk):
 @login_required
 def client_order_update(request, pk):
     context = {}
-    order = ClientOrder.objects.get(pk=int(pk))
+    try:
+        order = ClientOrder.objects.get(pk=int(pk))
+    except ClientOrder.DoesNotExist:
+        raise Http404
     client = order.client
     area_list = client.city.area_set.all()
     success_msg = u''

@@ -205,6 +205,11 @@ $(function() {
   });
   var fancy_initial = function(){
     $('.js-ajax-remove-btn').fancybox({
+      helpers: {
+        overlay: {
+          locked: false
+        }
+      },
       afterClose: function () {
         $('.js-ajax-remove-item-form').resetForm();
       },

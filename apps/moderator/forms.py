@@ -74,7 +74,7 @@ class ModeratorInfoForm(forms.ModelForm):
         widgets = {
             'moderator': forms.Select(attrs={'class': 'form-control'}),
             'modification': forms.Select(attrs={'class': 'form-control'}),
-            'date': forms.DateInput(attrs={'class': 'form-control'}),
+            'date': forms.DateInput(attrs={'class': 'form-control', 'autocomplete': 'off'}),
             'validity': forms.Select(attrs={'class': 'form-control'}),
             'access_restrictions': forms.Select(attrs={'class': 'form-control'}),
             'connection_contract': forms.TextInput(attrs={'class': 'form-control'}),

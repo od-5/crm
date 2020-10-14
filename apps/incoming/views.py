@@ -45,6 +45,7 @@ class IncomingClientListView(ListView):
         contact = self.request.GET.get('contact')
         manager = self.request.GET.get('manager')
         city = self.request.GET.get('city')
+        print('city', city)
         if user.type == 1:
             qs = IncomingClient.objects.select_related().all()
         elif user.type == 6:
@@ -432,7 +433,7 @@ def incomingtask_list(request):
     page = request.GET.get('page')
     try:
         object_list = paginator.page(page)
-    except PageNotAnInteger:
+    except (PageNotAnInteger, ZeroDivisionError):
         object_list = paginator.page(1)
     except EmptyPage:
         object_list = paginator.page(paginator.num_pages)

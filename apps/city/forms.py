@@ -13,7 +13,7 @@ class CityForm(forms.ModelForm):
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'moderator': forms.Select(attrs={'class': 'form-control'}),
             'contract_number': forms.TextInput(attrs={'class': 'form-control'}),
-            'contract_date': forms.DateInput(attrs={'class': 'form-control'}),
+            'contract_date': forms.DateInput(attrs={'class': 'form-control', 'autocomplete': 'off'}),
             'slug': forms.TextInput(attrs={'class': 'form-control'}),
             'timezone': forms.Select(attrs={'class': 'form-control'}),
         }

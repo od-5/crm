@@ -1,5 +1,6 @@
 # coding=utf-8
 import os
+import uuid
 import zipfile
 from io import BytesIO
 
@@ -52,7 +53,7 @@ class SurfaceListView(ListView):
     def get_qs(self):
         user = self.request.user
         if user.type == 1:
-            qs = Surface.objects.select_related('city', 'street', 'street__area', 'management').all()
+            qs = Surface.objects.select_related('city', 'street', 'street__city', 'street__area', 'management').all()
         elif user.type == 6:
             qs = Surface.objects.select_related('city', 'street', 'street__area', 'management').filter(
                 city__in=user.superviser.city_id_list())
@@ -64,7 +65,7 @@ class SurfaceListView(ListView):
                 city__moderator=user.manager.moderator)
         else:
             qs = Surface.objects.none()
-        return qs
+        return qs.prefetch_related('porch_set', 'street__city__street_set', 'clientordersurface_set__clientorder')
 
     def get_queryset(self):
         """
@@ -823,7 +824,10 @@ class SurfaceDocViewWithFile(SurfaceDocView):
         if uploaded_file.content_type != 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
             return None
         docx_model, created = SurfaceDocTemplate.objects.get_or_create()
-        docx_model.docx.save(uploaded_file.name, uploaded_file)
+        try:
+            docx_model.docx.save(uploaded_file.name, uploaded_file)
+        except UnicodeEncodeError:
+            docx_model.docx.save('file#%s' % uuid.uuid4().hex[:8], uploaded_file)
         path = os.path.join(settings.BASE_DIR, '../../%s' % docx_model.docx.url)
         docx = DocxTemplate(path)
         return docx

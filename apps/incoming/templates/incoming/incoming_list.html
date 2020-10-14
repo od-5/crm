@@ -1,6 +1,6 @@
 {% extends 'cabinet_index.html' %}
 {% block breadcrumbs_item %}
-  <li class="active">Журнал клиентов</li>
+  <li class="active">Журнал клиентов {{ r_city|default:'Yt erf' }}</li>
 {% endblock %}
 {% block content %}
   <div class="container">
@@ -60,11 +60,11 @@
                     <option value="0" {% if page_count == 0 %}selected="selected"{% endif %}>все</option>
                   </select>
                   <input type="hidden" id="id_page_count" name="page_count" value="{{ page_count|default:'' }}">
-                  <input type="hidden" name="manager" value="{{ r_manager|default:'' }}">
-                  <input type="hidden" name="city" value="{{ r_city|default:'' }}">
-                  <input type="hidden" name="name" value="{{ r_name|default:'' }}">
-                  <input type="hidden" name="phone" value="{{ r_phone|default:'' }}">
-                  <input type="hidden" name="contact" value="{{ r_contact|default:'' }}">
+{#                  <input type="hidden" name="manager" value="{{ r_manager|default:'' }}">#}
+{#                  <input type="hidden" name="city" value="{{ r_city|default:'' }}">#}
+{#                  <input type="hidden" name="name" value="{{ r_name|default:'' }}">#}
+{#                  <input type="hidden" name="phone" value="{{ r_phone|default:'' }}">#}
+{#                  <input type="hidden" name="contact" value="{{ r_contact|default:'' }}">#}
                 </form>
               </div>
               <div class="clearfix"></div>

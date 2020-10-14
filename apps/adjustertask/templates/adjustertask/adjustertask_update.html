@@ -135,7 +135,9 @@
                       <td>{{ ats.surface.street.area }}</td>
                       <td>{{ ats.surface.street.name }}</td>
                       <td>{{ ats.surface.house_number }}</td>
-                      <td>{{ ats.adjustertasksurfaceporch_set.count }} {{ ats.get_closed_porch_count }}/{{ ats.get_porch_count }}</td>
+                      <td>
+                        {{ ats.get_closed_porch_count }}/{{ ats.get_porch_count }}
+                      </td>
                       <td>
                         {% for atsp in ats.adjustertasksurfaceporch_set.all %}
                           <span{% if atsp.complete %} style="background: greenyellow"{% endif %}>{{ atsp.porch.number }}{% if not forloop.last %}, {% endif %}</span>
