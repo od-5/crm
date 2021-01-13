@@ -163,7 +163,7 @@ class ManagementCompany(models.Model):
     @property
     def doc_phones(self):
         data = []
-        if '$' in self.phones and '#' in 'self.phones':
+        if self.phones and '$' in self.phones and '#' in 'self.phones':
             for phone in self.phones.split('$'):
                 data.append({
                     'type': phone.split('#')[0],
