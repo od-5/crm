@@ -15,6 +15,7 @@ from django.db.models import Count, Sum
 from django.http import HttpResponseRedirect, HttpResponse
 from django.http.response import Http404
 from django.shortcuts import render
+from django.utils.timezone import utc
 from django.views.generic import ListView
 
 from apps.adjuster.models import SurfacePhoto
@@ -827,3 +828,11 @@ def get_files(request):
 
 class ClientOrderSurfaceRemoveView(BaseRemoveView):
     model = ClientOrderSurface
+
+    def post(self, request):
+        qs = self.get_queryset()
+        release_date = datetime.datetime.utcnow().replace(tzinfo=utc) - datetime.timedelta(days=1)
+        Surface.objects.filter(pk__in=qs.values_list('surface', flat=True)).update(
+            free=True, release_date=release_date.date())
+        qs.delete()
+        return HttpResponseRedirect(self.get_success_url())

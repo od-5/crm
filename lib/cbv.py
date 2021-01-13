@@ -171,6 +171,5 @@ class BaseRemoveView(View):
 
     def post(self, request):
         qs = self.get_queryset()
-        print(qs)
         qs.delete()
         return HttpResponseRedirect(self.get_success_url())
