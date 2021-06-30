@@ -57,6 +57,9 @@ class City(models.Model):
     def __unicode__(self):
         return self.name
 
+    def __str__(self):
+        return self.__unicode__()
+
     def get_absolute_url(self):
         return reverse('city:update', args=(self.pk,))
 
@@ -116,6 +119,9 @@ class Area(models.Model):
     def __unicode__(self):
         return self.name
 
+    def __str__(self):
+        return self.__unicode__()
+
     def get_absolute_url(self):
         return reverse_lazy('city:area', args=(self.city.id,))
 
@@ -136,6 +142,9 @@ class Street(models.Model):
             return u'%s (%s)' % (self.name, self.area.name)
         return self.name
 
+    def __str__(self):
+        return self.__unicode__()
+
     def get_absolute_url(self):
         return reverse_lazy('city:street', args=(self.city_id,))
 
@@ -148,6 +157,9 @@ class ManagementCompany(models.Model):
 
     def __unicode__(self):
         return u'г. %s, %s' % (self.city.name, self.name)
+
+    def __str__(self):
+        return self.__unicode__()
 
     def get_absolute_url(self):
         return reverse('city:management-company-update', args=(self.pk,))
@@ -180,6 +192,9 @@ class Surface(models.Model):
 
     def __unicode__(self):
         return u'г.%s %s %s' % (self.city.name, self.street.name, self.house_number)
+
+    def __str__(self):
+        return self.__unicode__()
 
     def get_current_client(self):
         try:
@@ -253,6 +268,9 @@ class Porch(models.Model):
     def __unicode__(self):
         return u'подъезд № %s' % self.number
 
+    def __str__(self):
+        return self.__unicode__()
+
     def save(self, *args, **kwargs):
         """
         Если есть какие либо повреждения - стенд считается сломаным
@@ -307,6 +325,9 @@ class SurfaceDocTemplate(models.Model):
 
     def __unicode__(self):
         return 'Шаблон'
+
+    def __str__(self):
+        return self.__unicode__()
 
 
 @receiver(post_save, sender=Porch)

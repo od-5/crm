@@ -61,6 +61,9 @@ class Ticket(Common):
     def __unicode__(self):
         return u'Заявка на имя: %s, телефон: %s' % (self.name, self.phone)
 
+    def __str__(self):
+        return self.__unicode__()
+
     def performed_at(self):
         pass
 

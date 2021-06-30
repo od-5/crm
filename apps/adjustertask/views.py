@@ -3,7 +3,7 @@ from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.forms import HiddenInput
 from django.http import HttpResponseRedirect
 from django.http.response import Http404

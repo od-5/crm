@@ -1,6 +1,6 @@
 # coding=utf-8
 from django import forms
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 from apps.adjuster.models import SurfacePhoto
 from apps.city.models import Surface, City, Street, Porch, ManagementCompany
 from apps.manager.models import Manager

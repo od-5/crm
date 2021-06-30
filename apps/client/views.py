@@ -2,15 +2,15 @@
 import datetime
 import os
 import zipfile
-import StringIO
 import xlwt
 from datetime import date
+from io import StringIO
 
 from django.conf import settings
 from django.core.mail import send_mail
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db.models import Count, Sum
 from django.http import HttpResponseRedirect, HttpResponse
 from django.http.response import Http404

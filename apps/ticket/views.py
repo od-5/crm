@@ -1,6 +1,6 @@
 # coding=utf-8
 from annoying.functions import get_object_or_None
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render

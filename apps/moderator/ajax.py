@@ -1,6 +1,6 @@
 # coding=utf-8
 from annoying.decorators import ajax_request
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponseRedirect
 from apps.moderator.forms import ModeratorInfoForm
 from apps.moderator.models import ModeratorInfo

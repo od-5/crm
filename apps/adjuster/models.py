@@ -1,7 +1,7 @@
 # coding=utf-8
 from PIL import Image
 from django.core.files import File
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db import models
 from django.conf import settings
 from imagekit.models import ImageSpecField
@@ -55,8 +55,11 @@ class Adjuster(models.Model):
     def __unicode__(self):
         return self.user.get_full_name()
 
+    def __str__(self):
+        return self.__unicode__()
+
     def get_absolute_url(self):
-        return reverse('adjuster:change', args=(self.pk, ))
+        return reverse('adjuster:change', args=(self.pk,))
 
 
 class SurfacePhoto(models.Model):
@@ -68,6 +71,9 @@ class SurfacePhoto(models.Model):
 
     def __unicode__(self):
         return u'%s д.%s п.%s' % (self.porch.surface.street.name, self.porch.surface.house_number, self.porch.number)
+
+    def __str__(self):
+        return self.__unicode__()
 
     def address(self):
         return self.porch.surface
@@ -110,11 +116,14 @@ class AdjusterTask(models.Model):
     def __unicode__(self):
         return u'Задача ID №:%d' % self.id
 
+    def __str__(self):
+        return self.__unicode__()
+
     def get_api_url(self):
-        return reverse('api:task_detail', args=(self.id, ))
+        return reverse('api:task_detail', args=(self.id,))
 
     def get_absolute_url(self):
-        return reverse('adjustertask:update', args=(self.id, ))
+        return reverse('adjustertask:update', args=(self.id,))
 
     def get_city_name(self):
         return self.adjuster.city.name
@@ -241,6 +250,9 @@ class AdjusterTaskSurface(models.Model):
     def __unicode__(self):
         return u'поверхность %s' % self.surface
 
+    def __str__(self):
+        return self.__unicode__()
+
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
         super(AdjusterTaskSurface, self).save()
@@ -250,7 +262,7 @@ class AdjusterTaskSurface(models.Model):
             at.save()
 
     def get_api_url(self):
-        return reverse('api:tasksurface_detail', args=(self.id, ))
+        return reverse('api:tasksurface_detail', args=(self.id,))
 
     def get_coord(self):
         return [self.surface.coord_y, self.surface.coord_x]
@@ -288,6 +300,9 @@ class AdjusterTaskSurfacePorch(models.Model):
 
     def __unicode__(self):
         return u'№ %s' % self.porch.number
+
+    def __str__(self):
+        return self.__unicode__()
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):

@@ -1,16 +1,12 @@
 # coding=utf-8
+import pytz
+
 from calendar import HTMLCalendar, LocaleHTMLCalendar
 from datetime import date, datetime
 from itertools import groupby
 from locale import getlocale
 import _locale
 from django.conf import settings
-from django.utils.timezone import UTC
-
-try:
-    import pytz
-except ImportError:
-    pytz = None
 
 __author__ = 'alexy'
 
@@ -22,12 +18,12 @@ def next_month(origin_date):
     if origin_date.month == 12:
         return datetime(year + 1, 1, 1)
     else:
-        return datetime(year, month+1, 1)
+        return datetime(year, month + 1, 1)
 
 
 def get_months():
     # получаем значение текущего месяца
-    utc = pytz.utc if pytz else UTC()
+    utc = pytz.utc
     if settings.USE_TZ:
         current = datetime.utcnow().replace(tzinfo=utc)
     else:

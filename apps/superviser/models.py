@@ -15,6 +15,9 @@ class Superviser(models.Model):
     def __unicode__(self):
         return self.superviser.get_full_name()
 
+    def __str__(self):
+        return self.__unicode__()
+
     def city_id_list(self):
         try:
             return [int(city.id) for city in self.city.all()]

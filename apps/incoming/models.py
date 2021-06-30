@@ -1,5 +1,5 @@
 # coding=utf-8
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db import models
 from apps.city.models import City
 from apps.manager.models import Manager
@@ -16,8 +16,11 @@ class IncomingClient(models.Model):
     def __unicode__(self):
         return self.name
 
+    def __str__(self):
+        return self.__unicode__()
+
     def get_absolute_url(self):
-        return reverse('incoming:update', args=(self.pk, ))
+        return reverse('incoming:update', args=(self.pk,))
 
     TYPE_CHOICES = (
         (0, u'Входящая заявка'),
@@ -30,7 +33,7 @@ class IncomingClient(models.Model):
     city = models.ForeignKey(on_delete=models.CASCADE, to=City, verbose_name=u'Город')
     kind_of_activity = models.CharField(verbose_name=u'Вид деятельности', max_length=255, blank=True, null=True)
     actual_address = models.CharField(verbose_name=u'Фактический адрес', max_length=255, blank=True, null=True)
-    site = models.CharField(verbose_name=u'Сайт', blank=True, null=True,  max_length=100)
+    site = models.CharField(verbose_name=u'Сайт', blank=True, null=True, max_length=100)
     type = models.PositiveSmallIntegerField(verbose_name=u'Тип клиента', choices=TYPE_CHOICES, default=TYPE_CHOICES[1][0])
 
 
@@ -49,8 +52,11 @@ class IncomingClientContact(models.Model):
     def __unicode__(self):
         return self.name
 
+    def __str__(self):
+        return self.__unicode__()
+
     def get_absolute_url(self):
-        return reverse('incoming:contact-update', args=(self.pk, ))
+        return reverse('incoming:contact-update', args=(self.pk,))
 
     incomingclient = models.ForeignKey(on_delete=models.CASCADE, to=IncomingClient, verbose_name=u'Клиент')
     name = models.CharField(verbose_name=u'ФИО', max_length=255)
@@ -69,8 +75,11 @@ class IncomingTask(models.Model):
     def __unicode__(self):
         return self.get_type_display()
 
+    def __str__(self):
+        return self.__unicode__()
+
     def get_absolute_url(self):
-        return reverse('incoming:task-update', args=(self.pk, ))
+        return reverse('incoming:task-update', args=(self.pk,))
 
     TASK_TYPE_CHOICES = (
         (0, u'Назначена встреча'),

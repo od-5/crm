@@ -1,5 +1,5 @@
 # coding=utf-8
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db import models
 from core.models import User
 
@@ -37,7 +37,10 @@ class Manager(models.Model):
     def __unicode__(self):
         return self.user.get_full_name()
 
+    def __str__(self):
+        return self.__unicode__()
+
     def get_absolute_url(self):
-        return reverse('manager:update', args=(self.pk, ))
+        return reverse('manager:update', args=(self.pk,))
 
 

@@ -14,6 +14,9 @@ class ModeratorInfo(models.Model):
     def __unicode__(self):
         return u'Заявка на имя: %s, телефон: %s' % (self.name, self.phone)
 
+    def __str__(self):
+        return self.__unicode__()
+
     MODIFICATION_CHOICES = (
         (1, u'Таблички на подъездах'),
     )
@@ -24,7 +27,7 @@ class ModeratorInfo(models.Model):
         (1, u'Отсутствуют'),
     )
 
-    moderator = models.OneToOneField(on_delete=models.CASCADE, 
+    moderator = models.OneToOneField(on_delete=models.CASCADE,
         to=User,
         verbose_name=u'Модератор'
     )
