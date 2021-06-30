@@ -23,8 +23,8 @@ class ManagerModelManager(models.Manager):
 
 
 class Manager(models.Model):
-    user = models.OneToOneField(to=User, verbose_name=u'Пользователь')
-    moderator = models.ForeignKey(to=User, verbose_name=u'Модератор', related_name='moderator')
+    user = models.OneToOneField(on_delete=models.CASCADE, to=User, verbose_name=u'Пользователь')
+    moderator = models.ForeignKey(on_delete=models.CASCADE, to=User, verbose_name=u'Модератор', related_name='moderator')
     leader = models.BooleanField(verbose_name=u'Руководитель группы', default=False)
 
     objects = ManagerModelManager()

@@ -18,9 +18,9 @@ __author__ = 'alexy'
 
 
 class Client(models.Model):
-    user = models.OneToOneField(to=User, verbose_name=u'Пользователь')
-    city = models.ForeignKey(to=City, verbose_name=u'Город')
-    manager = models.ForeignKey(to=Manager, verbose_name=u'Менеджер', blank=True, null=True)
+    user = models.OneToOneField(on_delete=models.CASCADE, to=User, verbose_name=u'Пользователь')
+    city = models.ForeignKey(on_delete=models.CASCADE, to=City, verbose_name=u'Город')
+    manager = models.ForeignKey(on_delete=models.CASCADE, to=Manager, verbose_name=u'Менеджер', blank=True, null=True)
     legal_name = models.CharField(max_length=256, blank=True, null=True, verbose_name=u'Юридическое название')
     actual_name = models.CharField(max_length=256, blank=True, null=True, verbose_name=u'Фактическое название')
     inn = models.CharField(max_length=50, blank=True, null=True, verbose_name=u'ИНН')
@@ -53,7 +53,7 @@ class Client(models.Model):
 
 
 class ClientOrder(models.Model):
-    client = models.ForeignKey(to=Client, verbose_name=u'Клиент')
+    client = models.ForeignKey(on_delete=models.CASCADE, to=Client, verbose_name=u'Клиент')
     date_start = models.DateField(verbose_name=u'Дата начала размещения')
     date_end = models.DateField(verbose_name=u'Дата окончания размещения')
     is_closed = models.BooleanField(verbose_name=u'Заказ закрыт', default=False)
@@ -97,8 +97,8 @@ class ClientOrder(models.Model):
 
 
 class ClientOrderSurface(models.Model):
-    clientorder = models.ForeignKey(to=ClientOrder, verbose_name=u'Заказ')
-    surface = models.ForeignKey(to=Surface, verbose_name=u'Рекламная поверхность')
+    clientorder = models.ForeignKey(on_delete=models.CASCADE, to=ClientOrder, verbose_name=u'Заказ')
+    surface = models.ForeignKey(on_delete=models.CASCADE, to=Surface, verbose_name=u'Рекламная поверхность')
 
     class Meta:
         verbose_name = u'Пункт заказа'
@@ -142,7 +142,7 @@ class ClientJournalModelManager(models.Manager):
 
 
 class ClientJournal(models.Model):
-    client = models.ForeignKey(to=Client, verbose_name=u'клиент')
+    client = models.ForeignKey(on_delete=models.CASCADE, to=Client, verbose_name=u'клиент')
     clientorder = models.ManyToManyField(to=ClientOrder, verbose_name=u'заказ клиента')
     cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Цена за стенд, руб')
     add_cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Наценка, %', blank=True, null=True)
@@ -242,8 +242,8 @@ class ClientJournalPaymentModelManager(models.Manager):
 
 
 class ClientJournalPayment(models.Model):
-    client = models.ForeignKey(to=Client, verbose_name=u'Клиент')
-    clientjournal = models.ForeignKey(to=ClientJournal, verbose_name=u'Покупка')
+    client = models.ForeignKey(on_delete=models.CASCADE, to=Client, verbose_name=u'Клиент')
+    clientjournal = models.ForeignKey(on_delete=models.CASCADE, to=ClientJournal, verbose_name=u'Покупка')
     sum = models.DecimalField(max_digits=11, decimal_places=2, verbose_name=u'Сумма')
     created = models.DateField(auto_now_add=True, verbose_name=u'Дата создания')
 
@@ -296,7 +296,7 @@ def decrement_payment_for_clientjournal(sender, **kwargs):
 
 
 class ClientMaket(models.Model):
-    client = models.ForeignKey(to=Client, verbose_name=u'Клиент')
+    client = models.ForeignKey(on_delete=models.CASCADE, to=Client, verbose_name=u'Клиент')
     name = models.CharField(max_length=256, verbose_name=u'Название')
     file = models.FileField(verbose_name=u'Файл макета', upload_to=upload_to)
     date = models.DateField(verbose_name=u'Дата размещения макета')

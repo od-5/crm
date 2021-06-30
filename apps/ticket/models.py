@@ -20,7 +20,7 @@ class Ticket(Common):
         (2, u'Отклонена'),
     )
 
-    city = models.ForeignKey(to=City, verbose_name=u'Город', blank=True, null=True)
+    city = models.ForeignKey(on_delete=models.CASCADE, to=City, verbose_name=u'Город', blank=True, null=True)
     name = models.CharField(
         verbose_name=u'Имя',
         max_length=30

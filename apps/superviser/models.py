@@ -31,5 +31,5 @@ class Superviser(models.Model):
         else:
             return None
 
-    superviser = models.OneToOneField(to=User, verbose_name=u'Супервайзер')
+    superviser = models.OneToOneField(on_delete=models.CASCADE, to=User, verbose_name=u'Супервайзер')
     city = models.ManyToManyField(to=City, verbose_name=u'Города', blank=True, null=True)

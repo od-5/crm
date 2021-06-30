@@ -34,7 +34,7 @@ class Setup(models.Model):
                 image.thumbnail(size, Image.ANTIALIAS)
                 image.save(self.logotype.path, "PNG")
 
-    city = models.OneToOneField(to=City, verbose_name=u'Город', null=True, blank=True)
+    city = models.OneToOneField(on_delete=models.CASCADE, to=City, verbose_name=u'Город', null=True, blank=True)
     logotype = models.ImageField(verbose_name=u'Логотип', blank=True, null=True, upload_to=upload_to)
     meta_title = models.TextField(verbose_name=u'Заголовок сайта', blank=True, null=True)
     meta_keys = models.TextField(verbose_name=u'Ключевые слова', blank=True, null=True)
@@ -58,7 +58,7 @@ class BlockEffective(models.Model):
     def __unicode__(self):
         return u'Почему реклама на подъездах настолько эффективна'
 
-    city = models.ForeignKey(to=City, verbose_name=u'Город', null=True, blank=True)
+    city = models.ForeignKey(on_delete=models.CASCADE, to=City, verbose_name=u'Город', null=True, blank=True)
     image = models.ImageField(verbose_name=u'иконка', upload_to=upload_to)
     text = models.TextField(verbose_name=u'Текст')
 
@@ -73,7 +73,7 @@ class BlockExample(models.Model):
     def __unicode__(self):
         return self.name
 
-    city = models.ForeignKey(to=City, verbose_name=u'Город', null=True, blank=True)
+    city = models.ForeignKey(on_delete=models.CASCADE, to=City, verbose_name=u'Город', null=True, blank=True)
     name = models.CharField(verbose_name=u'Название фотографии(адрес)', max_length=256)
     image = models.ImageField(verbose_name=u'Фотография', upload_to=upload_to)
     image_resize = ImageSpecField(
@@ -91,7 +91,7 @@ class BlockReview(models.Model):
     def __unicode__(self):
         return self.name
 
-    city = models.ForeignKey(to=City, verbose_name=u'Город', null=True, blank=True)
+    city = models.ForeignKey(on_delete=models.CASCADE, to=City, verbose_name=u'Город', null=True, blank=True)
     name = models.CharField(verbose_name=u'ФИО', max_length=256)
     image = models.ImageField(verbose_name=u'Фотография', upload_to=upload_to)
     image_resize = ImageSpecField(

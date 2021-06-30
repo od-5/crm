@@ -1,24 +1,22 @@
 # coding=utf-8
 import urllib
-import urlparse
-import urllib2
 import json
 
 def showNode(node, level):
     if type(node) == dict:
         for i in node.keys():
             if type(node[i]) in (dict, list, tuple):
-                print ' '.join([' '*4*level,
+                print(' '.join([' ' * 4 * level,
                                  i,
                                  str(type(node[i])),
-                                ])
+                                ]))
             else:
-                print ' '.join([' '*4*level,
+                print(' '.join([' ' * 4 * level,
                                  i,
                                  str(type(node[i])),
                                  ': ',
                                  '%s' % node[i],
-                                ])
+                                ]))
             showNode(node[i], level + 1)
     if type(node) in (list, tuple):
         for i in node:
@@ -37,19 +35,19 @@ def url_fix(s, charset='utf-8'):
     :param charset: The target charset for the URL if the url was
                     given as unicode string.
     """
-    if isinstance(s, unicode):
+    if isinstance(s, bytes):
         s = s.encode(charset, 'ignore')
-    scheme, netloc, path, qs, anchor = urlparse.urlsplit(s)
-    path = urllib.quote(path, '/%')
-    qs = urllib.quote_plus(qs, ':&=')
-    return urlparse.urlunsplit((scheme, netloc, path, qs, anchor))
+    scheme, netloc, path, qs, anchor = urllib.parse.urlsplit(s)
+    path = urllib.parse.quote(path, '/%')
+    qs = urllib.parse.quote_plus(qs, ':&=')
+    return urllib.parse.urlunsplit((scheme, netloc, path, qs, anchor))
 
 def getJSON(address, key):
     """Get latitude longitude from Yandex.maps service.
     """
-    yandexGeotaggingApi = url_fix("http://geocode-maps.yandex.ru/1.x/"+\
+    yandexGeotaggingApi = url_fix("http://geocode-maps.yandex.ru/1.x/" + \
             "?format=json&geocode=%s&apikey=%s" % (address, key))
-    f = urllib2.urlopen(yandexGeotaggingApi)
+    f = urllib.request.urlopen(yandexGeotaggingApi)
     return f.read()
 
 def listGeoObject(address, key):
@@ -62,7 +60,7 @@ def listGeoObject(address, key):
             yield obj['GeoObject']['metaDataProperty']['GeocoderMetaData']['text']
             #print map(float, obj['GeoObject']['Point']['pos'].split(' '))
     else:
-        print 'Nothing to find'
+        print('Nothing to find')
 
 def getpointGeoObject(address, key):
     response = getJSON(address, key)
@@ -74,7 +72,7 @@ def getpointGeoObject(address, key):
             yield obj['GeoObject']['Point']['pos']
             #print map(float, obj['GeoObject']['Point']['pos'].split(' '))
     else:
-        print 'Nothing to find'
+        print('Nothing to find')
 
 
 def geocode(key, address):
@@ -84,6 +82,6 @@ def geocode(key, address):
 
 if __name__ == '__main__':
     address = "Волгоград Богданова 28"
-    key = "ANpUFEkBAAAAf7jmJwMAHGZHrcKNDsbEqEVjEUtCmufxQMwAAAAAAAAAAAAvVrub"+\
+    key = "ANpUFEkBAAAAf7jmJwMAHGZHrcKNDsbEqEVjEUtCmufxQMwAAAAAAAAAAAAvVrub" + \
           "VT4btztbduoIgTLAeFILaQ=="
-    print geocode(key, address)
+    print(geocode(key, address))

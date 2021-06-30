@@ -24,7 +24,7 @@ class ModeratorInfo(models.Model):
         (1, u'Отсутствуют'),
     )
 
-    moderator = models.OneToOneField(
+    moderator = models.OneToOneField(on_delete=models.CASCADE, 
         to=User,
         verbose_name=u'Модератор'
     )

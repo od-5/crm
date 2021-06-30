@@ -25,9 +25,9 @@ class IncomingClient(models.Model):
         (2, u'Переданный клиент'),
     )
 
-    manager = models.ForeignKey(to=Manager, verbose_name=u'Менеджер')
+    manager = models.ForeignKey(on_delete=models.CASCADE, to=Manager, verbose_name=u'Менеджер')
     name = models.CharField(verbose_name=u'Название', max_length=255)
-    city = models.ForeignKey(to=City, verbose_name=u'Город')
+    city = models.ForeignKey(on_delete=models.CASCADE, to=City, verbose_name=u'Город')
     kind_of_activity = models.CharField(verbose_name=u'Вид деятельности', max_length=255, blank=True, null=True)
     actual_address = models.CharField(verbose_name=u'Фактический адрес', max_length=255, blank=True, null=True)
     site = models.CharField(verbose_name=u'Сайт', blank=True, null=True,  max_length=100)
@@ -35,8 +35,8 @@ class IncomingClient(models.Model):
 
 
 class IncomingClientManager(models.Model):
-    manager = models.ForeignKey(to=Manager, verbose_name=u'Менеджер')
-    incomingclient = models.ForeignKey(to=IncomingClient, verbose_name=u'Клиент')
+    manager = models.ForeignKey(on_delete=models.CASCADE, to=Manager, verbose_name=u'Менеджер')
+    incomingclient = models.ForeignKey(on_delete=models.CASCADE, to=IncomingClient, verbose_name=u'Клиент')
     date = models.DateField(auto_now_add=True, verbose_name=u'Дата назначения')
 
 
@@ -52,7 +52,7 @@ class IncomingClientContact(models.Model):
     def get_absolute_url(self):
         return reverse('incoming:contact-update', args=(self.pk, ))
 
-    incomingclient = models.ForeignKey(to=IncomingClient, verbose_name=u'Клиент')
+    incomingclient = models.ForeignKey(on_delete=models.CASCADE, to=IncomingClient, verbose_name=u'Клиент')
     name = models.CharField(verbose_name=u'ФИО', max_length=255)
     function = models.CharField(verbose_name=u'Должность', max_length=255, blank=True, null=True)
     phone = models.CharField(verbose_name=u'Телефон', max_length=30, blank=True, null=True)
@@ -84,9 +84,9 @@ class IncomingTask(models.Model):
         (1, u'Сделано'),
     )
 
-    manager = models.ForeignKey(to=Manager, verbose_name=u'Менеджер')
-    incomingclient = models.ForeignKey(to=IncomingClient, verbose_name=u'Клиент')
-    incomingclientcontact = models.ForeignKey(to=IncomingClientContact, verbose_name=u'Контактное лицо', null=True, blank=True)
+    manager = models.ForeignKey(on_delete=models.CASCADE, to=Manager, verbose_name=u'Менеджер')
+    incomingclient = models.ForeignKey(on_delete=models.CASCADE, to=IncomingClient, verbose_name=u'Клиент')
+    incomingclientcontact = models.ForeignKey(on_delete=models.CASCADE, to=IncomingClientContact, verbose_name=u'Контактное лицо', null=True, blank=True)
     type = models.PositiveIntegerField(choices=TASK_TYPE_CHOICES, verbose_name=u'Тип задачи')
     date = models.DateField(verbose_name=u'Дата')
     comment = models.TextField(verbose_name=u'Комментарий', blank=True, null=True)

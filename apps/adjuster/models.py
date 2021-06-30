@@ -32,8 +32,8 @@ class AdjusterModelManager(models.Manager):
 
 
 class Adjuster(models.Model):
-    user = models.OneToOneField(to=User, verbose_name=u'Пользователь')
-    city = models.ForeignKey(to=City, verbose_name=u'Город')
+    user = models.OneToOneField(on_delete=models.CASCADE, to=User, verbose_name=u'Пользователь')
+    city = models.ForeignKey(on_delete=models.CASCADE, to=City, verbose_name=u'Город')
     cost_mounting = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Оплата за монтаж, руб',
                                         blank=True, null=True)
     cost_change = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Оплата за замену, руб',
@@ -78,8 +78,8 @@ class SurfacePhoto(models.Model):
     def save(self, *args, **kwargs):
         super(SurfacePhoto, self).save()
 
-    porch = models.ForeignKey(to=Porch, verbose_name=u'Подъезд')
-    adjuster = models.ForeignKey(to=Adjuster, blank=True, null=True, verbose_name=u'Монтажник')
+    porch = models.ForeignKey(on_delete=models.CASCADE, to=Porch, verbose_name=u'Подъезд')
+    adjuster = models.ForeignKey(on_delete=models.CASCADE, to=Adjuster, blank=True, null=True, verbose_name=u'Монтажник')
     date = models.DateTimeField(verbose_name=u'Дата фотографии')
     image = models.ImageField(verbose_name=u'Изображение', upload_to=surfacephoto_upload)
     image_resize = ImageSpecField(
@@ -207,7 +207,7 @@ class AdjusterTask(models.Model):
         (3, u'Демонтаж стенда'),
     )
 
-    adjuster = models.ForeignKey(to=Adjuster, verbose_name=u'Монтажник')
+    adjuster = models.ForeignKey(on_delete=models.CASCADE, to=Adjuster, verbose_name=u'Монтажник')
     type = models.PositiveSmallIntegerField(verbose_name=u'Вид работы', choices=TYPE_CHOICES)
     date = models.DateField(verbose_name=u'Дата задачи')
     comment = models.TextField(verbose_name=u'Комментарий', blank=True, null=True)
@@ -275,8 +275,8 @@ class AdjusterTaskSurface(models.Model):
         return count
         # return self.adjustertasksurfaceporch_set.filter(is_closed=True, complete=True).count()
 
-    adjustertask = models.ForeignKey(to=AdjusterTask, verbose_name=u'Задача')
-    surface = models.ForeignKey(to=Surface, verbose_name=u'Поверхность')
+    adjustertask = models.ForeignKey(on_delete=models.CASCADE, to=AdjusterTask, verbose_name=u'Задача')
+    surface = models.ForeignKey(on_delete=models.CASCADE, to=Surface, verbose_name=u'Поверхность')
     is_closed = models.BooleanField(verbose_name=u'Выполнено', default=False)
 
 
@@ -318,7 +318,7 @@ class AdjusterTaskSurfacePorch(models.Model):
     def no_social_info(self):
         return self.porch.no_social_info
 
-    adjustertasksurface = models.ForeignKey(to=AdjusterTaskSurface, verbose_name=u'Поверхность для задачи')
-    porch = models.ForeignKey(to=Porch, verbose_name=u'Подъезд поверхности для задачи')
+    adjustertasksurface = models.ForeignKey(on_delete=models.CASCADE, to=AdjusterTaskSurface, verbose_name=u'Поверхность для задачи')
+    porch = models.ForeignKey(on_delete=models.CASCADE, to=Porch, verbose_name=u'Подъезд поверхности для задачи')
     is_closed = models.BooleanField(verbose_name=u'Выполнено', default=False)
     complete = models.BooleanField(verbose_name=u'Работы выполнены', default=False)

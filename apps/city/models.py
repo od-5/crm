@@ -5,7 +5,7 @@ from django.core.mail import send_mail
 from django.db.models import Sum
 from django.db.models.signals import post_save, post_delete, pre_save
 from django.dispatch import receiver
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.db import models
 from pytils.translit import slugify
 import core.geotagging as api
@@ -34,10 +34,10 @@ class CityModelManager(models.Manager):
 
 
 class City(models.Model):
-    TIME_CHOICES = tuple((i, i) for i in xrange(-12, 13))
+    TIME_CHOICES = tuple((i, i) for i in range(-12, 13))
 
     name = models.CharField(max_length=100, verbose_name=u'Город')
-    moderator = models.ForeignKey(to=User, limit_choices_to={'type': 2}, blank=True, null=True,
+    moderator = models.ForeignKey(on_delete=models.CASCADE, to=User, limit_choices_to={'type': 2}, blank=True, null=True,
                                   verbose_name=u'Модератор')
     contract_number = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'Номер договора')
     contract_date = models.DateField(blank=True, null=True, verbose_name=u'Договор от')
@@ -105,7 +105,7 @@ def send_notify_to_admin(sender, created, **kwargs):
 
 
 class Area(models.Model):
-    city = models.ForeignKey(to=City, verbose_name=u'Город')
+    city = models.ForeignKey(on_delete=models.CASCADE, to=City, verbose_name=u'Город')
     name = models.CharField(max_length=100, verbose_name=u'Название')
 
     class Meta:
@@ -121,8 +121,8 @@ class Area(models.Model):
 
 
 class Street(models.Model):
-    city = models.ForeignKey(to=City, verbose_name=u'Город')
-    area = models.ForeignKey(to=Area, verbose_name=u'Район')
+    city = models.ForeignKey(on_delete=models.CASCADE, to=City, verbose_name=u'Город')
+    area = models.ForeignKey(on_delete=models.CASCADE, to=Area, verbose_name=u'Район')
     name = models.CharField(max_length=256, verbose_name=u'Название улицы')
 
     class Meta:
@@ -152,7 +152,7 @@ class ManagementCompany(models.Model):
     def get_absolute_url(self):
         return reverse('city:management-company-update', args=(self.pk,))
 
-    city = models.ForeignKey(to=City, verbose_name=u'Город')
+    city = models.ForeignKey(on_delete=models.CASCADE, to=City, verbose_name=u'Город')
     name = models.CharField(verbose_name=u'Название', max_length=255)
     leader_function = models.CharField(verbose_name=u'Адрес и комментарии', max_length=455, blank=True, null=True)
     leader_name = models.CharField(verbose_name=u'ФИО руководители', max_length=255, blank=True, null=True)
@@ -227,10 +227,10 @@ class Surface(models.Model):
             pass
         super(Surface, self).save()
 
-    city = models.ForeignKey(to=City, verbose_name=u'Город')
-    street = models.ForeignKey(to=Street, verbose_name=u'Улица')
+    city = models.ForeignKey(on_delete=models.CASCADE, to=City, verbose_name=u'Город')
+    street = models.ForeignKey(on_delete=models.CASCADE, to=Street, verbose_name=u'Улица')
     house_number = models.CharField(max_length=50, verbose_name=u'Номер дома')
-    management = models.ForeignKey(to=ManagementCompany, verbose_name=u'Управляющая контора', blank=True, null=True)
+    management = models.ForeignKey(on_delete=models.CASCADE, to=ManagementCompany, verbose_name=u'Управляющая контора', blank=True, null=True)
     coord_x = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=u'Ширина')
     coord_y = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=u'Долгота')
     free = models.BooleanField(default=True)
@@ -291,7 +291,7 @@ class Porch(models.Model):
         else:
             return False
 
-    surface = models.ForeignKey(to=Surface, verbose_name=u'Рекламная поверхность')
+    surface = models.ForeignKey(on_delete=models.CASCADE, to=Surface, verbose_name=u'Рекламная поверхность')
     number = models.PositiveSmallIntegerField(verbose_name=u'Номер подъезда')
     broken_shield = models.BooleanField(verbose_name=u'Щит сломан', default=False)
     broken_gib = models.BooleanField(verbose_name=u'Сломана прижимная планка', default=False)
