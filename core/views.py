@@ -1,5 +1,5 @@
 # coding=utf-8
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from apps.landing.models import Setup

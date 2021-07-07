@@ -12,3 +12,7 @@ core/migrations/
 /apps/adjuster/migrations
 /apps/client/migrations
 /cms/db.sqlite3
+.settings/
+.project
+.pydevproject
+.python-version

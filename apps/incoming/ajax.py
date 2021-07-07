@@ -1,7 +1,7 @@
 # coding=utf-8
 from annoying.decorators import ajax_request
 from datetime import datetime
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponseRedirect, JsonResponse
 from apps.client.models import Client
 from core.models import User

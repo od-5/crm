@@ -2,7 +2,7 @@
 from annoying.decorators import ajax_request
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.views.generic import UpdateView
@@ -18,7 +18,7 @@ __author__ = 'alexy'
 def sign_in(request, usertype=None):
     context = {}
     error = None
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         return HttpResponseRedirect(reverse('cabinet:cabinet'))
     else:
         if request.method == "POST":

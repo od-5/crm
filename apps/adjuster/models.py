@@ -1,7 +1,7 @@
 # coding=utf-8
 from PIL import Image
 from django.core.files import File
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db import models
 from django.conf import settings
 from imagekit.models import ImageSpecField
@@ -32,8 +32,8 @@ class AdjusterModelManager(models.Manager):
 
 
 class Adjuster(models.Model):
-    user = models.OneToOneField(to=User, verbose_name=u'Пользователь')
-    city = models.ForeignKey(to=City, verbose_name=u'Город')
+    user = models.OneToOneField(on_delete=models.CASCADE, to=User, verbose_name=u'Пользователь')
+    city = models.ForeignKey(on_delete=models.CASCADE, to=City, verbose_name=u'Город')
     cost_mounting = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Оплата за монтаж, руб',
                                         blank=True, null=True)
     cost_change = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Оплата за замену, руб',
@@ -55,8 +55,11 @@ class Adjuster(models.Model):
     def __unicode__(self):
         return self.user.get_full_name()
 
+    def __str__(self):
+        return self.__unicode__()
+
     def get_absolute_url(self):
-        return reverse('adjuster:change', args=(self.pk, ))
+        return reverse('adjuster:change', args=(self.pk,))
 
 
 class SurfacePhoto(models.Model):
@@ -69,6 +72,9 @@ class SurfacePhoto(models.Model):
     def __unicode__(self):
         return u'%s д.%s п.%s' % (self.porch.surface.street.name, self.porch.surface.house_number, self.porch.number)
 
+    def __str__(self):
+        return self.__unicode__()
+
     def address(self):
         return self.porch.surface
 
@@ -78,8 +84,8 @@ class SurfacePhoto(models.Model):
     def save(self, *args, **kwargs):
         super(SurfacePhoto, self).save()
 
-    porch = models.ForeignKey(to=Porch, verbose_name=u'Подъезд')
-    adjuster = models.ForeignKey(to=Adjuster, blank=True, null=True, verbose_name=u'Монтажник')
+    porch = models.ForeignKey(on_delete=models.CASCADE, to=Porch, verbose_name=u'Подъезд')
+    adjuster = models.ForeignKey(on_delete=models.CASCADE, to=Adjuster, blank=True, null=True, verbose_name=u'Монтажник')
     date = models.DateTimeField(verbose_name=u'Дата фотографии')
     image = models.ImageField(verbose_name=u'Изображение', upload_to=surfacephoto_upload)
     image_resize = ImageSpecField(
@@ -110,11 +116,14 @@ class AdjusterTask(models.Model):
     def __unicode__(self):
         return u'Задача ID №:%d' % self.id
 
+    def __str__(self):
+        return self.__unicode__()
+
     def get_api_url(self):
-        return reverse('api:task_detail', args=(self.id, ))
+        return reverse('api:task_detail', args=(self.id,))
 
     def get_absolute_url(self):
-        return reverse('adjustertask:update', args=(self.id, ))
+        return reverse('adjustertask:update', args=(self.id,))
 
     def get_city_name(self):
         return self.adjuster.city.name
@@ -207,7 +216,7 @@ class AdjusterTask(models.Model):
         (3, u'Демонтаж стенда'),
     )
 
-    adjuster = models.ForeignKey(to=Adjuster, verbose_name=u'Монтажник')
+    adjuster = models.ForeignKey(on_delete=models.CASCADE, to=Adjuster, verbose_name=u'Монтажник')
     type = models.PositiveSmallIntegerField(verbose_name=u'Вид работы', choices=TYPE_CHOICES)
     date = models.DateField(verbose_name=u'Дата задачи')
     comment = models.TextField(verbose_name=u'Комментарий', blank=True, null=True)
@@ -241,6 +250,9 @@ class AdjusterTaskSurface(models.Model):
     def __unicode__(self):
         return u'поверхность %s' % self.surface
 
+    def __str__(self):
+        return self.__unicode__()
+
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
         super(AdjusterTaskSurface, self).save()
@@ -250,7 +262,7 @@ class AdjusterTaskSurface(models.Model):
             at.save()
 
     def get_api_url(self):
-        return reverse('api:tasksurface_detail', args=(self.id, ))
+        return reverse('api:tasksurface_detail', args=(self.id,))
 
     def get_coord(self):
         return [self.surface.coord_y, self.surface.coord_x]
@@ -275,8 +287,8 @@ class AdjusterTaskSurface(models.Model):
         return count
         # return self.adjustertasksurfaceporch_set.filter(is_closed=True, complete=True).count()
 
-    adjustertask = models.ForeignKey(to=AdjusterTask, verbose_name=u'Задача')
-    surface = models.ForeignKey(to=Surface, verbose_name=u'Поверхность')
+    adjustertask = models.ForeignKey(on_delete=models.CASCADE, to=AdjusterTask, verbose_name=u'Задача')
+    surface = models.ForeignKey(on_delete=models.CASCADE, to=Surface, verbose_name=u'Поверхность')
     is_closed = models.BooleanField(verbose_name=u'Выполнено', default=False)
 
 
@@ -288,6 +300,9 @@ class AdjusterTaskSurfacePorch(models.Model):
 
     def __unicode__(self):
         return u'№ %s' % self.porch.number
+
+    def __str__(self):
+        return self.__unicode__()
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
@@ -318,7 +333,7 @@ class AdjusterTaskSurfacePorch(models.Model):
     def no_social_info(self):
         return self.porch.no_social_info
 
-    adjustertasksurface = models.ForeignKey(to=AdjusterTaskSurface, verbose_name=u'Поверхность для задачи')
-    porch = models.ForeignKey(to=Porch, verbose_name=u'Подъезд поверхности для задачи')
+    adjustertasksurface = models.ForeignKey(on_delete=models.CASCADE, to=AdjusterTaskSurface, verbose_name=u'Поверхность для задачи')
+    porch = models.ForeignKey(on_delete=models.CASCADE, to=Porch, verbose_name=u'Подъезд поверхности для задачи')
     is_closed = models.BooleanField(verbose_name=u'Выполнено', default=False)
     complete = models.BooleanField(verbose_name=u'Работы выполнены', default=False)

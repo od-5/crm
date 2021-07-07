@@ -15,13 +15,16 @@ class Setup(models.Model):
         verbose_name = u'Настройки сайта'
         verbose_name_plural = u'Настройки сайта'
         app_label = 'landing'
-        ordering = ('id', )
+        ordering = ('id',)
 
     def __unicode__(self):
         if self.city:
             return u'Настройки сайта для города %s' % self.city.name
         else:
             return u'Настройки основного сайта'
+
+    def __str__(self):
+        return self.__unicode__()
 
     def save(self, *args, **kwargs):
         super(Setup, self).save()
@@ -34,7 +37,7 @@ class Setup(models.Model):
                 image.thumbnail(size, Image.ANTIALIAS)
                 image.save(self.logotype.path, "PNG")
 
-    city = models.OneToOneField(to=City, verbose_name=u'Город', null=True, blank=True)
+    city = models.OneToOneField(on_delete=models.CASCADE, to=City, verbose_name=u'Город', null=True, blank=True)
     logotype = models.ImageField(verbose_name=u'Логотип', blank=True, null=True, upload_to=upload_to)
     meta_title = models.TextField(verbose_name=u'Заголовок сайта', blank=True, null=True)
     meta_keys = models.TextField(verbose_name=u'Ключевые слова', blank=True, null=True)
@@ -53,12 +56,15 @@ class BlockEffective(models.Model):
         verbose_name = u'Почему реклама настолько эффективна'
         verbose_name_plural = u'Почему реклама настолько эффективна'
         app_label = 'landing'
-        ordering = ('city', )
+        ordering = ('city',)
 
     def __unicode__(self):
         return u'Почему реклама на подъездах настолько эффективна'
 
-    city = models.ForeignKey(to=City, verbose_name=u'Город', null=True, blank=True)
+    def __str__(self):
+        return self.__unicode__()
+
+    city = models.ForeignKey(on_delete=models.CASCADE, to=City, verbose_name=u'Город', null=True, blank=True)
     image = models.ImageField(verbose_name=u'иконка', upload_to=upload_to)
     text = models.TextField(verbose_name=u'Текст')
 
@@ -68,12 +74,15 @@ class BlockExample(models.Model):
         verbose_name = u'Прмеры размещений'
         verbose_name_plural = u'Прмеры размещений'
         app_label = 'landing'
-        ordering = ('city', )
+        ordering = ('city',)
 
     def __unicode__(self):
         return self.name
 
-    city = models.ForeignKey(to=City, verbose_name=u'Город', null=True, blank=True)
+    def __str__(self):
+        return self.__unicode__()
+
+    city = models.ForeignKey(on_delete=models.CASCADE, to=City, verbose_name=u'Город', null=True, blank=True)
     name = models.CharField(verbose_name=u'Название фотографии(адрес)', max_length=256)
     image = models.ImageField(verbose_name=u'Фотография', upload_to=upload_to)
     image_resize = ImageSpecField(
@@ -86,12 +95,15 @@ class BlockReview(models.Model):
         verbose_name = u'Отзыв'
         verbose_name_plural = u'Отзывы'
         app_label = 'landing'
-        ordering = ('city', )
+        ordering = ('city',)
 
     def __unicode__(self):
         return self.name
 
-    city = models.ForeignKey(to=City, verbose_name=u'Город', null=True, blank=True)
+    def __str__(self):
+        return self.__unicode__()
+
+    city = models.ForeignKey(on_delete=models.CASCADE, to=City, verbose_name=u'Город', null=True, blank=True)
     name = models.CharField(verbose_name=u'ФИО', max_length=256)
     image = models.ImageField(verbose_name=u'Фотография', upload_to=upload_to)
     image_resize = ImageSpecField(

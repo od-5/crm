@@ -1,5 +1,5 @@
 # coding=utf-8
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponseRedirect
 import pyexcel
 from apps.city.models import City, Area, Street, Surface, Porch

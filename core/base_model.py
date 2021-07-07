@@ -31,5 +31,5 @@ class Comment(Common):
     class Meta:
         abstract = True
 
-    user = models.ForeignKey(to=User, verbose_name=u'Пользователь')
+    user = models.ForeignKey(on_delete=models.CASCADE, to=User, verbose_name=u'Пользователь')
     text = models.TextField(verbose_name=u'Текст комментария')

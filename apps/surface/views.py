@@ -11,7 +11,7 @@ import xlwt
 from os import path as op
 import datetime
 from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView

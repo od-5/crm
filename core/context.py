@@ -1,4 +1,6 @@
 import datetime
+from django.conf import settings
+from django.utils.deprecation import MiddlewareMixin
 from apps.landing.models import Setup
 
 __author__ = 'alexy'
@@ -23,10 +25,11 @@ def site_setup(request):
     return {
         'CURRENT_YEAR': datetime.datetime.now(),
         'MAIN_PAGE': main_page,
+        'STATIC_URL': settings.STATIC_URL,
     }
 
 
-class SubdomainMiddleware:
+class SubdomainMiddleware(MiddlewareMixin):
     def process_request(self, request):
         domain_parts = request.get_host().split('.')
         if (len(domain_parts) > 2):
