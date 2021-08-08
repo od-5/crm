@@ -27,7 +27,7 @@ def adjustertask_list(request):
     )
     initial_args = {}
     user = request.user
-    if not user.is_anonymous():
+    if user.is_authenticated:
         if user.type == 1:
             qs = AdjusterTask.objects.select_related().filter(is_closed=False).prefetch_related('adjustertasksurface_set')
         elif user.type == 6:

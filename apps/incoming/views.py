@@ -429,14 +429,19 @@ def incomingtask_list(request):
         except:
             pass
     request.session['page_count'] = page_count
-    paginator = Paginator(qs, page_count)
-    page = request.GET.get('page')
-    try:
-        object_list = paginator.page(page)
-    except (PageNotAnInteger, ZeroDivisionError):
-        object_list = paginator.page(1)
-    except EmptyPage:
-        object_list = paginator.page(paginator.num_pages)
+
+    if page_count > 0:
+        paginator = Paginator(qs, page_count)
+        page = request.GET.get('page', 1)
+        try:
+            object_list = paginator.page(page)
+        except (PageNotAnInteger, ZeroDivisionError):
+            object_list = paginator.page(1)
+        except EmptyPage:
+            object_list = paginator.page(paginator.num_pages)
+    else:
+        object_list = qs
+
     if request.META['QUERY_STRING']:
         request.session['incomingtask_filtered_list'] = '%s?%s' % (request.path, request.META['QUERY_STRING'])
     else:

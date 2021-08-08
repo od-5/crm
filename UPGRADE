@@ -1,0 +1,2 @@
+Сделать миграцию со следующей командой:
+alter table core_user modify last_login datetime null;

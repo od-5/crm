@@ -412,7 +412,7 @@ def client_order_export(request, pk):
 @login_required
 def client_journal(request, pk):
     context = {}
-    client = Client.objects.select_related('clientorder').get(pk=int(pk))
+    client = Client.objects.get(pk=int(pk)) #select_related('clientorder').get(pk=int(pk))
     # journal_list_qs = client.clientjournal_set.prefetch_related('clientorder').all()
     journal_list_qs = client.clientjournal_set.prefetch_related('clientorder').annotate(
         num_stand=Count('clientorder__clientordersurface__surface__porch', distinct=True)

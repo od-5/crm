@@ -13,7 +13,7 @@ class CityListMixin(ContextMixin):
     def get_context_data(self, **kwargs):
         context = super(CityListMixin, self).get_context_data(**kwargs)
         user = self.request.user
-        if user.is_authenticated():
+        if user.is_authenticated:
             context.update({
                 'city_list': City.objects.get_qs(user)
             })
