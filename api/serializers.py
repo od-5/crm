@@ -10,14 +10,14 @@ __author__ = 'alexy'
 class SurfacePhotoSerializer(serializers.ModelSerializer):
     class Meta:
         model = SurfacePhoto
-        field = {
+        fields = (
             'id',
             'porch',
             'adjuster',
             'date',
             'image',
             'is_broken'
-        }
+        )
 
 
 class UserSerializer(serializers.ModelSerializer):
