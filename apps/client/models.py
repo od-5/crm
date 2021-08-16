@@ -52,7 +52,7 @@ class Client(models.Model):
         return self.legal_name
 
     def __str__(self):
-        return self.__unicode__()
+        return self.legal_name or self.actual_name or self.user.email
 
 
 class ClientOrder(models.Model):
