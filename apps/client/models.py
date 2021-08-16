@@ -7,7 +7,7 @@ from django.db.models import Count
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 from django.utils.timezone import utc
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db import models
 from apps.city.models import City, Surface, Porch
 from core.files import upload_to
@@ -18,9 +18,9 @@ __author__ = 'alexy'
 
 
 class Client(models.Model):
-    user = models.OneToOneField(to=User, verbose_name=u'Пользователь')
-    city = models.ForeignKey(to=City, verbose_name=u'Город')
-    manager = models.ForeignKey(to=Manager, verbose_name=u'Менеджер', blank=True, null=True)
+    user = models.OneToOneField(on_delete=models.CASCADE, to=User, verbose_name=u'Пользователь')
+    city = models.ForeignKey(on_delete=models.CASCADE, to=City, verbose_name=u'Город')
+    manager = models.ForeignKey(on_delete=models.CASCADE, to=Manager, verbose_name=u'Менеджер', blank=True, null=True)
     legal_name = models.CharField(max_length=256, blank=True, null=True, verbose_name=u'Юридическое название')
     actual_name = models.CharField(max_length=256, blank=True, null=True, verbose_name=u'Фактическое название')
     inn = models.CharField(max_length=50, blank=True, null=True, verbose_name=u'ИНН')
@@ -51,9 +51,12 @@ class Client(models.Model):
     def __unicode__(self):
         return self.legal_name
 
+    def __str__(self):
+        return self.legal_name or self.actual_name or self.user.email
+
 
 class ClientOrder(models.Model):
-    client = models.ForeignKey(to=Client, verbose_name=u'Клиент')
+    client = models.ForeignKey(on_delete=models.CASCADE, to=Client, verbose_name=u'Клиент')
     date_start = models.DateField(verbose_name=u'Дата начала размещения')
     date_end = models.DateField(verbose_name=u'Дата окончания размещения')
     is_closed = models.BooleanField(verbose_name=u'Заказ закрыт', default=False)
@@ -72,6 +75,9 @@ class ClientOrder(models.Model):
             return u'Заказ %s - %s ' % (self.date_start, self.date_end)
         else:
             return u'Заказ  %s - <дата окончания не указана> ' % self.date_start
+
+    def __str__(self):
+        return self.__unicode__()
 
     def delete(self, *args, **kwargs):
         """
@@ -97,8 +103,8 @@ class ClientOrder(models.Model):
 
 
 class ClientOrderSurface(models.Model):
-    clientorder = models.ForeignKey(to=ClientOrder, verbose_name=u'Заказ')
-    surface = models.ForeignKey(to=Surface, verbose_name=u'Рекламная поверхность')
+    clientorder = models.ForeignKey(on_delete=models.CASCADE, to=ClientOrder, verbose_name=u'Заказ')
+    surface = models.ForeignKey(on_delete=models.CASCADE, to=Surface, verbose_name=u'Рекламная поверхность')
 
     class Meta:
         verbose_name = u'Пункт заказа'
@@ -107,6 +113,9 @@ class ClientOrderSurface(models.Model):
 
     def __unicode__(self):
         return u'%s %s ' % (self.surface.street.name, self.surface.house_number)
+
+    def __str__(self):
+        return self.__unicode__()
 
     def porch_count(self):
         if self.surface.porch_set.select_related().all():
@@ -142,7 +151,7 @@ class ClientJournalModelManager(models.Manager):
 
 
 class ClientJournal(models.Model):
-    client = models.ForeignKey(to=Client, verbose_name=u'клиент')
+    client = models.ForeignKey(on_delete=models.CASCADE, to=Client, verbose_name=u'клиент')
     clientorder = models.ManyToManyField(to=ClientOrder, verbose_name=u'заказ клиента')
     cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Цена за стенд, руб')
     add_cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Наценка, %', blank=True, null=True)
@@ -160,10 +169,13 @@ class ClientJournal(models.Model):
         verbose_name = u'Покупка'
         verbose_name_plural = u'Покупки'
         app_label = 'client'
-        ordering = ('-id', )
+        ordering = ('-id',)
 
     def __unicode__(self):
         return u'Покупка на дату %s' % self.created
+
+    def __str__(self):
+        return self.__unicode__()
 
     def current_payment(self):
         """
@@ -196,7 +208,7 @@ class ClientJournal(models.Model):
             discount = self.discount
         else:
             discount = 0
-        sum = ((float(cost)*(1+float(add_cost)*0.01))*(1-float(discount)*0.01)) * self.stand_count()
+        sum = ((float(cost) * (1 + float(add_cost) * 0.01)) * (1 - float(discount) * 0.01)) * self.stand_count()
         return round(sum, 2)
 
     def price_without_stands(self):
@@ -212,7 +224,7 @@ class ClientJournal(models.Model):
             discount = self.discount
         else:
             discount = 0
-        sum = ((cost*(1+add_cost*0.01))*(1-discount*0.01))
+        sum = ((cost * (1 + add_cost * 0.01)) * (1 - discount * 0.01))
         return round(sum, 2)
 
     # def save(self, force_insert=False, force_update=False, using=None,
@@ -242,8 +254,8 @@ class ClientJournalPaymentModelManager(models.Manager):
 
 
 class ClientJournalPayment(models.Model):
-    client = models.ForeignKey(to=Client, verbose_name=u'Клиент')
-    clientjournal = models.ForeignKey(to=ClientJournal, verbose_name=u'Покупка')
+    client = models.ForeignKey(on_delete=models.CASCADE, to=Client, verbose_name=u'Клиент')
+    clientjournal = models.ForeignKey(on_delete=models.CASCADE, to=ClientJournal, verbose_name=u'Покупка')
     sum = models.DecimalField(max_digits=11, decimal_places=2, verbose_name=u'Сумма')
     created = models.DateField(auto_now_add=True, verbose_name=u'Дата создания')
 
@@ -257,6 +269,9 @@ class ClientJournalPayment(models.Model):
 
     def __unicode__(self):
         return u'Поступление на сумму %s руб. Дата: %s' % (self.sum, self.created)
+
+    def __str__(self):
+        return self.__unicode__()
 
     def save(self, *args, **kwargs):
         super(ClientJournalPayment, self).save()
@@ -296,7 +311,7 @@ def decrement_payment_for_clientjournal(sender, **kwargs):
 
 
 class ClientMaket(models.Model):
-    client = models.ForeignKey(to=Client, verbose_name=u'Клиент')
+    client = models.ForeignKey(on_delete=models.CASCADE, to=Client, verbose_name=u'Клиент')
     name = models.CharField(max_length=256, verbose_name=u'Название')
     file = models.FileField(verbose_name=u'Файл макета', upload_to=upload_to)
     date = models.DateField(verbose_name=u'Дата размещения макета')
@@ -309,3 +324,6 @@ class ClientMaket(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def __str__(self):
+        return self.__unicode__()

@@ -1,0 +1,18 @@
+[Unit]
+Description=Nadomofone.ru Gunicorn Daemon
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/home/www/nadomofone.ru/src
+ExecStart=/home/gruy/.pyenv/versions/3.9.6/envs/nadomofone.ru/bin/gunicorn \
+          --pythonpath /home/gruy/.pyenv/versions/3.9.6 \
+          --access-logfile /home/www/nadomofone.ru/logs/access.log \
+          --error-logfile /home/www/nadomofone.ru/logs/error.log \
+          --workers 2 \
+          --bind 127.0.0.1:8000 \
+          cms.wsgi:application
+
+[Install]
+WantedBy=multi-user.target

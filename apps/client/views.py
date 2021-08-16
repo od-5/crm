@@ -2,15 +2,15 @@
 import datetime
 import os
 import zipfile
-import StringIO
 import xlwt
 from datetime import date
+from io import StringIO
 
 from django.conf import settings
 from django.core.mail import send_mail
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db.models import Count, Sum
 from django.http import HttpResponseRedirect, HttpResponse
 from django.http.response import Http404
@@ -412,7 +412,7 @@ def client_order_export(request, pk):
 @login_required
 def client_journal(request, pk):
     context = {}
-    client = Client.objects.select_related('clientorder').get(pk=int(pk))
+    client = Client.objects.get(pk=int(pk)) #select_related('clientorder').get(pk=int(pk))
     # journal_list_qs = client.clientjournal_set.prefetch_related('clientorder').all()
     journal_list_qs = client.clientjournal_set.prefetch_related('clientorder').annotate(
         num_stand=Count('clientorder__clientordersurface__surface__porch', distinct=True)

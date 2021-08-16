@@ -70,3 +70,7 @@ LOGGING = {
 }
 
 DOCX_TEMPLATE_DIR = os.path.join(BASE_DIR, '../templates/docx/')
+
+IMAGEKIT_CACHE_BACKEND = 'default'
+IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY = 'imagekit.cachefiles.strategies.Optimistic'
+IMAGEKIT_DEFAULT_CACHEFILE_BACKEND = 'imagekit.cachefiles.backends.Simple'

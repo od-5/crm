@@ -11,7 +11,7 @@ import xlwt
 from os import path as op
 import datetime
 from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
@@ -308,7 +308,7 @@ class PorchView(CreateView):
         return context
 
     def get_success_url(self):
-        return reverse_lazy('surface:porch', args=(self.object.surface.id, ))
+        return reverse_lazy('surface:porch', args=(self.object.surface.id,))
 
 
 @login_required
@@ -319,9 +319,9 @@ def surface_porch_update(request, pk):
         form = PorchAddForm(request.POST, instance=porch)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('surface:porch', args=(porch.surface.id, )))
+            return HttpResponseRedirect(reverse('surface:porch', args=(porch.surface.id,)))
         else:
-            return HttpResponseRedirect(reverse('surface:porch', args=(porch.surface.id, )))
+            return HttpResponseRedirect(reverse('surface:porch', args=(porch.surface.id,)))
     else:
         form = PorchAddForm(instance=porch)
     photo_form = SurfacePhotoForm(initial={
@@ -360,7 +360,7 @@ def surface_photo_add(request):
             instance = form.save(commit=False)
             instance.date = time
             instance.save()
-            return HttpResponseRedirect(reverse('surface:porch-update', args=(instance.porch.id, )))
+            return HttpResponseRedirect(reverse('surface:porch-update', args=(instance.porch.id,)))
         else:
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
@@ -375,7 +375,7 @@ def surface_photo_update(request, pk):
         form = SurfacePhotoForm(request.POST, request.FILES, instance=photo)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('surface:porch-update', args=(photo.porch.id, )))
+            return HttpResponseRedirect(reverse('surface:porch-update', args=(photo.porch.id,)))
     else:
         form = SurfacePhotoForm(instance=photo, initial={
             'file': photo.image.file
@@ -726,7 +726,7 @@ def surface_export(request):
         i += 1
         if surface.porch_count():
             stands_count += surface.porch_count()
-    ws.write(i+1, 0, u'Итого стендов: %s' % stands_count,  style1)
+    ws.write(i + 1, 0, u'Итого стендов: %s' % stands_count, style1)
     ws.col(0).width = 8000
     ws.col(1).width = 8000
     ws.col(2).width = 10000

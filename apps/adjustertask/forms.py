@@ -197,23 +197,28 @@ class AdjusterTaskFilterForm(forms.Form):
     city = forms.ModelChoiceField(
         queryset=City.objects.all(),
         label=u'Город',
+        required=False,
         widget=forms.Select(attrs={'class': 'form-control input-sm'})
     )
     adjuster = forms.ModelChoiceField(
         queryset=Adjuster.objects.all(),
         label=u'Монтажник',
+        required=False,
         widget=forms.Select(attrs={'class': 'form-control input-sm'})
     )
     type = forms.ChoiceField(
         choices=TYPE_CHOICES,
         label=u'Тип работы',
+        required=False,
         widget=forms.Select(attrs={'class': 'form-control input-sm'})
     )
     date_s = forms.DateField(
         label=u'Дата от',
+        required=False,
         widget=forms.DateInput(attrs={'class': 'form-control input-sm', 'autocomplete': 'off'})
     )
     date_e = forms.DateField(
         label=u'до',
+        required=False,
         widget=forms.DateInput(attrs={'class': 'form-control input-sm', 'autocomplete': 'off'})
     )

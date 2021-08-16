@@ -271,9 +271,9 @@ def porch_update(request, pk):
         porch.no_social_info = no_social_info
         porch.save()
         try:
-            logger.error(u'User=%s, porch update request. request=%s' %  (request.user, request.query_params))
+            logger.error(u'User=%s, porch update request. request=%s' % (request.user, request.query_params))
         except:
-            logger.error(u'User=%s, porch update request. NOT QUERY_PARAMS' %  request.user)
+            logger.error(u'User=%s, porch update request. NOT QUERY_PARAMS' % request.user)
         serializer = PorchSerializer(porch)
         return Response(serializer.data)
         # return Response(status=status.HTTP_200_OK)
@@ -284,16 +284,22 @@ def porch_update(request, pk):
 @permission_classes((IsAuthenticated,))
 def photo_add(request):
     if request.method == 'POST':
+        logger.error(u'request for upload photo user %s' % request.user)
+        logger.error(u'request.data %s' % request.data)
+
         try:
-            logger.error(u'request for upload photo user %s' % request.user)
-            logger.error(u'request.data %s' % request.data)
             data = request.data
+            # устанавливаем имя файла, иначе получаем ошибку декодирования
+            # (похоже, что в него попадают двоичные данные самого файла)
+            data['image'].name = 'image.jpg'
+
             if len(data['date'].split(' ')) == 1:
                 date = data['date']
                 porch = Porch.objects.get(id=data['porch'])
                 tz = porch.surface.city.timezone
                 time = (datetime.datetime.now() + datetime.timedelta(hours=tz)).strftime('%H:%M')
                 data['date'] = u'%s %s' % (date, time)
+
             serializer = SurfacePhotoSerializer(data=data)
             if serializer.is_valid():
                 serializer.save()
@@ -304,8 +310,10 @@ def photo_add(request):
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
                 logger.error(u'c user %s - RESET CONTENT. request=%s' % (request.user, request.data))
+                logger.error(f'Serializer errors: {serializer.errors}')
                 return Response(serializer.data, status=status.HTTP_205_RESET_CONTENT)
-        except:
+        except Exception as e:
+            logger.error(f'Exception: {e}')
             return Response(status=status.HTTP_400_BAD_REQUEST)
     else:
         return Response(status=status.HTTP_400_BAD_REQUEST)

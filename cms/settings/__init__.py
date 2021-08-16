@@ -10,5 +10,5 @@ try:
 except NameError:
     try:
         from ..local_settings import * # noqa
-    except ImportError:
+    except ImportError as e:
         pass

@@ -4,9 +4,8 @@ from random import randint
 import uuid
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
-from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -119,14 +118,14 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_absolute_url(self):
         if self.type == 1:
-            return reverse('administrator:update', args=(self.pk, ))
+            return reverse('administrator:update', args=(self.pk,))
         if self.type == 2:
-            return reverse('moderator:change', args=(self.pk, ))
+            return reverse('moderator:change', args=(self.pk,))
         else:
             return reverse('cabinet:cabinet')
 
     def get_change_url(self):
-        return reverse('cabinet:user-change', args=(self.pk, ))
+        return reverse('cabinet:user-change', args=(self.pk,))
 
     def get_full_name(self):
         if self.last_name:
@@ -138,6 +137,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __unicode__(self):
         return self.email
+
+    def __str__(self):
+        return self.__unicode__()
 
     def has_perm(self, perm, obj=None):
         return True

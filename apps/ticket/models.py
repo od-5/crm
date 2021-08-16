@@ -20,7 +20,7 @@ class Ticket(Common):
         (2, u'Отклонена'),
     )
 
-    city = models.ForeignKey(to=City, verbose_name=u'Город', blank=True, null=True)
+    city = models.ForeignKey(on_delete=models.CASCADE, to=City, verbose_name=u'Город', blank=True, null=True)
     name = models.CharField(
         verbose_name=u'Имя',
         max_length=30
@@ -60,6 +60,9 @@ class Ticket(Common):
 
     def __unicode__(self):
         return u'Заявка на имя: %s, телефон: %s' % (self.name, self.phone)
+
+    def __str__(self):
+        return self.__unicode__()
 
     def performed_at(self):
         pass

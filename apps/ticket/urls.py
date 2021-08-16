@@ -1,13 +1,13 @@
 # coding=utf-8
-from django.conf.urls import patterns, url
+from django.urls import include, path, re_path
 from .views import TicketListView, TicketUpdateView, TicketView
 
 __author__ = 'alexy'
 
+app_name = 'ticket'
 
-urlpatterns = patterns(
-    '',
-    url(r'^$', TicketView.as_view(), name='send'),
-    url(r'^list/$', TicketListView.as_view(), name='list'),
-    url(r'^(?P<pk>\d+)/$', TicketUpdateView.as_view(), name='detail'),
-)
+urlpatterns = [
+    re_path(r'^$', TicketView.as_view(), name='send'),
+    re_path(r'^list/$', TicketListView.as_view(), name='list'),
+    re_path(r'^(?P<pk>\d+)/$', TicketUpdateView.as_view(), name='detail'),
+]

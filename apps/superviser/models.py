@@ -15,6 +15,9 @@ class Superviser(models.Model):
     def __unicode__(self):
         return self.superviser.get_full_name()
 
+    def __str__(self):
+        return self.__unicode__()
+
     def city_id_list(self):
         try:
             return [int(city.id) for city in self.city.all()]
@@ -31,5 +34,5 @@ class Superviser(models.Model):
         else:
             return None
 
-    superviser = models.OneToOneField(to=User, verbose_name=u'Супервайзер')
+    superviser = models.OneToOneField(on_delete=models.CASCADE, to=User, verbose_name=u'Супервайзер')
     city = models.ManyToManyField(to=City, verbose_name=u'Города', blank=True, null=True)
