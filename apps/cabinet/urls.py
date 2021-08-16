@@ -1,6 +1,7 @@
 # coding=utf-8
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
+from django.contrib.auth.views import LogoutView
 from django.views.generic import ListView, UpdateView, CreateView
 from django.contrib.admin.views.decorators import staff_member_required
 from django.urls import include, path, re_path
@@ -34,5 +35,5 @@ urlpatterns = [
     re_path(r'^profile/$', login_required(UserUpdateView.as_view()), name='profile'),
     re_path(r'^password_change/$', password_change, name='password_change'),
     re_path(r'^login/$', cabinet_login, name='login'),
-    re_path(r'^logout/$', logout, name='logout'),
+    re_path(r'^logout/$', LogoutView.as_view(), name='logout'),
 ]
