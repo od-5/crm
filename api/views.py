@@ -310,6 +310,7 @@ def photo_add(request):
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
                 logger.error(u'c user %s - RESET CONTENT. request=%s' % (request.user, request.data))
+                logger.error(f'Serializer errors: {serializer.errors}')
                 return Response(serializer.data, status=status.HTTP_205_RESET_CONTENT)
         except Exception as e:
             logger.error(f'Exception: {e}')
