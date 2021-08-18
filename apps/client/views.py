@@ -4,7 +4,7 @@ import os
 import zipfile
 import xlwt
 from datetime import date
-from io import StringIO
+from io import BytesIO
 
 from django.conf import settings
 from django.core.mail import send_mail
@@ -814,7 +814,7 @@ def get_files(request):
         filenames.append(photo.image.path)
     zip_subdir = "photoarchive"
     zip_filename = "%s.zip" % zip_subdir
-    s = StringIO.StringIO()
+    s = BytesIO()
     zf = zipfile.ZipFile(s, "w")
     for fpath in filenames:
         fdir, fname = os.path.split(fpath)
