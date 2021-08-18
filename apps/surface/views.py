@@ -299,7 +299,7 @@ class PorchView(CreateView):
         try:
             self.request.session['surface_filtered_list']
         except:
-            self.request.session['surface_filtered_list'] = reverse_lazy('surface:list')
+            self.request.session['surface_filtered_list'] = str(reverse_lazy('surface:list'))
         surface = get_object_or_404(Surface, pk=int(self.kwargs.get('pk')))
         context.update({
             'back_to_list': self.request.session['surface_filtered_list'],
