@@ -88,11 +88,12 @@
                   Календарь монтажных работ <span class="caret"></span>
                 </div>
                 <div class="panel-body js-calendar-body">
-              {% for date in months %}
-                  <div class="calendar col-lg-3 add-bottom">
-                  {% calendar user date.year date.month %}
-                  </div>
-              {% endfor %}
+                  {% for date in months %}
+                    <div class="calendar col-lg-3 add-bottom">
+                      {% calendar user date.year date.month as cal %}
+                      {{ cal|safe }}
+                    </div>
+                  {% endfor %}
                   <div class="clearfix"></div>
                 </div>
               </div>
