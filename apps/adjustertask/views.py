@@ -420,6 +420,8 @@ def adjuster_task_update(request, pk):
     task_surface_qs = adjustertask.adjustertasksurface_set.select_related(
         'surface', 'surface__street', 'surface__street__area', 'surface__street__city', 'surface__city'
     ).prefetch_related('adjustertasksurfaceporch_set', 'adjustertasksurfaceporch_set__porch').all()
+    task_surface_qs = task_surface_qs.extra(select={'house_number_int': 'CAST(city_surface.house_number AS INTEGER)'})
+    task_surface_qs = task_surface_qs.order_by('surface__street__area', 'surface__street__name', 'house_number_int')
     paginator = Paginator(task_surface_qs, 100)
     page = request.GET.get('page')
     try:
