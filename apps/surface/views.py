@@ -112,7 +112,8 @@ class SurfaceListView(ListView):
                 clientorder__client=int(self.request.GET.get('client'))
             ).values_list('surface', flat=True)
             qs = qs.filter(id__in=client_filter)
-        return qs.order_by('street__area', 'street__name', 'house_number')
+        qs = qs.extra(select={'house_number_int': 'CAST(house_number AS INTEGER)'})
+        return qs.order_by('street__area', 'street__name', 'house_number_int')
 
     def get_context_data(self, **kwargs):
         context = super(SurfaceListView, self).get_context_data(**kwargs)
