@@ -15,7 +15,7 @@ ALLOWED_HOSTS = ['*']
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-ADMINS = (('Alexey', 'od-5@yandex.ru'),)
+ADMINS = ()
 
 ROOT_URLCONF = 'cms.urls'
 
@@ -42,7 +42,14 @@ CACHES = {
         'OPTIONS': {
             'MAX_ENTRIES': 1000
         }
-    }
+    },
+    'yandex-map': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/1',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    },
 }
 
 TEMPLATES = [

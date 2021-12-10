@@ -1,6 +1,12 @@
-# coding=utf-8
-import urllib
 import json
+import logging
+import urllib
+
+from django.core.cache import caches
+
+
+logger = logging.getLogger('apps')
+
 
 def showNode(node, level):
     if type(node) == dict:
@@ -22,6 +28,7 @@ def showNode(node, level):
         for i in node:
             showNode(i, level + 1)
 
+
 # It's implemented in Werkzeug as follows:
 def url_fix(s, charset='utf-8'):
     """Sometimes you get an URL by a user that just isn't a real
@@ -42,6 +49,7 @@ def url_fix(s, charset='utf-8'):
     qs = urllib.parse.quote_plus(qs, ':&=')
     return urllib.parse.urlunsplit((scheme, netloc, path, qs, anchor))
 
+
 def getJSON(address, key):
     """Get latitude longitude from Yandex.maps service.
     """
@@ -50,35 +58,44 @@ def getJSON(address, key):
     f = urllib.request.urlopen(yandexGeotaggingApi)
     return f.read()
 
+
 def listGeoObject(address, key):
     response = getJSON(address, key)
     data = json.loads(response)['response']['GeoObjectCollection']
     if data['metaDataProperty']['GeocoderResponseMetaData']['found']:
         geoObjects = data['featureMember']
         for obj in geoObjects:
-            #showNode(obj['GeoObject'], 0);
             yield obj['GeoObject']['metaDataProperty']['GeocoderMetaData']['text']
-            #print map(float, obj['GeoObject']['Point']['pos'].split(' '))
     else:
         print('Nothing to find')
 
+
 def getpointGeoObject(address, key):
+    logger.debug(f'getpointGeoObject: receive response')
     response = getJSON(address, key)
     data = json.loads(response)['response']['GeoObjectCollection']
+    logger.debug(f'response data: {response}')
     if data['metaDataProperty']['GeocoderResponseMetaData']['found']:
         geoObjects = data['featureMember']
         for obj in geoObjects:
-            #showNode(obj['GeoObject'], 0);
             yield obj['GeoObject']['Point']['pos']
-            #print map(float, obj['GeoObject']['Point']['pos'].split(' '))
     else:
-        print('Nothing to find')
+        logger.debug(f'Nothing to find')
 
 
 def geocode(key, address):
-    response = getpointGeoObject(address, key)
-    pos = list(response)[0].split(' ')
+    logger.debug(f'Start geocoding for "{address}"')
+    cache = caches['yandex-map']
+    pos = cache.get(address)
+    if not pos:
+        logger.debug(f'Cache not found, response to Yandex.Map')
+        response = getpointGeoObject(address, key)
+        pos = list(response)[0].split(' ')
+        cache.set(address, pos, None)
+    else:
+        logger.debug(f'Get position from cache')
     return pos
+
 
 if __name__ == '__main__':
     address = "Волгоград Богданова 28"

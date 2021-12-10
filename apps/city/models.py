@@ -1,5 +1,6 @@
-# coding=utf-8
 import datetime
+import logging
+
 from django.conf import settings
 from django.core.mail import send_mail
 from django.db.models import Sum
@@ -14,6 +15,7 @@ from core.models import User
 __author__ = 'alexy'
 
 api_key = settings.YANDEX_MAPS_API_KEY
+logger = logging.getLogger('apps')
 
 
 class CityModelManager(models.Manager):
@@ -137,9 +139,9 @@ class Street(models.Model):
         app_label = 'city'
 
     def __unicode__(self):
-        if self.city.street_set.filter(name=self.name).count() > 1:
+        # if self.city.street_set.filter(name=self.name).count() > 1:
         # if Street.objects.filter(city=self.city, name=self.name).count() > 1:
-            return u'%s (%s)' % (self.name, self.area.name)
+        #     return u'%s (%s)' % (self.name, self.area.name)
         return self.name
 
     def __str__(self):
@@ -238,8 +240,8 @@ class Surface(models.Model):
             pos = api.geocode(api_key, address)
             self.coord_x = float(pos[0])
             self.coord_y = float(pos[1])
-        except:
-            pass
+        except Exception as e:
+            logger.error(f'Error in Yandex.Map: {e}')
         super(Surface, self).save()
 
     city = models.ForeignKey(on_delete=models.CASCADE, to=City, verbose_name=u'Город')
