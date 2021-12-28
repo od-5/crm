@@ -54,7 +54,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': '{asctime} {levelname} {filename} {message}',
+            'format': '{asctime} {levelname} {filename}: {message}',
             'style': '{',
         },
     },
@@ -68,6 +68,11 @@ LOGGING = {
     },
     'loggers': {
         'apps': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'apps.api': {
             'handlers': ['file'],
             'level': 'DEBUG',
             'propagate': True,

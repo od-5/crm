@@ -1,5 +1,6 @@
-# coding=utf-8
 from os import path as op
+import random
+import string
 import uuid
 from pytils.translit import slugify
 
@@ -55,13 +56,13 @@ def surfacephoto_upload(instance, filename, prefix=None):
     :return:
     """
     ext = op.splitext(filename)[-1]
-
-    # if not op.exists(root_dir):
-    #     makedirs(root_dir)
-    # print root_dir
     name = slugify(instance.__unicode__())
-    filename = "%s%s" % (name, ext or '.jpg')
+    filename = f'{name}_{rnd_string()}{ext}'
     basedir = op.join(instance._meta.model_name, instance.porch.surface.city.slug)
     if prefix:
         basedir = op.join(basedir, prefix)
     return op.join(basedir, filename)
+
+
+def rnd_string(n=10):
+    return ''.join(random.choices(string.ascii_lowercase + string.ascii_uppercase + string.digits, k=10))

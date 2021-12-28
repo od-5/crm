@@ -1,4 +1,3 @@
-# coding=utf-8
 import datetime
 
 from rest_framework import status
@@ -7,21 +6,15 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from django.conf import settings
-
 from api.serializers import TaskSurfaceSerializer, TaskSurfacePorchSerializer, UserSerializer, \
     PorchSerializer, SurfacePhotoSerializer
 from apps.adjuster.models import Adjuster, AdjusterTask, AdjusterTaskSurface, AdjusterTaskSurfacePorch, SurfacePhoto
 from apps.city.models import Porch
 from core.common import str_to_bool
 
-if not settings.DEBUG:
-    from warnings import filterwarnings
-    import MySQLdb
-
 import logging
 
-logger = logging.getLogger('django.request')
+logger = logging.getLogger('apps.api')
 
 
 __author__ = 'alexy'
@@ -31,14 +24,15 @@ __author__ = 'alexy'
 @authentication_classes((SessionAuthentication, BasicAuthentication))
 @permission_classes((IsAuthenticated,))
 def task_list(request, format=None):
-    logger.error(u'request: %s' % request)
     user = request.user
+    logger.debug(f'<{user}>: get tasks list request')
     try:
         adjuster = user.adjuster
     except Adjuster.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     qs = AdjusterTask.objects.select_related().filter(adjuster=adjuster, is_closed=False)
     if not qs:
+        logger.debug(f'<{user}>: tasks list is emtpy')
         return Response(status=status.HTTP_204_NO_CONTENT)
     context = []
     for task in qs:
@@ -52,8 +46,6 @@ def task_list(request, format=None):
             'comment': task.comment
         }
         address_list = []
-        if not settings.DEBUG:
-            filterwarnings('ignore', category=MySQLdb.Warning)
         adjustertasksurface_qs = task.adjustertasksurface_set.filter(is_closed=False).select_related('surface').extra(
             {'int_number': "CAST(city_surface.house_number as UNSIGNED)"}
         ).order_by(
@@ -91,7 +83,7 @@ def task_list(request, format=None):
         context.append(t_context)
         task.sent = True
         task.save()
-    logger.error(u'user=%s task_list' % request.user)
+    logger.debug(f'<{user}>: send response, tasks count is {len(context)}')
     return Response(context)
 
 
@@ -104,7 +96,7 @@ def api_root(request, format=None):
     Получение данных авторизованного пользователя
     """
     user = request.user
-    logger.error(user)
+    logger.debug(user)
     if request.method == 'GET':
         try:
             Adjuster.objects.get(user=user)
