@@ -1,12 +1,12 @@
-# coding=utf-8
 import os
 import uuid
 import zipfile
 from io import BytesIO
+from typing import List, Union
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.db.models import Sum
+from django.db.models import Q, QuerySet, Sum
 import xlwt
 from os import path as op
 import datetime
@@ -14,12 +14,12 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, TemplateView, UpdateView, DeleteView
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from docxtpl import DocxTemplate
 
 from apps.adjuster.models import SurfacePhoto
-from apps.client.models import Client, ClientOrderSurface
+from apps.client.models import Client, ClientOrder, ClientOrderSurface
 from apps.manager.models import Manager
 from lib.cbv import DocResponseMixin
 from .forms import SurfaceAddForm, PorchAddForm, SurfacePhotoForm, SurfaceImportForm
@@ -50,7 +50,7 @@ class SurfaceListView(ListView):
         self.paginate_by = self.request.session['page_count'] = page_count
         return page_count
 
-    def get_qs(self):
+    def get_qs(self) -> QuerySet[Surface]:
         user = self.request.user
         if user.type == 1:
             qs = Surface.objects.select_related('city', 'street', 'street__city', 'street__area', 'management').all()
@@ -67,7 +67,7 @@ class SurfaceListView(ListView):
             qs = Surface.objects.none()
         return qs.prefetch_related('porch_set', 'street__city__street_set', 'clientordersurface_set__clientorder')
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[Surface]:
         """
         Если пользователь администратор - ему доступны всё города.
         Если пользователь модератор - ему доступны только те города, которыми он управляет.
@@ -90,20 +90,33 @@ class SurfaceListView(ListView):
             qs = qs.filter(street__area=int(self.request.GET.get('area')))
         if self.request.GET.get('street') and self.request.GET.get('street') != '':
             qs = qs.filter(street__name__icontains=self.request.GET.get('street'))
-        if self.request.GET.get('release_date'):
-            if self.request.GET.get('free') and int(self.request.GET.get('free')) == 2:
-                qs = qs.filter(release_date__gte=datetime.datetime.strptime(self.request.GET.get('release_date'), '%d.%m.%Y'))
-            else:
-                qs = qs.filter(release_date__lt=datetime.datetime.strptime(self.request.GET.get('release_date'), '%d.%m.%Y'))
-        if self.request.GET.get('free') and not self.request.GET.get('release_date'):
-            if int(self.request.GET.get('free')) == 1:
-                qs = qs.filter(free=True)
-            if int(self.request.GET.get('free')) == 2:
-                qs = qs.filter(free=False)
+
+        # проверку на свободно/занято можно длеать только зная дату проверки
+        try:
+            self.date = datetime.datetime.strptime(self.request.GET.get('release_date', ''), '%d.%m.%Y')
+        except ValueError:
+            self.date = datetime.date.today()
+
+        # 0 - не указано, 1 - свободно, 2 - занято
+        try:
+            free_kind = int(self.request.GET.get('free', 0))
+        except ValueError:
+            free_kind = 0
+
+        flt_date = {
+            'clientordersurface__clientorder__date_start__lte': self.date,
+            'clientordersurface__clientorder__date_end__gte': self.date
+        }
+        if free_kind == 1:
+            qs = qs.filter(~Q(**flt_date))
+        if free_kind == 2:
+            qs = qs.filter(Q(**flt_date))
+
         if self.request.GET.get('has_stand') and int(self.request.GET.get('has_stand')) == 1:
             qs = qs.filter(has_stand=True)
         elif self.request.GET.get('has_stand') and int(self.request.GET.get('has_stand')) == 2:
             qs = qs.filter(has_stand=False)
+
         if self.request.GET.get('client') and int(self.request.GET.get('client')) != 0:
             today = datetime.datetime.today()
             client_filter = ClientOrderSurface.objects.filter(
@@ -112,6 +125,7 @@ class SurfaceListView(ListView):
                 clientorder__client=int(self.request.GET.get('client'))
             ).values_list('surface', flat=True)
             qs = qs.filter(id__in=client_filter)
+
         qs = qs.extra(select={'house_number_int': 'CAST(house_number AS INTEGER)'})
         return qs.order_by('street__area', 'street__name', 'house_number_int')
 
@@ -200,10 +214,10 @@ class SurfaceListView(ListView):
             context.update({
                 'has_stand': int(self.request.GET.get('has_stand'))
             })
-        if self.request.GET.get('release_date'):
-            context.update({
-                'release_date': self.request.GET.get('release_date')
-            })
+        context.update({
+            'release_date': self.date.strftime('%d.%m.%Y'),
+            'date': self.date
+        })
         if self.request.META['QUERY_STRING']:
             self.request.session['surface_filtered_list'] = '%s?%s' % (self.request.path, self.request.META['QUERY_STRING'])
         else:
@@ -310,6 +324,28 @@ class PorchView(CreateView):
 
     def get_success_url(self):
         return reverse_lazy('surface:porch', args=(self.object.surface.id,))
+
+
+class SurfaceOrdersView(TemplateView):
+    template_name = 'surface/surface_orders.html'
+
+    def get(self, request, *args, **kwargs):
+        self.surface = get_object_or_404(Surface, pk=self.kwargs.get('pk'))
+        self.orders = [o.clientorder for o in self.surface.clientordersurface_set.all().order_by('-clientorder__date_start')]
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        try:
+            self.request.session['surface_filtered_list']
+        except KeyError:
+            self.request.session['surface_filtered_list'] = str(reverse_lazy('surface:list'))
+        context.update({
+            'back_to_list': self.request.session['surface_filtered_list'],
+            'orders': self.orders,
+            'surface': self.surface,
+        })
+        return context
 
 
 @login_required
@@ -720,7 +756,8 @@ def surface_export(request):
         ws.write(i, 3, surface.house_number, style2)
         ws.write(i, 4, surface.porch_count(), style2)
         ws.write(i, 5, surface.porch_list(), style2)
-        ws.write(i, 6, surface.get_current_client() or u'отсутствует', style2)
+        # TODO: добавить дату
+        ws.write(i, 6, surface.get_client() or u'отсутствует', style2)
         ws.write(i, 7, surface.management.name if surface.management else u'не указана', style2)
         ws.write(i, 8, surface.floors, style2)
         ws.write(i, 9, surface.apart_count, style2)

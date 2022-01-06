@@ -2,6 +2,7 @@ import datetime
 import logging
 
 from django.conf import settings
+from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.db.models import Sum
 from django.db.models.signals import post_save, post_delete, pre_save
@@ -198,15 +199,32 @@ class Surface(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-    def get_current_client(self):
+    def get_order(self, date):
+        if not date:
+            date = datetime.datetime.today()
         try:
-            today = datetime.datetime.today()
-            return self.clientordersurface_set.select_related().filter(
-                clientorder__date_start__lte=today,
-                clientorder__date_end__gte=today
-            ).first().clientorder.client.legal_name
-        except:
-            return None
+            order = self.clientordersurface_set.get(
+                clientorder__date_start__lte=date,
+                clientorder__date_end__gte=date
+            ).clientorder
+        except MultipleObjectsReturned:
+            order = self.clientordersurface_set.filter(
+                clientorder__date_start__lte=date,
+                clientorder__date_end__gte=date
+            ).first().clientorder
+        except ObjectDoesNotExist:
+            order = None
+        return order
+
+    def is_free(self, date=None):
+        return not self.get_order(date)
+
+    def get_client(self, date):
+        client = None
+        clientorder = self.get_order(date)
+        if clientorder:
+            client = clientorder.client
+        return client
 
     def get_absolute_url(self):
         return reverse('surface:update', args=(self.pk,))

@@ -1,4 +1,7 @@
 {% extends 'cabinet_index.html' %}
+
+{% load surface_tags %}
+
 {% block breadcrumbs_item %}
   <li class="active">Список поверхностей</li>
 {% endblock %}
@@ -205,19 +208,21 @@
                   <td>{{ object.floors|default:'-' }}</td>
                   <td>{{ object.apart_count|default:'-' }}</td>
                   <td>{{ object.management.name|default:'-' }}</td>
+                  {% surface_is_free object date as is_free %}
+                  {% surface_get_order object date as order %}
                   <td>
-                    {% if object.free %}
+                    {% if is_free %}
                       <span class="glyphicon glyphicon-ok-sign text-success"></span>
                     {% else %}
                       <span class="glyphicon glyphicon-minus-sign text-danger"></span>
-                      занята до {{ object.release_date|date:'d.m.Yг.' }}
+                      занята до {{ order.date_end|date:'d.m.Yг.' }}
                     {% endif %}
                   </td>
                   <td>
-                    {% if object.free %}
-                    отсутствует
+                    {% if is_free %}
+                      отсутствует
                     {% else %}
-                    {{ object.get_current_client|default:'---' }}
+                      {{ order.client|default:'---' }}
                     {% endif %}
                   </td>
                   <td>

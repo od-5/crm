@@ -15,6 +15,7 @@ urlpatterns = [
     re_path(r'^photo/$', login_required(SurfacePhotoListView.as_view()), name='photo-list'),
     re_path(r'^photo/zip/$', login_required(SurfacePhotoZipView.as_view()), name='photo-zip-list'),
     re_path(r'^(?P<pk>\d+)/$', login_required(SurfaceUpdateView.as_view()), name='update'),
+    path('<int:pk>/orders/', login_required(SurfaceOrdersView.as_view()), name='orders'),
 
     re_path(r'^(?P<pk>\d+)/porch/$', login_required(PorchView.as_view()), name='porch'),
     re_path(r'^porch/(?P<pk>\d+)/$', surface_porch_update, name='porch-update'),

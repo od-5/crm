@@ -1,0 +1,43 @@
+{% extends 'cabinet_index.html' %}
+{% block breadcrumbs_item %}
+  <li><a href="{% url 'surface:list' %}">Список поверхностей</a></li>
+  <li class="active">Редактирование рекламной поверхности</li>
+{% endblock %}
+{% block content %}
+  <div class="container">
+    <div class="col-md-12">
+      {% include 'surface/__include/surface_menu.html' %}
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="row page-top">
+              <div class="col-md-12">Заказы «{{ surface }}»</div>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <table class="table table-hover table-condensed table-list">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for order in orders %}
+                <tr>
+                  <td>{{ order.name }}</td>
+                  <td>{{ order.client }}</td>
+                  <td>{{ order.date_start|date:'d.m.yy' }} - {{ order.date_end|date:'d.m.Y' }}</td>
+                  <td></td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+{% endblock %}
