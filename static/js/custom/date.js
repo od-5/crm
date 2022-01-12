@@ -125,6 +125,14 @@ $(function() {
     defaultDate: 1,
     dateFormat: "dd.mm.yy"
   });
+  $("#js-surface-filter-form").find('#id_date_start').datepicker({
+    defaultDate: 1,
+    dateFormat: "dd.mm.yy"
+  });
+  $("#js-surface-filter-form").find('#id_date_end').datepicker({
+    defaultDate: 1,
+    dateFormat: "dd.mm.yy"
+  });
   $("#js-incomingtask-modal-add-form").find('#id_date').datepicker({
     defaultDate: 1,
     dateFormat: "dd.mm.yy"

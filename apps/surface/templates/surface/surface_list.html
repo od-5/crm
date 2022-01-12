@@ -74,7 +74,10 @@
                 </select>
               </div>
               <div class="five-col-1">
-                <input type="text" name="release_date" class="form-control input-sm" placeholder="в момент:" id="id_release_date" value="{{ release_date }}" autocomplete="off">
+                <input type="text" name="date_start" class="form-control input-sm" placeholder="начало:" id="id_date_start" value="{{ date_start|date:'d.m.Y' }}" autocomplete="off">
+              </div>
+              <div class="five-col-1">
+                <input type="text" name="date_end" class="form-control input-sm" placeholder="окончание:" id="id_date_end" value="{{ date_end|date:'d.m.Y' }}" autocomplete="off">
               </div>
               <div class="five-col-1">
                 <select name="client" id="client_filter" class="form-control input-sm" >
@@ -186,8 +189,7 @@
                   <th>Этажей</th>
                   <th>Квартир</th>
                   <th>Управляющая компания</th>
-                  <th>Свободна</th>
-                  <th>Клиент</th>
+                  <th>Заказы</th>
                   <th></th>
                 </tr>
               </thead>
@@ -208,22 +210,16 @@
                   <td>{{ object.floors|default:'-' }}</td>
                   <td>{{ object.apart_count|default:'-' }}</td>
                   <td>{{ object.management.name|default:'-' }}</td>
-                  {% surface_is_free object date as is_free %}
-                  {% surface_get_order object date as order %}
+                  {#{% surface_is_free object date_start date_end as is_free %}#}
+                  {% surface_get_orders object date_start date_end as orders %}
                   <td>
-                    {% if is_free %}
-                      <span class="glyphicon glyphicon-ok-sign text-success"></span>
-                    {% else %}
+                    {% for order in orders %}
                       <span class="glyphicon glyphicon-minus-sign text-danger"></span>
-                      занята до {{ order.date_end|date:'d.m.Yг.' }}
-                    {% endif %}
-                  </td>
-                  <td>
-                    {% if is_free %}
-                      отсутствует
-                    {% else %}
-                      {{ order.client|default:'---' }}
-                    {% endif %}
+                      {{ order.date_start|date:'d.m.Y' }}-{{ order.date_end|date:'d.m.Y' }}
+                      {{ order.client }}<br />
+                    {% empty %}
+                      <span class="glyphicon glyphicon-ok-sign text-success"></span>
+                    {% endfor %}
                   </td>
                   <td>
                     {% if user.is_leader_manager %}

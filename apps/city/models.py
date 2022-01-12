@@ -1,10 +1,10 @@
 import datetime
 import logging
+from typing import List
 
 from django.conf import settings
-from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from django.core.mail import send_mail
-from django.db.models import Sum
+from django.db.models import Q
 from django.db.models.signals import post_save, post_delete, pre_save
 from django.dispatch import receiver
 from django.urls import reverse, reverse_lazy
@@ -199,22 +199,15 @@ class Surface(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-    def get_order(self, date):
-        if not date:
-            date = datetime.datetime.today()
-        try:
-            order = self.clientordersurface_set.get(
-                clientorder__date_start__lte=date,
-                clientorder__date_end__gte=date
-            ).clientorder
-        except MultipleObjectsReturned:
-            order = self.clientordersurface_set.filter(
-                clientorder__date_start__lte=date,
-                clientorder__date_end__gte=date
-            ).first().clientorder
-        except ObjectDoesNotExist:
-            order = None
-        return order
+    def get_orders(self, date_start: datetime.date = None, date_end: datetime.date = None) -> 'List[ClientOrder]':
+        if not date_start:
+            date_start = datetime.datetime.today()
+        if not date_end:
+            date_end = datetime.datetime.today()
+        orders = self.clientordersurface_set.filter(
+            Q(clientorder__date_end__gte=date_start) | Q(clientorder__date_start__gte=date_end)
+        )
+        return [o.clientorder for o in orders]
 
     def is_free(self, date=None):
         return not self.get_order(date)

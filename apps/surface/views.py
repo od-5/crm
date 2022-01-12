@@ -2,13 +2,10 @@ import os
 import uuid
 import zipfile
 from io import BytesIO
-from typing import List, Union
 
 from django.conf import settings
-from django.contrib.auth.decorators import login_required
 from django.db.models import Q, QuerySet, Sum
 import xlwt
-from os import path as op
 import datetime
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse, reverse_lazy
@@ -19,8 +16,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from docxtpl import DocxTemplate
 
 from apps.adjuster.models import SurfacePhoto
-from apps.client.models import Client, ClientOrder, ClientOrderSurface
-from apps.manager.models import Manager
+from apps.client.models import Client, ClientOrderSurface
 from lib.cbv import DocResponseMixin
 from .forms import SurfaceAddForm, PorchAddForm, SurfacePhotoForm, SurfaceImportForm
 from apps.city.models import City, Area, Surface, Street, Porch, ManagementCompany, SurfaceDocTemplate
@@ -45,7 +41,7 @@ class SurfaceListView(ListView):
         else:
             try:
                 page_count = int(self.request.session['page_count'])
-            except:
+            except (KeyError, ValueError):
                 page_count = self.paginate_by
         self.paginate_by = self.request.session['page_count'] = page_count
         return page_count
@@ -72,7 +68,6 @@ class SurfaceListView(ListView):
         Если пользователь администратор - ему доступны всё города.
         Если пользователь модератор - ему доступны только те города, которыми он управляет.
         """
-        user = self.request.user
         qs = self.get_qs()
         # фильтрация поверхностей по городам, районам, улицам
         if self.request.GET.get('management'):
@@ -91,11 +86,18 @@ class SurfaceListView(ListView):
         if self.request.GET.get('street') and self.request.GET.get('street') != '':
             qs = qs.filter(street__name__icontains=self.request.GET.get('street'))
 
-        # проверку на свободно/занято можно длеать только зная дату проверки
         try:
-            self.date = datetime.datetime.strptime(self.request.GET.get('release_date', ''), '%d.%m.%Y')
+            self.date_start = datetime.datetime.strptime(self.request.GET.get('date_start', ''), '%d.%m.%Y')
+            self.date_end = datetime.datetime.strptime(self.request.GET.get('date_end', ''), '%d.%m.%Y')
         except ValueError:
-            self.date = datetime.date.today()
+            self.date_start = datetime.date.today()
+            self.date_end = datetime.date.today()
+
+        flt = (
+            (Q(clientordersurface__clientorder__date_start__gt=self.date_start)
+                | Q(clientordersurface__clientorder__date_end__gt=self.date_start)
+            ) & Q(clientordersurface__clientorder__date_start__lt=self.date_end)
+        )
 
         # 0 - не указано, 1 - свободно, 2 - занято
         try:
@@ -103,14 +105,10 @@ class SurfaceListView(ListView):
         except ValueError:
             free_kind = 0
 
-        flt_date = {
-            'clientordersurface__clientorder__date_start__lte': self.date,
-            'clientordersurface__clientorder__date_end__gte': self.date
-        }
         if free_kind == 1:
-            qs = qs.filter(~Q(**flt_date))
+            qs = qs.exclude(flt)
         if free_kind == 2:
-            qs = qs.filter(Q(**flt_date))
+            qs = qs.filter(flt)
 
         if self.request.GET.get('has_stand') and int(self.request.GET.get('has_stand')) == 1:
             qs = qs.filter(has_stand=True)
@@ -139,7 +137,7 @@ class SurfaceListView(ListView):
         surface_qs = self.object_list
         try:
             porch_count = surface_qs.aggregate(Sum('porch_total_count'))['porch_total_count__sum']
-        except:
+        except KeyError:
             porch_count = 0
         surface_count = surface_qs.count()
         # for surface in surface_qs:
@@ -215,11 +213,12 @@ class SurfaceListView(ListView):
                 'has_stand': int(self.request.GET.get('has_stand'))
             })
         context.update({
-            'release_date': self.date.strftime('%d.%m.%Y'),
-            'date': self.date
+            'date_start': self.date_start,
+            'date_end': self.date_end,
         })
         if self.request.META['QUERY_STRING']:
-            self.request.session['surface_filtered_list'] = '%s?%s' % (self.request.path, self.request.META['QUERY_STRING'])
+            self.request.session['surface_filtered_list'] = \
+                '%s?%s' % (self.request.path, self.request.META['QUERY_STRING'])
         else:
             self.request.session['surface_filtered_list'] = reverse('surface:list')
         return context
@@ -244,7 +243,7 @@ class SurfaceCreateView(CreateView):
         context = super(SurfaceCreateView, self).get_context_data(**kwargs)
         try:
             self.request.session['surface_filtered_list']
-        except:
+        except KeyError:
             self.request.session['surface_filtered_list'] = reverse('surface:list')
         context.update({
             'back_to_list': self.request.session['surface_filtered_list']
@@ -271,7 +270,7 @@ class SurfaceUpdateView(UpdateView):
         context = super(SurfaceUpdateView, self).get_context_data(**kwargs)
         try:
             self.request.session['surface_filtered_list']
-        except:
+        except KeyError:
             self.request.session['surface_filtered_list'] = reverse('surface:list')
         context.update({
             'surface': self.object,
@@ -289,7 +288,7 @@ class SurfacePhotoDeleteView(DeleteView):
         context = super(SurfacePhotoDeleteView, self).get_context_data(**kwargs)
         try:
             self.request.session['surface_filtered_list']
-        except:
+        except KeyError:
             self.request.session['surface_filtered_list'] = reverse('surface:list')
         context.update({
             'surface': self.object.porch.surface,
@@ -313,7 +312,7 @@ class PorchView(CreateView):
         context = super(PorchView, self).get_context_data(**kwargs)
         try:
             self.request.session['surface_filtered_list']
-        except:
+        except KeyError:
             self.request.session['surface_filtered_list'] = str(reverse_lazy('surface:list'))
         surface = get_object_or_404(Surface, pk=int(self.kwargs.get('pk')))
         context.update({
@@ -393,7 +392,7 @@ def surface_photo_add(request):
             porch = form.cleaned_data['porch']
             tz = porch.surface.city.timezone
             time = datetime.datetime.combine(date.date(), datetime.datetime.now().time()) + \
-                   datetime.timedelta(hours=tz)
+                datetime.timedelta(hours=tz)
             instance = form.save(commit=False)
             instance.date = time
             instance.save()
@@ -419,7 +418,7 @@ def surface_photo_update(request, pk):
         })
     try:
         request.session['surface_filtered_list']
-    except:
+    except KeyError:
         request.session['surface_filtered_list'] = reverse('surface:list')
     context.update({
         'success': success_msg,
@@ -468,7 +467,7 @@ class SurfacePhotoListView(ListView):
         else:
             try:
                 page_count = int(self.request.session['page_count'])
-            except:
+            except (KeyError, ValueError):
                 page_count = self.paginate_by
         self.paginate_by = self.request.session['page_count'] = page_count
         return page_count
@@ -542,7 +541,7 @@ class SurfacePhotoListView(ListView):
         """
         try:
             self.request.session['grid']
-        except:
+        except KeyError:
             self.request.session['grid'] = False
         if self.request.GET.get('grid'):
             if int(self.request.GET.get('grid')) == 1:
@@ -557,7 +556,7 @@ class SurfacePhotoListView(ListView):
         """
         try:
             self.request.session['show_broken']
-        except:
+        except KeyError:
             self.request.session['show_broken'] = False
         if self.request.GET.get('broken'):
             if int(self.request.GET.get('broken')) == 1:
