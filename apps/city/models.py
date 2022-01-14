@@ -210,11 +210,11 @@ class Surface(models.Model):
         return [o.clientorder for o in orders]
 
     def is_free(self, date=None):
-        return not self.get_order(date)
+        return not self.get_orders(date)
 
     def get_client(self, date):
         client = None
-        clientorder = self.get_order(date)
+        clientorder = self.get_orders(date)
         if clientorder:
             client = clientorder.client
         return client

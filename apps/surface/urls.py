@@ -10,7 +10,8 @@ __author__ = 'alexy'
 app_name = 'surface'
 
 urlpatterns = [
-    re_path(r'^$', login_required(SurfaceListView.as_view()), name='list'),
+    path('', login_required(SurfaceListView.as_view()), name='list'),
+    path('export/', login_required(SurfaceListView.as_view()), {'is_export': True}, name='export'),
     re_path(r'^add/$', login_required(SurfaceCreateView.as_view()), name='add'),
     re_path(r'^photo/$', login_required(SurfacePhotoListView.as_view()), name='photo-list'),
     re_path(r'^photo/zip/$', login_required(SurfacePhotoZipView.as_view()), name='photo-zip-list'),
@@ -25,7 +26,6 @@ urlpatterns = [
     re_path(r'^photo/delete/(?P<pk>\d+)/$', login_required(SurfacePhotoDeleteView.as_view()), name='photo-delete'),
 
     re_path(r'^surface-map/$', surface_map, name='surface-map'),
-    re_path(r'^export/$', surface_export, name='export'),
     re_path(r'^import/$', address_list_import, name='import'),
     re_path(r'^export/docx/$', SurfaceDocView.as_view(), name='export-docx'),
     re_path(r'^export/docx/fromfile/$', SurfaceDocViewWithFile.as_view(), name='export-docx-from-file'),

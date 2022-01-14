@@ -99,7 +99,7 @@
         <div class="panel-body">
           <div class="row">
             <div class="col-lg-2">
-              <a href="{% url 'surface:export' %}?city={{ city_id|default:'' }}&area={{ area_id|default:'' }}&street={{ street|default:'' }}&management={{ management_id|default:'' }}&release_date={{ release_date|default:'' }}&free={{ free|default:0 }}&has_stand={{ has_stand|default:0 }}&client={{ client_id|default:0 }}" class="btn btn-warning add-bottom">
+              <a href="{% url 'surface:export' %}?city={{ city_id|default:'' }}&area={{ area_id|default:'' }}&street={{ street|default:'' }}&management={{ management_id|default:'' }}&date_start={{ date_start|date:'d.m.Y'|default:'' }}&date_end={{ date_end|date:'d.m.Y'|default:'' }}&free={{ free|default:0 }}&has_stand={{ has_stand|default:0 }}&client={{ client_id|default:0 }}" class="btn btn-warning add-bottom">
                 <span class="glyphicon glyphicon-download-alt"></span> Скачать в EXCEL
               </a>
             </div>

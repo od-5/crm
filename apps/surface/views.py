@@ -29,6 +29,12 @@ class SurfaceListView(ListView):
     template_name = 'surface/surface_list.html'
     paginate_by = 25
 
+    def get(self, request, *args, **kwargs):
+        response = super().get(request, *args, **kwargs)
+        if kwargs.get('is_export'):
+            return self.xls_export()
+        return response
+
     def get_paginate_by(self, queryset):
         """
         Получение параметра - сколько показывать элементов на странице
@@ -94,9 +100,11 @@ class SurfaceListView(ListView):
             self.date_end = datetime.date.today()
 
         flt = (
-            (Q(clientordersurface__clientorder__date_start__gt=self.date_start)
+            (
+                Q(clientordersurface__clientorder__date_start__gt=self.date_start)
                 | Q(clientordersurface__clientorder__date_end__gt=self.date_start)
-            ) & Q(clientordersurface__clientorder__date_start__lt=self.date_end)
+            )
+            & Q(clientordersurface__clientorder__date_start__lt=self.date_end)
         )
 
         # 0 - не указано, 1 - свободно, 2 - занято
@@ -222,6 +230,99 @@ class SurfaceListView(ListView):
         else:
             self.request.session['surface_filtered_list'] = reverse('surface:list')
         return context
+
+    def xls_export(self):
+        self.xls_init()
+        # выгрузка в excel
+        i = 3
+        self.stands_count = 0
+        for surface in self.get_queryset():
+            self.xls_write_line(surface, i)
+            i += 1
+        self.ws.write(i + 1, 0, u'Итого стендов: %s' % self.stands_count, self.style1)
+        self.ws.col(0).width = 8000
+        self.ws.col(1).width = 8000
+        self.ws.col(2).width = 10000
+        self.ws.col(3).width = 5000
+        self.ws.col(4).width = 5000
+        self.ws.col(5).width = 5000
+        self.ws.col(6).width = 5000
+        self.ws.col(7).width = 5000
+        for count in range(i):
+            self.ws.row(count).height = 300
+
+        fname = 'address_list.xls'
+        response = HttpResponse(content_type="application/ms-excel")
+        response['Content-Disposition'] = 'attachment; filename=%s' % fname
+        self.wb.save(response)
+        return response
+
+    def xls_write_line(self, surface: Surface, i):
+        self.ws.write(i, 0, surface.city.name, self.style2)
+        self.ws.write(i, 1, surface.street.area.name, self.style2)
+        self.ws.write(i, 2, surface.street.name, self.style2)
+        self.ws.write(i, 3, surface.house_number, self.style2)
+        self.ws.write(i, 4, surface.porch_count(), self.style2)
+        self.ws.write(i, 5, surface.porch_list(), self.style2)
+        self.ws.write(
+            i, 6,
+            ', '.join([
+                str(c.client) for c in surface.get_orders(self.date_start, self.date_end)
+            ]) or u'отсутствует',
+            self.style2
+        )
+        self.ws.write(i, 7, surface.management.name if surface.management else u'не указана', self.style2)
+        self.ws.write(i, 8, surface.floors, self.style2)
+        self.ws.write(i, 9, surface.apart_count, self.style2)
+        if surface.porch_count():
+            self.stands_count += surface.porch_count()
+
+    def xls_init(self) -> None:
+        font0 = xlwt.Font()
+        font0.name = 'Times New Roman'
+        font0.height = 240
+
+        alignment_center = xlwt.Alignment()
+        alignment_center.horz = xlwt.Alignment.HORZ_CENTER
+        alignment_center.vert = xlwt.Alignment.VERT_TOP
+
+        alignment_left = xlwt.Alignment()
+        alignment_left.horz = xlwt.Alignment.HORZ_LEFT
+        alignment_left.vert = xlwt.Alignment.VERT_TOP
+
+        borders = xlwt.Borders()
+        borders.left = xlwt.Borders.THIN
+        borders.right = xlwt.Borders.THIN
+        borders.top = xlwt.Borders.THIN
+        borders.bottom = xlwt.Borders.THIN
+
+        style0 = xlwt.XFStyle()
+        style0.font = font0
+        style0.alignment = alignment_center
+
+        style1 = xlwt.XFStyle()
+        style1.font = font0
+        self.style1 = style1
+
+        style2 = xlwt.XFStyle()
+        style2.font = font0
+        style2.borders = borders
+        style2.alignment = alignment_left
+
+        self.wb = xlwt.Workbook()
+        self.ws = self.wb.add_sheet(u'Список адресов')
+        self.ws.write_merge(0, 0, 0, 7, u'Список доступных адресов', style0)
+        self.ws.write(2, 0, u'Город', style2)
+        self.ws.write(2, 1, u'Район', style2)
+        self.ws.write(2, 2, u'Улица', style2)
+        self.ws.write(2, 3, u'Дом', style2)
+        self.ws.write(2, 4, u'Кол-во подъездов', style2)
+        self.ws.write(2, 5, u'Номера подъездов', style2)
+        self.ws.write(2, 6, u'Клиент', style2)
+        self.ws.write(2, 7, u'УК', style2)
+        self.ws.write(2, 8, u'Этажей', style2)
+        self.ws.write(2, 9, u'Квартир', style2)
+        self.style2 = style2
 
 
 class SurfaceCreateView(CreateView):
