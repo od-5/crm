@@ -9,7 +9,7 @@ import xlwt
 import datetime
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse, reverse_lazy
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseForbidden, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, CreateView, TemplateView, UpdateView, DeleteView
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -450,6 +450,8 @@ class SurfaceOrdersView(TemplateView):
 
 @login_required
 def surface_porch_update(request, pk):
+    if not request.user.is_leader_manager():
+        return HttpResponseForbidden()
     context = {}
     porch = Porch.objects.get(pk=int(pk))
     if request.method == 'POST':
@@ -486,6 +488,8 @@ def surface_porch_update(request, pk):
 
 @login_required
 def surface_photo_add(request):
+    if not request.user.is_leader_manager():
+        return HttpResponseForbidden()
     if request.method == 'POST':
         form = SurfacePhotoForm(request.POST, request.FILES)
         if form.is_valid():
@@ -504,6 +508,8 @@ def surface_photo_add(request):
 
 @login_required
 def surface_photo_update(request, pk):
+    if not request.user.is_leader_manager():
+        return HttpResponseForbidden()
     context = {}
     photo = SurfacePhoto.objects.get(pk=int(pk))
     success_msg = u''
@@ -737,6 +743,8 @@ class SurfacePhotoZipView(SurfacePhotoListView):
 
 
 def surface_export(request):
+    if not request.user.is_leader_manager():
+        return HttpResponseForbidden()
     user = request.user
     if user.type == 1:
         qs = Surface.objects.select_related('city', 'street', 'street__area', 'management').all()

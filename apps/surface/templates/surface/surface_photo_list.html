@@ -165,8 +165,13 @@
                 </div>
                 <div>
                   <p class="photo_description">
-                    Адрес: <a href="{% url 'surface:porch-update' item.porch_id %}">{{ item.address }} <br>
-                    Подъезд: {{ item.porch.number }}</a>, <br>
+                    Адрес:
+                    {% if user.is_leader_manager %}
+                      <a href="{% url 'surface:porch-update' item.porch_id %}">{{ item.address }}<br />
+                      Подъезд: {{ item.porch.number }}</a>
+                    {% else %}
+                      {{ item.address }}<br />Подъезд: {{ item.porch.number }}
+                    {% endif %}<br />
                     Дата: {{ item.date }}
                     {% if item.adjuster %}
                       <br>{{ item.adjuster.user.first_name }} {{ item.adjuster.user.last_name }}
@@ -200,7 +205,13 @@
               <tr {% if item.is_broken %}class="danger"{% endif %}>
                 <td>{{ item.porch.surface.city.name }}</td>
                 <td>{{ item.porch.surface.street.area.name }}</td>
-                <td><a href="{% url 'surface:porch-update' item.porch_id %}">{{ item.porch.surface.street.name }}</a></td>
+                <td>
+                  {% if user.is_leader_manager %}
+                    <a href="{% url 'surface:porch-update' item.porch_id %}">{{ item.porch.surface.street.name }}</a>
+                  {% else %}
+                    {{ item.porch.surface.street.name }}
+                  {% endif %}
+                </td>
                 <td>{{ item.porch.surface.house_number }}</td>
                 <td>{{ item.porch.number }}</td>
                 <td>{{ item.date }}</td>
