@@ -101,10 +101,10 @@ class SurfaceListView(ListView):
 
         flt = (
             (
-                Q(clientordersurface__clientorder__date_start__gt=self.date_start)
-                | Q(clientordersurface__clientorder__date_end__gt=self.date_start)
+                Q(clientordersurface__clientorder__date_start__gte=self.date_start)
+                | Q(clientordersurface__clientorder__date_end__gte=self.date_start)
             )
-            & Q(clientordersurface__clientorder__date_start__lt=self.date_end)
+            & Q(clientordersurface__clientorder__date_start__lte=self.date_end)
         )
 
         # 0 - не указано, 1 - свободно, 2 - занято
