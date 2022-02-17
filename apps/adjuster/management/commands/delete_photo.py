@@ -12,8 +12,9 @@ __author__ = 'alexy'
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
-        search_date = datetime.datetime.now() - datetime.timedelta(days=365)
+        search_date = datetime.datetime.now() - datetime.timedelta(days=200)
+        print(f'Удаление старше чем {search_date}')
         qs = SurfacePhoto.objects.filter(date__lt=search_date)
-        print qs.count()
+        print(f'Всего записей: {qs.count()}')
         if qs:
             qs.delete()

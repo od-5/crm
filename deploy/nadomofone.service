@@ -11,6 +11,7 @@ ExecStart=/home/gruy/.pyenv/versions/3.9.6/envs/nadomofone.ru/bin/gunicorn \
           --access-logfile /home/www/nadomofone.ru/logs/access.log \
           --error-logfile /home/www/nadomofone.ru/logs/error.log \
           --workers 2 \
+          --timeout 1200
           --bind 127.0.0.1:8000 \
           cms.wsgi:application
 
