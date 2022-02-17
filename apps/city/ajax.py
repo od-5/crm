@@ -1,7 +1,10 @@
 # coding=utf-8
 from annoying.decorators import ajax_request
 from datetime import datetime
+
+from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
+
 from apps.adjuster.models import Adjuster, AdjusterTaskSurface, SurfacePhoto
 from apps.city.models import Area, City, Street, Surface, Porch, ManagementCompany
 from apps.client.models import Client, ClientOrder, ClientOrderSurface
@@ -127,7 +130,15 @@ def get_free_area_surface(request):
         surface_list = []
         area_pk = int(request.GET.get('area'))
         order = ClientOrder.objects.get(pk=int(request.GET.get('order')))
-        surface_qs = Surface.objects.select_related('management').filter(street__area=area_pk, release_date__lt=order.date_start)
+        surface_qs = Surface.objects.select_related('management').filter(
+            street__area=area_pk,
+        ).exclude(
+            (
+                Q(clientordersurface__clientorder__date_start__gte=order.date_start)
+                | Q(clientordersurface__clientorder__date_end__gte=order.date_start)
+            )
+            & Q(clientordersurface__clientorder__date_start__lte=order.date_end)
+        )
         for surface in surface_qs:
             if surface.id:
                 surface_list.append({
