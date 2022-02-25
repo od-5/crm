@@ -107,6 +107,24 @@ def delete_old_image_resize(sender, instance, **kwargs):
 
 
 class AdjusterTask(models.Model):
+    """
+    Задача для монтажника.
+    (Может состоять из точек назначения разных зазаков).
+    """
+    TYPE_CHOICES = (
+        (0, u'Монтаж новой конструкции'),
+        (1, u'Замена'),
+        (2, u'Ремонт стенда'),
+        (3, u'Демонтаж стенда'),
+    )
+
+    adjuster = models.ForeignKey(on_delete=models.CASCADE, to=Adjuster, verbose_name=u'Монтажник')
+    type = models.PositiveSmallIntegerField(verbose_name=u'Вид работы', choices=TYPE_CHOICES)
+    date = models.DateField(verbose_name=u'Дата задачи')
+    comment = models.TextField(verbose_name=u'Комментарий', blank=True, null=True)
+    is_closed = models.BooleanField(verbose_name=u'Выполнено', default=False)
+    sent = models.BooleanField(verbose_name=u'Отправлено', default=False)
+
     class Meta:
         verbose_name = u'Монтажник'
         verbose_name_plural = u'Монтажники'
@@ -209,20 +227,6 @@ class AdjusterTask(models.Model):
         else:
             return closed_proch_count * 100 / porch_count
 
-    TYPE_CHOICES = (
-        (0, u'Монтаж новой конструкции'),
-        (1, u'Замена'),
-        (2, u'Ремонт стенда'),
-        (3, u'Демонтаж стенда'),
-    )
-
-    adjuster = models.ForeignKey(on_delete=models.CASCADE, to=Adjuster, verbose_name=u'Монтажник')
-    type = models.PositiveSmallIntegerField(verbose_name=u'Вид работы', choices=TYPE_CHOICES)
-    date = models.DateField(verbose_name=u'Дата задачи')
-    comment = models.TextField(verbose_name=u'Комментарий', blank=True, null=True)
-    is_closed = models.BooleanField(verbose_name=u'Выполнено', default=False)
-    sent = models.BooleanField(verbose_name=u'Отправлено', default=False)
-
 
 @receiver(post_save, sender=AdjusterTask)
 def write_ats(sender, created, **kwargs):
@@ -242,9 +246,16 @@ def write_ats(sender, created, **kwargs):
 
 
 class AdjusterTaskSurface(models.Model):
+    """
+    Перечень точек назначения (домов, адресов) задачи монтжника
+    """
+    adjustertask = models.ForeignKey(on_delete=models.CASCADE, to=AdjusterTask, verbose_name=u'Задача')
+    surface = models.ForeignKey(on_delete=models.CASCADE, to=Surface, verbose_name=u'Поверхность')
+    is_closed = models.BooleanField(verbose_name=u'Выполнено', default=False)
+
     class Meta:
-        verbose_name = u'Поверхность для задачи'
-        verbose_name_plural = u'Поверхности для задачи'
+        verbose_name = u'Поверхность (дом, адрес) для задачи'
+        verbose_name_plural = u'Поверхности (дома, адреса) для задачи'
         app_label = 'adjuster'
 
     def __unicode__(self):
@@ -287,12 +298,13 @@ class AdjusterTaskSurface(models.Model):
         return count
         # return self.adjustertasksurfaceporch_set.filter(is_closed=True, complete=True).count()
 
-    adjustertask = models.ForeignKey(on_delete=models.CASCADE, to=AdjusterTask, verbose_name=u'Задача')
-    surface = models.ForeignKey(on_delete=models.CASCADE, to=Surface, verbose_name=u'Поверхность')
-    is_closed = models.BooleanField(verbose_name=u'Выполнено', default=False)
-
 
 class AdjusterTaskSurfacePorch(models.Model):
+    adjustertasksurface = models.ForeignKey(on_delete=models.CASCADE, to=AdjusterTaskSurface, verbose_name=u'Поверхность для задачи')
+    porch = models.ForeignKey(on_delete=models.CASCADE, to=Porch, verbose_name=u'Подъезд поверхности для задачи')
+    is_closed = models.BooleanField(verbose_name=u'Выполнено', default=False)
+    complete = models.BooleanField(verbose_name=u'Работы выполнены', default=False)
+
     class Meta:
         verbose_name = u'Подъезд по задаче'
         verbose_name_plural = u'Подъезды па задаче'
@@ -332,8 +344,3 @@ class AdjusterTaskSurfacePorch(models.Model):
 
     def no_social_info(self):
         return self.porch.no_social_info
-
-    adjustertasksurface = models.ForeignKey(on_delete=models.CASCADE, to=AdjusterTaskSurface, verbose_name=u'Поверхность для задачи')
-    porch = models.ForeignKey(on_delete=models.CASCADE, to=Porch, verbose_name=u'Подъезд поверхности для задачи')
-    is_closed = models.BooleanField(verbose_name=u'Выполнено', default=False)
-    complete = models.BooleanField(verbose_name=u'Работы выполнены', default=False)

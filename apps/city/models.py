@@ -188,6 +188,25 @@ class ManagementCompany(models.Model):
 
 
 class Surface(models.Model):
+    """
+    Поверхность - это объект "дом",
+    не сама по себе панель, стенд размещения рекламы?
+    """
+    city = models.ForeignKey(on_delete=models.CASCADE, to=City, verbose_name=u'Город')
+    street = models.ForeignKey(on_delete=models.CASCADE, to=Street, verbose_name=u'Улица')
+    house_number = models.CharField(max_length=50, verbose_name=u'Номер дома')
+    management = models.ForeignKey(on_delete=models.CASCADE, to=ManagementCompany, verbose_name=u'Управляющая контора', blank=True, null=True)
+    coord_x = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=u'Ширина')
+    coord_y = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=u'Долгота')
+    free = models.BooleanField(default=True)
+    has_broken = models.BooleanField(default=False, verbose_name=u'Есть повреждения')
+    full_broken = models.BooleanField(default=False, verbose_name=u'Все стенды повреждены')
+    release_date = models.DateField(blank=True, null=True, verbose_name=u'Дата освобождения поверхности')
+    porch_total_count = models.IntegerField(blank=True, null=True, default=0)
+    has_stand = models.BooleanField(default=False, verbose_name=u'Стенды установлены')
+    floors = models.PositiveSmallIntegerField(verbose_name=u'Этажность', blank=True, null=True)
+    apart_count = models.PositiveSmallIntegerField(verbose_name=u'Кол-во квартир', blank=True, null=True)
+
     class Meta:
         verbose_name = u'Поверхность'
         verbose_name_plural = u'Поверхности'
@@ -255,23 +274,22 @@ class Surface(models.Model):
             logger.error(f'Error in Yandex.Map: {e}')
         super(Surface, self).save()
 
-    city = models.ForeignKey(on_delete=models.CASCADE, to=City, verbose_name=u'Город')
-    street = models.ForeignKey(on_delete=models.CASCADE, to=Street, verbose_name=u'Улица')
-    house_number = models.CharField(max_length=50, verbose_name=u'Номер дома')
-    management = models.ForeignKey(on_delete=models.CASCADE, to=ManagementCompany, verbose_name=u'Управляющая контора', blank=True, null=True)
-    coord_x = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=u'Ширина')
-    coord_y = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=u'Долгота')
-    free = models.BooleanField(default=True)
-    has_broken = models.BooleanField(default=False, verbose_name=u'Есть повреждения')
-    full_broken = models.BooleanField(default=False, verbose_name=u'Все стенды повреждены')
-    release_date = models.DateField(blank=True, null=True, verbose_name=u'Дата освобождения поверхности')
-    porch_total_count = models.IntegerField(blank=True, null=True, default=0)
-    has_stand = models.BooleanField(default=False, verbose_name=u'Стенды установлены')
-    floors = models.PositiveSmallIntegerField(verbose_name=u'Этажность', blank=True, null=True)
-    apart_count = models.PositiveSmallIntegerField(verbose_name=u'Кол-во квартир', blank=True, null=True)
-
 
 class Porch(models.Model):
+    """
+    Подъезд, по сути являющийся рекламным стендом,
+    привязанным к подъезду
+    """
+    surface = models.ForeignKey(on_delete=models.CASCADE, to=Surface, verbose_name=u'Рекламная поверхность')
+    number = models.PositiveSmallIntegerField(verbose_name=u'Номер подъезда')
+    broken_shield = models.BooleanField(verbose_name=u'Щит сломан', default=False)
+    broken_gib = models.BooleanField(verbose_name=u'Сломана прижимная планка', default=False)
+    no_glass = models.BooleanField(verbose_name=u'Отсутствует защитное стекло', default=False)
+    replace_glass = models.BooleanField(verbose_name=u'Заменить защитное стекло', default=False)
+    against_tenants = models.BooleanField(verbose_name=u'Жильцы против', default=False)
+    no_social_info = models.BooleanField(verbose_name=u'Отсутствует социальная информация', default=False)
+    is_broken = models.BooleanField(verbose_name=u'Стенд поломан', default=False)
+
     class Meta:
         verbose_name = u'Подъезд'
         verbose_name_plural = u'Подъезды'
@@ -321,16 +339,6 @@ class Porch(models.Model):
             return True
         else:
             return False
-
-    surface = models.ForeignKey(on_delete=models.CASCADE, to=Surface, verbose_name=u'Рекламная поверхность')
-    number = models.PositiveSmallIntegerField(verbose_name=u'Номер подъезда')
-    broken_shield = models.BooleanField(verbose_name=u'Щит сломан', default=False)
-    broken_gib = models.BooleanField(verbose_name=u'Сломана прижимная планка', default=False)
-    no_glass = models.BooleanField(verbose_name=u'Отсутствует защитное стекло', default=False)
-    replace_glass = models.BooleanField(verbose_name=u'Заменить защитное стекло', default=False)
-    against_tenants = models.BooleanField(verbose_name=u'Жильцы против', default=False)
-    no_social_info = models.BooleanField(verbose_name=u'Отсутствует социальная информация', default=False)
-    is_broken = models.BooleanField(verbose_name=u'Стенд поломан', default=False)
 
 
 class SurfaceDocTemplate(models.Model):

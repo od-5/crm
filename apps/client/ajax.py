@@ -37,30 +37,38 @@ def get_client_order_address_list(request):
     if request.method == 'GET':
         if request.GET.get('clientorder'):
             order = ClientOrder.objects.get(id=int(request.GET.get('clientorder')))
-            co_surface_list_id = [int(i.surface.id) for i in order.clientordersurface_set.all()]
-            at_surface = AdjusterTaskSurface.objects.filter(
+
+            # все адреса (точки) назначения заказа
+            order_destinations = order.clientordersurface_set.all()
+            co_surface_list_id = [i.surface.id for i in order_destinations]
+
+            # список всех незакрытых точек назначения задачи
+            # по списку точек назначения из заказа
+            at_surfaces = AdjusterTaskSurface.objects.filter(
                 surface__id__in=co_surface_list_id,
                 is_closed=False
             )
-            at_surface_list_id = [int(i.surface.id) for i in at_surface]
+            at_surface_list_id = [i.surface.id for i in at_surfaces]
 
             surface_list = []
-            for clientordersurface in order.clientordersurface_set.all():
+            for dest in order_destinations:
                 broken_porch = []
                 intact_porch = []
-                if int(clientordersurface.surface.id) not in at_surface_list_id:
-                    for porch in clientordersurface.surface.porch_set.all():
+
+                if dest.surface.id not in at_surface_list_id:
+                    for porch in dest.surface.porch_set.all():
                         if porch.is_broken:
                             broken_porch.append(porch.number)
                         else:
                             intact_porch.append(porch.number)
+
                     surface_list.append({
-                        'id': clientordersurface.surface.id,
-                        'city': clientordersurface.surface.city.name,
-                        'area': clientordersurface.surface.street.area.name,
-                        'street': clientordersurface.surface.street.name,
-                        'number': clientordersurface.surface.house_number,
-                        'porch': int(clientordersurface.porch_count()),
+                        'id': dest.surface.id,
+                        'city': dest.surface.city.name,
+                        'area': dest.surface.street.area.name,
+                        'street': dest.surface.street.name,
+                        'number': dest.surface.house_number,
+                        'porch': dest.porch_count(),
                         'intact_porch': intact_porch,
                         'broken_porch': broken_porch
                     })
