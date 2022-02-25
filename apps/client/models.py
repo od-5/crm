@@ -97,9 +97,13 @@ class ClientOrder(models.Model):
         return Porch.objects.filter(surface__clientordersurface__clientorder=self).count()
 
     def clientordersurface_list(self):
-        return self.clientordersurface_set.select_related(
-            'surface', 'surface__street', 'surface__street__area', 'surface__management').annotate(
-            num_porch=Count('surface__porch'))
+        return (
+            self.clientordersurface_set
+            .select_related('surface', 'surface__street', 'surface__street__area', 'surface__management')
+            .annotate(num_porch=Count('surface__porch'))
+            .extra(select={'house_number_int': 'CAST(city_surface.house_number AS INTEGER)'})
+            .order_by('surface__street__area', 'surface__street__name', 'house_number_int')
+        )
 
 
 class ClientOrderSurface(models.Model):
