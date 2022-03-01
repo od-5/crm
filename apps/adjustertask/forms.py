@@ -1,6 +1,7 @@
-# coding=utf-8
+import datetime
+
 from django import forms
-from apps.adjuster.models import Adjuster, AdjusterTask
+from apps.adjuster.models import Adjuster, AdjusterTask, AdjusterTaskSurface
 from apps.city.models import City, Surface, Area
 from apps.client.models import Client, ClientOrder
 from core.models import User
@@ -9,16 +10,6 @@ __author__ = 'alexy'
 
 
 class AdjusterTaskClientForm(forms.ModelForm):
-    class Meta:
-        model = AdjusterTask
-        fields = ('adjuster', 'type', 'date', 'comment')
-        widgets = {
-            'adjuster': forms.Select(attrs={'class': 'form-control'}),
-            'type': forms.Select(attrs={'class': 'form-control'}),
-            'date': forms.DateInput(attrs={'class': 'form-control ', 'autocomplete': 'off'}),
-            'comment': forms.Textarea(attrs={'class': 'form-control', 'placeholder': u'Текст комментария к задаче'}),
-        }
-
     TYPE_CHOICES = (
         (0, u'Монтаж новой конструкции'),
         (1, u'Замена'),
@@ -39,6 +30,16 @@ class AdjusterTaskClientForm(forms.ModelForm):
         label=u'Тип работы',
         widget=forms.Select(attrs={'class': 'form-control'})
     )
+
+    class Meta:
+        model = AdjusterTask
+        fields = ('adjuster', 'type', 'date', 'comment')
+        widgets = {
+            'adjuster': forms.Select(attrs={'class': 'form-control'}),
+            'type': forms.Select(attrs={'class': 'form-control'}),
+            'date': forms.DateInput(attrs={'class': 'form-control ', 'autocomplete': 'off'}),
+            'comment': forms.Textarea(attrs={'class': 'form-control', 'placeholder': u'Текст комментария к задаче'}),
+        }
 
 
 class AdjusterTaskClientAddForm(forms.ModelForm):
@@ -149,6 +150,10 @@ class AdjusterTaskAddForm(forms.ModelForm):
 
 
 class AdjusterTaskRepairAddForm(forms.ModelForm):
+    city = forms.ModelChoiceField(queryset=City.objects.all(), label=u'Город', widget=forms.Select(attrs={'class': 'form-control'}))
+    area = forms.ModelChoiceField(queryset=Area.objects.all(), label=u'Район', widget=forms.Select(attrs={'class': 'form-control'}))
+    type = forms.CharField(label=u'Тип работы', initial=2, widget=forms.HiddenInput)
+
     class Meta:
         model = AdjusterTask
         fields = ('adjuster', 'date', 'type', 'comment')
@@ -158,9 +163,19 @@ class AdjusterTaskRepairAddForm(forms.ModelForm):
             'comment': forms.Textarea(attrs={'class': 'form-control', 'placeholder': u'Текст комментария к задаче'}),
         }
 
-    city = forms.ModelChoiceField(queryset=City.objects.all(), label=u'Город', widget=forms.Select(attrs={'class': 'form-control'}))
-    area = forms.ModelChoiceField(queryset=Area.objects.all(), label=u'Район', widget=forms.Select(attrs={'class': 'form-control'}))
-    type = forms.CharField(label=u'Тип работы', initial=2, widget=forms.HiddenInput)
+    def clean(self):
+        cleaned_data = super().clean()
+        area = cleaned_data.get('area', None)
+        date = cleaned_data.get('date', None)
+        if area and date:
+            has_surfaces = AdjusterTaskSurface.objects.filter(
+                surface__street__area=area,
+                adjustertask__date=date
+            ).exists()
+            if has_surfaces:
+                raise forms.ValidationError(
+                    'Нельзя создать задачу на ремонт: на эту дату и район уже есть другая задача'
+                )
 
 
 class AdjusterTaskUpdateForm(forms.ModelForm):

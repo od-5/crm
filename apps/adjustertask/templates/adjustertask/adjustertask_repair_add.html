@@ -19,9 +19,12 @@
         </div>
         <div class="panel-body">
           <div class="col-md-12">
-            {% if error %}
+            {% if error or form.non_field_errors %}
             <p class="alert alert-danger">
-              {{ error }}
+              {% if error %}
+                {{ error }}
+              {% endif %}
+              {{ form.non_field_errors }}
             </p>
             {% endif %}
             <form action="" role="form" id="js-adjustertask-repair-add" class="form" method="post">

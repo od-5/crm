@@ -1,6 +1,6 @@
 __author__ = 'alexy'
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'suit',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -8,7 +8,6 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'debug_toolbar',
     'imagekit',
     'widget_tweaks',
     'annoying',
@@ -34,4 +33,4 @@ INSTALLED_APPS = (
     'apps.sign',
     'apps.mobile',
     'django_cleanup',
-)
+]
