@@ -6,9 +6,8 @@ from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 
 from apps.adjuster.models import Adjuster, AdjusterTaskSurface, SurfacePhoto
-from apps.city.models import Area, City, Street, Surface, Porch, ManagementCompany
-from apps.client.models import Client, ClientOrder, ClientOrderSurface
-from apps.surface.forms import PorchAddForm
+from apps.city.models import Area, City, Street, Surface, ManagementCompany
+from apps.client.models import Client, ClientOrder, ClientOrderSurface, ClientSurfaceBind
 from core.models import User
 
 __author__ = 'alexy'
@@ -169,6 +168,11 @@ def get_free_area_surface(request):
             )
             & Q(clientordersurface__clientorder__date_start__lte=order.date_end)
         )
+        # фильтруем поверхности по зоне покрытия клиента
+        if order.client.has_limit_surfaces:
+            surfaces = ClientSurfaceBind.objects.filter(client=order.client).values_list('surface', flat=True)
+            surface_qs = surface_qs.filter(id__in=surfaces)
+
         for surface in surface_qs:
             if surface.id:
                 surface_list.append({

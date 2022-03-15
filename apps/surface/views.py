@@ -132,6 +132,7 @@ class SurfaceListView(ListView):
             ).values_list('surface', flat=True)
             qs = qs.filter(id__in=client_filter)
 
+        # фильтруем поверхности по зоне покрытия клиента
         self.client_surface = int(self.request.GET.get('client_surface', 0))
         if self.client_surface:
             surfaces = ClientSurfaceBind.objects.filter(client__id=self.client_surface).values_list('surface', flat=True)
