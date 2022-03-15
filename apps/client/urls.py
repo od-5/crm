@@ -38,7 +38,7 @@ urlpatterns = [
 
     path('<int:client_id>/surfaces/', login_required(ClientSurfacesView.as_view()), name='surfaces'),
     path(
-        '<int:client_id>/surfaces/bind/$',
+        '<int:client_id>/surfaces/bind/',
         login_required(ClientSurfaceBindView.as_view()),
         name='surface-bind'
     ),
