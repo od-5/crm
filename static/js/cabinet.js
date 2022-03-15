@@ -542,6 +542,52 @@ $(function() {
     }
   });
 
+  $('#js-client-surface-bind-add-form').validate({
+    rules: {
+      cos_client: {
+        required: true
+      }
+    }
+  });
+
+
+  $('#id_client_area').change(function(){
+    if ($(this).val() != 0){
+      $.ajax({
+        type: "GET",
+        url: $(this).data('ajax-url'),
+        data: {
+          client_id: $(this).data('client_id'), // order
+          area_id: $(this).val()
+        }
+      }).done(function( data ) {
+        if (data.surface_list) {
+          var surface_list = data.surface_list;
+          $('.js-surface-list tr.result').remove();
+          var surface_table = $('.js-surface-list tbody');
+          for (var i = 0; i < surface_list.length; i++){
+            surface_table.append(
+              '<tr class="result">'+
+              '<td><input type="checkbox" data-porch-count="'+surface_list[i]['porch_count']+'" name="chk_group[]" value="' +surface_list[i]['id'] +'"></td>'+
+              '<td>'+surface_list[i]['street']+' ' + surface_list[i]['number'] +'</td>'+
+              '<td>'+surface_list[i]['porch_count']+'</td>'+
+              '<td>'+surface_list[i]['floors']+'</td>'+
+              '<td>'+surface_list[i]['apart_count']+'</td>'+
+              '<td>'+surface_list[i]['management']+'</td>'+
+              '</tr>'
+            );
+          }
+
+          $('#js-select-all').prop('checked', false);
+          $('#js-select-all').on('click', function(){
+            $('.js-surface-list tr.result input').prop('checked', $(this).prop('checked'));
+          });
+        }
+      });
+    }
+  });
+
+
   // Редактирование заказа. Выбор поверхностей по району
   $('#id_cos_area').change(function(){
     if ($(this).val() != 0){

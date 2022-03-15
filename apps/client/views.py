@@ -14,14 +14,15 @@ from django.urls import reverse
 from django.db.models import Count, Sum
 from django.http import HttpResponseRedirect, HttpResponse
 from django.http.response import Http404
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.timezone import utc
-from django.views.generic import ListView
+from django.views.generic import ListView, View
 
 from apps.adjuster.models import SurfacePhoto
 from apps.city.mixin import CityListMixin
 from apps.city.models import City, Surface
 from apps.client.forms import ClientUpdateForm, ClientAddForm, ClientMaketForm, ClientOrderForm, ClientJournalForm
+from apps.client.models import ClientSurfaceBind
 from apps.incoming.models import IncomingClient
 from apps.manager.models import Manager
 from core.forms import UserAddForm, UserUpdateForm
@@ -836,3 +837,46 @@ class ClientOrderSurfaceRemoveView(BaseRemoveView):
             free=True, release_date=release_date.date())
         qs.delete()
         return HttpResponseRedirect(self.get_success_url())
+
+
+class ClientSurfacesView(ListView):
+    model = ClientSurfaceBind
+    paginate_by = 50
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.client = None
+
+    def get(self, request, *args, **kwargs):
+        self.client = get_object_or_404(Client, id=kwargs.get('client_id'))
+        self.extra_context = {
+            'area_list': self.client.city.area_set.all().order_by('name'),
+            'client': self.client,
+        }
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return super().get_queryset().filter(client=self.client)
+
+
+class ClientSurfaceBindView(View):
+    def post(self, request, *args, **kwargs):
+        client = get_object_or_404(Client, id=kwargs.get('client_id'))
+        for surface in Surface.objects.filter(pk__in=request.POST.getlist('chk_group[]')):
+            ClientSurfaceBind.objects.create(client=client, surface=surface)
+        return redirect('client:surfaces', client_id=client.id)
+
+
+class ClientSurfaceBindRemoveView(BaseRemoveView):
+    model = ClientSurfaceBind
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.client = None
+
+    def get_success_url(self):
+        return reverse('client:surfaces', kwargs={'client_id': self.client.id})
+
+    def post(self, request, *args, **kwargs):
+        self.client = get_object_or_404(Client, id=kwargs.get('client_id'))
+        return super().post(request)

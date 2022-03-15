@@ -189,7 +189,7 @@ class ManagementCompany(models.Model):
 
 class Surface(models.Model):
     """
-    Поверхность - это объект "дом",
+    Поверхность - это объект "дом", "конечный адрес",
     не сама по себе панель, стенд размещения рекламы?
     """
     city = models.ForeignKey(on_delete=models.CASCADE, to=City, verbose_name=u'Город')

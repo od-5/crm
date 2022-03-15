@@ -1,10 +1,11 @@
-# coding=utf-8
 from django.urls import include, path, re_path
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
-from apps.city.ajax import surface_ajax, get_free_area_surface, get_city_area, get_city_adjusters, \
-    get_area_surface_list, simple_get_area_streets, get_area_surface_list_with_damage, get_photo_map, \
-    get_simple_city_map
+from apps.city.ajax import (
+    surface_ajax, get_free_area_surface, get_city_area, get_city_adjusters,
+    get_area_surfaces, get_area_surface_list, simple_get_area_streets, get_area_surface_list_with_damage,
+    get_photo_map, get_simple_city_map
+)
 from .views import *
 
 __author__ = 'alexy'
@@ -32,6 +33,7 @@ urlpatterns = [
     re_path(r'^get_city_adjusters/$', get_city_adjusters, name='get_adjuster_list'),
     re_path(r'^get_city_area/$', get_city_area, name='get_area_list'),
     re_path(r'^simple_get_area_streets/$', simple_get_area_streets, name='simple_get_area_streets'),
+    re_path(r'^get_area_surfaces/$', get_area_surfaces, name='get_area_surfaces'),
     re_path(r'^get_free_area_surface/$', get_free_area_surface, name='get_free_area_surface'),
     re_path(r'^get_area_surface_list/$', get_area_surface_list, name='get_area_surface_list'),
     re_path(r'^get_area_surface_list_with_damage/$', get_area_surface_list_with_damage,

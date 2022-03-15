@@ -34,5 +34,13 @@ urlpatterns = [
     re_path(r'^export/(?P<pk>\d+)/$', client_excel_export, name='excel_export'),
     re_path(r'archive/$', get_files, name='download-archive'),
     re_path(r'(?P<pk>\d+)/payment/$', clientjournalpayment_list, name='payment-list'),
-    re_path(r'payment/add/$', payment_add, name='payment-add')
+    re_path(r'payment/add/$', payment_add, name='payment-add'),
+
+    path('<int:client_id>/surfaces/', login_required(ClientSurfacesView.as_view()), name='surfaces'),
+    path(
+        '<int:client_id>/surfaces/bind/$',
+        login_required(ClientSurfaceBindView.as_view()),
+        name='surface-bind'
+    ),
+    path('<int:client_id>/surfaces/remove/', ClientSurfaceBindRemoveView.as_view(), name='surface-bind-remove'),
 ]

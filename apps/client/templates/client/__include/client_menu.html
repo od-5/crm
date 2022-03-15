@@ -17,4 +17,9 @@
   <a href="{% url 'client:maket' client.id %}" class="btn btn-default">
     <span class="glyphicon glyphicon-folder-open"></span> Архив макетов
   </a>
+  {% if client.has_limit_surfaces %}
+    <a href="{% url 'client:surfaces' client.id %}" class="btn btn-default">
+      <span class="glyphicon glyphicon-globe"></span> Зона покрытия
+    </a>
+  {% endif %}
 </div>

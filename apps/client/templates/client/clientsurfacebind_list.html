@@ -1,0 +1,131 @@
+{% extends 'cabinet_index.html' %}
+
+
+{% block breadcrumbs_item %}
+  <li><a href="{% url 'client:change' client.id %}">Клиент «{{ client }}»</a></li>
+  <li class="active">Зона покрытия (адреса присутствия услуг)</li>
+{% endblock %}
+
+
+{% block content %}
+  <div class="container">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+
+        {% include 'client/__include/client_menu.html' with client=client %}
+
+        <div class="panel-heading">
+          <div class="row page-top">
+            <div class="col-md-12">Зона покрытия <span>/ {{ page_obj.paginator.count|default:'0' }}</span></div>
+          </div>
+          {% include '__cabinet/filter_button.html' %}
+        </div>
+
+        <div class="panel-body">
+          <div class="col-md-12">
+            <p class="lead text-info">Добавление адресов</p>
+          </div>
+
+          <form action="{% url 'client:surface-bind' client.id %}" id="js-client-surface-bond-add-form" method="post" class="form" role="form">
+          {% csrf_token %}
+            <div class="col-md-6">
+              <input type="hidden" name="cos_client" id="id_cos_client" value="{{ client.id }}">
+            </div>
+            <div class="col-md-12">
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-md-6">
+                    <label for="cos_area">Выберите район:</label>
+                      <select name="cos_area" id="id_client_area" class="form-control" data-ajax-url="{% url 'city:get_area_surfaces' %}" data-client_id="{{ client.id }}">
+                        <option value="">---- выберите район ----</option>
+                        {% for area in area_list %}
+                          <option value="{{ area.id }}">{{ area.name }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  <div class="clearfix"></div>
+                </div>
+                <div class="surface-list js-surface-list">
+                  <table class="table">
+                    <thead>
+                    <tr>
+                      <th><input type="checkbox" id="js-select-all" value=""></th>
+                      <th>Адрес</th>
+                      <th>Стендов</th>
+                      <th>Этажей</th>
+                      <th>Квартир</th>
+                      <th>УК</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <input type="submit" class="btn btn-save btn-save_green" value="Добавить адреса">
+              <p>&nbsp;</p>
+            </div>
+          </form>
+
+          <form action="{% url 'client:surface-bind-remove' client.id %}" method="post" class="js-remove-item-form">{% csrf_token %}
+            <table class="table table-hover table-condensed table-bordered table-list">
+              <thead>
+                <tr>
+                  <th>Район</th>
+                  <th>Адрес</th>
+                  <th>Подъездов</th>
+                  <th>Этажей</th>
+                  <th>Квартир</th>
+                  <th>УК</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody class="js-list">
+                {% for item in object_list %}
+                <tr data-id="{{ item.id }}" data-name="{{ item }}" data-model="ClientSurfaceBind" id="id_ClientSurfaceBind_{{ item.id }}">
+                  <td>{{ item.surface.street.area.name|default:'Не указано' }}</td>
+                  <td>{{ item.surface.street.name|default:'Не указано' }}, д. {{ item.surface.house_number|default:'Не указано' }}</td>
+                  <td>{{ item.num_porch|default:'0' }}</td>
+                  <td>{{ item.surface.floors|default:'-' }}</td>
+                  <td>{{ item.surface.apart_count|default:'-' }}</td>
+                  <td>{{ item.surface.management.name|default:'-' }}</td>
+                  <td>
+                    <div class="checkbox-min">
+                      <input type="checkbox" id="ch{{ item.id }}" class="checkbox-min-input" name="chk_grp[]" value="{{ item.id }}">
+                      <label for="ch{{ item.id }}" class="checkbox-min-label"></label>
+                    </div>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="7">
+                    <p class="alert alert-info text-left">Пустой список</p>
+                  </td>
+                </tr>
+                {% endfor %}
+                <tr></tr>
+              </tbody>
+            </table>
+            <div class="col-md-12">
+              <div class="lead text-info">
+                <a href="#js-ajax-remove" class="btn btn-sm btn-danger remove-fancy">
+                  <span class="glyphicon glyphicon-remove"></span> Удалить
+                </a>
+              </div>
+            </div>
+          </form>
+          {% include '__includes/pagination.html' %}
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div id="js-ajax-remove" align="center" style="display: none">
+    <p class="alert alert-danger">Вы действительно хотите удалить объекты?</p>
+    <button class="js-btn-remove-success btn-success">Да</button>
+    <button class="js-btn-remove-cancel btn-danger">Нет</button>
+  </div>
+
+  {% include '__modal/js_ajax_remove_form.html' %}
+{% endblock %}

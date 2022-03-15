@@ -41,6 +41,8 @@ class Client(models.Model):
     work_basis = models.CharField(max_length=256, blank=True, null=True, verbose_name=u'Основание для работы')
     photo_additional = models.PositiveIntegerField(default=0, blank=True, null=True,
                                                    verbose_name=u'накрутка к кол-ву фотографий')
+    has_limit_surfaces = models.BooleanField('Использовать "Зону покрытия"', default=False)
+
 
     class Meta:
         verbose_name = u'Клиент'
@@ -331,3 +333,16 @@ class ClientMaket(models.Model):
 
     def __str__(self):
         return self.__unicode__()
+
+
+class ClientSurfaceBind(models.Model):
+    client = models.ForeignKey(Client, verbose_name='Клиент', on_delete=models.CASCADE)
+    surface = models.ForeignKey(Surface, verbose_name='Поверхность (адрес)', on_delete=models.CASCADE)
+
+    class Meta:
+        app_label = 'client'
+        verbose_name = 'Зона покрытия (адреса присутствия услуг)'
+        verbose_name_plural = 'Зоны покрытия (адреса присутствия услуг)'
+
+    def __str__(self):
+        return f'{self.client}, {self.surface}'

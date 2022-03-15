@@ -125,6 +125,36 @@ def simple_get_area_streets(request):
 
 
 @ajax_request
+def get_area_surfaces(request):
+    area_id = request.GET.get('area_id')
+    client_id = request.GET.get('client_id')
+    surface_list = []
+    qs = (
+        Surface.objects.select_related('management')
+        .filter(street__area=area_id)
+        .exclude(clientsurfacebind__client__id=client_id)
+        .extra(select={'house_number_int': 'CAST(house_number AS INTEGER)'})
+        .order_by('street__area', 'street__name', 'house_number_int')
+    )
+    for surface in qs:
+        surface_list.append({
+            'id': surface.id,
+            'city': surface.city.name,
+            'street': surface.street.name,
+            'number': surface.house_number,
+            'porch_count': surface.porch_count(),
+            'coord_x': surface.coord_x,
+            'coord_y': surface.coord_y,
+            'floors': surface.floors or '-',
+            'apart_count': surface.apart_count or '-',
+            'management': surface.management.name if surface.management else '-'
+        })
+    return {
+        'surface_list': surface_list
+    }
+
+
+@ajax_request
 def get_free_area_surface(request):
     if request.GET.get('area') and request.GET.get('order'):
         surface_list = []
