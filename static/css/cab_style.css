@@ -6095,6 +6095,17 @@ td.visible-print {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
+.five-col-0 {
+  width: 10%;
+  float: left;
+  position: relative;
+  min-height: 1px;
+  padding-left: 10px;
+  padding-right: 10px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
 .five-col-1 {
   width: 20%;
   float: left;

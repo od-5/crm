@@ -73,10 +73,10 @@
                   <option value="2" {% if free == 2 %}selected="selected"{% endif %}>Занята</option>
                 </select>
               </div>
-              <div class="five-col-1">
+              <div class="five-col-0">
                 <input type="text" name="date_start" class="form-control input-sm" placeholder="начало:" id="id_date_start" value="{{ date_start|date:'d.m.Y' }}" autocomplete="off">
               </div>
-              <div class="five-col-1">
+              <div class="five-col-0">
                 <input type="text" name="date_end" class="form-control input-sm" placeholder="окончание:" id="id_date_end" value="{{ date_end|date:'d.m.Y' }}" autocomplete="off">
               </div>
               <div class="five-col-1">
@@ -87,6 +87,14 @@
                     <option value="{{ client.id }}" {% if client.id == client_id %}selected="selected"{% endif %}>{{ client.legal_name }}</option>
                     {% endfor %}
                   {% endif %}
+                </select>
+              </div>
+              <div class="five-col-1">
+                <select name="client_surface" id="client_surfaces" class="form-control input-sm" >
+                  <option value="0">--- Зона покрытия ---</option>
+                  {% for client in client_surfaces %}
+                    <option value="{{ client.id }}" {% if client.id == client_surface %}selected="selected"{% endif %}>{{ client.legal_name }}</option>
+                  {% endfor %}
                 </select>
               </div>
               <div class="five-col-1">

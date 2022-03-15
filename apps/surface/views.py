@@ -16,7 +16,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from docxtpl import DocxTemplate
 
 from apps.adjuster.models import SurfacePhoto
-from apps.client.models import Client, ClientOrderSurface
+from apps.client.models import Client, ClientOrderSurface, ClientSurfaceBind
 from lib.cbv import DocResponseMixin
 from .forms import SurfaceAddForm, PorchAddForm, SurfacePhotoForm, SurfaceImportForm
 from apps.city.models import City, Area, Surface, Street, Porch, ManagementCompany, SurfaceDocTemplate
@@ -132,6 +132,11 @@ class SurfaceListView(ListView):
             ).values_list('surface', flat=True)
             qs = qs.filter(id__in=client_filter)
 
+        self.client_surface = int(self.request.GET.get('client_surface', 0))
+        if self.client_surface:
+            surfaces = ClientSurfaceBind.objects.filter(client__id=self.client_surface).values_list('surface', flat=True)
+            qs = qs.filter(id__in=surfaces)
+
         qs = qs.extra(select={'house_number_int': 'CAST(house_number AS INTEGER)'})
         return qs.order_by('street__area', 'street__name', 'house_number_int')
 
@@ -229,6 +234,8 @@ class SurfaceListView(ListView):
                 '%s?%s' % (self.request.path, self.request.META['QUERY_STRING'])
         else:
             self.request.session['surface_filtered_list'] = reverse('surface:list')
+        context['client_surfaces'] = Client.objects.filter(has_limit_surfaces=True)
+        context['client_surface'] = self.client_surface
         return context
 
     def xls_export(self):
